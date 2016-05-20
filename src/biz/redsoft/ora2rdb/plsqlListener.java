@@ -178,6 +178,166 @@ public interface plsqlListener extends ParseTreeListener {
 	 */
 	void exitLob_compression_clause(plsqlParser.Lob_compression_clauseContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link plsqlParser#alter_table}.
+	 * @param ctx the parse tree
+	 */
+	void enterAlter_table(plsqlParser.Alter_tableContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#alter_table}.
+	 * @param ctx the parse tree
+	 */
+	void exitAlter_table(plsqlParser.Alter_tableContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#column_clauses}.
+	 * @param ctx the parse tree
+	 */
+	void enterColumn_clauses(plsqlParser.Column_clausesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#column_clauses}.
+	 * @param ctx the parse tree
+	 */
+	void exitColumn_clauses(plsqlParser.Column_clausesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#modify_column_clauses}.
+	 * @param ctx the parse tree
+	 */
+	void enterModify_column_clauses(plsqlParser.Modify_column_clausesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#modify_column_clauses}.
+	 * @param ctx the parse tree
+	 */
+	void exitModify_column_clauses(plsqlParser.Modify_column_clausesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#modify_col_properties}.
+	 * @param ctx the parse tree
+	 */
+	void enterModify_col_properties(plsqlParser.Modify_col_propertiesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#modify_col_properties}.
+	 * @param ctx the parse tree
+	 */
+	void exitModify_col_properties(plsqlParser.Modify_col_propertiesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#modify_col_substitutable}.
+	 * @param ctx the parse tree
+	 */
+	void enterModify_col_substitutable(plsqlParser.Modify_col_substitutableContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#modify_col_substitutable}.
+	 * @param ctx the parse tree
+	 */
+	void exitModify_col_substitutable(plsqlParser.Modify_col_substitutableContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#inline_constraint}.
+	 * @param ctx the parse tree
+	 */
+	void enterInline_constraint(plsqlParser.Inline_constraintContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#inline_constraint}.
+	 * @param ctx the parse tree
+	 */
+	void exitInline_constraint(plsqlParser.Inline_constraintContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#constraint_clauses}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstraint_clauses(plsqlParser.Constraint_clausesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#constraint_clauses}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstraint_clauses(plsqlParser.Constraint_clausesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#out_of_line_constraint}.
+	 * @param ctx the parse tree
+	 */
+	void enterOut_of_line_constraint(plsqlParser.Out_of_line_constraintContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#out_of_line_constraint}.
+	 * @param ctx the parse tree
+	 */
+	void exitOut_of_line_constraint(plsqlParser.Out_of_line_constraintContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#references_clause}.
+	 * @param ctx the parse tree
+	 */
+	void enterReferences_clause(plsqlParser.References_clauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#references_clause}.
+	 * @param ctx the parse tree
+	 */
+	void exitReferences_clause(plsqlParser.References_clauseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#constraint_state}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstraint_state(plsqlParser.Constraint_stateContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#constraint_state}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstraint_state(plsqlParser.Constraint_stateContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#using_index_clause}.
+	 * @param ctx the parse tree
+	 */
+	void enterUsing_index_clause(plsqlParser.Using_index_clauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#using_index_clause}.
+	 * @param ctx the parse tree
+	 */
+	void exitUsing_index_clause(plsqlParser.Using_index_clauseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#index_properties}.
+	 * @param ctx the parse tree
+	 */
+	void enterIndex_properties(plsqlParser.Index_propertiesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#index_properties}.
+	 * @param ctx the parse tree
+	 */
+	void exitIndex_properties(plsqlParser.Index_propertiesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#index_attributes}.
+	 * @param ctx the parse tree
+	 */
+	void enterIndex_attributes(plsqlParser.Index_attributesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#index_attributes}.
+	 * @param ctx the parse tree
+	 */
+	void exitIndex_attributes(plsqlParser.Index_attributesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#compute_statistics_clause}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompute_statistics_clause(plsqlParser.Compute_statistics_clauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#compute_statistics_clause}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompute_statistics_clause(plsqlParser.Compute_statistics_clauseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#for_clause}.
+	 * @param ctx the parse tree
+	 */
+	void enterFor_clause(plsqlParser.For_clauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#for_clause}.
+	 * @param ctx the parse tree
+	 */
+	void exitFor_clause(plsqlParser.For_clauseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#exceptions_clause}.
+	 * @param ctx the parse tree
+	 */
+	void enterExceptions_clause(plsqlParser.Exceptions_clauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#exceptions_clause}.
+	 * @param ctx the parse tree
+	 */
+	void exitExceptions_clause(plsqlParser.Exceptions_clauseContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link plsqlParser#drop_function}.
 	 * @param ctx the parse tree
 	 */

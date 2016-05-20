@@ -22,7 +22,12 @@ public class Ora2rdb {
 		ParseTree tree = parser.compilation_unit();
 		
 		ParseTreeWalker walker = new ParseTreeWalker();
-		RewritingListener converter = new RewritingListener(tokens);
+		
+		InitialListener init_listener = new InitialListener();
+		walker.walk(init_listener, tree);
+		//System.out.println(init_listener.table_map.toString());
+		
+		RewritingListener converter = new RewritingListener(tokens, init_listener.table_map);
 		walker.walk(converter, tree);
 		System.out.println(converter.rewriter.getText());
 	}

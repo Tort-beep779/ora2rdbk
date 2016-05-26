@@ -1,13 +1,10 @@
 package biz.redsoft.ora2rdb;
 
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import biz.redsoft.ora2rdb.plsqlParser.*;
 
 public class InitialListener extends plsqlBaseListener {
-	public TreeMap<String, TreeSet<String>> table_map = new TreeMap<String, TreeSet<String>>();
-	
 	@Override
 	public void enterAlter_table(Alter_tableContext ctx) {
 		Column_clausesContext columns_ctx = ctx.column_clauses();
@@ -37,15 +34,15 @@ public class InitialListener extends plsqlBaseListener {
 						if (column_name.startsWith("\""))
 							column_name = column_name.substring(1, column_name.length() - 1);
 						
-						if (table_map.containsKey(table_name))
+						if (Ora2rdb.table_map.containsKey(table_name))
 						{
-							table_map.get(table_name).add(column_name);
+							Ora2rdb.table_map.get(table_name).add(column_name);
 						}
 						else
 						{
 							TreeSet<String> columns_set = new TreeSet<String>();
 							columns_set.add(column_name);
-							table_map.put(table_name, columns_set);
+							Ora2rdb.table_map.put(table_name, columns_set);
 						}
 					}
 				}
@@ -76,10 +73,10 @@ public class InitialListener extends plsqlBaseListener {
 					if (table_name.startsWith("\""))
 						table_name = table_name.substring(1, table_name.length() - 1);
 					
-					if (table_map.containsKey(table_name))
-						table_map.get(table_name).addAll(columns_set);
+					if (Ora2rdb.table_map.containsKey(table_name))
+						Ora2rdb.table_map.get(table_name).addAll(columns_set);
 					else
-						table_map.put(table_name, columns_set);
+						Ora2rdb.table_map.put(table_name, columns_set);
 				}
 			}
 		}

@@ -1,6 +1,5 @@
 package biz.redsoft.ora2rdb;
 
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.antlr.v4.runtime.*;
@@ -10,12 +9,10 @@ import biz.redsoft.ora2rdb.plsqlParser.*;
 public class RewritingListener extends plsqlBaseListener {
 	TokenStreamRewriter rewriter;
 	TokenStream tokens;
-	TreeMap<String, TreeSet<String>> table_map;
 	
-	public RewritingListener(TokenStream tokens, TreeMap<String, TreeSet<String>> table_map) {
+	public RewritingListener(TokenStream tokens) {
 		rewriter = new TokenStreamRewriter(tokens);
 		this.tokens = tokens;
-		this.table_map = table_map;
 	}
 	
 	@Override
@@ -38,9 +35,9 @@ public class RewritingListener extends plsqlBaseListener {
 		if (table_name.startsWith("\""))
 			table_name = table_name.substring(1, table_name.length() - 1);
 		
-		if (table_map.containsKey(table_name))
+		if (Ora2rdb.table_map.containsKey(table_name))
 		{
-			TreeSet<String> columns_set = table_map.get(table_name);
+			TreeSet<String> columns_set = Ora2rdb.table_map.get(table_name);
 			
 			for (Field_specContext field_ctx : ctx.field_spec())
 			{

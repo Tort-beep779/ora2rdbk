@@ -182,4 +182,50 @@ public class RewritingListener extends plsqlBaseListener {
 			rewriter.delete(ctx.PERIOD().getSymbol());
 		}
 	}
+	
+	@Override
+	public void enterCreate_index(Create_indexContext ctx) {
+		String index_name = ctx.id_expression().getText().toUpperCase();
+		
+		if (index_name.startsWith("\""))
+			index_name = index_name.substring(1, index_name.length() - 1);
+		
+		if (Ora2rdb.index_names.contains(index_name))
+		{
+			rewriter.delete(ctx.start, ctx.stop);
+			return;
+		}
+		
+		Table_index_clauseContext table_index_clause_ctx = ctx.table_index_clause();
+		
+		for (Index_exprContext index_expr_ctx : table_index_clause_ctx.index_expr())
+		{
+			if (index_expr_ctx.unary_expression() != null)
+			{
+				rewriter.delete(ctx.start, ctx.stop);
+				return;
+			}
+		}
+		
+		Schema_nameContext schema_name_ctx = ctx.schema_name();
+		
+		if (schema_name_ctx != null)
+		{
+			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
+			rewriter.delete(ctx.PERIOD().getSymbol());
+		}
+		
+		schema_name_ctx = table_index_clause_ctx.schema_name();
+		
+		if (schema_name_ctx != null)
+		{
+			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
+			rewriter.delete(table_index_clause_ctx.PERIOD().getSymbol());
+		}
+		
+		Index_propertiesContext index_properties_ctx = table_index_clause_ctx.index_properties();
+		
+		if (index_properties_ctx != null)
+			rewriter.delete(index_properties_ctx.start, index_properties_ctx.stop);
+	}
 }

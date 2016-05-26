@@ -10,6 +10,8 @@ import org.antlr.v4.runtime.tree.*;
 
 public class Ora2rdb {
 	public static TreeMap<String, TreeSet<String>> table_map = new TreeMap<String, TreeSet<String>>();
+	public static TreeSet<String> index_names = new TreeSet<String>();
+	
 	public static void main(String[] args) throws Exception {
 		InputStream is;
 		

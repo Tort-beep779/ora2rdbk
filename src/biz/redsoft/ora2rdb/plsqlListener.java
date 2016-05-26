@@ -338,6 +338,46 @@ public interface plsqlListener extends ParseTreeListener {
 	 */
 	void exitExceptions_clause(plsqlParser.Exceptions_clauseContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link plsqlParser#create_view}.
+	 * @param ctx the parse tree
+	 */
+	void enterCreate_view(plsqlParser.Create_viewContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#create_view}.
+	 * @param ctx the parse tree
+	 */
+	void exitCreate_view(plsqlParser.Create_viewContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#create_index}.
+	 * @param ctx the parse tree
+	 */
+	void enterCreate_index(plsqlParser.Create_indexContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#create_index}.
+	 * @param ctx the parse tree
+	 */
+	void exitCreate_index(plsqlParser.Create_indexContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#table_index_clause}.
+	 * @param ctx the parse tree
+	 */
+	void enterTable_index_clause(plsqlParser.Table_index_clauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#table_index_clause}.
+	 * @param ctx the parse tree
+	 */
+	void exitTable_index_clause(plsqlParser.Table_index_clauseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#index_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterIndex_expr(plsqlParser.Index_exprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#index_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitIndex_expr(plsqlParser.Index_exprContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link plsqlParser#drop_function}.
 	 * @param ctx the parse tree
 	 */

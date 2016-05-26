@@ -78,6 +78,18 @@ public class InitialListener extends plsqlBaseListener {
 					else
 						Ora2rdb.table_map.put(table_name, columns_set);
 				}
+				
+				if (out_of_line_constraint_ctx.PRIMARY() != null || 
+					out_of_line_constraint_ctx.FOREIGN() != null ||
+					out_of_line_constraint_ctx.UNIQUE() != null)
+				{
+					String constraint_name = out_of_line_constraint_ctx.constraint_name().getText().toUpperCase();
+					
+					if (constraint_name.startsWith("\""))
+						constraint_name = constraint_name.substring(1, constraint_name.length() - 1);
+					
+					Ora2rdb.index_names.add(constraint_name);
+				}
 			}
 		}
 	}

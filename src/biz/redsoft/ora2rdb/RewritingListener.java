@@ -228,4 +228,31 @@ public class RewritingListener extends plsqlBaseListener {
 		if (index_properties_ctx != null)
 			rewriter.delete(index_properties_ctx.start, index_properties_ctx.stop);
 	}
+	
+	@Override
+	public void enterCreate_sequence(Create_sequenceContext ctx) {
+		Sequence_nameContext sequence_name_ctx = ctx.sequence_name();
+		Schema_nameContext schema_name_ctx = sequence_name_ctx.schema_name();
+		
+		if (schema_name_ctx != null)
+		{
+			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
+			rewriter.delete(sequence_name_ctx.PERIOD().getSymbol());
+		}
+		
+		for (Sequence_specContext sequence_spec_ctx : ctx.sequence_spec())
+			rewriter.delete(sequence_spec_ctx.start, sequence_spec_ctx.stop);
+		
+		String set_generator_statements = "";
+		
+		for (Sequence_start_clauseContext sequence_start_clause_ctx : ctx.sequence_start_clause())
+		{
+			set_generator_statements += "SET GENERATOR " + sequence_name_ctx.id_expression().getText() + 
+										" TO " + sequence_start_clause_ctx.UNSIGNED_INTEGER().getText() + ";\n";
+			
+			rewriter.delete(sequence_start_clause_ctx.start, sequence_start_clause_ctx.stop);
+		}
+		
+		rewriter.insertAfter(ctx.stop, "\n" + set_generator_statements);
+	}
 }

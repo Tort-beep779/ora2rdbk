@@ -255,4 +255,26 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		rewriter.insertAfter(ctx.stop, "\n" + set_generator_statements);
 	}
+	
+	@Override
+	public void enterCreate_view(Create_viewContext ctx) {
+		if (ctx.REPLACE() != null)
+			rewriter.replace(ctx.REPLACE().getSymbol(), "ALTER");
+		
+		if (ctx.FORCE() != null)
+		{
+			rewriter.delete(ctx.FORCE().getSymbol());
+			
+			if (ctx.NO() != null)
+				rewriter.delete(ctx.NO().getSymbol());
+		}
+		
+		Schema_nameContext schema_name_ctx = ctx.schema_name();
+		
+		if (schema_name_ctx != null)
+		{
+			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
+			rewriter.delete(ctx.PERIOD().getSymbol());
+		}
+	}
 }

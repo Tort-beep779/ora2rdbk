@@ -76,10 +76,12 @@ public class RewritingListener extends plsqlBaseListener {
 			{
 				if (ctx.precision_part() != null)
 				{
-					if (ctx.precision_part().ASTERISK() == null)
-						rewriter.replace(ctx.native_datatype_element().start, ctx.native_datatype_element().stop, "NUMERIC");
-					else
-						rewriter.replace(ctx.start, ctx.stop, "SMALLINT");
+					if (ctx.precision_part().ASTERISK() != null)
+						rewriter.replace(ctx.precision_part().ASTERISK().getSymbol(), "18");
+				}
+				else
+				{
+					rewriter.insertAfter(ctx.native_datatype_element().stop, "(18, 18)");
 				}
 			}
 			else if (ctx.native_datatype_element().FLOAT() != null)
@@ -91,6 +93,17 @@ public class RewritingListener extends plsqlBaseListener {
 			{
 				if (ctx.precision_part() != null)
 					rewriter.delete(ctx.precision_part().start, ctx.precision_part().stop);
+			}
+			else if (ctx.native_datatype_element().VARCHAR2() != null ||
+					 ctx.native_datatype_element().VARCHAR() != null)
+			{
+				if (ctx.precision_part() == null)
+					rewriter.insertAfter(ctx.native_datatype_element().stop, "(250)");
+			}
+			else if (ctx.native_datatype_element().NUMERIC() != null)
+			{
+				if (ctx.precision_part() == null)
+					rewriter.insertAfter(ctx.native_datatype_element().stop, "(18, 18)");
 			}
 		}
 	}
@@ -107,10 +120,10 @@ public class RewritingListener extends plsqlBaseListener {
 	public void enterNative_datatype_element(Native_datatype_elementContext ctx) {
 		if (ctx.VARCHAR2() != null)
 			rewriter.replace(ctx.start, "VARCHAR");
-		else if (ctx.DATE() != null)
-			rewriter.replace(ctx.start, "TIMESTAMP");
 		else if (ctx.CLOB() != null)
 			rewriter.replace(ctx.start, "BLOB SUB_TYPE 1");
+		else if (ctx.NUMBER() != null)
+			rewriter.replace(ctx.start, "NUMERIC");
 	}
 	
 	@Override

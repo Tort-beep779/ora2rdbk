@@ -53,7 +53,7 @@ public class RewritingListener extends plsqlBaseListener {
 	}
 	
 	@Override
-	public void enterField_spec(Field_specContext ctx) {
+	public void exitField_spec(Field_specContext ctx) {
 		if (ctx.type_spec() != null)
 		{
 			if (ctx.type_spec().datatype() != null)
@@ -275,6 +275,18 @@ public class RewritingListener extends plsqlBaseListener {
 		{
 			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
 			rewriter.delete(ctx.PERIOD().getSymbol());
+		}
+	}
+	
+	@Override
+	public void enterRegular_id(Regular_idContext ctx) {
+		switch (ctx.getText().toUpperCase())
+		{
+		case "SYSTIMESTAMP":
+			rewriter.replace(ctx.start, ctx.stop, "CURRENT_TIMESTAMP");
+			break;
+		case "SYSDATE":
+			rewriter.replace(ctx.start, ctx.stop, "CURRENT_DATE");
 		}
 	}
 }

@@ -24,7 +24,7 @@ public class Ora2rdb {
 		plsqlLexer lexer = new plsqlLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		plsqlParser parser = new plsqlParser(tokens);
-		ParseTree tree = parser.compilation_unit();
+		ParseTree tree = parser.sql_script();
 		
 		ParseTreeWalker walker = new ParseTreeWalker();
 		

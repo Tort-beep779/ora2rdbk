@@ -374,4 +374,37 @@ public class RewritingListener extends plsqlBaseListener {
 	public void enterSql_plus_command(Sql_plus_commandContext ctx) {
 		rewriter.delete(ctx.start, ctx.stop);
 	}
+	
+	@Override
+	public void enterProcedure_name(Procedure_nameContext ctx) {
+		Schema_nameContext schema_name_ctx = ctx.schema_name();
+		
+		if (schema_name_ctx != null)
+		{
+			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
+			rewriter.delete(ctx.PERIOD().getSymbol());
+		}
+	}
+	
+	@Override
+	public void exitCreate_procedure_body(Create_procedure_bodyContext ctx) {
+		if (ctx.CREATE() == null)
+			rewriter.insertBefore(ctx.PROCEDURE().getSymbol(), "CREATE OR ALTER ");
+		else if (ctx.REPLACE() != null)
+			rewriter.replace(ctx.REPLACE().getSymbol(), "ALTER");
+		
+		if (ctx.IS() != null)
+			rewriter.replace(ctx.IS().getSymbol(), "AS");
+		
+		if (ctx.DECLARE() != null)
+			rewriter.delete(ctx.DECLARE().getSymbol());
+		
+		if (ctx.declare_spec().size() != 0)
+			commentBlock(ctx.declare_spec(0).start.getTokenIndex(), ctx.declare_spec(ctx.declare_spec().size() - 1).stop.getTokenIndex());
+		
+		BodyContext body_ctx = ctx.body();
+		
+		if (body_ctx != null)
+			commentBlock(body_ctx.BEGIN().getSymbol().getTokenIndex() + 1, body_ctx.END().getSymbol().getTokenIndex() - 1);
+	}
 }

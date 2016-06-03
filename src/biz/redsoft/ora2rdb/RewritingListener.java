@@ -407,4 +407,49 @@ public class RewritingListener extends plsqlBaseListener {
 		if (body_ctx != null)
 			commentBlock(body_ctx.BEGIN().getSymbol().getTokenIndex() + 1, body_ctx.END().getSymbol().getTokenIndex() - 1);
 	}
+	
+	@Override
+	public void enterTrigger_name(Trigger_nameContext ctx) {
+		Schema_nameContext schema_name_ctx = ctx.schema_name();
+		
+		if (schema_name_ctx != null)
+		{
+			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
+			rewriter.delete(ctx.PERIOD().getSymbol());
+		}
+	}
+	
+	@Override
+	public void enterCreate_trigger(Create_triggerContext ctx) {
+		if (ctx.REPLACE() != null)
+			rewriter.replace(ctx.REPLACE().getSymbol(), "ALTER");
+		
+		rewriter.insertBefore(ctx.trigger_body().start, "AS ");
+	}
+	
+	@Override
+	public void enterReferencing_clause(Referencing_clauseContext ctx) {
+		commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+	}
+	
+	@Override
+	public void enterFor_each_row(For_each_rowContext ctx) {
+		rewriter.delete(ctx.start, ctx.stop);
+	}
+	
+	@Override
+	public void enterTrigger_when_clause(Trigger_when_clauseContext ctx) {
+		commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+	}
+	
+	@Override
+	public void enterTrigger_block(Trigger_blockContext ctx) {
+		if (ctx.DECLARE() != null)
+			rewriter.delete(ctx.DECLARE().getSymbol());
+		
+		BodyContext body_ctx = ctx.body();
+		
+		if (body_ctx != null)
+			commentBlock(body_ctx.BEGIN().getSymbol().getTokenIndex() + 1, body_ctx.END().getSymbol().getTokenIndex() - 1);
+	}
 }

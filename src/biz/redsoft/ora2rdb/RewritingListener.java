@@ -1,18 +1,31 @@
 package biz.redsoft.ora2rdb;
 
+import java.util.List;
 import java.util.TreeSet;
 
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import biz.redsoft.ora2rdb.plsqlParser.*;
 
 public class RewritingListener extends plsqlBaseListener {
 	TokenStreamRewriter rewriter;
-	TokenStream tokens;
+	CommonTokenStream tokens;
 	
-	public RewritingListener(TokenStream tokens) {
+	public RewritingListener(CommonTokenStream tokens) {
 		rewriter = new TokenStreamRewriter(tokens);
 		this.tokens = tokens;
+	}
+	
+	void commentBlock(int start_tok_idx, int stop_tok_idx) {
+		rewriter.insertBefore(start_tok_idx, "/*");
+		rewriter.insertAfter(stop_tok_idx, "*/");
+		
+		List<Token> multi_line_comments = tokens.getTokens(start_tok_idx, stop_tok_idx, plsqlLexer.MULTI_LINE_COMMENT);
+		
+		if (multi_line_comments != null)
+			for (Token tok : multi_line_comments)
+				rewriter.delete(tok);
 	}
 	
 	@Override
@@ -301,5 +314,64 @@ public class RewritingListener extends plsqlBaseListener {
 		case "SYSDATE":
 			rewriter.replace(ctx.start, ctx.stop, "CURRENT_DATE");
 		}
+	}
+	
+	@Override
+	public void enterFunction_name(Function_nameContext ctx) {
+		Schema_nameContext schema_name_ctx = ctx.schema_name();
+		
+		if (schema_name_ctx != null)
+		{
+			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
+			rewriter.delete(ctx.PERIOD().getSymbol());
+		}
+	}
+	
+	@Override
+	public void enterCreate_function_body(Create_function_bodyContext ctx) {
+		if (ctx.CREATE() == null)
+			rewriter.insertBefore(ctx.FUNCTION().getSymbol(), "CREATE OR ALTER ");
+		else if (ctx.REPLACE() != null)
+			rewriter.replace(ctx.REPLACE().getSymbol(), "ALTER");
+		
+		rewriter.replace(ctx.FUNCTION().getSymbol(), "PROCEDURE");
+		
+		rewriter.replace(ctx.RETURN().getSymbol(), "RETURNS (RET_VAL");
+		rewriter.insertAfter(ctx.type_spec().stop, ")");
+		
+		if (ctx.IS() != null)
+			rewriter.replace(ctx.IS().getSymbol(), "AS");
+		
+		if (ctx.DECLARE() != null)
+			rewriter.delete(ctx.DECLARE().getSymbol());
+		
+		BodyContext body_ctx = ctx.body();
+		
+		if (body_ctx != null)
+		{
+			rewriter.insertBefore(body_ctx.END().getSymbol(), "\nSUSPEND;\n");
+			commentBlock(body_ctx.BEGIN().getSymbol().getTokenIndex() + 1, body_ctx.END().getSymbol().getTokenIndex() - 1);
+		}
+	}
+	
+	@Override
+	public void enterParameter(ParameterContext ctx) {
+		for (TerminalNode in_node : ctx.IN())
+			rewriter.delete(in_node.getSymbol());
+	}
+	
+	@Override
+	public void enterPragma_declaration(Pragma_declarationContext ctx) {
+		rewriter.delete(ctx.start, ctx.stop);
+	}
+	
+	@Override
+	public void enterVariable_declaration(Variable_declarationContext ctx) {
+		rewriter.insertBefore(ctx.start, "DECLARE ");
+	}
+	
+	@Override
+	public void enterSql_plus_command(Sql_plus_commandContext ctx) {
+		rewriter.delete(ctx.start, ctx.stop);
 	}
 }

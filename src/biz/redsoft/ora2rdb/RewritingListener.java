@@ -452,4 +452,12 @@ public class RewritingListener extends plsqlBaseListener {
 		if (body_ctx != null)
 			commentBlock(body_ctx.BEGIN().getSymbol().getTokenIndex() + 1, body_ctx.END().getSymbol().getTokenIndex() - 1);
 	}
+	
+	@Override
+	public void enterAlter_trigger(Alter_triggerContext ctx) {
+		if (ctx.ENABLE() != null)
+			rewriter.replace(ctx.ENABLE().getSymbol(), "ACTIVE");
+		else if (ctx.DISABLE() != null)
+			rewriter.replace(ctx.DISABLE().getSymbol(), "INACTIVE");
+	}
 }

@@ -5188,6 +5188,7 @@ public class plsqlParser extends Parser {
 		public Type_specContext type_spec() {
 			return getRuleContext(Type_specContext.class,0);
 		}
+		public TerminalNode SEMICOLON() { return getToken(plsqlParser.SEMICOLON, 0); }
 		public TerminalNode USING() { return getToken(plsqlParser.USING, 0); }
 		public Implementation_type_nameContext implementation_type_name() {
 			return getRuleContext(Implementation_type_nameContext.class,0);
@@ -6840,6 +6841,7 @@ public class plsqlParser extends Parser {
 		public Procedure_nameContext procedure_name() {
 			return getRuleContext(Procedure_nameContext.class,0);
 		}
+		public TerminalNode SEMICOLON() { return getToken(plsqlParser.SEMICOLON, 0); }
 		public TerminalNode IS() { return getToken(plsqlParser.IS, 0); }
 		public TerminalNode AS() { return getToken(plsqlParser.AS, 0); }
 		public BodyContext body() {
@@ -7212,6 +7214,7 @@ public class plsqlParser extends Parser {
 		public Trigger_bodyContext trigger_body() {
 			return getRuleContext(Trigger_bodyContext.class,0);
 		}
+		public TerminalNode SEMICOLON() { return getToken(plsqlParser.SEMICOLON, 0); }
 		public Simple_dml_triggerContext simple_dml_trigger() {
 			return getRuleContext(Simple_dml_triggerContext.class,0);
 		}

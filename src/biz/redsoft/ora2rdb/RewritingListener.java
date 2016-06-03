@@ -334,6 +334,8 @@ public class RewritingListener extends plsqlBaseListener {
 		else if (ctx.REPLACE() != null)
 			rewriter.replace(ctx.REPLACE().getSymbol(), "ALTER");
 		
+		rewriter.insertBefore(ctx.start, "SET TERM ^ ;\n\n");
+		
 		rewriter.replace(ctx.FUNCTION().getSymbol(), "PROCEDURE");
 		
 		rewriter.replace(ctx.RETURN().getSymbol(), "RETURNS (RET_VAL");
@@ -352,6 +354,8 @@ public class RewritingListener extends plsqlBaseListener {
 			rewriter.insertBefore(body_ctx.END().getSymbol(), "\nSUSPEND;\n");
 			commentBlock(body_ctx.BEGIN().getSymbol().getTokenIndex() + 1, body_ctx.END().getSymbol().getTokenIndex() - 1);
 		}
+		
+		rewriter.replace(ctx.SEMICOLON().getSymbol(), "^\n\nSET TERM ; ^");
 	}
 	
 	@Override
@@ -393,6 +397,8 @@ public class RewritingListener extends plsqlBaseListener {
 		else if (ctx.REPLACE() != null)
 			rewriter.replace(ctx.REPLACE().getSymbol(), "ALTER");
 		
+		rewriter.insertBefore(ctx.start, "SET TERM ^ ;\n\n");
+		
 		if (ctx.IS() != null)
 			rewriter.replace(ctx.IS().getSymbol(), "AS");
 		
@@ -406,6 +412,8 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		if (body_ctx != null)
 			commentBlock(body_ctx.BEGIN().getSymbol().getTokenIndex() + 1, body_ctx.END().getSymbol().getTokenIndex() - 1);
+		
+		rewriter.replace(ctx.SEMICOLON().getSymbol(), "^\n\nSET TERM ; ^");
 	}
 	
 	@Override
@@ -421,10 +429,14 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void enterCreate_trigger(Create_triggerContext ctx) {
+		rewriter.insertBefore(ctx.start, "SET TERM ^ ;\n\n");
+		
 		if (ctx.REPLACE() != null)
 			rewriter.replace(ctx.REPLACE().getSymbol(), "ALTER");
 		
 		rewriter.insertBefore(ctx.trigger_body().start, "AS ");
+		
+		rewriter.replace(ctx.SEMICOLON().getSymbol(), "^\n\nSET TERM ; ^");
 	}
 	
 	@Override

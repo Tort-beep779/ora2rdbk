@@ -73,7 +73,7 @@ public class RewritingListener extends plsqlBaseListener {
 				if (ctx.type_spec().datatype().native_datatype_element() != null)
 					if (ctx.type_spec().datatype().native_datatype_element().RAW() != null)
 					{
-						rewriter.replace(ctx.type_spec().start, ctx.type_spec().stop, "SMALLINT [0:10]");
+						rewriter.replace(ctx.type_spec().start, ctx.type_spec().stop, "BLOB");
 						
 						if (ctx.default_value_part() != null)
 							rewriter.delete(ctx.default_value_part().start, ctx.default_value_part().stop);

@@ -131,12 +131,18 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void enterNative_datatype_element(Native_datatype_elementContext ctx) {
-		if (ctx.VARCHAR2() != null)
+		if (ctx.VARCHAR2() != null || ctx.NVARCHAR2() != null)
 			rewriter.replace(ctx.start, "VARCHAR");
 		else if (ctx.CLOB() != null)
 			rewriter.replace(ctx.start, "BLOB SUB_TYPE 1");
 		else if (ctx.NUMBER() != null)
 			rewriter.replace(ctx.start, "NUMERIC");
+		else if (ctx.BINARY_FLOAT() != null)
+			rewriter.replace(ctx.start, "FLOAT");
+		else if (ctx.BINARY_DOUBLE() != null)
+			rewriter.replace(ctx.start, "DOUBLE PRECISION");
+		else if (ctx.NCHAR() != null)
+			rewriter.replace(ctx.start, "CHAR");
 	}
 	
 	@Override

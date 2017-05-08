@@ -1,4 +1,4 @@
-// Generated from plsql.g4 by ANTLR 4.5.2
+// Generated from plsql.g4 by ANTLR 4.7
 package biz.redsoft.ora2rdb;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class plsqlParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.5.2", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -666,7 +666,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( _la <= 0 || (_la==SEMICOLON) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -787,6 +790,7 @@ public class plsqlParser extends Parser {
 			while (_la==ALTER || ((((_la - 86)) & ~0x3f) == 0 && ((1L << (_la - 86)) & ((1L << (CREATE - 86)) | (1L << (DELETE - 86)) | (1L << (DROP - 86)) | (1L << (EXIT - 86)) | (1L << (EXPLAIN - 86)))) != 0) || _la==FUNCTION || _la==INSERT || _la==LOCK || _la==MERGE || ((((_la - 337)) & ~0x3f) == 0 && ((1L << (_la - 337)) & ((1L << (PROCEDURE - 337)) | (1L << (SELECT - 337)) | (1L << (SET - 337)))) != 0) || ((((_la - 456)) & ~0x3f) == 0 && ((1L << (_la - 456)) & ((1L << (UPDATE - 456)) | (1L << (WHENEVER - 456)) | (1L << (WITH - 456)))) != 0) || ((((_la - 543)) & ~0x3f) == 0 && ((1L << (_la - 543)) & ((1L << (LEFT_PAREN - 543)) | (1L << (SOLIDUS - 543)) | (1L << (PROMPT - 543)))) != 0)) {
 				{
 				setState(839);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case ALTER:
 				case CREATE:
@@ -1192,6 +1196,7 @@ public class plsqlParser extends Parser {
 			setState(888);
 			match(RIGHT_PAREN);
 			setState(890);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==COMPRESS || _la==FILESYSTEM_LIKE_LOGGING || _la==INITRANS || ((((_la - 235)) & ~0x3f) == 0 && ((1L << (_la - 235)) & ((1L << (LOGGING - 235)) | (1L << (MAXTRANS - 235)) | (1L << (NOCOMPRESS - 235)) | (1L << (NOLOGGING - 235)))) != 0) || ((((_la - 320)) & ~0x3f) == 0 && ((1L << (_la - 320)) & ((1L << (PCTFREE - 320)) | (1L << (PCTUSED - 320)) | (1L << (SEGMENT - 320)))) != 0) || _la==STORAGE || _la==TABLESPACE) {
 				{
@@ -1258,6 +1263,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(901);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==SEGMENT) {
 				{
@@ -1315,7 +1321,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==DEFERRED || _la==IMMEDIATE) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -1375,6 +1384,7 @@ public class plsqlParser extends Parser {
 			do {
 				{
 				setState(912);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case COMPRESS:
 				case FILESYSTEM_LIKE_LOGGING:
@@ -1488,6 +1498,7 @@ public class plsqlParser extends Parser {
 				case 1:
 					{
 					setState(927);
+					_errHandler.sync(this);
 					switch (_input.LA(1)) {
 					case PCTFREE:
 						{
@@ -1668,6 +1679,7 @@ public class plsqlParser extends Parser {
 			do {
 				{
 				setState(954);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case INITIAL:
 					{
@@ -1701,7 +1713,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==UNLIMITED || _la==UNSIGNED_INTEGER) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					}
@@ -1740,7 +1755,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==DEFAULT || _la==KEEP || _la==RECYCLE) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					}
@@ -1753,7 +1771,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==DEFAULT || _la==KEEP || _la==NONE) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					}
@@ -1819,6 +1840,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(973);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case COMPRESS:
 				enterOuterAlt(_localctx, 1);
@@ -1826,6 +1848,7 @@ public class plsqlParser extends Parser {
 				setState(960);
 				match(COMPRESS);
 				setState(970);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case BASIC:
 					{
@@ -1838,6 +1861,7 @@ public class plsqlParser extends Parser {
 					setState(962);
 					match(FOR);
 					setState(968);
+					_errHandler.sync(this);
 					switch (_input.LA(1)) {
 					case OLTP:
 						{
@@ -1852,10 +1876,14 @@ public class plsqlParser extends Parser {
 						_la = _input.LA(1);
 						if ( !(_la==ARCHIVE || _la==QUERY) ) {
 						_errHandler.recoverInline(this);
-						} else {
+						}
+						else {
+							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+							_errHandler.reportMatch(this);
 							consume();
 						}
 						setState(966);
+						_errHandler.sync(this);
 						_la = _input.LA(1);
 						if (_la==HIGH || _la==LOW) {
 							{
@@ -1863,7 +1891,10 @@ public class plsqlParser extends Parser {
 							_la = _input.LA(1);
 							if ( !(_la==HIGH || _la==LOW) ) {
 							_errHandler.recoverInline(this);
-							} else {
+							}
+							else {
+								if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+								_errHandler.reportMatch(this);
 								consume();
 							}
 							}
@@ -1913,7 +1944,7 @@ public class plsqlParser extends Parser {
 				case SEMICOLON:
 					break;
 				default:
-					throw new NoViableAltException(this);
+					break;
 				}
 				}
 				break;
@@ -1968,7 +1999,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==FILESYSTEM_LIKE_LOGGING || _la==LOGGING || _la==NOLOGGING) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -2063,6 +2097,7 @@ public class plsqlParser extends Parser {
 			do {
 				{
 				setState(995);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case BASICFILE:
 				case SECUREFILE:
@@ -2071,7 +2106,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==BASICFILE || _la==SECUREFILE) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					}
@@ -2150,6 +2188,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(1010);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case CACHE:
 			case CHUNK:
@@ -2169,6 +2208,7 @@ public class plsqlParser extends Parser {
 				do {
 					{
 					setState(1005);
+					_errHandler.sync(this);
 					switch (_input.LA(1)) {
 					case TABLESPACE:
 						{
@@ -2191,6 +2231,7 @@ public class plsqlParser extends Parser {
 						setState(1001);
 						lob_parameters();
 						setState(1003);
+						_errHandler.sync(this);
 						_la = _input.LA(1);
 						if (_la==STORAGE) {
 							{
@@ -2322,6 +2363,7 @@ public class plsqlParser extends Parser {
 				case 1:
 					{
 					setState(1029);
+					_errHandler.sync(this);
 					switch (_input.LA(1)) {
 					case DISABLE:
 					case ENABLE:
@@ -2330,7 +2372,10 @@ public class plsqlParser extends Parser {
 						_la = _input.LA(1);
 						if ( !(_la==DISABLE || _la==ENABLE) ) {
 						_errHandler.recoverInline(this);
-						} else {
+						}
+						else {
+							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+							_errHandler.reportMatch(this);
 							consume();
 						}
 						setState(1013);
@@ -2391,6 +2436,7 @@ public class plsqlParser extends Parser {
 							break;
 						}
 						setState(1027);
+						_errHandler.sync(this);
 						_la = _input.LA(1);
 						if (_la==FILESYSTEM_LIKE_LOGGING || _la==LOGGING || _la==NOLOGGING) {
 							{
@@ -2454,7 +2500,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==DEDUPLICATE || _la==KEEP_DUPLICATES) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -2496,6 +2545,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(1040);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case COMPRESS:
 				enterOuterAlt(_localctx, 1);
@@ -2503,6 +2553,7 @@ public class plsqlParser extends Parser {
 				setState(1035);
 				match(COMPRESS);
 				setState(1037);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==HIGH || _la==LOW || _la==MEDIUM) {
 					{
@@ -2510,7 +2561,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==HIGH || _la==LOW || _la==MEDIUM) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					}
@@ -2715,6 +2769,7 @@ public class plsqlParser extends Parser {
 			setState(1061);
 			match(MODIFY);
 			setState(1074);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case LEFT_PAREN:
 				{
@@ -2818,6 +2873,7 @@ public class plsqlParser extends Parser {
 				break;
 			}
 			setState(1082);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==DEFAULT) {
 				{
@@ -2843,6 +2899,7 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(1091);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LOB) {
 				{
@@ -2901,6 +2958,7 @@ public class plsqlParser extends Parser {
 			setState(1094);
 			column_name();
 			setState(1096);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==NOT) {
 				{
@@ -2918,6 +2976,7 @@ public class plsqlParser extends Parser {
 			setState(1101);
 			match(LEVELS);
 			setState(1103);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==FORCE) {
 				{
@@ -2977,6 +3036,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(1107);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==CONSTRAINT) {
 				{
@@ -2988,11 +3048,13 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(1117);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case NOT:
 			case NULL:
 				{
 				setState(1110);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==NOT) {
 					{
@@ -3094,6 +3156,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(1156);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ADD:
 				enterOuterAlt(_localctx, 1);
@@ -3122,6 +3185,7 @@ public class plsqlParser extends Parser {
 				setState(1127);
 				match(MODIFY);
 				setState(1144);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case CONSTRAINT:
 					{
@@ -3173,6 +3237,7 @@ public class plsqlParser extends Parser {
 				setState(1146);
 				constraint_state();
 				setState(1148);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==CASCADE) {
 					{
@@ -3260,6 +3325,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(1160);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==CONSTRAINT) {
 				{
@@ -3271,6 +3337,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(1206);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case UNIQUE:
 				{
@@ -3378,6 +3445,7 @@ public class plsqlParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			setState(1209);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (((((_la - 111)) & ~0x3f) == 0 && ((1L << (_la - 111)) & ((1L << (DEFERRABLE - 111)) | (1L << (DISABLE - 111)) | (1L << (ENABLE - 111)) | (1L << (EXCEPTIONS - 111)))) != 0) || _la==INITIALY || ((((_la - 284)) & ~0x3f) == 0 && ((1L << (_la - 284)) & ((1L << (NORELY - 284)) | (1L << (NOT - 284)) | (1L << (NOVALIDATE - 284)))) != 0) || _la==RELY || _la==USING || _la==VALIDATE) {
 				{
@@ -3457,6 +3525,7 @@ public class plsqlParser extends Parser {
 			setState(1217);
 			id();
 			setState(1229);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -3486,6 +3555,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(1238);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ON) {
 				{
@@ -3494,6 +3564,7 @@ public class plsqlParser extends Parser {
 				setState(1232);
 				match(DELETE);
 				setState(1236);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case CASCADE:
 					{
@@ -3615,11 +3686,13 @@ public class plsqlParser extends Parser {
 				case 1:
 					{
 					setState(1254);
+					_errHandler.sync(this);
 					switch (_input.LA(1)) {
 					case DEFERRABLE:
 					case NOT:
 						{
 						setState(1241);
+						_errHandler.sync(this);
 						_la = _input.LA(1);
 						if (_la==NOT) {
 							{
@@ -3640,7 +3713,10 @@ public class plsqlParser extends Parser {
 						_la = _input.LA(1);
 						if ( !(_la==DEFERRED || _la==IMMEDIATE) ) {
 						_errHandler.recoverInline(this);
-						} else {
+						}
+						else {
+							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+							_errHandler.reportMatch(this);
 							consume();
 						}
 						}
@@ -3899,6 +3975,7 @@ public class plsqlParser extends Parser {
 						setState(1270);
 						match(TABLESPACE);
 						setState(1273);
+						_errHandler.sync(this);
 						switch (_input.LA(1)) {
 						case A_LETTER:
 						case ADD:
@@ -4367,6 +4444,7 @@ public class plsqlParser extends Parser {
 			setState(1280);
 			match(COMPUTE);
 			setState(1282);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==SYSTEM) {
 				{
@@ -4378,6 +4456,7 @@ public class plsqlParser extends Parser {
 			setState(1284);
 			match(STATISTICS);
 			setState(1286);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==FOR) {
 				{
@@ -4492,6 +4571,7 @@ public class plsqlParser extends Parser {
 					setState(1290);
 					match(ALL);
 					setState(1292);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==INDEXED) {
 						{
@@ -4503,6 +4583,7 @@ public class plsqlParser extends Parser {
 					setState(1294);
 					match(COLUMNS);
 					setState(1297);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==SIZE) {
 						{
@@ -4520,6 +4601,7 @@ public class plsqlParser extends Parser {
 					setState(1299);
 					match(COLUMNS);
 					setState(1302);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==SIZE) {
 						{
@@ -4555,6 +4637,7 @@ public class plsqlParser extends Parser {
 								break;
 							}
 							setState(1310);
+							_errHandler.sync(this);
 							_la = _input.LA(1);
 							if (_la==SIZE) {
 								{
@@ -4582,6 +4665,7 @@ public class plsqlParser extends Parser {
 					setState(1316);
 					match(ALL);
 					setState(1318);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==LOCAL) {
 						{
@@ -4723,6 +4807,7 @@ public class plsqlParser extends Parser {
 			setState(1336);
 			match(CREATE);
 			setState(1339);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==OR) {
 				{
@@ -4734,10 +4819,12 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(1345);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==FORCE || _la==NO) {
 				{
 				setState(1342);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==NO) {
 					{
@@ -4847,6 +4934,7 @@ public class plsqlParser extends Parser {
 			setState(1368);
 			match(CREATE);
 			setState(1370);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==UNIQUE) {
 				{
@@ -5154,6 +5242,7 @@ public class plsqlParser extends Parser {
 				_alt = getInterpreter().adaptivePredict(_input,93,_ctx);
 			}
 			setState(1425);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==REUSE) {
 				{
@@ -5263,12 +5352,14 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(1434);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==CREATE) {
 				{
 				setState(1429);
 				match(CREATE);
 				setState(1432);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==OR) {
 					{
@@ -5287,6 +5378,7 @@ public class plsqlParser extends Parser {
 			setState(1437);
 			function_name();
 			setState(1449);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -5325,6 +5417,7 @@ public class plsqlParser extends Parser {
 			while (_la==AUTHID || _la==DETERMINISTIC || _la==PARALLEL_ENABLE || _la==RESULT_CACHE) {
 				{
 				setState(1457);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case AUTHID:
 					{
@@ -5365,6 +5458,7 @@ public class plsqlParser extends Parser {
 				{
 				{
 				setState(1463);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PIPELINED) {
 					{
@@ -5377,7 +5471,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==AS || _la==IS) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(1477);
@@ -5386,6 +5483,7 @@ public class plsqlParser extends Parser {
 				case 1:
 					{
 					setState(1467);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==DECLARE) {
 						{
@@ -5428,7 +5526,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==AGGREGATE || _la==PIPELINED) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(1480);
@@ -5482,6 +5583,7 @@ public class plsqlParser extends Parser {
 			setState(1486);
 			match(PARALLEL_ENABLE);
 			setState(1488);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -5551,6 +5653,7 @@ public class plsqlParser extends Parser {
 			setState(1493);
 			match(BY);
 			setState(1507);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ANY:
 				{
@@ -5565,7 +5668,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==HASH || _la==RANGE) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(1496);
@@ -5596,6 +5702,7 @@ public class plsqlParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			setState(1510);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==CLUSTER || _la==ORDER) {
 				{
@@ -5648,6 +5755,7 @@ public class plsqlParser extends Parser {
 			setState(1514);
 			match(RESULT_CACHE);
 			setState(1516);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==RELIES_ON) {
 				{
@@ -5773,7 +5881,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==CLUSTER || _la==ORDER) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(1531);
@@ -5943,7 +6054,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==BODY || _la==PACKAGE || _la==SPECIFICATION) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -5966,6 +6080,7 @@ public class plsqlParser extends Parser {
 				_alt = getInterpreter().adaptivePredict(_input,116,_ctx);
 			}
 			setState(1570);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==REUSE) {
 				{
@@ -6026,6 +6141,7 @@ public class plsqlParser extends Parser {
 			setState(1574);
 			match(CREATE);
 			setState(1577);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==OR) {
 				{
@@ -6119,7 +6235,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==AS || _la==IS) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(1592);
@@ -6137,6 +6256,7 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(1601);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case BEGIN:
 				{
@@ -6151,6 +6271,7 @@ public class plsqlParser extends Parser {
 				setState(1597);
 				match(END);
 				setState(1599);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 					{
@@ -6220,6 +6341,7 @@ public class plsqlParser extends Parser {
 			setState(1603);
 			package_name();
 			setState(1605);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==AUTHID) {
 				{
@@ -6232,7 +6354,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==AS || _la==IS) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(1611);
@@ -6252,6 +6377,7 @@ public class plsqlParser extends Parser {
 			setState(1614);
 			match(END);
 			setState(1616);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -6425,6 +6551,7 @@ public class plsqlParser extends Parser {
 			setState(1629);
 			procedure_name();
 			setState(1641);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -6509,6 +6636,7 @@ public class plsqlParser extends Parser {
 			setState(1646);
 			function_name();
 			setState(1658);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -6811,6 +6939,7 @@ public class plsqlParser extends Parser {
 				_alt = getInterpreter().adaptivePredict(_input,133,_ctx);
 			}
 			setState(1696);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==REUSE) {
 				{
@@ -6892,12 +7021,14 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(1705);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==CREATE) {
 				{
 				setState(1700);
 				match(CREATE);
 				setState(1703);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==OR) {
 					{
@@ -6916,6 +7047,7 @@ public class plsqlParser extends Parser {
 			setState(1708);
 			procedure_name();
 			setState(1720);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -6945,6 +7077,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(1723);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==AUTHID) {
 				{
@@ -6957,7 +7090,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==AS || _la==IS) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(1738);
@@ -6966,6 +7102,7 @@ public class plsqlParser extends Parser {
 			case 1:
 				{
 				setState(1727);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==DECLARE) {
 					{
@@ -7121,6 +7258,7 @@ public class plsqlParser extends Parser {
 			setState(1749);
 			((Alter_triggerContext)_localctx).tn1 = trigger_name();
 			setState(1768);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case DISABLE:
 			case ENABLE:
@@ -7129,7 +7267,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==DISABLE || _la==ENABLE) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -7175,6 +7316,7 @@ public class plsqlParser extends Parser {
 					_alt = getInterpreter().adaptivePredict(_input,144,_ctx);
 				}
 				setState(1766);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==REUSE) {
 					{
@@ -7258,6 +7400,7 @@ public class plsqlParser extends Parser {
 			setState(1772);
 			match(CREATE);
 			setState(1775);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==OR) {
 				{
@@ -7313,13 +7456,17 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==DISABLE || _la==ENABLE) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
 				break;
 			}
 			setState(1791);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==WHEN) {
 				{
@@ -7489,6 +7636,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(1814);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case BEFORE:
 				{
@@ -7526,6 +7674,7 @@ public class plsqlParser extends Parser {
 				break;
 			}
 			setState(1821);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==FOR) {
 				{
@@ -7689,7 +7838,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==AFTER || _la==BEFORE) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(1833);
@@ -7853,6 +8005,7 @@ public class plsqlParser extends Parser {
 			setState(1858);
 			routine_name();
 			setState(1860);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -8156,6 +8309,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 140, RULE_non_dml_event);
 		try {
 			setState(1942);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ALTER:
 				enterOuterAlt(_localctx, 1);
@@ -8464,10 +8618,14 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==DELETE || _la==INSERT || _la==UPDATE) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(1968);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==OF) {
 				{
@@ -8651,7 +8809,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(((((_la - 270)) & ~0x3f) == 0 && ((1L << (_la - 270)) & ((1L << (NEW - 270)) | (1L << (OLD - 270)) | (1L << (PARENT - 270)))) != 0)) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(1982);
@@ -8716,6 +8877,7 @@ public class plsqlParser extends Parser {
 			setState(1989);
 			type_name();
 			setState(1991);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==FORCE || _la==VALIDATE) {
 				{
@@ -8723,7 +8885,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==FORCE || _la==VALIDATE) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -8796,6 +8961,7 @@ public class plsqlParser extends Parser {
 			setState(1997);
 			type_name();
 			setState(2003);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case COMPILE:
 				{
@@ -8835,6 +9001,7 @@ public class plsqlParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			setState(2006);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==CASCADE || _la==INVALIDATE) {
 				{
@@ -8914,7 +9081,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==BODY || _la==SPECIFICATION) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -8937,6 +9107,7 @@ public class plsqlParser extends Parser {
 				_alt = getInterpreter().adaptivePredict(_input,177,_ctx);
 			}
 			setState(2025);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==REUSE) {
 				{
@@ -8997,6 +9168,7 @@ public class plsqlParser extends Parser {
 			setState(2027);
 			match(REPLACE);
 			setState(2029);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==AUTHID) {
 				{
@@ -9137,10 +9309,14 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==ADD || _la==DROP) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(2055);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case MAP:
 			case ORDER:
@@ -9208,12 +9384,16 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==ADD || _la==DROP || _la==MODIFY) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(2058);
 			match(ATTRIBUTE);
 			setState(2071);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -9684,6 +9864,7 @@ public class plsqlParser extends Parser {
 			setState(2073);
 			attribute_name();
 			setState(2075);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (DELIMITED_ID - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -9739,6 +9920,7 @@ public class plsqlParser extends Parser {
 			setState(2077);
 			match(MODIFY);
 			setState(2083);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case LIMIT:
 				{
@@ -9807,6 +9989,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(2101);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case INVALIDATE:
 				enterOuterAlt(_localctx, 1);
@@ -9821,6 +10004,7 @@ public class plsqlParser extends Parser {
 				setState(2086);
 				match(CASCADE);
 				setState(2096);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case CONVERT:
 					{
@@ -9836,6 +10020,7 @@ public class plsqlParser extends Parser {
 				case NOT:
 					{
 					setState(2091);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==NOT) {
 						{
@@ -9857,9 +10042,10 @@ public class plsqlParser extends Parser {
 				case SEMICOLON:
 					break;
 				default:
-					throw new NoViableAltException(this);
+					break;
 				}
 				setState(2099);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==EXCEPTIONS || _la==FORCE) {
 					{
@@ -9914,6 +10100,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(2104);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==FORCE) {
 				{
@@ -9976,6 +10163,7 @@ public class plsqlParser extends Parser {
 			setState(2110);
 			match(CREATE);
 			setState(2113);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==OR) {
 				{
@@ -10052,6 +10240,7 @@ public class plsqlParser extends Parser {
 			setState(2122);
 			type_name();
 			setState(2125);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==OID) {
 				{
@@ -10063,6 +10252,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2128);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==AS || _la==AUTHID || _la==IS || _la==UNDER) {
 				{
@@ -10131,6 +10321,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(2131);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==AUTHID) {
 				{
@@ -10140,6 +10331,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2135);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case AS:
 			case IS:
@@ -10158,6 +10350,7 @@ public class plsqlParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			setState(2138);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==EXTERNAL) {
 				{
@@ -10167,6 +10360,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2151);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -10257,10 +10451,14 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==AS || _la==IS) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(2163);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case OBJECT:
 				{
@@ -10447,7 +10645,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==CUSTOMDATUM || _la==ORADATA || _la==SQLDATA) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -10506,7 +10707,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==AS || _la==IS) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(2186);
@@ -10568,6 +10772,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 190, RULE_type_body_elements);
 		try {
 			setState(2198);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case MAP:
 			case ORDER:
@@ -10632,7 +10837,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==MAP || _la==ORDER) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(2201);
@@ -10689,10 +10897,14 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==MEMBER || _la==STATIC) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(2208);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case PROCEDURE:
 				{
@@ -10807,7 +11019,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==AS || _la==IS) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(2236);
@@ -10822,6 +11037,7 @@ public class plsqlParser extends Parser {
 			case 2:
 				{
 				setState(2225);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==DECLARE) {
 					{
@@ -10920,6 +11136,7 @@ public class plsqlParser extends Parser {
 			setState(2239);
 			function_name();
 			setState(2251);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -10956,7 +11173,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==AS || _la==IS) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(2269);
@@ -10971,6 +11191,7 @@ public class plsqlParser extends Parser {
 			case 2:
 				{
 				setState(2258);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==DECLARE) {
 					{
@@ -11078,6 +11299,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(2272);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==FINAL) {
 				{
@@ -11087,6 +11309,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2275);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==INSTANTIABLE) {
 				{
@@ -11102,6 +11325,7 @@ public class plsqlParser extends Parser {
 			setState(2279);
 			type_spec();
 			setState(2297);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -11154,7 +11378,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==AS || _la==IS) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(2317);
@@ -11169,6 +11396,7 @@ public class plsqlParser extends Parser {
 			case 2:
 				{
 				setState(2306);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==DECLARE) {
 					{
@@ -11238,6 +11466,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(2320);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==NOT) {
 				{
@@ -11250,7 +11479,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==FINAL || _la==INSTANTIABLE || _la==OVERRIDING) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -11309,6 +11541,7 @@ public class plsqlParser extends Parser {
 				setState(2325);
 				type_spec();
 				setState(2327);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==EXTERNAL) {
 					{
@@ -11496,6 +11729,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 210, RULE_element_spec_options);
 		try {
 			setState(2351);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case MEMBER:
 			case STATIC:
@@ -11571,10 +11805,14 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==MEMBER || _la==STATIC) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(2356);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case PROCEDURE:
 				{
@@ -11668,6 +11906,7 @@ public class plsqlParser extends Parser {
 			setState(2369);
 			match(RIGHT_PAREN);
 			setState(2372);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==AS || _la==IS) {
 				{
@@ -11675,7 +11914,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==AS || _la==IS) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(2371);
@@ -11753,6 +11995,7 @@ public class plsqlParser extends Parser {
 			setState(2375);
 			function_name();
 			setState(2387);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -11804,6 +12047,7 @@ public class plsqlParser extends Parser {
 				break;
 			}
 			setState(2404);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case AS:
 			case IS:
@@ -11812,7 +12056,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==AS || _la==IS) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(2397);
@@ -11824,6 +12071,7 @@ public class plsqlParser extends Parser {
 				setState(2398);
 				match(EXTERNAL);
 				setState(2400);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==VARIABLE) {
 					{
@@ -11852,7 +12100,7 @@ public class plsqlParser extends Parser {
 			case SEMICOLON:
 				break;
 			default:
-				throw new NoViableAltException(this);
+				break;
 			}
 			}
 		}
@@ -11922,6 +12170,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(2407);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==FINAL) {
 				{
@@ -11931,6 +12180,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2410);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==INSTANTIABLE) {
 				{
@@ -11946,6 +12196,7 @@ public class plsqlParser extends Parser {
 			setState(2414);
 			type_spec();
 			setState(2432);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -11995,6 +12246,7 @@ public class plsqlParser extends Parser {
 			setState(2437);
 			match(RESULT);
 			setState(2440);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==AS || _la==IS) {
 				{
@@ -12002,7 +12254,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==AS || _la==IS) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(2439);
@@ -12055,7 +12310,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==MAP || _la==ORDER) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(2443);
@@ -12168,6 +12426,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 224, RULE_pragma_elements);
 		try {
 			setState(2461);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -12798,6 +13057,7 @@ public class plsqlParser extends Parser {
 			while (_la==CACHE || _la==CYCLE || _la==INCREMENT || _la==MAXVALUE || ((((_la - 254)) & ~0x3f) == 0 && ((1L << (_la - 254)) & ((1L << (MINVALUE - 254)) | (1L << (NOCACHE - 254)) | (1L << (NOCYCLE - 254)) | (1L << (NOMAXVALUE - 254)) | (1L << (NOMINVALUE - 254)) | (1L << (NOORDER - 254)) | (1L << (ORDER - 254)))) != 0) || _la==START) {
 				{
 				setState(2486);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case START:
 					{
@@ -12877,6 +13137,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 234, RULE_sequence_spec);
 		try {
 			setState(2509);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case INCREMENT:
 				enterOuterAlt(_localctx, 1);
@@ -13054,7 +13315,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==CURRENT_USER || _la==DEFINER) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -13147,6 +13411,7 @@ public class plsqlParser extends Parser {
 			setState(2522);
 			match(LANGUAGE);
 			setState(2525);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case JAVA:
 				{
@@ -13259,6 +13524,7 @@ public class plsqlParser extends Parser {
 			setState(2531);
 			match(C_LETTER);
 			setState(2534);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==NAME) {
 				{
@@ -13274,6 +13540,7 @@ public class plsqlParser extends Parser {
 			setState(2537);
 			id();
 			setState(2539);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==AGENT) {
 				{
@@ -13283,6 +13550,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2543);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==WITH) {
 				{
@@ -13294,6 +13562,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2546);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==PARAMETERS) {
 				{
@@ -13418,6 +13687,7 @@ public class plsqlParser extends Parser {
 			setState(2562);
 			match(LEFT_PAREN);
 			setState(2574);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -13942,7 +14212,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==IN || _la==INOUT || _la==NOCOPY || _la==OUT) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					}
@@ -13953,6 +14226,7 @@ public class plsqlParser extends Parser {
 				_alt = getInterpreter().adaptivePredict(_input,257,_ctx);
 			}
 			setState(2586);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (DELIMITED_ID - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -13962,6 +14236,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2589);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==DEFAULT || _la==ASSIGN_OP) {
 				{
@@ -14014,7 +14289,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==DEFAULT || _la==ASSIGN_OP) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(2592);
@@ -14206,6 +14484,7 @@ public class plsqlParser extends Parser {
 			setState(2609);
 			type_spec();
 			setState(2612);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==NOT) {
 				{
@@ -14217,6 +14496,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2615);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==DEFAULT || _la==ASSIGN_OP) {
 				{
@@ -14288,6 +14568,7 @@ public class plsqlParser extends Parser {
 			setState(2622);
 			type_spec();
 			setState(2628);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==RANGE) {
 				{
@@ -14303,6 +14584,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2632);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==NOT) {
 				{
@@ -14373,6 +14655,7 @@ public class plsqlParser extends Parser {
 			setState(2637);
 			cursor_name();
 			setState(2649);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -14402,6 +14685,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2653);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==RETURN) {
 				{
@@ -14413,6 +14697,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2657);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==IS) {
 				{
@@ -14473,10 +14758,12 @@ public class plsqlParser extends Parser {
 			setState(2661);
 			parameter_name();
 			setState(2666);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (IN - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (DELIMITED_ID - 517)))) != 0) || _la==REGULAR_ID) {
 				{
 				setState(2663);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==IN) {
 					{
@@ -14491,6 +14778,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2669);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==DEFAULT || _la==ASSIGN_OP) {
 				{
@@ -14604,6 +14892,7 @@ public class plsqlParser extends Parser {
 			setState(2675);
 			match(PRAGMA);
 			setState(2706);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case SERIALLY_REUSABLE:
 				{
@@ -14656,6 +14945,7 @@ public class plsqlParser extends Parser {
 				setState(2693);
 				match(LEFT_PAREN);
 				setState(2696);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case A_LETTER:
 				case ADD:
@@ -15202,6 +15492,7 @@ public class plsqlParser extends Parser {
 			setState(2716);
 			match(IS);
 			setState(2735);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case RECORD:
 				{
@@ -15238,6 +15529,7 @@ public class plsqlParser extends Parser {
 				setState(2730);
 				match(CURSOR);
 				setState(2733);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==RETURN) {
 					{
@@ -15304,6 +15596,7 @@ public class plsqlParser extends Parser {
 			setState(2739);
 			column_name();
 			setState(2741);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (DELIMITED_ID - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -15313,6 +15606,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2745);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==NOT) {
 				{
@@ -15324,6 +15618,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2748);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==DEFAULT || _la==ASSIGN_OP) {
 				{
@@ -15383,7 +15678,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==PERCENT_ROWTYPE || _la==PERCENT_TYPE) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(2753);
@@ -15506,6 +15804,7 @@ public class plsqlParser extends Parser {
 			setState(2763);
 			match(IS);
 			setState(2775);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case TABLE:
 				{
@@ -15516,6 +15815,7 @@ public class plsqlParser extends Parser {
 				setState(2766);
 				type_spec();
 				setState(2768);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==INDEX || _la==INDEXED) {
 					{
@@ -15525,6 +15825,7 @@ public class plsqlParser extends Parser {
 				}
 
 				setState(2772);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==NOT) {
 					{
@@ -15590,6 +15891,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(2779);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case INDEXED:
 				{
@@ -15657,6 +15959,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(2787);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case VARRAY:
 				{
@@ -15798,6 +16101,7 @@ public class plsqlParser extends Parser {
 			do {
 				{
 				setState(2805);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case A_LETTER:
 				case ADD:
@@ -16218,7 +16522,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==EOF || _la==SEMICOLON) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					}
@@ -16558,6 +16865,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(2842);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -17015,6 +17323,7 @@ public class plsqlParser extends Parser {
 			setState(2847);
 			match(CONTINUE);
 			setState(2849);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (DELIMITED_ID - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -17024,6 +17333,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2853);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==WHEN) {
 				{
@@ -17080,6 +17390,7 @@ public class plsqlParser extends Parser {
 			setState(2855);
 			match(EXIT);
 			setState(2857);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (DELIMITED_ID - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -17089,6 +17400,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(2861);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==WHEN) {
 				{
@@ -17220,6 +17532,7 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(2877);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ELSE) {
 				{
@@ -17392,6 +17705,7 @@ public class plsqlParser extends Parser {
 				break;
 			}
 			setState(2897);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case WHILE:
 				{
@@ -17412,7 +17726,7 @@ public class plsqlParser extends Parser {
 			case LOOP:
 				break;
 			default:
-				throw new NoViableAltException(this);
+				break;
 			}
 			setState(2899);
 			match(LOOP);
@@ -17423,6 +17737,7 @@ public class plsqlParser extends Parser {
 			setState(2902);
 			match(LOOP);
 			setState(2904);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (DELIMITED_ID - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -17523,6 +17838,7 @@ public class plsqlParser extends Parser {
 				setState(2916);
 				match(IN);
 				setState(2925);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case A_LETTER:
 				case ADD:
@@ -17921,6 +18237,7 @@ public class plsqlParser extends Parser {
 					setState(2917);
 					cursor_name();
 					setState(2919);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==LEFT_PAREN) {
 						{
@@ -18005,6 +18322,7 @@ public class plsqlParser extends Parser {
 			setState(2933);
 			sql_statement();
 			setState(2936);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==SAVE) {
 				{
@@ -18090,6 +18408,7 @@ public class plsqlParser extends Parser {
 				setState(2944);
 				collection_name();
 				setState(2946);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==BETWEEN) {
 					{
@@ -18318,6 +18637,7 @@ public class plsqlParser extends Parser {
 			setState(2964);
 			match(RAISE);
 			setState(2966);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -18369,6 +18689,7 @@ public class plsqlParser extends Parser {
 			setState(2968);
 			match(RETURN);
 			setState(2970);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ALL) | (1L << ANALYZE) | (1L << ANY) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CASE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONNECT_BY_ROOT - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DISTINCT - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXISTS - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FALSE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NOT - 260)) | (1L << (NULL - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (PRIOR - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUE - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (NATIONAL_CHAR_STRING_LIT - 517)) | (1L << (UNSIGNED_INTEGER - 517)) | (1L << (APPROXIMATE_NUM_LIT - 517)) | (1L << (CHAR_STRING - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (LEFT_PAREN - 517)) | (1L << (PLUS_SIGN - 517)) | (1L << (MINUS_SIGN - 517)) | (1L << (BINDVAR - 517)) | (1L << (COLON - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -18432,6 +18753,7 @@ public class plsqlParser extends Parser {
 			setState(2975);
 			routine_name();
 			setState(2977);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -18491,6 +18813,7 @@ public class plsqlParser extends Parser {
 			setState(2980);
 			seq_of_statements();
 			setState(2982);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==EXCEPTION) {
 				{
@@ -18689,10 +19012,12 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(3014);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CREATE - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECLARE - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (PROCEDURE - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (BINDVAR - 517)) | (1L << (COLON - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 				{
 				setState(3007);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==DECLARE) {
 					{
@@ -18766,6 +19091,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(3019);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==DECLARE) {
 				{
@@ -18835,6 +19161,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 340, RULE_sql_statement);
 		try {
 			setState(3032);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case EXECUTE:
 				enterOuterAlt(_localctx, 1);
@@ -18935,6 +19262,7 @@ public class plsqlParser extends Parser {
 			setState(3036);
 			expression();
 			setState(3046);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case BULK:
 			case INTO:
@@ -18942,6 +19270,7 @@ public class plsqlParser extends Parser {
 				setState(3037);
 				into_clause();
 				setState(3039);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==USING) {
 					{
@@ -18957,6 +19286,7 @@ public class plsqlParser extends Parser {
 				setState(3041);
 				using_clause();
 				setState(3043);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==RETURN || _la==RETURNING) {
 					{
@@ -18979,7 +19309,7 @@ public class plsqlParser extends Parser {
 			case SEMICOLON:
 				break;
 			default:
-				throw new NoViableAltException(this);
+				break;
 			}
 			}
 		}
@@ -19025,7 +19355,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==RETURN || _la==RETURNING) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(3049);
@@ -19084,6 +19417,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 346, RULE_data_manipulation_language_statements);
 		try {
 			setState(3058);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case MERGE:
 				enterOuterAlt(_localctx, 1);
@@ -19302,6 +19636,7 @@ public class plsqlParser extends Parser {
 			setState(3070);
 			cursor_name();
 			setState(3072);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -19364,6 +19699,7 @@ public class plsqlParser extends Parser {
 			setState(3075);
 			cursor_name();
 			setState(3096);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case INTO:
 				{
@@ -19492,6 +19828,7 @@ public class plsqlParser extends Parser {
 				break;
 			}
 			setState(3106);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==USING) {
 				{
@@ -19644,6 +19981,7 @@ public class plsqlParser extends Parser {
 			setState(3116);
 			match(TRANSACTION);
 			setState(3130);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case READ:
 				{
@@ -19653,7 +19991,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==ONLY || _la==WRITE) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -19665,6 +20006,7 @@ public class plsqlParser extends Parser {
 				setState(3120);
 				match(LEVEL);
 				setState(3124);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case SERIALIZABLE:
 					{
@@ -19703,9 +20045,10 @@ public class plsqlParser extends Parser {
 			case SEMICOLON:
 				break;
 			default:
-				throw new NoViableAltException(this);
+				break;
 			}
 			setState(3134);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==NAME) {
 				{
@@ -19769,10 +20112,14 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==CONSTRAINT || _la==CONSTRAINTS) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(3147);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ALL:
 				{
@@ -20199,7 +20546,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==DEFERRED || _la==IMMEDIATE) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -20255,6 +20605,7 @@ public class plsqlParser extends Parser {
 			setState(3151);
 			match(COMMIT);
 			setState(3153);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==WORK) {
 				{
@@ -20264,6 +20615,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(3168);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case COMMENT:
 				{
@@ -20299,6 +20651,7 @@ public class plsqlParser extends Parser {
 					setState(3161);
 					expression();
 					setState(3164);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==COMMA) {
 						{
@@ -20320,9 +20673,10 @@ public class plsqlParser extends Parser {
 			case SEMICOLON:
 				break;
 			default:
-				throw new NoViableAltException(this);
+				break;
 			}
 			setState(3171);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==WRITE) {
 				{
@@ -20374,6 +20728,7 @@ public class plsqlParser extends Parser {
 			setState(3173);
 			match(WRITE);
 			setState(3175);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==NOWAIT || _la==WAIT) {
 				{
@@ -20381,13 +20736,17 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==NOWAIT || _la==WAIT) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
 			}
 
 			setState(3178);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==BATCH || _la==IMMEDIATE) {
 				{
@@ -20395,7 +20754,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==BATCH || _la==IMMEDIATE) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -20450,6 +20812,7 @@ public class plsqlParser extends Parser {
 			setState(3180);
 			match(ROLLBACK);
 			setState(3182);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==WORK) {
 				{
@@ -20459,6 +20822,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(3191);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case TO:
 				{
@@ -20491,7 +20855,7 @@ public class plsqlParser extends Parser {
 			case SEMICOLON:
 				break;
 			default:
-				throw new NoViableAltException(this);
+				break;
 			}
 			}
 		}
@@ -20602,6 +20966,7 @@ public class plsqlParser extends Parser {
 			setState(3197);
 			match(PLAN);
 			setState(3202);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==SET) {
 				{
@@ -20617,6 +20982,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(3206);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==INTO) {
 				{
@@ -20630,6 +20996,7 @@ public class plsqlParser extends Parser {
 			setState(3208);
 			match(FOR);
 			setState(3214);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case SELECT:
 			case WITH:
@@ -20720,6 +21087,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(3217);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==WITH) {
 				{
@@ -20736,6 +21104,7 @@ public class plsqlParser extends Parser {
 			while (_la==FOR || _la==ORDER) {
 				{
 				setState(3222);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case FOR:
 					{
@@ -20879,6 +21248,7 @@ public class plsqlParser extends Parser {
 			setState(3236);
 			query_name();
 			setState(3248);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -20914,6 +21284,7 @@ public class plsqlParser extends Parser {
 			setState(3252);
 			subquery();
 			setState(3254);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ORDER) {
 				{
@@ -20925,6 +21296,7 @@ public class plsqlParser extends Parser {
 			setState(3256);
 			match(RIGHT_PAREN);
 			setState(3258);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==SEARCH) {
 				{
@@ -20934,6 +21306,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(3261);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==CYCLE) {
 				{
@@ -21014,7 +21387,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==BREADTH || _la==DEPTH) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(3265);
@@ -21024,6 +21400,7 @@ public class plsqlParser extends Parser {
 			setState(3267);
 			column_name();
 			setState(3269);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ASC) {
 				{
@@ -21033,6 +21410,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(3272);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==DESC) {
 				{
@@ -21054,6 +21432,7 @@ public class plsqlParser extends Parser {
 				break;
 			}
 			setState(3280);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==NULLS) {
 				{
@@ -21075,6 +21454,7 @@ public class plsqlParser extends Parser {
 				setState(3283);
 				column_name();
 				setState(3285);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==ASC) {
 					{
@@ -21084,6 +21464,7 @@ public class plsqlParser extends Parser {
 				}
 
 				setState(3288);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==DESC) {
 					{
@@ -21105,6 +21486,7 @@ public class plsqlParser extends Parser {
 					break;
 				}
 				setState(3296);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==NULLS) {
 					{
@@ -21311,12 +21693,14 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(3335);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case UNION:
 				{
 				setState(3329);
 				match(UNION);
 				setState(3331);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==ALL) {
 					{
@@ -21383,6 +21767,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 388, RULE_subquery_basic_elements);
 		try {
 			setState(3344);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case SELECT:
 				enterOuterAlt(_localctx, 1);
@@ -21478,13 +21863,17 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==ALL || _la==DISTINCT || _la==UNIQUE) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
 				break;
 			}
 			setState(3359);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ASTERISK:
 				{
@@ -21930,6 +22319,7 @@ public class plsqlParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			setState(3362);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==BULK || _la==INTO) {
 				{
@@ -22533,6 +22923,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(3450);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==PARTITION) {
 				{
@@ -22542,6 +22933,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(3453);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==CROSS || _la==NATURAL) {
 				{
@@ -22549,13 +22941,17 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==CROSS || _la==NATURAL) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
 			}
 
 			setState(3457);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case INNER:
 				{
@@ -22574,7 +22970,7 @@ public class plsqlParser extends Parser {
 			case JOIN:
 				break;
 			default:
-				throw new NoViableAltException(this);
+				break;
 			}
 			setState(3459);
 			match(JOIN);
@@ -22597,6 +22993,7 @@ public class plsqlParser extends Parser {
 				if ( _alt==1 ) {
 					{
 					setState(3466);
+					_errHandler.sync(this);
 					switch (_input.LA(1)) {
 					case ON:
 						{
@@ -22770,10 +23167,14 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==FULL || _la==LEFT || _la==RIGHT) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(3488);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==OUTER) {
 				{
@@ -22923,6 +23324,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(3515);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case VERSIONS:
 				enterOuterAlt(_localctx, 1);
@@ -22935,7 +23337,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==SCN || _la==TIMESTAMP) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(3510);
@@ -22953,7 +23358,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(((((_la - 377)) & ~0x3f) == 0 && ((1L << (_la - 377)) & ((1L << (SCN - 377)) | (1L << (SNAPSHOT - 377)) | (1L << (TIMESTAMP - 377)))) != 0)) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(3514);
@@ -23014,6 +23422,7 @@ public class plsqlParser extends Parser {
 			setState(3517);
 			match(PIVOT);
 			setState(3519);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==XML) {
 				{
@@ -23101,6 +23510,7 @@ public class plsqlParser extends Parser {
 			setState(3537);
 			match(RIGHT_PAREN);
 			setState(3539);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << AS) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (NATIONAL_CHAR_STRING_LIT - 517)) | (1L << (CHAR_STRING - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -23154,6 +23564,7 @@ public class plsqlParser extends Parser {
 			setState(3541);
 			match(FOR);
 			setState(3554);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -23733,6 +24144,7 @@ public class plsqlParser extends Parser {
 			setState(3579);
 			pivot_in_clause_elements();
 			setState(3581);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << AS) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (NATIONAL_CHAR_STRING_LIT - 517)) | (1L << (CHAR_STRING - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -23850,6 +24262,7 @@ public class plsqlParser extends Parser {
 			setState(3587);
 			match(UNPIVOT);
 			setState(3590);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==EXCLUDE || _la==INCLUDE) {
 				{
@@ -23857,7 +24270,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==EXCLUDE || _la==INCLUDE) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(3589);
@@ -23868,6 +24284,7 @@ public class plsqlParser extends Parser {
 			setState(3592);
 			match(LEFT_PAREN);
 			setState(3605);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -24415,6 +24832,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(3635);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -24842,12 +25260,14 @@ public class plsqlParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			setState(3652);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==AS) {
 				{
 				setState(3637);
 				match(AS);
 				setState(3650);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case DATE:
 				case DBTIMEZONE:
@@ -24943,6 +25363,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 434, RULE_hierarchical_query_clause);
 		try {
 			setState(3671);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case CONNECT:
 				enterOuterAlt(_localctx, 1);
@@ -25090,6 +25511,7 @@ public class plsqlParser extends Parser {
 		try {
 			int _alt;
 			setState(3703);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case GROUP:
 				enterOuterAlt(_localctx, 1);
@@ -25283,7 +25705,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==CUBE || _la==ROLLUP) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(3711);
@@ -25555,6 +25980,7 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(3751);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==RETURN) {
 				{
@@ -25620,6 +26046,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(3769);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case IGNORE:
 			case KEEP:
@@ -25629,7 +26056,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==IGNORE || _la==KEEP) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(3762);
@@ -25642,6 +26072,7 @@ public class plsqlParser extends Parser {
 				setState(3763);
 				match(UNIQUE);
 				setState(3767);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case DIMENSION:
 					{
@@ -25709,7 +26140,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==ALL || _la==UPDATED) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(3773);
@@ -25846,6 +26280,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(3790);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==MAIN) {
 				{
@@ -25922,6 +26357,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(3802);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==PARTITION) {
 				{
@@ -26092,6 +26528,7 @@ public class plsqlParser extends Parser {
 			setState(3825);
 			expression();
 			setState(3827);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (NATIONAL_CHAR_STRING_LIT - 517)) | (1L << (CHAR_STRING - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -26145,6 +26582,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(3830);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==RULES) {
 				{
@@ -26223,6 +26661,7 @@ public class plsqlParser extends Parser {
 			setState(3843);
 			match(RULES);
 			setState(3849);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case UPDATE:
 				{
@@ -26235,6 +26674,7 @@ public class plsqlParser extends Parser {
 				setState(3845);
 				match(UPSERT);
 				setState(3847);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==ALL) {
 					{
@@ -26251,9 +26691,10 @@ public class plsqlParser extends Parser {
 			case LEFT_PAREN:
 				break;
 			default:
-				throw new NoViableAltException(this);
+				break;
 			}
 			setState(3853);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==AUTOMATIC || _la==SEQUENTIAL) {
 				{
@@ -26261,7 +26702,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==AUTOMATIC || _la==SEQUENTIAL) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(3852);
@@ -26270,6 +26714,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(3856);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ITERATE) {
 				{
@@ -26354,6 +26799,7 @@ public class plsqlParser extends Parser {
 			setState(3865);
 			cell_assignment();
 			setState(3867);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ORDER) {
 				{
@@ -26456,6 +26902,7 @@ public class plsqlParser extends Parser {
 			setState(3877);
 			match(RIGHT_PAREN);
 			setState(3879);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==UNTIL) {
 				{
@@ -26557,6 +27004,7 @@ public class plsqlParser extends Parser {
 			setState(3886);
 			match(ORDER);
 			setState(3888);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==SIBLINGS) {
 				{
@@ -26631,6 +27079,7 @@ public class plsqlParser extends Parser {
 			setState(3899);
 			expression();
 			setState(3901);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ASC || _la==DESC) {
 				{
@@ -26638,13 +27087,17 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==ASC || _la==DESC) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
 			}
 
 			setState(3905);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==NULLS) {
 				{
@@ -26654,7 +27107,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==FIRST || _la==LAST) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -26708,6 +27164,7 @@ public class plsqlParser extends Parser {
 			setState(3908);
 			match(UPDATE);
 			setState(3910);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==OF) {
 				{
@@ -26717,6 +27174,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(3913);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==NOWAIT || _la==SKIP_ || _la==WAIT) {
 				{
@@ -26827,6 +27285,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 488, RULE_for_update_options);
 		try {
 			setState(3929);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case SKIP_:
 				enterOuterAlt(_localctx, 1);
@@ -26913,6 +27372,7 @@ public class plsqlParser extends Parser {
 			setState(3933);
 			update_set_clause();
 			setState(3935);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==WHERE) {
 				{
@@ -26922,6 +27382,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(3938);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==RETURN || _la==RETURNING) {
 				{
@@ -26931,6 +27392,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(3941);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LOG) {
 				{
@@ -27078,6 +27540,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(3978);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -27565,6 +28028,7 @@ public class plsqlParser extends Parser {
 			setState(3980);
 			match(DELETE);
 			setState(3982);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==FROM) {
 				{
@@ -27576,6 +28040,7 @@ public class plsqlParser extends Parser {
 			setState(3984);
 			general_table_ref();
 			setState(3986);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==WHERE) {
 				{
@@ -27585,6 +28050,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(3989);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==RETURN || _la==RETURNING) {
 				{
@@ -27594,6 +28060,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(3992);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LOG) {
 				{
@@ -27646,6 +28113,7 @@ public class plsqlParser extends Parser {
 			setState(3994);
 			match(INSERT);
 			setState(3997);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case INTO:
 				{
@@ -27717,12 +28185,14 @@ public class plsqlParser extends Parser {
 			setState(3999);
 			insert_into_clause();
 			setState(4005);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case VALUES:
 				{
 				setState(4000);
 				values_clause();
 				setState(4002);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==RETURN || _la==RETURNING) {
 					{
@@ -27745,6 +28215,7 @@ public class plsqlParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			setState(4008);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LOG) {
 				{
@@ -27880,6 +28351,7 @@ public class plsqlParser extends Parser {
 			setState(4021);
 			insert_into_clause();
 			setState(4023);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==VALUES) {
 				{
@@ -27889,6 +28361,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(4026);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LOG) {
 				{
@@ -27944,6 +28417,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(4029);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ALL || _la==FIRST) {
 				{
@@ -27951,7 +28425,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==ALL || _la==FIRST) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -27972,6 +28449,7 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 			} while ( _la==WHEN );
 			setState(4037);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ELSE) {
 				{
@@ -28292,6 +28770,7 @@ public class plsqlParser extends Parser {
 			setState(4073);
 			tableview_name();
 			setState(4075);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (NATIONAL_CHAR_STRING_LIT - 517)) | (1L << (CHAR_STRING - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -28320,6 +28799,7 @@ public class plsqlParser extends Parser {
 				setState(4083);
 				merge_update_clause();
 				setState(4085);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==WHEN) {
 					{
@@ -28335,6 +28815,7 @@ public class plsqlParser extends Parser {
 				setState(4087);
 				merge_insert_clause();
 				setState(4089);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==WHEN) {
 					{
@@ -28347,6 +28828,7 @@ public class plsqlParser extends Parser {
 				break;
 			}
 			setState(4094);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LOG) {
 				{
@@ -28436,6 +28918,7 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(4110);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==WHERE) {
 				{
@@ -28606,6 +29089,7 @@ public class plsqlParser extends Parser {
 			setState(4126);
 			match(INSERT);
 			setState(4138);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==LEFT_PAREN) {
 				{
@@ -28639,6 +29123,7 @@ public class plsqlParser extends Parser {
 			setState(4141);
 			expression_list();
 			setState(4143);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==WHERE) {
 				{
@@ -28692,6 +29177,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(4150);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -29103,6 +29589,7 @@ public class plsqlParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			setState(4153);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (NATIONAL_CHAR_STRING_LIT - 517)) | (1L << (CHAR_STRING - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -29191,6 +29678,7 @@ public class plsqlParser extends Parser {
 			setState(4167);
 			match(MODE);
 			setState(4169);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==NOWAIT || _la==WAIT) {
 				{
@@ -29237,6 +29725,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 530, RULE_wait_nowait_part);
 		try {
 			setState(4174);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case WAIT:
 				enterOuterAlt(_localctx, 1);
@@ -29300,6 +29789,7 @@ public class plsqlParser extends Parser {
 			setState(4176);
 			tableview_name();
 			setState(4178);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==PARTITION || _la==SUBPARTITION) {
 				{
@@ -29372,6 +29862,7 @@ public class plsqlParser extends Parser {
 				setState(4184);
 				match(SHARE);
 				setState(4186);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==UPDATE) {
 					{
@@ -29523,7 +30014,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==RETURN || _la==RETURNING) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(4206);
@@ -29617,6 +30111,7 @@ public class plsqlParser extends Parser {
 				break;
 			}
 			setState(4225);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==REJECT) {
 				{
@@ -29776,6 +30271,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(4248);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case TABLE:
 			case THE:
@@ -29793,6 +30289,7 @@ public class plsqlParser extends Parser {
 				setState(4238);
 				select_statement();
 				setState(4240);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==WITH) {
 					{
@@ -30261,7 +30758,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==TABLE || _la==THE) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(4263);
@@ -30349,6 +30849,7 @@ public class plsqlParser extends Parser {
 			setState(4265);
 			match(WITH);
 			setState(4274);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case READ:
 				{
@@ -30365,6 +30866,7 @@ public class plsqlParser extends Parser {
 				setState(4269);
 				match(OPTION);
 				setState(4272);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==CONSTRAINT) {
 					{
@@ -30429,6 +30931,7 @@ public class plsqlParser extends Parser {
 			setState(4276);
 			match(SAMPLE);
 			setState(4278);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==BLOCK) {
 				{
@@ -30442,6 +30945,7 @@ public class plsqlParser extends Parser {
 			setState(4281);
 			expression();
 			setState(4284);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==COMMA) {
 				{
@@ -30600,6 +31104,7 @@ public class plsqlParser extends Parser {
 			setState(4300);
 			match(LEFT_PAREN);
 			setState(4302);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ALL) | (1L << ANALYZE) | (1L << ANY) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CASE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONNECT_BY_ROOT - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DISTINCT - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXISTS - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FALSE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NOT - 260)) | (1L << (NULL - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (PRIOR - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUE - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (NATIONAL_CHAR_STRING_LIT - 517)) | (1L << (UNSIGNED_INTEGER - 517)) | (1L << (APPROXIMATE_NUM_LIT - 517)) | (1L << (CHAR_STRING - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (LEFT_PAREN - 517)) | (1L << (PLUS_SIGN - 517)) | (1L << (MINUS_SIGN - 517)) | (1L << (BINDVAR - 517)) | (1L << (COLON - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -30929,6 +31434,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 570, RULE_negated_expression);
 		try {
 			setState(4341);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case NOT:
 				enterOuterAlt(_localctx, 1);
@@ -31464,6 +31970,7 @@ public class plsqlParser extends Parser {
 					setState(4344);
 					match(IS);
 					setState(4346);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==NOT) {
 						{
@@ -31473,6 +31980,7 @@ public class plsqlParser extends Parser {
 					}
 
 					setState(4373);
+					_errHandler.sync(this);
 					switch (_input.LA(1)) {
 					case NULL:
 						{
@@ -31517,6 +32025,7 @@ public class plsqlParser extends Parser {
 						setState(4355);
 						match(OF);
 						setState(4357);
+						_errHandler.sync(this);
 						_la = _input.LA(1);
 						if (_la==TYPE) {
 							{
@@ -31624,6 +32133,7 @@ public class plsqlParser extends Parser {
 				setState(4381);
 				multiset_type();
 				setState(4383);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==OF) {
 					{
@@ -31678,7 +32188,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==MEMBER || _la==SUBMULTISET) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -31862,6 +32375,7 @@ public class plsqlParser extends Parser {
 			case 1:
 				{
 				setState(4408);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==NOT) {
 					{
@@ -31871,6 +32385,7 @@ public class plsqlParser extends Parser {
 				}
 
 				setState(4419);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case IN:
 					{
@@ -31958,7 +32473,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(((((_la - 225)) & ~0x3f) == 0 && ((1L << (_la - 225)) & ((1L << (LIKE - 225)) | (1L << (LIKE2 - 225)) | (1L << (LIKE4 - 225)) | (1L << (LIKEC - 225)))) != 0)) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -32324,7 +32842,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==PLUS_SIGN || _la==MINUS_SIGN) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					setState(4465);
@@ -32391,7 +32912,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==ASTERISK || _la==SOLIDUS) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					setState(4473);
@@ -32460,6 +32984,7 @@ public class plsqlParser extends Parser {
 				setState(4480);
 				match(AT);
 				setState(4485);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case LOCAL:
 					{
@@ -32534,6 +33059,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(4514);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case DAY:
 				enterOuterAlt(_localctx, 1);
@@ -32541,6 +33067,7 @@ public class plsqlParser extends Parser {
 				setState(4490);
 				match(DAY);
 				setState(4495);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==LEFT_PAREN) {
 					{
@@ -32579,6 +33106,7 @@ public class plsqlParser extends Parser {
 				setState(4505);
 				match(YEAR);
 				setState(4510);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==LEFT_PAREN) {
 					{
@@ -32856,6 +33384,7 @@ public class plsqlParser extends Parser {
 			setState(4549);
 			column_name();
 			setState(4562);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case IN:
 				{
@@ -32869,6 +33398,7 @@ public class plsqlParser extends Parser {
 			case LIKE:
 				{
 				setState(4553);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==LIKE) {
 					{
@@ -32977,7 +33507,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==DECREMENT || _la==INCREMENT) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -33359,6 +33892,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(4623);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (DELIMITED_ID - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -33386,6 +33920,7 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 			} while ( _la==WHEN );
 			setState(4633);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ELSE) {
 				{
@@ -33397,6 +33932,7 @@ public class plsqlParser extends Parser {
 			setState(4635);
 			match(END);
 			setState(4637);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==CASE) {
 				{
@@ -33539,6 +34075,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(4650);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (DELIMITED_ID - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -33564,6 +34101,7 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 			} while ( _la==WHEN );
 			setState(4659);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ELSE) {
 				{
@@ -33575,6 +34113,7 @@ public class plsqlParser extends Parser {
 			setState(4661);
 			match(END);
 			setState(4663);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==CASE) {
 				{
@@ -33899,6 +34438,7 @@ public class plsqlParser extends Parser {
 			setState(4702);
 			expression();
 			setState(4704);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==COMMA) {
 				{
@@ -34017,7 +34557,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==ALL || _la==ANY || _la==EXISTS || _la==SOME) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(4724);
@@ -34294,6 +34837,7 @@ public class plsqlParser extends Parser {
 				setState(4737);
 				match(LEFT_PAREN);
 				setState(4743);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case ASTERISK:
 					{
@@ -34724,7 +35268,10 @@ public class plsqlParser extends Parser {
 						_la = _input.LA(1);
 						if ( !(_la==ALL || _la==DISTINCT || _la==UNIQUE) ) {
 						_errHandler.recoverInline(this);
-						} else {
+						}
+						else {
+							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+							_errHandler.reportMatch(this);
 							consume();
 						}
 						}
@@ -34758,7 +35305,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==CAST || _la==XMLCAST) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(4750);
@@ -34826,7 +35376,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==DISTINCT || _la==UNIQUE) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					}
@@ -34835,6 +35388,7 @@ public class plsqlParser extends Parser {
 				setState(4775);
 				concatenation_wrapper();
 				setState(4777);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==ORDER) {
 					{
@@ -34886,6 +35440,7 @@ public class plsqlParser extends Parser {
 				setState(4790);
 				concatenation_wrapper();
 				setState(4792);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==CANONICAL || _la==COMPATIBILITY) {
 					{
@@ -34893,7 +35448,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==CANONICAL || _la==COMPATIBILITY) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					}
@@ -34927,12 +35485,16 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==FIRST_VALUE || _la==LAST_VALUE) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(4804);
 				function_argument_analytic();
 				setState(4806);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==IGNORE || _la==RESPECT) {
 					{
@@ -34971,6 +35533,7 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 				}
 				setState(4821);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==COST) {
 					{
@@ -34980,6 +35543,7 @@ public class plsqlParser extends Parser {
 				}
 
 				setState(4824);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==USING) {
 					{
@@ -35002,6 +35566,7 @@ public class plsqlParser extends Parser {
 				setState(4830);
 				expression_wrapper();
 				setState(4833);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==USING) {
 					{
@@ -35011,7 +35576,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==CHAR_CS || _la==NCHAR_CS) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					}
@@ -35077,6 +35645,7 @@ public class plsqlParser extends Parser {
 				case 1:
 					{
 					setState(4857);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==BOTH || _la==LEADING || _la==TRAILING) {
 						{
@@ -35084,13 +35653,17 @@ public class plsqlParser extends Parser {
 						_la = _input.LA(1);
 						if ( !(_la==BOTH || _la==LEADING || _la==TRAILING) ) {
 						_errHandler.recoverInline(this);
-						} else {
+						}
+						else {
+							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+							_errHandler.reportMatch(this);
 							consume();
 						}
 						}
 					}
 
 					setState(4860);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==NATIONAL_CHAR_STRING_LIT || _la==CHAR_STRING) {
 						{
@@ -35120,6 +35693,7 @@ public class plsqlParser extends Parser {
 				setState(4870);
 				expression_wrapper();
 				setState(4872);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==ORDER) {
 					{
@@ -35131,6 +35705,7 @@ public class plsqlParser extends Parser {
 				setState(4874);
 				match(RIGHT_PAREN);
 				setState(4877);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PERIOD) {
 					{
@@ -35150,7 +35725,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==XMLCOLATTVAL || _la==XMLFOREST) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(4880);
@@ -35176,6 +35754,7 @@ public class plsqlParser extends Parser {
 				setState(4889);
 				match(RIGHT_PAREN);
 				setState(4892);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PERIOD) {
 					{
@@ -35204,7 +35783,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==ENTITYESCAPING || _la==NOENTITYESCAPING) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					}
@@ -35219,7 +35801,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==EVALNAME || _la==NAME) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					}
@@ -35250,6 +35835,7 @@ public class plsqlParser extends Parser {
 					setState(4908);
 					expression_wrapper();
 					setState(4910);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << AS) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (NATIONAL_CHAR_STRING_LIT - 517)) | (1L << (CHAR_STRING - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 						{
@@ -35267,6 +35853,7 @@ public class plsqlParser extends Parser {
 				setState(4917);
 				match(RIGHT_PAREN);
 				setState(4920);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PERIOD) {
 					{
@@ -35289,6 +35876,7 @@ public class plsqlParser extends Parser {
 				setState(4924);
 				expression_wrapper();
 				setState(4926);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PASSING) {
 					{
@@ -35312,12 +35900,16 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==CONTENT || _la==DOCUMENT) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(4933);
 				concatenation_wrapper();
 				setState(4935);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==WELLFORMED) {
 					{
@@ -35329,6 +35921,7 @@ public class plsqlParser extends Parser {
 				setState(4937);
 				match(RIGHT_PAREN);
 				setState(4940);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PERIOD) {
 					{
@@ -35349,6 +35942,7 @@ public class plsqlParser extends Parser {
 				setState(4943);
 				match(LEFT_PAREN);
 				setState(4948);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case NAME:
 					{
@@ -35370,6 +35964,7 @@ public class plsqlParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				setState(4952);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==COMMA) {
 					{
@@ -35383,6 +35978,7 @@ public class plsqlParser extends Parser {
 				setState(4954);
 				match(RIGHT_PAREN);
 				setState(4957);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PERIOD) {
 					{
@@ -35405,6 +36001,7 @@ public class plsqlParser extends Parser {
 				setState(4961);
 				concatenation_wrapper();
 				setState(4963);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PASSING) {
 					{
@@ -35418,6 +36015,7 @@ public class plsqlParser extends Parser {
 				setState(4966);
 				match(CONTENT);
 				setState(4970);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==NULL) {
 					{
@@ -35433,6 +36031,7 @@ public class plsqlParser extends Parser {
 				setState(4972);
 				match(RIGHT_PAREN);
 				setState(4975);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PERIOD) {
 					{
@@ -35457,6 +36056,7 @@ public class plsqlParser extends Parser {
 				setState(4980);
 				xmlroot_param_version_part();
 				setState(4983);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==COMMA) {
 					{
@@ -35470,6 +36070,7 @@ public class plsqlParser extends Parser {
 				setState(4985);
 				match(RIGHT_PAREN);
 				setState(4988);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PERIOD) {
 					{
@@ -35493,12 +36094,16 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==CONTENT || _la==DOCUMENT) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(4993);
 				concatenation_wrapper();
 				setState(4996);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==AS) {
 					{
@@ -35510,6 +36115,7 @@ public class plsqlParser extends Parser {
 				}
 
 				setState(4999);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==ENCODING) {
 					{
@@ -35519,6 +36125,7 @@ public class plsqlParser extends Parser {
 				}
 
 				setState(5002);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==VERSION) {
 					{
@@ -35528,6 +36135,7 @@ public class plsqlParser extends Parser {
 				}
 
 				setState(5005);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==INDENT || _la==NO) {
 					{
@@ -35537,6 +36145,7 @@ public class plsqlParser extends Parser {
 				}
 
 				setState(5009);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==HIDE || _la==SHOW) {
 					{
@@ -35544,7 +36153,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==HIDE || _la==SHOW) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					setState(5008);
@@ -35555,6 +36167,7 @@ public class plsqlParser extends Parser {
 				setState(5011);
 				match(RIGHT_PAREN);
 				setState(5014);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PERIOD) {
 					{
@@ -35587,6 +36200,7 @@ public class plsqlParser extends Parser {
 				setState(5021);
 				concatenation_wrapper();
 				setState(5023);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PASSING) {
 					{
@@ -35596,6 +36210,7 @@ public class plsqlParser extends Parser {
 				}
 
 				setState(5030);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==COLUMNS) {
 					{
@@ -35615,6 +36230,7 @@ public class plsqlParser extends Parser {
 				setState(5032);
 				match(RIGHT_PAREN);
 				setState(5035);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PERIOD) {
 					{
@@ -35682,7 +36298,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(((((_la - 516)) & ~0x3f) == 0 && ((1L << (_la - 516)) & ((1L << (AVG - 516)) | (1L << (CORR - 516)) | (1L << (LAG - 516)) | (1L << (LEAD - 516)) | (1L << (MAX - 516)) | (1L << (MEDIAN - 516)) | (1L << (MIN - 516)) | (1L << (NTILE - 516)) | (1L << (RATIO_TO_REPORT - 516)) | (1L << (ROW_NUMBER - 516)) | (1L << (SUM - 516)) | (1L << (VARIANCE - 516)) | (1L << (REGR_ - 516)) | (1L << (STDDEV - 516)) | (1L << (VAR_ - 516)) | (1L << (COVAR_ - 516)))) != 0)) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -35731,7 +36350,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(((((_la - 509)) & ~0x3f) == 0 && ((1L << (_la - 509)) & ((1L << (CUME_DIST - 509)) | (1L << (DENSE_RANK - 509)) | (1L << (LISTAGG - 509)) | (1L << (PERCENT_RANK - 509)) | (1L << (PERCENTILE_CONT - 509)) | (1L << (PERCENTILE_DISC - 509)) | (1L << (RANK - 509)))) != 0)) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -35779,7 +36401,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(((((_la - 503)) & ~0x3f) == 0 && ((1L << (_la - 503)) & ((1L << (PREDICTION - 503)) | (1L << (PREDICTION_BOUNDS - 503)) | (1L << (PREDICTION_COST - 503)) | (1L << (PREDICTION_DETAILS - 503)) | (1L << (PREDICTION_PROBABILITY - 503)) | (1L << (PREDICTION_SET - 503)))) != 0)) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -35832,6 +36457,7 @@ public class plsqlParser extends Parser {
 			setState(5046);
 			match(LEFT_PAREN);
 			setState(5048);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==PARTITION) {
 				{
@@ -35841,12 +36467,14 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(5054);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==ORDER) {
 				{
 				setState(5050);
 				order_by_clause();
 				setState(5052);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==RANGE || _la==ROWS) {
 					{
@@ -35908,6 +36536,7 @@ public class plsqlParser extends Parser {
 			setState(5058);
 			windowing_type();
 			setState(5065);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case BETWEEN:
 				{
@@ -36383,7 +37012,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==RANGE || _la==ROWS) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -36457,7 +37089,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==FOLLOWING || _la==PRECEDING) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -36507,6 +37142,7 @@ public class plsqlParser extends Parser {
 			setState(5078);
 			match(USING);
 			setState(5088);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ASTERISK:
 				{
@@ -37120,6 +37756,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 658, RULE_within_or_over_part);
 		try {
 			setState(5112);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case WITHIN:
 				enterOuterAlt(_localctx, 1);
@@ -37196,12 +37833,14 @@ public class plsqlParser extends Parser {
 			setState(5114);
 			match(COST);
 			setState(5132);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case MODEL:
 				{
 				setState(5115);
 				match(MODEL);
 				setState(5117);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==AUTO) {
 					{
@@ -37298,6 +37937,7 @@ public class plsqlParser extends Parser {
 			setState(5134);
 			match(PASSING);
 			setState(5137);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==BY) {
 				{
@@ -37311,6 +37951,7 @@ public class plsqlParser extends Parser {
 			setState(5139);
 			expression_wrapper();
 			setState(5141);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << AS) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (NATIONAL_CHAR_STRING_LIT - 517)) | (1L << (CHAR_STRING - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -37394,7 +38035,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==ENTITYESCAPING || _la==NOENTITYESCAPING) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -37409,7 +38053,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==NOSCHEMACHECK || _la==SCHEMACHECK) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -37521,6 +38168,7 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(5183);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==DEFAULT) {
 				{
@@ -37584,6 +38232,7 @@ public class plsqlParser extends Parser {
 			setState(5187);
 			xml_column_name();
 			setState(5198);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case FOR:
 				{
@@ -37988,6 +38637,7 @@ public class plsqlParser extends Parser {
 				setState(5190);
 				type_spec();
 				setState(5193);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PATH) {
 					{
@@ -37999,6 +38649,7 @@ public class plsqlParser extends Parser {
 				}
 
 				setState(5196);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==DEFAULT) {
 					{
@@ -38103,6 +38754,7 @@ public class plsqlParser extends Parser {
 			setState(5203);
 			expression();
 			setState(5210);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==AS) {
 				{
@@ -38231,6 +38883,7 @@ public class plsqlParser extends Parser {
 			setState(5218);
 			match(STANDALONE);
 			setState(5224);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case YES:
 				{
@@ -38243,6 +38896,7 @@ public class plsqlParser extends Parser {
 				setState(5220);
 				match(NO);
 				setState(5222);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==VALUE) {
 					{
@@ -38380,6 +39034,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(5240);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case NO:
 				enterOuterAlt(_localctx, 1);
@@ -38396,6 +39051,7 @@ public class plsqlParser extends Parser {
 				setState(5234);
 				match(INDENT);
 				setState(5238);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==SIZE) {
 					{
@@ -38460,6 +39116,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(5247);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case SOLIDUS:
 				{
@@ -38495,6 +39152,7 @@ public class plsqlParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			setState(5250);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==SEMICOLON) {
 				{
@@ -38555,10 +39213,14 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==OSERROR || _la==SQLERROR) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(5259);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case EXIT:
 				{
@@ -38568,14 +39230,20 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==FAILURE || _la==SUCCESS || _la==WARNING) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(5256);
 				_la = _input.LA(1);
 				if ( !(_la==COMMIT || _la==ROLLBACK) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -38588,7 +39256,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==COMMIT || _la==NONE || _la==ROLLBACK) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -38800,10 +39471,14 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==PARTITION || _la==SUBPARTITION) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(5276);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==FOR) {
 				{
@@ -38861,6 +39536,7 @@ public class plsqlParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(5281);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==AS) {
 					{
@@ -38870,6 +39546,7 @@ public class plsqlParser extends Parser {
 				}
 
 				setState(5285);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case A_LETTER:
 				case ADD:
@@ -39327,6 +40004,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(5292);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -39817,6 +40495,7 @@ public class plsqlParser extends Parser {
 			setState(5296);
 			match(WHERE);
 			setState(5299);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case CURRENT:
 				{
@@ -40333,6 +41012,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(5325);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case INTO:
 				enterOuterAlt(_localctx, 1);
@@ -40429,6 +41109,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 708, RULE_xml_column_name);
 		try {
 			setState(5329);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -41137,6 +41818,7 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(5353);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==AT_SIGN) {
 				{
@@ -41230,6 +41912,7 @@ public class plsqlParser extends Parser {
 			setState(5357);
 			id();
 			setState(5360);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==PERIOD) {
 				{
@@ -41524,6 +42207,7 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(5388);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==AT_SIGN) {
 				{
@@ -41961,6 +42645,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(5446);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -42356,6 +43041,7 @@ public class plsqlParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(5438);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==INTRODUCER) {
 					{
@@ -42369,6 +43055,7 @@ public class plsqlParser extends Parser {
 				setState(5440);
 				id_expression();
 				setState(5443);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PERIOD) {
 					{
@@ -42469,6 +43156,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 758, RULE_cursor_name);
 		try {
 			setState(5452);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -42916,6 +43604,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 760, RULE_record_name);
 		try {
 			setState(5456);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -43368,6 +44057,7 @@ public class plsqlParser extends Parser {
 			setState(5458);
 			id();
 			setState(5461);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==PERIOD) {
 				{
@@ -43671,7 +44361,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==FIRST || _la==LAST) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(5495);
@@ -43735,6 +44428,7 @@ public class plsqlParser extends Parser {
 			setState(5500);
 			match(LEFT_PAREN);
 			setState(5502);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ALL) | (1L << ANALYZE) | (1L << ANY) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CASE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONNECT_BY_ROOT - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DISTINCT - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXISTS - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FALSE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NOT - 260)) | (1L << (NULL - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (PRIOR - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUE - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (NATIONAL_CHAR_STRING_LIT - 517)) | (1L << (UNSIGNED_INTEGER - 517)) | (1L << (APPROXIMATE_NUM_LIT - 517)) | (1L << (CHAR_STRING - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (LEFT_PAREN - 517)) | (1L << (PLUS_SIGN - 517)) | (1L << (MINUS_SIGN - 517)) | (1L << (BINDVAR - 517)) | (1L << (COLON - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 				{
@@ -43824,12 +44518,14 @@ public class plsqlParser extends Parser {
 			setState(5515);
 			match(LEFT_PAREN);
 			setState(5520);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ALL) | (1L << ANALYZE) | (1L << ANY) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CASE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONNECT_BY_ROOT - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DATE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DISTINCT - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXISTS - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FALSE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NOT - 260)) | (1L << (NULL - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (PRIOR - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUE - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (NATIONAL_CHAR_STRING_LIT - 517)) | (1L << (UNSIGNED_INTEGER - 517)) | (1L << (APPROXIMATE_NUM_LIT - 517)) | (1L << (CHAR_STRING - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (LEFT_PAREN - 517)) | (1L << (PLUS_SIGN - 517)) | (1L << (MINUS_SIGN - 517)) | (1L << (BINDVAR - 517)) | (1L << (COLON - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 				{
 				setState(5516);
 				argument();
 				setState(5518);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==IGNORE || _la==RESPECT) {
 					{
@@ -43852,6 +44548,7 @@ public class plsqlParser extends Parser {
 				setState(5523);
 				argument();
 				setState(5525);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==IGNORE || _la==RESPECT) {
 					{
@@ -43950,12 +44647,14 @@ public class plsqlParser extends Parser {
 			setState(5537);
 			column_name();
 			setState(5550);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==COMMA) {
 				{
 				setState(5538);
 				match(COMMA);
 				setState(5541);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case UNSIGNED_INTEGER:
 				case APPROXIMATE_NUM_LIT:
@@ -43974,12 +44673,14 @@ public class plsqlParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				setState(5548);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==COMMA) {
 					{
 					setState(5543);
 					match(COMMA);
 					setState(5546);
+					_errHandler.sync(this);
 					switch (_input.LA(1)) {
 					case UNSIGNED_INTEGER:
 					case APPROXIMATE_NUM_LIT:
@@ -44029,6 +44730,7 @@ public class plsqlParser extends Parser {
 				setState(5558);
 				expression();
 				setState(5560);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << AS) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (NATIONAL_CHAR_STRING_LIT - 517)) | (1L << (CHAR_STRING - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 					{
@@ -44048,6 +44750,7 @@ public class plsqlParser extends Parser {
 					setState(5563);
 					expression();
 					setState(5565);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << AS) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)) | (1L << (NATIONAL_CHAR_STRING_LIT - 517)) | (1L << (CHAR_STRING - 517)) | (1L << (DELIMITED_ID - 517)) | (1L << (INTRODUCER - 517)))) != 0) || _la==REGULAR_ID) {
 						{
@@ -44119,7 +44822,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==IGNORE || _la==RESPECT) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			setState(5579);
@@ -44248,6 +44954,7 @@ public class plsqlParser extends Parser {
 				setState(5593);
 				type_name();
 				setState(5595);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PERCENT_ROWTYPE || _la==PERCENT_TYPE) {
 					{
@@ -44255,7 +44962,10 @@ public class plsqlParser extends Parser {
 					_la = _input.LA(1);
 					if ( !(_la==PERCENT_ROWTYPE || _la==PERCENT_TYPE) ) {
 					_errHandler.recoverInline(this);
-					} else {
+					}
+					else {
+						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+						_errHandler.reportMatch(this);
 						consume();
 					}
 					}
@@ -44319,6 +45029,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(5627);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case BFILE:
 			case BINARY_DOUBLE:
@@ -44389,12 +45100,14 @@ public class plsqlParser extends Parser {
 					break;
 				}
 				setState(5609);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==WITH) {
 					{
 					setState(5603);
 					match(WITH);
 					setState(5605);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==LOCAL) {
 						{
@@ -44421,10 +45134,14 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==DAY || _la==YEAR) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(5617);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==LEFT_PAREN) {
 					{
@@ -44443,7 +45160,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==MONTH || _la==SECOND) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(5625);
@@ -44511,6 +45231,7 @@ public class plsqlParser extends Parser {
 			setState(5629);
 			match(LEFT_PAREN);
 			setState(5632);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case UNSIGNED_INTEGER:
 			case APPROXIMATE_NUM_LIT:
@@ -44529,6 +45250,7 @@ public class plsqlParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			setState(5636);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==COMMA) {
 				{
@@ -44540,6 +45262,7 @@ public class plsqlParser extends Parser {
 			}
 
 			setState(5639);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==BYTE || _la==CHAR) {
 				{
@@ -44547,7 +45270,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==BYTE || _la==CHAR) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				}
@@ -44644,6 +45370,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(5703);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case BINARY_INTEGER:
 				enterOuterAlt(_localctx, 1);
@@ -44777,6 +45504,7 @@ public class plsqlParser extends Parser {
 				setState(5661);
 				match(DOUBLE);
 				setState(5663);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==PRECISION) {
 					{
@@ -44814,6 +45542,7 @@ public class plsqlParser extends Parser {
 				setState(5668);
 				match(LONG);
 				setState(5670);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==RAW) {
 					{
@@ -45094,6 +45823,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(5708);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case BINDVAR:
 				{
@@ -45118,6 +45848,7 @@ public class plsqlParser extends Parser {
 			case 1:
 				{
 				setState(5711);
+				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==INDICATOR) {
 					{
@@ -45127,6 +45858,7 @@ public class plsqlParser extends Parser {
 				}
 
 				setState(5716);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case BINDVAR:
 					{
@@ -45273,6 +46005,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(5737);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==INTRODUCER) {
 				{
@@ -45359,6 +46092,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(5752);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==INTRODUCER) {
 				{
@@ -45474,6 +46208,7 @@ public class plsqlParser extends Parser {
 		int _la;
 		try {
 			setState(5824);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case TIMESTAMP:
 				enterOuterAlt(_localctx, 1);
@@ -45481,6 +46216,7 @@ public class plsqlParser extends Parser {
 				setState(5762);
 				match(TIMESTAMP);
 				setState(5765);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case NATIONAL_CHAR_STRING_LIT:
 				case CHAR_STRING:
@@ -45523,6 +46259,7 @@ public class plsqlParser extends Parser {
 				setState(5773);
 				match(INTERVAL);
 				setState(5777);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case NATIONAL_CHAR_STRING_LIT:
 				case CHAR_STRING:
@@ -45941,7 +46678,10 @@ public class plsqlParser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==DAY || _la==HOUR || _la==MINUTE || _la==SECOND) ) {
 				_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(5793);
@@ -45952,6 +46692,7 @@ public class plsqlParser extends Parser {
 					setState(5780);
 					match(LEFT_PAREN);
 					setState(5783);
+					_errHandler.sync(this);
 					switch (_input.LA(1)) {
 					case UNSIGNED_INTEGER:
 						{
@@ -45970,12 +46711,14 @@ public class plsqlParser extends Parser {
 						throw new NoViableAltException(this);
 					}
 					setState(5790);
+					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==COMMA) {
 						{
 						setState(5785);
 						match(COMMA);
 						setState(5788);
+						_errHandler.sync(this);
 						switch (_input.LA(1)) {
 						case UNSIGNED_INTEGER:
 							{
@@ -46009,6 +46752,7 @@ public class plsqlParser extends Parser {
 					setState(5795);
 					match(TO);
 					setState(5808);
+					_errHandler.sync(this);
 					switch (_input.LA(1)) {
 					case DAY:
 						{
@@ -46040,6 +46784,7 @@ public class plsqlParser extends Parser {
 							setState(5800);
 							match(LEFT_PAREN);
 							setState(5803);
+							_errHandler.sync(this);
 							switch (_input.LA(1)) {
 							case UNSIGNED_INTEGER:
 								{
@@ -46196,7 +46941,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==UNSIGNED_INTEGER || _la==APPROXIMATE_NUM_LIT) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -46282,7 +47030,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !(_la==NATIONAL_CHAR_STRING_LIT || _la==CHAR_STRING) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -46328,6 +47079,7 @@ public class plsqlParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(5835);
+			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==INTRODUCER) {
 				{
@@ -46377,6 +47129,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 810, RULE_id_expression);
 		try {
 			setState(5841);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case A_LETTER:
 			case ADD:
@@ -46816,6 +47569,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 812, RULE_not_equal_op);
 		try {
 			setState(5850);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case NOT_EQUAL_OP:
 				enterOuterAlt(_localctx, 1);
@@ -46886,6 +47640,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 814, RULE_greater_than_or_equals_op);
 		try {
 			setState(5855);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case GREATER_THAN_OR_EQUALS_OP:
 				enterOuterAlt(_localctx, 1);
@@ -46938,6 +47693,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 816, RULE_less_than_or_equals_op);
 		try {
 			setState(5860);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case LESS_THAN_OR_EQUALS_OP:
 				enterOuterAlt(_localctx, 1);
@@ -46990,6 +47746,7 @@ public class plsqlParser extends Parser {
 		enterRule(_localctx, 818, RULE_concatenation_op);
 		try {
 			setState(5865);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case CONCATENATION_OP:
 				enterOuterAlt(_localctx, 1);
@@ -47477,7 +48234,10 @@ public class plsqlParser extends Parser {
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << A_LETTER) | (1L << ADD) | (1L << AFTER) | (1L << AGENT) | (1L << AGGREGATE) | (1L << ANALYZE) | (1L << ARRAY) | (1L << ASSOCIATE) | (1L << AT) | (1L << ATTRIBUTE) | (1L << AUDIT) | (1L << AUTHID) | (1L << AUTO) | (1L << AUTOMATIC) | (1L << AUTONOMOUS_TRANSACTION) | (1L << BATCH) | (1L << BEFORE) | (1L << BFILE) | (1L << BINARY_DOUBLE) | (1L << BINARY_FLOAT) | (1L << BINARY_INTEGER) | (1L << BLOB) | (1L << BLOCK) | (1L << BODY) | (1L << BOOLEAN) | (1L << BOTH) | (1L << BULK) | (1L << BYTE) | (1L << C_LETTER) | (1L << CALL) | (1L << CANONICAL) | (1L << CASCADE) | (1L << CAST) | (1L << CHAR) | (1L << CHAR_CS) | (1L << CHARACTER) | (1L << CHR) | (1L << CLOB) | (1L << CLOSE) | (1L << CLUSTER) | (1L << COLLECT) | (1L << COLUMNS))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (COMMENT - 64)) | (1L << (COMMIT - 64)) | (1L << (COMMITTED - 64)) | (1L << (COMPATIBILITY - 64)) | (1L << (COMPILE - 64)) | (1L << (COMPOUND - 64)) | (1L << (CONSTANT - 64)) | (1L << (CONSTRAINT - 64)) | (1L << (CONSTRAINTS - 64)) | (1L << (CONSTRUCTOR - 64)) | (1L << (CONTENT - 64)) | (1L << (CONTEXT - 64)) | (1L << (CONTINUE - 64)) | (1L << (CONVERT - 64)) | (1L << (CORRUPT_XID - 64)) | (1L << (CORRUPT_XID_ALL - 64)) | (1L << (COST - 64)) | (1L << (COUNT - 64)) | (1L << (CROSS - 64)) | (1L << (CUBE - 64)) | (1L << (CURRENT_USER - 64)) | (1L << (CURSOR - 64)) | (1L << (CUSTOMDATUM - 64)) | (1L << (CYCLE - 64)) | (1L << (DATA - 64)) | (1L << (DATABASE - 64)) | (1L << (DAY - 64)) | (1L << (DB_ROLE_CHANGE - 64)) | (1L << (DBTIMEZONE - 64)) | (1L << (DDL - 64)) | (1L << (DEBUG - 64)) | (1L << (DEC - 64)) | (1L << (DECIMAL - 64)) | (1L << (DECOMPOSE - 64)) | (1L << (DECREMENT - 64)) | (1L << (DEFAULTS - 64)) | (1L << (DEFERRED - 64)) | (1L << (DEFINER - 64)) | (1L << (DETERMINISTIC - 64)) | (1L << (DIMENSION - 64)) | (1L << (DISABLE - 64)) | (1L << (DISASSOCIATE - 64)) | (1L << (DOCUMENT - 64)) | (1L << (DOUBLE - 64)) | (1L << (DSINTERVAL_UNCONSTRAINED - 64)) | (1L << (EACH - 64)) | (1L << (ELEMENT - 64)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (EMPTY - 130)) | (1L << (ENABLE - 130)) | (1L << (ENCODING - 130)) | (1L << (ENTITYESCAPING - 130)) | (1L << (ERRORS - 130)) | (1L << (ESCAPE - 130)) | (1L << (EVALNAME - 130)) | (1L << (EXCEPTION_INIT - 130)) | (1L << (EXCEPTIONS - 130)) | (1L << (EXCLUDE - 130)) | (1L << (EXECUTE - 130)) | (1L << (EXIT - 130)) | (1L << (EXPLAIN - 130)) | (1L << (EXTERNAL - 130)) | (1L << (EXTRACT - 130)) | (1L << (FAILURE - 130)) | (1L << (FINAL - 130)) | (1L << (FIRST - 130)) | (1L << (FIRST_VALUE - 130)) | (1L << (FLOAT - 130)) | (1L << (FOLLOWING - 130)) | (1L << (FOLLOWS - 130)) | (1L << (FORALL - 130)) | (1L << (FORCE - 130)) | (1L << (FULL - 130)) | (1L << (FUNCTION - 130)) | (1L << (GROUPING - 130)) | (1L << (HASH - 130)) | (1L << (HIDE - 130)) | (1L << (HOUR - 130)) | (1L << (IGNORE - 130)) | (1L << (IMMEDIATE - 130)) | (1L << (INCLUDE - 130)) | (1L << (INCLUDING - 130)) | (1L << (INCREMENT - 130)) | (1L << (INDENT - 130)) | (1L << (INDEXED - 130)) | (1L << (INDICATOR - 130)) | (1L << (INDICES - 130)) | (1L << (INFINITE - 130)))) != 0) || ((((_la - 196)) & ~0x3f) == 0 && ((1L << (_la - 196)) & ((1L << (INLINE - 196)) | (1L << (INNER - 196)) | (1L << (INOUT - 196)) | (1L << (INSTANTIABLE - 196)) | (1L << (INSTEAD - 196)) | (1L << (INT - 196)) | (1L << (INTEGER - 196)) | (1L << (INTERVAL - 196)) | (1L << (INVALIDATE - 196)) | (1L << (ISOLATION - 196)) | (1L << (ITERATE - 196)) | (1L << (JAVA - 196)) | (1L << (JOIN - 196)) | (1L << (KEEP - 196)) | (1L << (LANGUAGE - 196)) | (1L << (LAST - 196)) | (1L << (LAST_VALUE - 196)) | (1L << (LEADING - 196)) | (1L << (LEFT - 196)) | (1L << (LENGTH - 196)) | (1L << (LEVEL - 196)) | (1L << (LIBRARY - 196)) | (1L << (LIKE2 - 196)) | (1L << (LIKE4 - 196)) | (1L << (LIKEC - 196)) | (1L << (LIMIT - 196)) | (1L << (LOCAL - 196)) | (1L << (LOCKED - 196)) | (1L << (LOG - 196)) | (1L << (LOGOFF - 196)) | (1L << (LOGON - 196)) | (1L << (LONG - 196)) | (1L << (LOOP - 196)) | (1L << (MAIN - 196)) | (1L << (MAP - 196)) | (1L << (MATCHED - 196)) | (1L << (MAXVALUE - 196)) | (1L << (MEASURES - 196)) | (1L << (MEMBER - 196)) | (1L << (MERGE - 196)) | (1L << (MINUTE - 196)) | (1L << (MINVALUE - 196)) | (1L << (MLSLABEL - 196)) | (1L << (MODEL - 196)) | (1L << (MODIFY - 196)) | (1L << (MONTH - 196)))) != 0) || ((((_la - 260)) & ~0x3f) == 0 && ((1L << (_la - 260)) & ((1L << (MULTISET - 260)) | (1L << (NAME - 260)) | (1L << (NAN - 260)) | (1L << (NATURAL - 260)) | (1L << (NATURALN - 260)) | (1L << (NAV - 260)) | (1L << (NCHAR - 260)) | (1L << (NCHAR_CS - 260)) | (1L << (NCLOB - 260)) | (1L << (NESTED - 260)) | (1L << (NEW - 260)) | (1L << (NO - 260)) | (1L << (NOAUDIT - 260)) | (1L << (NOCOPY - 260)) | (1L << (NOCYCLE - 260)) | (1L << (NOENTITYESCAPING - 260)) | (1L << (NONE - 260)) | (1L << (NOSCHEMACHECK - 260)) | (1L << (NULLS - 260)) | (1L << (NUMBER - 260)) | (1L << (NUMERIC - 260)) | (1L << (NVARCHAR2 - 260)) | (1L << (OBJECT - 260)) | (1L << (OFF - 260)) | (1L << (OID - 260)) | (1L << (OLD - 260)) | (1L << (ONLY - 260)) | (1L << (OPEN - 260)) | (1L << (ORADATA - 260)) | (1L << (ORDINALITY - 260)) | (1L << (OSERROR - 260)) | (1L << (OUT - 260)) | (1L << (OUTER - 260)) | (1L << (OVER - 260)) | (1L << (OVERRIDING - 260)) | (1L << (PACKAGE - 260)) | (1L << (PARALLEL_ENABLE - 260)) | (1L << (PARAMETERS - 260)) | (1L << (PARENT - 260)) | (1L << (PARTITION - 260)) | (1L << (PASSING - 260)) | (1L << (PATH - 260)))) != 0) || ((((_la - 325)) & ~0x3f) == 0 && ((1L << (_la - 325)) & ((1L << (PIPELINED - 325)) | (1L << (PLAN - 325)) | (1L << (PLS_INTEGER - 325)) | (1L << (POSITIVE - 325)) | (1L << (POSITIVEN - 325)) | (1L << (PRAGMA - 325)) | (1L << (PRECEDING - 325)) | (1L << (PRECISION - 325)) | (1L << (PRESENT - 325)) | (1L << (RAISE - 325)) | (1L << (RANGE - 325)) | (1L << (RAW - 325)) | (1L << (READ - 325)) | (1L << (REAL - 325)) | (1L << (RECORD - 325)) | (1L << (REF - 325)) | (1L << (REFERENCE - 325)) | (1L << (REFERENCING - 325)) | (1L << (REJECT - 325)) | (1L << (RELIES_ON - 325)) | (1L << (RENAME - 325)) | (1L << (REPLACE - 325)) | (1L << (RESPECT - 325)) | (1L << (RESTRICT_REFERENCES - 325)) | (1L << (RESULT - 325)) | (1L << (RESULT_CACHE - 325)) | (1L << (RETURN - 325)) | (1L << (RETURNING - 325)) | (1L << (REUSE - 325)) | (1L << (REVERSE - 325)) | (1L << (RIGHT - 325)) | (1L << (ROLLBACK - 325)) | (1L << (ROLLUP - 325)) | (1L << (ROW - 325)) | (1L << (ROWID - 325)) | (1L << (ROWS - 325)) | (1L << (RULES - 325)) | (1L << (SAMPLE - 325)) | (1L << (SAVE - 325)) | (1L << (SAVEPOINT - 325)) | (1L << (SCHEMA - 325)) | (1L << (SCHEMACHECK - 325)) | (1L << (SCN - 325)) | (1L << (SECOND - 325)) | (1L << (SEED - 325)) | (1L << (SEGMENT - 325)) | (1L << (SELF - 325)) | (1L << (SEQUENTIAL - 325)) | (1L << (SERIALIZABLE - 325)) | (1L << (SERIALLY_REUSABLE - 325)))) != 0) || ((((_la - 389)) & ~0x3f) == 0 && ((1L << (_la - 389)) & ((1L << (SERVERERROR - 389)) | (1L << (SESSIONTIMEZONE - 389)) | (1L << (SET - 389)) | (1L << (SETS - 389)) | (1L << (SETTINGS - 389)) | (1L << (SHOW - 389)) | (1L << (SHUTDOWN - 389)) | (1L << (SIBLINGS - 389)) | (1L << (SIGNTYPE - 389)) | (1L << (SIMPLE_INTEGER - 389)) | (1L << (SINGLE - 389)) | (1L << (SKIP_ - 389)) | (1L << (SMALLINT - 389)) | (1L << (SNAPSHOT - 389)) | (1L << (SOME - 389)) | (1L << (SPECIFICATION - 389)) | (1L << (SQLDATA - 389)) | (1L << (SQLERROR - 389)) | (1L << (STANDALONE - 389)) | (1L << (STARTUP - 389)) | (1L << (STATEMENT - 389)) | (1L << (STATEMENT_ID - 389)) | (1L << (STATIC - 389)) | (1L << (STATISTICS - 389)) | (1L << (STRING - 389)) | (1L << (SUBMULTISET - 389)) | (1L << (SUBPARTITION - 389)) | (1L << (SUBSTITUTABLE - 389)) | (1L << (SUBTYPE - 389)) | (1L << (SUCCESS - 389)) | (1L << (SUSPEND - 389)) | (1L << (TIME - 389)) | (1L << (TIMESTAMP - 389)) | (1L << (TIMESTAMP_LTZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_TZ_UNCONSTRAINED - 389)) | (1L << (TIMESTAMP_UNCONSTRAINED - 389)) | (1L << (TIMEZONE_ABBR - 389)) | (1L << (TIMEZONE_HOUR - 389)) | (1L << (TIMEZONE_MINUTE - 389)) | (1L << (TIMEZONE_REGION - 389)) | (1L << (TRAILING - 389)) | (1L << (TRANSACTION - 389)) | (1L << (TRANSLATE - 389)) | (1L << (TREAT - 389)) | (1L << (TRIGGER - 389)) | (1L << (TRIM - 389)) | (1L << (TRUNCATE - 389)) | (1L << (TYPE - 389)) | (1L << (UNBOUNDED - 389)) | (1L << (UNDER - 389)))) != 0) || ((((_la - 453)) & ~0x3f) == 0 && ((1L << (_la - 453)) & ((1L << (UNLIMITED - 453)) | (1L << (UNTIL - 453)) | (1L << (UPDATED - 453)) | (1L << (UPSERT - 453)) | (1L << (UROWID - 453)) | (1L << (USE - 453)) | (1L << (VALIDATE - 453)) | (1L << (VALUE - 453)) | (1L << (VARCHAR - 453)) | (1L << (VARCHAR2 - 453)) | (1L << (VARIABLE - 453)) | (1L << (VARRAY - 453)) | (1L << (VARYING - 453)) | (1L << (VERSION - 453)) | (1L << (VERSIONS - 453)) | (1L << (WAIT - 453)) | (1L << (WARNING - 453)) | (1L << (WELLFORMED - 453)) | (1L << (WHENEVER - 453)) | (1L << (WHILE - 453)) | (1L << (WITHIN - 453)) | (1L << (WORK - 453)) | (1L << (WRITE - 453)) | (1L << (XML - 453)) | (1L << (XMLAGG - 453)) | (1L << (XMLATTRIBUTES - 453)) | (1L << (XMLCAST - 453)) | (1L << (XMLCOLATTVAL - 453)) | (1L << (XMLELEMENT - 453)) | (1L << (XMLEXISTS - 453)) | (1L << (XMLFOREST - 453)) | (1L << (XMLNAMESPACES - 453)) | (1L << (XMLPARSE - 453)) | (1L << (XMLPI - 453)) | (1L << (XMLQUERY - 453)) | (1L << (XMLROOT - 453)) | (1L << (XMLSERIALIZE - 453)) | (1L << (XMLTABLE - 453)) | (1L << (YEAR - 453)) | (1L << (YES - 453)) | (1L << (YMINTERVAL_UNCONSTRAINED - 453)) | (1L << (ZONE - 453)) | (1L << (PREDICTION - 453)) | (1L << (PREDICTION_BOUNDS - 453)) | (1L << (PREDICTION_COST - 453)) | (1L << (PREDICTION_DETAILS - 453)) | (1L << (PREDICTION_PROBABILITY - 453)) | (1L << (PREDICTION_SET - 453)) | (1L << (CUME_DIST - 453)) | (1L << (DENSE_RANK - 453)) | (1L << (LISTAGG - 453)) | (1L << (PERCENT_RANK - 453)) | (1L << (PERCENTILE_CONT - 453)) | (1L << (PERCENTILE_DISC - 453)) | (1L << (RANK - 453)) | (1L << (AVG - 453)))) != 0) || ((((_la - 517)) & ~0x3f) == 0 && ((1L << (_la - 517)) & ((1L << (CORR - 517)) | (1L << (LAG - 517)) | (1L << (LEAD - 517)) | (1L << (MAX - 517)) | (1L << (MEDIAN - 517)) | (1L << (MIN - 517)) | (1L << (NTILE - 517)) | (1L << (RATIO_TO_REPORT - 517)) | (1L << (ROW_NUMBER - 517)) | (1L << (SUM - 517)) | (1L << (VARIANCE - 517)) | (1L << (REGR_ - 517)) | (1L << (STDDEV - 517)) | (1L << (VAR_ - 517)) | (1L << (COVAR_ - 517)))) != 0) || _la==REGULAR_ID) ) {
 			_errHandler.recoverInline(this);
-			} else {
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
 				consume();
 			}
 			}
@@ -47495,7 +48255,7 @@ public class plsqlParser extends Parser {
 
 	private static final int _serializedATNSegments = 3;
 	private static final String _serializedATNSegment0 =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\u029d\u16f4\4\2\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\u029d\u16f4\4\2\t"+
 		"\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -48194,153 +48954,153 @@ public class plsqlParser extends Parser {
 		"\u017d\u017d\u017f\u0180\u0182\u0182\u0184\u018b\u018d\u0192\u0194\u019b"+
 		"\u019d\u01a1\u01a4\u01aa\u01b0\u01b8\u01ba\u01bf\u01c1\u01c4\u01c7\u01c7"+
 		"\u01c9\u01c9\u01cb\u01ce\u01d0\u01d1\u01d3\u01d9\u01db\u01dd\u01df\u01df"+
-		"\u01e1\u01e1\u01e3\u0215\u029c\u029c\u19a0\2\u033b\3\2\2\2\4\u0342\3\2"+
-		"\2\2\6\u034b\3\2\2\2\b\u0367\3\2\2\2\n\u0369\3\2\2\2\f\u0387\3\2\2\2\16"+
-		"\u038b\3\2\2\2\20\u0392\3\2\2\2\22\u03a1\3\2\2\2\24\u03a5\3\2\2\2\26\u03cf"+
-		"\3\2\2\2\30\u03d1\3\2\2\2\32\u03d3\3\2\2\2\34\u03f4\3\2\2\2\36\u0407\3"+
-		"\2\2\2 \u040b\3\2\2\2\"\u0412\3\2\2\2$\u0414\3\2\2\2&\u0423\3\2\2\2(\u0427"+
-		"\3\2\2\2*\u0436\3\2\2\2,\u0447\3\2\2\2.\u0455\3\2\2\2\60\u0486\3\2\2\2"+
-		"\62\u048a\3\2\2\2\64\u04bd\3\2\2\2\66\u04e8\3\2\2\28\u04ec\3\2\2\2:\u04f3"+
-		"\3\2\2\2<\u04fe\3\2\2\2>\u0502\3\2\2\2@\u052d\3\2\2\2B\u0531\3\2\2\2D"+
-		"\u053a\3\2\2\2F\u055a\3\2\2\2H\u056c\3\2\2\2J\u057d\3\2\2\2L\u057f\3\2"+
-		"\2\2N\u0584\3\2\2\2P\u059c\3\2\2\2R\u05d0\3\2\2\2T\u05d4\3\2\2\2V\u05ec"+
-		"\3\2\2\2X\u05f0\3\2\2\2Z\u05fc\3\2\2\2\\\u060a\3\2\2\2^\u0612\3\2\2\2"+
-		"`\u0628\3\2\2\2b\u0634\3\2\2\2d\u0645\3\2\2\2f\u065c\3\2\2\2h\u065e\3"+
-		"\2\2\2j\u066f\3\2\2\2l\u068c\3\2\2\2n\u068e\3\2\2\2p\u0693\3\2\2\2r\u06ab"+
-		"\3\2\2\2t\u06d0\3\2\2\2v\u06d5\3\2\2\2x\u06ee\3\2\2\2z\u0706\3\2\2\2|"+
-		"\u070f\3\2\2\2~\u0718\3\2\2\2\u0080\u0721\3\2\2\2\u0082\u0725\3\2\2\2"+
-		"\u0084\u072a\3\2\2\2\u0086\u0742\3\2\2\2\u0088\u0744\3\2\2\2\u008a\u0748"+
-		"\3\2\2\2\u008c\u077c\3\2\2\2\u008e\u0798\3\2\2\2\u0090\u079a\3\2\2\2\u0092"+
-		"\u07a8\3\2\2\2\u0094\u07b4\3\2\2\2\u0096\u07b9\3\2\2\2\u0098\u07bf\3\2"+
-		"\2\2\u009a\u07c2\3\2\2\2\u009c\u07cd\3\2\2\2\u009e\u07dc\3\2\2\2\u00a0"+
-		"\u07ed\3\2\2\2\u00a2\u07fe\3\2\2\2\u00a4\u0806\3\2\2\2\u00a6\u080b\3\2"+
-		"\2\2\u00a8\u081b\3\2\2\2\u00aa\u081f\3\2\2\2\u00ac\u0837\3\2\2\2\u00ae"+
-		"\u083a\3\2\2\2\u00b0\u0840\3\2\2\2\u00b2\u084c\3\2\2\2\u00b4\u0855\3\2"+
-		"\2\2\u00b6\u0871\3\2\2\2\u00b8\u0877\3\2\2\2\u00ba\u087a\3\2\2\2\u00bc"+
-		"\u0881\3\2\2\2\u00be\u0889\3\2\2\2\u00c0\u0898\3\2\2\2\u00c2\u089a\3\2"+
-		"\2\2\u00c4\u089e\3\2\2\2\u00c6\u08a4\3\2\2\2\u00c8\u08c0\3\2\2\2\u00ca"+
-		"\u08e2\3\2\2\2\u00cc\u0912\3\2\2\2\u00ce\u091c\3\2\2\2\u00d0\u091e\3\2"+
-		"\2\2\u00d2\u0923\3\2\2\2\u00d4\u0931\3\2\2\2\u00d6\u0933\3\2\2\2\u00d8"+
-		"\u0938\3\2\2\2\u00da\u0948\3\2\2\2\u00dc\u0969\3\2\2\2\u00de\u098c\3\2"+
-		"\2\2\u00e0\u0990\3\2\2\2\u00e2\u099f\3\2\2\2\u00e4\u09a1\3\2\2\2\u00e6"+
-		"\u09a4\3\2\2\2\u00e8\u09a9\3\2\2\2\u00ea\u09b3\3\2\2\2\u00ec\u09cf\3\2"+
-		"\2\2\u00ee\u09d1\3\2\2\2\u00f0\u09d5\3\2\2\2\u00f2\u09d8\3\2\2\2\u00f4"+
-		"\u09dc\3\2\2\2\u00f6\u09e1\3\2\2\2\u00f8\u09e5\3\2\2\2\u00fa\u09f6\3\2"+
-		"\2\2\u00fc\u0a03\3\2\2\2\u00fe\u0a14\3\2\2\2\u0100\u0a21\3\2\2\2\u0102"+
-		"\u0a2d\3\2\2\2\u0104\u0a2f\3\2\2\2\u0106\u0a3d\3\2\2\2\u0108\u0a4e\3\2"+
-		"\2\2\u010a\u0a67\3\2\2\2\u010c\u0a71\3\2\2\2\u010e\u0a75\3\2\2\2\u0110"+
-		"\u0a9a\3\2\2\2\u0112\u0a9c\3\2\2\2\u0114\u0ab5\3\2\2\2\u0116\u0ac0\3\2"+
-		"\2\2\u0118\u0ac7\3\2\2\2\u011a\u0acb\3\2\2\2\u011c\u0add\3\2\2\2\u011e"+
-		"\u0ae5\3\2\2\2\u0120\u0af0\3\2\2\2\u0122\u0af7\3\2\2\2\u0124\u0afb\3\2"+
-		"\2\2\u0126\u0b18\3\2\2\2\u0128\u0b1c\3\2\2\2\u012a\u0b21\3\2\2\2\u012c"+
-		"\u0b29\3\2\2\2\u012e\u0b31\3\2\2\2\u0130\u0b34\3\2\2\2\u0132\u0b44\3\2"+
-		"\2\2\u0134\u0b49\3\2\2\2\u0136\u0b4d\3\2\2\2\u0138\u0b71\3\2\2\2\u013a"+
-		"\u0b73\3\2\2\2\u013c\u0b89\3\2\2\2\u013e\u0b8b\3\2\2\2\u0140\u0b90\3\2"+
-		"\2\2\u0142\u0b92\3\2\2\2\u0144\u0b94\3\2\2\2\u0146\u0b96\3\2\2\2\u0148"+
-		"\u0b9a\3\2\2\2\u014a\u0b9f\3\2\2\2\u014c\u0ba5\3\2\2\2\u014e\u0bae\3\2"+
-		"\2\2\u0150\u0bb4\3\2\2\2\u0152\u0bc8\3\2\2\2\u0154\u0bcd\3\2\2\2\u0156"+
-		"\u0bda\3\2\2\2\u0158\u0bdc\3\2\2\2\u015a\u0bea\3\2\2\2\u015c\u0bf4\3\2"+
-		"\2\2\u015e\u0bfa\3\2\2\2\u0160\u0bfc\3\2\2\2\u0162\u0bff\3\2\2\2\u0164"+
-		"\u0c04\3\2\2\2\u0166\u0c1c\3\2\2\2\u0168\u0c2b\3\2\2\2\u016a\u0c2d\3\2"+
-		"\2\2\u016c\u0c42\3\2\2\2\u016e\u0c51\3\2\2\2\u0170\u0c67\3\2\2\2\u0172"+
-		"\u0c6e\3\2\2\2\u0174\u0c7b\3\2\2\2\u0176\u0c7e\3\2\2\2\u0178\u0c93\3\2"+
-		"\2\2\u017a\u0c9d\3\2\2\2\u017c\u0ca6\3\2\2\2\u017e\u0cc1\3\2\2\2\u0180"+
-		"\u0cec\3\2\2\2\u0182\u0cfc\3\2\2\2\u0184\u0d09\3\2\2\2\u0186\u0d12\3\2"+
-		"\2\2\u0188\u0d14\3\2\2\2\u018a\u0d33\3\2\2\2\u018c\u0d37\3\2\2\2\u018e"+
-		"\u0d3f\3\2\2\2\u0190\u0d41\3\2\2\2\u0192\u0d49\3\2\2\2\u0194\u0d70\3\2"+
-		"\2\2\u0196\u0d7c\3\2\2\2\u0198\u0d91\3\2\2\2\u019a\u0d94\3\2\2\2\u019c"+
-		"\u0da0\3\2\2\2\u019e\u0da4\3\2\2\2\u01a0\u0dbd\3\2\2\2\u01a2\u0dbf\3\2"+
-		"\2\2\u01a4\u0dd0\3\2\2\2\u01a6\u0dd7\3\2\2\2\u01a8\u0de6\3\2\2\2\u01aa"+
-		"\u0dfd\3\2\2\2\u01ac\u0e03\3\2\2\2\u01ae\u0e05\3\2\2\2\u01b0\u0e1d\3\2"+
-		"\2\2\u01b2\u0e35\3\2\2\2\u01b4\u0e59\3\2\2\2\u01b6\u0e5b\3\2\2\2\u01b8"+
-		"\u0e79\3\2\2\2\u01ba\u0e7e\3\2\2\2\u01bc\u0e80\3\2\2\2\u01be\u0e8c\3\2"+
-		"\2\2\u01c0\u0e9c\3\2\2\2\u01c2\u0e9e\3\2\2\2\u01c4\u0ea1\3\2\2\2\u01c6"+
-		"\u0ebb\3\2\2\2\u01c8\u0ebd\3\2\2\2\u01ca\u0ec1\3\2\2\2\u01cc\u0ed0\3\2"+
-		"\2\2\u01ce\u0edc\3\2\2\2\u01d0\u0ee4\3\2\2\2\u01d2\u0ee8\3\2\2\2\u01d4"+
-		"\u0ef3\3\2\2\2\u01d6\u0ef8\3\2\2\2\u01d8\u0f05\3\2\2\2\u01da\u0f19\3\2"+
-		"\2\2\u01dc\u0f22\3\2\2\2\u01de\u0f24\3\2\2\2\u01e0\u0f2b\3\2\2\2\u01e2"+
-		"\u0f30\3\2\2\2\u01e4\u0f3d\3\2\2\2\u01e6\u0f45\3\2\2\2\u01e8\u0f4d\3\2"+
-		"\2\2\u01ea\u0f5b\3\2\2\2\u01ec\u0f5d\3\2\2\2\u01ee\u0f69\3\2\2\2\u01f0"+
-		"\u0f8c\3\2\2\2\u01f2\u0f8e\3\2\2\2\u01f4\u0f9c\3\2\2\2\u01f6\u0fa1\3\2"+
-		"\2\2\u01f8\u0fb3\3\2\2\2\u01fa\u0fb7\3\2\2\2\u01fc\u0fbf\3\2\2\2\u01fe"+
-		"\u0fc9\3\2\2\2\u0200\u0fd1\3\2\2\2\u0202\u0fd7\3\2\2\2\u0204\u0fe6\3\2"+
-		"\2\2\u0206\u0fe9\3\2\2\2\u0208\u1002\3\2\2\2\u020a\u1015\3\2\2\2\u020c"+
-		"\u1019\3\2\2\2\u020e\u101c\3\2\2\2\u0210\u1038\3\2\2\2\u0212\u103d\3\2"+
-		"\2\2\u0214\u1050\3\2\2\2\u0216\u1052\3\2\2\2\u0218\u1062\3\2\2\2\u021a"+
-		"\u106a\3\2\2\2\u021c\u106f\3\2\2\2\u021e\u107a\3\2\2\2\u0220\u1085\3\2"+
-		"\2\2\u0222\u1088\3\2\2\2\u0224\u109a\3\2\2\2\u0226\u109c\3\2\2\2\u0228"+
-		"\u10ab\3\2\2\2\u022a\u10b6\3\2\2\2\u022c\u10c4\3\2\2\2\u022e\u10c9\3\2"+
-		"\2\2\u0230\u10ce\3\2\2\2\u0232\u10db\3\2\2\2\u0234\u10dd\3\2\2\2\u0236"+
-		"\u10e8\3\2\2\2\u0238\u10ea\3\2\2\2\u023a\u10ec\3\2\2\2\u023c\u10f7\3\2"+
-		"\2\2\u023e\u10f9\3\2\2\2\u0240\u111e\3\2\2\2\u0242\u1127\3\2\2\2\u0244"+
-		"\u1129\3\2\2\2\u0246\u1138\3\2\2\2\u0248\u1149\3\2\2\2\u024a\u114b\3\2"+
-		"\2\2\u024c\u1160\3\2\2\2\u024e\u1162\3\2\2\2\u0250\u1166\3\2\2\2\u0252"+
-		"\u116f\3\2\2\2\u0254\u1171\3\2\2\2\u0256\u1179\3\2\2\2\u0258\u1181\3\2"+
-		"\2\2\u025a\u11a4\3\2\2\2\u025c\u11a6\3\2\2\2\u025e\u11c4\3\2\2\2\u0260"+
-		"\u11c6\3\2\2\2\u0262\u11d6\3\2\2\2\u0264\u11d9\3\2\2\2\u0266\u11db\3\2"+
-		"\2\2\u0268\u120a\3\2\2\2\u026a\u120e\3\2\2\2\u026c\u1211\3\2\2\2\u026e"+
-		"\u1224\3\2\2\2\u0270\u122c\3\2\2\2\u0272\u123e\3\2\2\2\u0274\u1245\3\2"+
-		"\2\2\u0276\u125e\3\2\2\2\u0278\u1260\3\2\2\2\u027a\u1264\3\2\2\2\u027c"+
-		"\u126d\3\2\2\2\u027e\u13af\3\2\2\2\u0280\u13b1\3\2\2\2\u0282\u13b3\3\2"+
-		"\2\2\u0284\u13b5\3\2\2\2\u0286\u13b7\3\2\2\2\u0288\u13c4\3\2\2\2\u028a"+
-		"\u13cd\3\2\2\2\u028c\u13d6\3\2\2\2\u028e\u13d8\3\2\2\2\u0290\u13e9\3\2"+
-		"\2\2\u0292\u13ef\3\2\2\2\u0294\u13fa\3\2\2\2\u0296\u13fc\3\2\2\2\u0298"+
-		"\u1410\3\2\2\2\u029a\u141e\3\2\2\2\u029c\u1430\3\2\2\2\u029e\u1445\3\2"+
-		"\2\2\u02a0\u1452\3\2\2\2\u02a2\u1455\3\2\2\2\u02a4\u145e\3\2\2\2\u02a6"+
-		"\u1464\3\2\2\2\u02a8\u146c\3\2\2\2\u02aa\u146f\3\2\2\2\u02ac\u147a\3\2"+
-		"\2\2\u02ae\u1481\3\2\2\2\u02b0\u1486\3\2\2\2\u02b2\u148f\3\2\2\2\u02b4"+
-		"\u1498\3\2\2\2\u02b6\u149a\3\2\2\2\u02b8\u149c\3\2\2\2\u02ba\u14aa\3\2"+
-		"\2\2\u02bc\u14ae\3\2\2\2\u02be\u14b0\3\2\2\2\u02c0\u14b2\3\2\2\2\u02c2"+
-		"\u14b7\3\2\2\2\u02c4\u14cf\3\2\2\2\u02c6\u14d3\3\2\2\2\u02c8\u14d5\3\2"+
-		"\2\2\u02ca\u14d7\3\2\2\2\u02cc\u14d9\3\2\2\2\u02ce\u14db\3\2\2\2\u02d0"+
-		"\u14dd\3\2\2\2\u02d2\u14df\3\2\2\2\u02d4\u14e1\3\2\2\2\u02d6\u14ed\3\2"+
-		"\2\2\u02d8\u14ef\3\2\2\2\u02da\u14f4\3\2\2\2\u02dc\u14f6\3\2\2\2\u02de"+
-		"\u14f8\3\2\2\2\u02e0\u14fa\3\2\2\2\u02e2\u1502\3\2\2\2\u02e4\u1504\3\2"+
-		"\2\2\u02e6\u1510\3\2\2\2\u02e8\u1512\3\2\2\2\u02ea\u151d\3\2\2\2\u02ec"+
-		"\u1521\3\2\2\2\u02ee\u152c\3\2\2\2\u02f0\u1533\3\2\2\2\u02f2\u153a\3\2"+
-		"\2\2\u02f4\u1548\3\2\2\2\u02f6\u154a\3\2\2\2\u02f8\u154e\3\2\2\2\u02fa"+
-		"\u1552\3\2\2\2\u02fc\u1554\3\2\2\2\u02fe\u1559\3\2\2\2\u0300\u155b\3\2"+
-		"\2\2\u0302\u1563\3\2\2\2\u0304\u156d\3\2\2\2\u0306\u1575\3\2\2\2\u0308"+
-		"\u157e\3\2\2\2\u030a\u158d\3\2\2\2\u030c\u15a2\3\2\2\2\u030e\u15cc\3\2"+
-		"\2\2\u0310\u15d3\3\2\2\2\u0312\u15df\3\2\2\2\u0314\u15fd\3\2\2\2\u0316"+
-		"\u15ff\3\2\2\2\u0318\u1649\3\2\2\2\u031a\u164e\3\2\2\2\u031c\u1661\3\2"+
-		"\2\2\u031e\u166b\3\2\2\2\u0320\u167a\3\2\2\2\u0322\u16c2\3\2\2\2\u0324"+
-		"\u16c4\3\2\2\2\u0326\u16c6\3\2\2\2\u0328\u16c9\3\2\2\2\u032a\u16cd\3\2"+
-		"\2\2\u032c\u16d3\3\2\2\2\u032e\u16dc\3\2\2\2\u0330\u16e1\3\2\2\2\u0332"+
-		"\u16e6\3\2\2\2\u0334\u16eb\3\2\2\2\u0336\u16ed\3\2\2\2\u0338\u16f1\3\2"+
-		"\2\2\u033a\u033c\n\2\2\2\u033b\u033a\3\2\2\2\u033c\u033d\3\2\2\2\u033d"+
-		"\u033b\3\2\2\2\u033d\u033e\3\2\2\2\u033e\3\3\2\2\2\u033f\u0341\5\b\5\2"+
-		"\u0340\u033f\3\2\2\2\u0341\u0344\3\2\2\2\u0342\u0340\3\2\2\2\u0342\u0343"+
-		"\3\2\2\2\u0343\u0345\3\2\2\2\u0344\u0342\3\2\2\2\u0345\u0346\7\2\2\3\u0346"+
-		"\5\3\2\2\2\u0347\u034a\5\b\5\2\u0348\u034a\5\u02ae\u0158\2\u0349\u0347"+
-		"\3\2\2\2\u0349\u0348\3\2\2\2\u034a\u034d\3\2\2\2\u034b\u0349\3\2\2\2\u034b"+
-		"\u034c\3\2\2\2\u034c\u034e\3\2\2\2\u034d\u034b\3\2\2\2\u034e\u034f\7\2"+
-		"\2\3\u034f\7\3\2\2\2\u0350\u0368\5N(\2\u0351\u0368\5^\60\2\u0352\u0368"+
-		"\5p9\2\u0353\u0368\5\u00e8u\2\u0354\u0368\5v<\2\u0355\u0368\5\u009cO\2"+
-		"\u0356\u0368\5$\23\2\u0357\u0368\5P)\2\u0358\u0368\5r:\2\u0359\u0368\5"+
-		"`\61\2\u035a\u0368\5F$\2\u035b\u0368\5\n\6\2\u035c\u0368\5D#\2\u035d\u0368"+
-		"\5\u00eav\2\u035e\u0368\5x=\2\u035f\u0368\5\u00b0Y\2\u0360\u0368\5L\'"+
-		"\2\u0361\u0368\5\\/\2\u0362\u0368\5n8\2\u0363\u0368\5\u00e6t\2\u0364\u0368"+
-		"\5t;\2\u0365\u0368\5\u009aN\2\u0366\u0368\5\u015c\u00af\2\u0367\u0350"+
-		"\3\2\2\2\u0367\u0351\3\2\2\2\u0367\u0352\3\2\2\2\u0367\u0353\3\2\2\2\u0367"+
-		"\u0354\3\2\2\2\u0367\u0355\3\2\2\2\u0367\u0356\3\2\2\2\u0367\u0357\3\2"+
-		"\2\2\u0367\u0358\3\2\2\2\u0367\u0359\3\2\2\2\u0367\u035a\3\2\2\2\u0367"+
-		"\u035b\3\2\2\2\u0367\u035c\3\2\2\2\u0367\u035d\3\2\2\2\u0367\u035e\3\2"+
-		"\2\2\u0367\u035f\3\2\2\2\u0367\u0360\3\2\2\2\u0367\u0361\3\2\2\2\u0367"+
-		"\u0362\3\2\2\2\u0367\u0363\3\2\2\2\u0367\u0364\3\2\2\2\u0367\u0365\3\2"+
-		"\2\2\u0367\u0366\3\2\2\2\u0368\t\3\2\2\2\u0369\u036a\7X\2\2\u036a\u036e"+
-		"\7\u01ac\2\2\u036b\u036c\5\u02d2\u016a\2\u036c\u036d\7\u021a\2\2\u036d"+
-		"\u036f\3\2\2\2\u036e\u036b\3\2\2\2\u036e\u036f\3\2\2\2\u036f\u0370\3\2"+
-		"\2\2\u0370\u0371\5\u0302\u0182\2\u0371\u0372\7\u0221\2\2\u0372\u0377\5"+
-		"\u0114\u008b\2\u0373\u0374\7\u0227\2\2\u0374\u0376\5\u0114\u008b\2\u0375"+
-		"\u0373\3\2\2\2\u0376\u0379\3\2\2\2\u0377\u0375\3\2\2\2\u0377\u0378\3\2"+
-		"\2\2\u0378\u037a\3\2\2\2\u0379\u0377\3\2\2\2\u037a\u037c\7\u0222\2\2\u037b"+
-		"\u037d\5\f\7\2\u037c\u037b\3\2\2\2\u037c\u037d\3\2\2\2\u037d\u0381\3\2"+
-		"\2\2\u037e\u0380\5\32\16\2\u037f\u037e\3\2\2\2\u0380\u0383\3\2\2\2\u0381"+
-		"\u037f\3\2\2\2\u0381\u0382\3\2\2\2\u0382\u0384\3\2\2\2\u0383\u0381\3\2"+
-		"\2\2\u0384\u0385\7\u022d\2\2\u0385\13\3\2\2\2\u0386\u0388\5\16\b\2\u0387"+
-		"\u0386\3\2\2\2\u0387\u0388\3\2\2\2\u0388\u0389\3\2\2\2\u0389\u038a\5\20"+
-		"\t\2\u038a\r\3\2\2\2\u038b\u038c\7\u0180\2\2\u038c\u038d\7Y\2\2\u038d"+
+		"\u01e1\u01e1\u01e3\u0215\u029c\u029c\2\u19a0\2\u033b\3\2\2\2\4\u0342\3"+
+		"\2\2\2\6\u034b\3\2\2\2\b\u0367\3\2\2\2\n\u0369\3\2\2\2\f\u0387\3\2\2\2"+
+		"\16\u038b\3\2\2\2\20\u0392\3\2\2\2\22\u03a1\3\2\2\2\24\u03a5\3\2\2\2\26"+
+		"\u03cf\3\2\2\2\30\u03d1\3\2\2\2\32\u03d3\3\2\2\2\34\u03f4\3\2\2\2\36\u0407"+
+		"\3\2\2\2 \u040b\3\2\2\2\"\u0412\3\2\2\2$\u0414\3\2\2\2&\u0423\3\2\2\2"+
+		"(\u0427\3\2\2\2*\u0436\3\2\2\2,\u0447\3\2\2\2.\u0455\3\2\2\2\60\u0486"+
+		"\3\2\2\2\62\u048a\3\2\2\2\64\u04bd\3\2\2\2\66\u04e8\3\2\2\28\u04ec\3\2"+
+		"\2\2:\u04f3\3\2\2\2<\u04fe\3\2\2\2>\u0502\3\2\2\2@\u052d\3\2\2\2B\u0531"+
+		"\3\2\2\2D\u053a\3\2\2\2F\u055a\3\2\2\2H\u056c\3\2\2\2J\u057d\3\2\2\2L"+
+		"\u057f\3\2\2\2N\u0584\3\2\2\2P\u059c\3\2\2\2R\u05d0\3\2\2\2T\u05d4\3\2"+
+		"\2\2V\u05ec\3\2\2\2X\u05f0\3\2\2\2Z\u05fc\3\2\2\2\\\u060a\3\2\2\2^\u0612"+
+		"\3\2\2\2`\u0628\3\2\2\2b\u0634\3\2\2\2d\u0645\3\2\2\2f\u065c\3\2\2\2h"+
+		"\u065e\3\2\2\2j\u066f\3\2\2\2l\u068c\3\2\2\2n\u068e\3\2\2\2p\u0693\3\2"+
+		"\2\2r\u06ab\3\2\2\2t\u06d0\3\2\2\2v\u06d5\3\2\2\2x\u06ee\3\2\2\2z\u0706"+
+		"\3\2\2\2|\u070f\3\2\2\2~\u0718\3\2\2\2\u0080\u0721\3\2\2\2\u0082\u0725"+
+		"\3\2\2\2\u0084\u072a\3\2\2\2\u0086\u0742\3\2\2\2\u0088\u0744\3\2\2\2\u008a"+
+		"\u0748\3\2\2\2\u008c\u077c\3\2\2\2\u008e\u0798\3\2\2\2\u0090\u079a\3\2"+
+		"\2\2\u0092\u07a8\3\2\2\2\u0094\u07b4\3\2\2\2\u0096\u07b9\3\2\2\2\u0098"+
+		"\u07bf\3\2\2\2\u009a\u07c2\3\2\2\2\u009c\u07cd\3\2\2\2\u009e\u07dc\3\2"+
+		"\2\2\u00a0\u07ed\3\2\2\2\u00a2\u07fe\3\2\2\2\u00a4\u0806\3\2\2\2\u00a6"+
+		"\u080b\3\2\2\2\u00a8\u081b\3\2\2\2\u00aa\u081f\3\2\2\2\u00ac\u0837\3\2"+
+		"\2\2\u00ae\u083a\3\2\2\2\u00b0\u0840\3\2\2\2\u00b2\u084c\3\2\2\2\u00b4"+
+		"\u0855\3\2\2\2\u00b6\u0871\3\2\2\2\u00b8\u0877\3\2\2\2\u00ba\u087a\3\2"+
+		"\2\2\u00bc\u0881\3\2\2\2\u00be\u0889\3\2\2\2\u00c0\u0898\3\2\2\2\u00c2"+
+		"\u089a\3\2\2\2\u00c4\u089e\3\2\2\2\u00c6\u08a4\3\2\2\2\u00c8\u08c0\3\2"+
+		"\2\2\u00ca\u08e2\3\2\2\2\u00cc\u0912\3\2\2\2\u00ce\u091c\3\2\2\2\u00d0"+
+		"\u091e\3\2\2\2\u00d2\u0923\3\2\2\2\u00d4\u0931\3\2\2\2\u00d6\u0933\3\2"+
+		"\2\2\u00d8\u0938\3\2\2\2\u00da\u0948\3\2\2\2\u00dc\u0969\3\2\2\2\u00de"+
+		"\u098c\3\2\2\2\u00e0\u0990\3\2\2\2\u00e2\u099f\3\2\2\2\u00e4\u09a1\3\2"+
+		"\2\2\u00e6\u09a4\3\2\2\2\u00e8\u09a9\3\2\2\2\u00ea\u09b3\3\2\2\2\u00ec"+
+		"\u09cf\3\2\2\2\u00ee\u09d1\3\2\2\2\u00f0\u09d5\3\2\2\2\u00f2\u09d8\3\2"+
+		"\2\2\u00f4\u09dc\3\2\2\2\u00f6\u09e1\3\2\2\2\u00f8\u09e5\3\2\2\2\u00fa"+
+		"\u09f6\3\2\2\2\u00fc\u0a03\3\2\2\2\u00fe\u0a14\3\2\2\2\u0100\u0a21\3\2"+
+		"\2\2\u0102\u0a2d\3\2\2\2\u0104\u0a2f\3\2\2\2\u0106\u0a3d\3\2\2\2\u0108"+
+		"\u0a4e\3\2\2\2\u010a\u0a67\3\2\2\2\u010c\u0a71\3\2\2\2\u010e\u0a75\3\2"+
+		"\2\2\u0110\u0a9a\3\2\2\2\u0112\u0a9c\3\2\2\2\u0114\u0ab5\3\2\2\2\u0116"+
+		"\u0ac0\3\2\2\2\u0118\u0ac7\3\2\2\2\u011a\u0acb\3\2\2\2\u011c\u0add\3\2"+
+		"\2\2\u011e\u0ae5\3\2\2\2\u0120\u0af0\3\2\2\2\u0122\u0af7\3\2\2\2\u0124"+
+		"\u0afb\3\2\2\2\u0126\u0b18\3\2\2\2\u0128\u0b1c\3\2\2\2\u012a\u0b21\3\2"+
+		"\2\2\u012c\u0b29\3\2\2\2\u012e\u0b31\3\2\2\2\u0130\u0b34\3\2\2\2\u0132"+
+		"\u0b44\3\2\2\2\u0134\u0b49\3\2\2\2\u0136\u0b4d\3\2\2\2\u0138\u0b71\3\2"+
+		"\2\2\u013a\u0b73\3\2\2\2\u013c\u0b89\3\2\2\2\u013e\u0b8b\3\2\2\2\u0140"+
+		"\u0b90\3\2\2\2\u0142\u0b92\3\2\2\2\u0144\u0b94\3\2\2\2\u0146\u0b96\3\2"+
+		"\2\2\u0148\u0b9a\3\2\2\2\u014a\u0b9f\3\2\2\2\u014c\u0ba5\3\2\2\2\u014e"+
+		"\u0bae\3\2\2\2\u0150\u0bb4\3\2\2\2\u0152\u0bc8\3\2\2\2\u0154\u0bcd\3\2"+
+		"\2\2\u0156\u0bda\3\2\2\2\u0158\u0bdc\3\2\2\2\u015a\u0bea\3\2\2\2\u015c"+
+		"\u0bf4\3\2\2\2\u015e\u0bfa\3\2\2\2\u0160\u0bfc\3\2\2\2\u0162\u0bff\3\2"+
+		"\2\2\u0164\u0c04\3\2\2\2\u0166\u0c1c\3\2\2\2\u0168\u0c2b\3\2\2\2\u016a"+
+		"\u0c2d\3\2\2\2\u016c\u0c42\3\2\2\2\u016e\u0c51\3\2\2\2\u0170\u0c67\3\2"+
+		"\2\2\u0172\u0c6e\3\2\2\2\u0174\u0c7b\3\2\2\2\u0176\u0c7e\3\2\2\2\u0178"+
+		"\u0c93\3\2\2\2\u017a\u0c9d\3\2\2\2\u017c\u0ca6\3\2\2\2\u017e\u0cc1\3\2"+
+		"\2\2\u0180\u0cec\3\2\2\2\u0182\u0cfc\3\2\2\2\u0184\u0d09\3\2\2\2\u0186"+
+		"\u0d12\3\2\2\2\u0188\u0d14\3\2\2\2\u018a\u0d33\3\2\2\2\u018c\u0d37\3\2"+
+		"\2\2\u018e\u0d3f\3\2\2\2\u0190\u0d41\3\2\2\2\u0192\u0d49\3\2\2\2\u0194"+
+		"\u0d70\3\2\2\2\u0196\u0d7c\3\2\2\2\u0198\u0d91\3\2\2\2\u019a\u0d94\3\2"+
+		"\2\2\u019c\u0da0\3\2\2\2\u019e\u0da4\3\2\2\2\u01a0\u0dbd\3\2\2\2\u01a2"+
+		"\u0dbf\3\2\2\2\u01a4\u0dd0\3\2\2\2\u01a6\u0dd7\3\2\2\2\u01a8\u0de6\3\2"+
+		"\2\2\u01aa\u0dfd\3\2\2\2\u01ac\u0e03\3\2\2\2\u01ae\u0e05\3\2\2\2\u01b0"+
+		"\u0e1d\3\2\2\2\u01b2\u0e35\3\2\2\2\u01b4\u0e59\3\2\2\2\u01b6\u0e5b\3\2"+
+		"\2\2\u01b8\u0e79\3\2\2\2\u01ba\u0e7e\3\2\2\2\u01bc\u0e80\3\2\2\2\u01be"+
+		"\u0e8c\3\2\2\2\u01c0\u0e9c\3\2\2\2\u01c2\u0e9e\3\2\2\2\u01c4\u0ea1\3\2"+
+		"\2\2\u01c6\u0ebb\3\2\2\2\u01c8\u0ebd\3\2\2\2\u01ca\u0ec1\3\2\2\2\u01cc"+
+		"\u0ed0\3\2\2\2\u01ce\u0edc\3\2\2\2\u01d0\u0ee4\3\2\2\2\u01d2\u0ee8\3\2"+
+		"\2\2\u01d4\u0ef3\3\2\2\2\u01d6\u0ef8\3\2\2\2\u01d8\u0f05\3\2\2\2\u01da"+
+		"\u0f19\3\2\2\2\u01dc\u0f22\3\2\2\2\u01de\u0f24\3\2\2\2\u01e0\u0f2b\3\2"+
+		"\2\2\u01e2\u0f30\3\2\2\2\u01e4\u0f3d\3\2\2\2\u01e6\u0f45\3\2\2\2\u01e8"+
+		"\u0f4d\3\2\2\2\u01ea\u0f5b\3\2\2\2\u01ec\u0f5d\3\2\2\2\u01ee\u0f69\3\2"+
+		"\2\2\u01f0\u0f8c\3\2\2\2\u01f2\u0f8e\3\2\2\2\u01f4\u0f9c\3\2\2\2\u01f6"+
+		"\u0fa1\3\2\2\2\u01f8\u0fb3\3\2\2\2\u01fa\u0fb7\3\2\2\2\u01fc\u0fbf\3\2"+
+		"\2\2\u01fe\u0fc9\3\2\2\2\u0200\u0fd1\3\2\2\2\u0202\u0fd7\3\2\2\2\u0204"+
+		"\u0fe6\3\2\2\2\u0206\u0fe9\3\2\2\2\u0208\u1002\3\2\2\2\u020a\u1015\3\2"+
+		"\2\2\u020c\u1019\3\2\2\2\u020e\u101c\3\2\2\2\u0210\u1038\3\2\2\2\u0212"+
+		"\u103d\3\2\2\2\u0214\u1050\3\2\2\2\u0216\u1052\3\2\2\2\u0218\u1062\3\2"+
+		"\2\2\u021a\u106a\3\2\2\2\u021c\u106f\3\2\2\2\u021e\u107a\3\2\2\2\u0220"+
+		"\u1085\3\2\2\2\u0222\u1088\3\2\2\2\u0224\u109a\3\2\2\2\u0226\u109c\3\2"+
+		"\2\2\u0228\u10ab\3\2\2\2\u022a\u10b6\3\2\2\2\u022c\u10c4\3\2\2\2\u022e"+
+		"\u10c9\3\2\2\2\u0230\u10ce\3\2\2\2\u0232\u10db\3\2\2\2\u0234\u10dd\3\2"+
+		"\2\2\u0236\u10e8\3\2\2\2\u0238\u10ea\3\2\2\2\u023a\u10ec\3\2\2\2\u023c"+
+		"\u10f7\3\2\2\2\u023e\u10f9\3\2\2\2\u0240\u111e\3\2\2\2\u0242\u1127\3\2"+
+		"\2\2\u0244\u1129\3\2\2\2\u0246\u1138\3\2\2\2\u0248\u1149\3\2\2\2\u024a"+
+		"\u114b\3\2\2\2\u024c\u1160\3\2\2\2\u024e\u1162\3\2\2\2\u0250\u1166\3\2"+
+		"\2\2\u0252\u116f\3\2\2\2\u0254\u1171\3\2\2\2\u0256\u1179\3\2\2\2\u0258"+
+		"\u1181\3\2\2\2\u025a\u11a4\3\2\2\2\u025c\u11a6\3\2\2\2\u025e\u11c4\3\2"+
+		"\2\2\u0260\u11c6\3\2\2\2\u0262\u11d6\3\2\2\2\u0264\u11d9\3\2\2\2\u0266"+
+		"\u11db\3\2\2\2\u0268\u120a\3\2\2\2\u026a\u120e\3\2\2\2\u026c\u1211\3\2"+
+		"\2\2\u026e\u1224\3\2\2\2\u0270\u122c\3\2\2\2\u0272\u123e\3\2\2\2\u0274"+
+		"\u1245\3\2\2\2\u0276\u125e\3\2\2\2\u0278\u1260\3\2\2\2\u027a\u1264\3\2"+
+		"\2\2\u027c\u126d\3\2\2\2\u027e\u13af\3\2\2\2\u0280\u13b1\3\2\2\2\u0282"+
+		"\u13b3\3\2\2\2\u0284\u13b5\3\2\2\2\u0286\u13b7\3\2\2\2\u0288\u13c4\3\2"+
+		"\2\2\u028a\u13cd\3\2\2\2\u028c\u13d6\3\2\2\2\u028e\u13d8\3\2\2\2\u0290"+
+		"\u13e9\3\2\2\2\u0292\u13ef\3\2\2\2\u0294\u13fa\3\2\2\2\u0296\u13fc\3\2"+
+		"\2\2\u0298\u1410\3\2\2\2\u029a\u141e\3\2\2\2\u029c\u1430\3\2\2\2\u029e"+
+		"\u1445\3\2\2\2\u02a0\u1452\3\2\2\2\u02a2\u1455\3\2\2\2\u02a4\u145e\3\2"+
+		"\2\2\u02a6\u1464\3\2\2\2\u02a8\u146c\3\2\2\2\u02aa\u146f\3\2\2\2\u02ac"+
+		"\u147a\3\2\2\2\u02ae\u1481\3\2\2\2\u02b0\u1486\3\2\2\2\u02b2\u148f\3\2"+
+		"\2\2\u02b4\u1498\3\2\2\2\u02b6\u149a\3\2\2\2\u02b8\u149c\3\2\2\2\u02ba"+
+		"\u14aa\3\2\2\2\u02bc\u14ae\3\2\2\2\u02be\u14b0\3\2\2\2\u02c0\u14b2\3\2"+
+		"\2\2\u02c2\u14b7\3\2\2\2\u02c4\u14cf\3\2\2\2\u02c6\u14d3\3\2\2\2\u02c8"+
+		"\u14d5\3\2\2\2\u02ca\u14d7\3\2\2\2\u02cc\u14d9\3\2\2\2\u02ce\u14db\3\2"+
+		"\2\2\u02d0\u14dd\3\2\2\2\u02d2\u14df\3\2\2\2\u02d4\u14e1\3\2\2\2\u02d6"+
+		"\u14ed\3\2\2\2\u02d8\u14ef\3\2\2\2\u02da\u14f4\3\2\2\2\u02dc\u14f6\3\2"+
+		"\2\2\u02de\u14f8\3\2\2\2\u02e0\u14fa\3\2\2\2\u02e2\u1502\3\2\2\2\u02e4"+
+		"\u1504\3\2\2\2\u02e6\u1510\3\2\2\2\u02e8\u1512\3\2\2\2\u02ea\u151d\3\2"+
+		"\2\2\u02ec\u1521\3\2\2\2\u02ee\u152c\3\2\2\2\u02f0\u1533\3\2\2\2\u02f2"+
+		"\u153a\3\2\2\2\u02f4\u1548\3\2\2\2\u02f6\u154a\3\2\2\2\u02f8\u154e\3\2"+
+		"\2\2\u02fa\u1552\3\2\2\2\u02fc\u1554\3\2\2\2\u02fe\u1559\3\2\2\2\u0300"+
+		"\u155b\3\2\2\2\u0302\u1563\3\2\2\2\u0304\u156d\3\2\2\2\u0306\u1575\3\2"+
+		"\2\2\u0308\u157e\3\2\2\2\u030a\u158d\3\2\2\2\u030c\u15a2\3\2\2\2\u030e"+
+		"\u15cc\3\2\2\2\u0310\u15d3\3\2\2\2\u0312\u15df\3\2\2\2\u0314\u15fd\3\2"+
+		"\2\2\u0316\u15ff\3\2\2\2\u0318\u1649\3\2\2\2\u031a\u164e\3\2\2\2\u031c"+
+		"\u1661\3\2\2\2\u031e\u166b\3\2\2\2\u0320\u167a\3\2\2\2\u0322\u16c2\3\2"+
+		"\2\2\u0324\u16c4\3\2\2\2\u0326\u16c6\3\2\2\2\u0328\u16c9\3\2\2\2\u032a"+
+		"\u16cd\3\2\2\2\u032c\u16d3\3\2\2\2\u032e\u16dc\3\2\2\2\u0330\u16e1\3\2"+
+		"\2\2\u0332\u16e6\3\2\2\2\u0334\u16eb\3\2\2\2\u0336\u16ed\3\2\2\2\u0338"+
+		"\u16f1\3\2\2\2\u033a\u033c\n\2\2\2\u033b\u033a\3\2\2\2\u033c\u033d\3\2"+
+		"\2\2\u033d\u033b\3\2\2\2\u033d\u033e\3\2\2\2\u033e\3\3\2\2\2\u033f\u0341"+
+		"\5\b\5\2\u0340\u033f\3\2\2\2\u0341\u0344\3\2\2\2\u0342\u0340\3\2\2\2\u0342"+
+		"\u0343\3\2\2\2\u0343\u0345\3\2\2\2\u0344\u0342\3\2\2\2\u0345\u0346\7\2"+
+		"\2\3\u0346\5\3\2\2\2\u0347\u034a\5\b\5\2\u0348\u034a\5\u02ae\u0158\2\u0349"+
+		"\u0347\3\2\2\2\u0349\u0348\3\2\2\2\u034a\u034d\3\2\2\2\u034b\u0349\3\2"+
+		"\2\2\u034b\u034c\3\2\2\2\u034c\u034e\3\2\2\2\u034d\u034b\3\2\2\2\u034e"+
+		"\u034f\7\2\2\3\u034f\7\3\2\2\2\u0350\u0368\5N(\2\u0351\u0368\5^\60\2\u0352"+
+		"\u0368\5p9\2\u0353\u0368\5\u00e8u\2\u0354\u0368\5v<\2\u0355\u0368\5\u009c"+
+		"O\2\u0356\u0368\5$\23\2\u0357\u0368\5P)\2\u0358\u0368\5r:\2\u0359\u0368"+
+		"\5`\61\2\u035a\u0368\5F$\2\u035b\u0368\5\n\6\2\u035c\u0368\5D#\2\u035d"+
+		"\u0368\5\u00eav\2\u035e\u0368\5x=\2\u035f\u0368\5\u00b0Y\2\u0360\u0368"+
+		"\5L\'\2\u0361\u0368\5\\/\2\u0362\u0368\5n8\2\u0363\u0368\5\u00e6t\2\u0364"+
+		"\u0368\5t;\2\u0365\u0368\5\u009aN\2\u0366\u0368\5\u015c\u00af\2\u0367"+
+		"\u0350\3\2\2\2\u0367\u0351\3\2\2\2\u0367\u0352\3\2\2\2\u0367\u0353\3\2"+
+		"\2\2\u0367\u0354\3\2\2\2\u0367\u0355\3\2\2\2\u0367\u0356\3\2\2\2\u0367"+
+		"\u0357\3\2\2\2\u0367\u0358\3\2\2\2\u0367\u0359\3\2\2\2\u0367\u035a\3\2"+
+		"\2\2\u0367\u035b\3\2\2\2\u0367\u035c\3\2\2\2\u0367\u035d\3\2\2\2\u0367"+
+		"\u035e\3\2\2\2\u0367\u035f\3\2\2\2\u0367\u0360\3\2\2\2\u0367\u0361\3\2"+
+		"\2\2\u0367\u0362\3\2\2\2\u0367\u0363\3\2\2\2\u0367\u0364\3\2\2\2\u0367"+
+		"\u0365\3\2\2\2\u0367\u0366\3\2\2\2\u0368\t\3\2\2\2\u0369\u036a\7X\2\2"+
+		"\u036a\u036e\7\u01ac\2\2\u036b\u036c\5\u02d2\u016a\2\u036c\u036d\7\u021a"+
+		"\2\2\u036d\u036f\3\2\2\2\u036e\u036b\3\2\2\2\u036e\u036f\3\2\2\2\u036f"+
+		"\u0370\3\2\2\2\u0370\u0371\5\u0302\u0182\2\u0371\u0372\7\u0221\2\2\u0372"+
+		"\u0377\5\u0114\u008b\2\u0373\u0374\7\u0227\2\2\u0374\u0376\5\u0114\u008b"+
+		"\2\u0375\u0373\3\2\2\2\u0376\u0379\3\2\2\2\u0377\u0375\3\2\2\2\u0377\u0378"+
+		"\3\2\2\2\u0378\u037a\3\2\2\2\u0379\u0377\3\2\2\2\u037a\u037c\7\u0222\2"+
+		"\2\u037b\u037d\5\f\7\2\u037c\u037b\3\2\2\2\u037c\u037d\3\2\2\2\u037d\u0381"+
+		"\3\2\2\2\u037e\u0380\5\32\16\2\u037f\u037e\3\2\2\2\u0380\u0383\3\2\2\2"+
+		"\u0381\u037f\3\2\2\2\u0381\u0382\3\2\2\2\u0382\u0384\3\2\2\2\u0383\u0381"+
+		"\3\2\2\2\u0384\u0385\7\u022d\2\2\u0385\13\3\2\2\2\u0386\u0388\5\16\b\2"+
+		"\u0387\u0386\3\2\2\2\u0387\u0388\3\2\2\2\u0388\u0389\3\2\2\2\u0389\u038a"+
+		"\5\20\t\2\u038a\r\3\2\2\2\u038b\u038c\7\u0180\2\2\u038c\u038d\7Y\2\2\u038d"+
 		"\u038e\t\3\2\2\u038e\17\3\2\2\2\u038f\u0393\5\22\n\2\u0390\u0391\7\u01ad"+
 		"\2\2\u0391\u0393\5\u032a\u0196\2\u0392\u038f\3\2\2\2\u0392\u0390\3\2\2"+
 		"\2\u0393\u0394\3\2\2\2\u0394\u0392\3\2\2\2\u0394\u0395\3\2\2\2\u0395\21"+
@@ -48581,9 +49341,9 @@ public class plsqlParser extends Parser {
 		"\u0616\3\2\2\2\u0617\u0618\3\2\2\2\u0618\u061a\3\2\2\2\u0619\u061b\t\22"+
 		"\2\2\u061a\u0619\3\2\2\2\u061a\u061b\3\2\2\2\u061b\u061f\3\2\2\2\u061c"+
 		"\u061e\5\u00f2z\2\u061d\u061c\3\2\2\2\u061e\u0621\3\2\2\2\u061f\u061d"+
-		"\3\2\2\2\u061f\u0620\3\2\2\2\u0620\u0624\3";
+		"\3\2\2\2\u061f\u0620\3\2\2\2\u0620\u0624";
 	private static final String _serializedATNSegment1 =
-		"\2\2\2\u0621\u061f\3\2\2\2\u0622\u0623\7\u016c\2\2\u0623\u0625\7\u018b"+
+		"\3\2\2\2\u0621\u061f\3\2\2\2\u0622\u0623\7\u016c\2\2\u0623\u0625\7\u018b"+
 		"\2\2\u0624\u0622\3\2\2\2\u0624\u0625\3\2\2\2\u0625\u0626\3\2\2\2\u0626"+
 		"\u0627\7\u022d\2\2\u0627_\3\2\2\2\u0628\u062b\7X\2\2\u0629\u062a\7\u0132"+
 		"\2\2\u062a\u062c\7\u0165\2\2\u062b\u0629\3\2\2\2\u062b\u062c\3\2\2\2\u062c"+
@@ -49714,14 +50474,14 @@ public class plsqlParser extends Parser {
 		"\3\2\2\2\u11f5\u11f6\3\2\2\2\u11f6\u11f7\7\u0222\2\2\u11f7\u0267\3\2\2"+
 		"\2\u11f8\u11f9\7\u0226\2\2\u11f9\u120b\5\u0268\u0135\2\u11fa\u11fb\7\u0225"+
 		"\2\2\u11fb\u120b\5\u0268\u0135\2\u11fc\u11fd\7\u0152\2\2\u11fd\u120b\5"+
-		"\u0268\u0135\2\u11fe\u11ff";
+		"\u0268\u0135\2\u11fe";
 	private static final String _serializedATNSegment2 =
-		"\7K\2\2\u11ff\u120b\5\u0268\u0135\2\u1200\u1201\7\u0110\2\2\u1201\u120b"+
-		"\5\u0268\u0135\2\u1202\u1203\7{\2\2\u1203\u120b\5\u0268\u0135\2\u1204"+
-		"\u1205\7\t\2\2\u1205\u120b\5\u0268\u0135\2\u1206\u120b\5\u026a\u0136\2"+
-		"\u1207\u120b\5\u027c\u013f\2\u1208\u120b\5\u027e\u0140\2\u1209\u120b\5"+
-		"\u0276\u013c\2\u120a\u11f8\3\2\2\2\u120a\u11fa\3\2\2\2\u120a\u11fc\3\2"+
-		"\2\2\u120a\u11fe\3\2\2\2\u120a\u1200\3\2\2\2\u120a\u1202\3\2\2\2\u120a"+
+		"\u11ff\7K\2\2\u11ff\u120b\5\u0268\u0135\2\u1200\u1201\7\u0110\2\2\u1201"+
+		"\u120b\5\u0268\u0135\2\u1202\u1203\7{\2\2\u1203\u120b\5\u0268\u0135\2"+
+		"\u1204\u1205\7\t\2\2\u1205\u120b\5\u0268\u0135\2\u1206\u120b\5\u026a\u0136"+
+		"\2\u1207\u120b\5\u027c\u013f\2\u1208\u120b\5\u027e\u0140\2\u1209\u120b"+
+		"\5\u0276\u013c\2\u120a\u11f8\3\2\2\2\u120a\u11fa\3\2\2\2\u120a\u11fc\3"+
+		"\2\2\2\u120a\u11fe\3\2\2\2\u120a\u1200\3\2\2\2\u120a\u1202\3\2\2\2\u120a"+
 		"\u1204\3\2\2\2\u120a\u1206\3\2\2\2\u120a\u1207\3\2\2\2\u120a\u1208\3\2"+
 		"\2\2\u120a\u1209\3\2\2\2\u120b\u0269\3\2\2\2\u120c\u120f\5\u0270\u0139"+
 		"\2\u120d\u120f\5\u026c\u0137\2\u120e\u120c\3\2\2\2\u120e\u120d\3\2\2\2"+

@@ -1,4 +1,4 @@
-// Generated from plsql.g4 by ANTLR 4.5.2
+// Generated from plsql.g4 by ANTLR 4.7
 package biz.redsoft.ora2rdb;
 
 import org.antlr.v4.runtime.ParserRuleContext;

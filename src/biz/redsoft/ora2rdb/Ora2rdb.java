@@ -13,6 +13,13 @@ public class Ora2rdb {
 	public static TreeMap<String, TreeSet<String>> table_map = new TreeMap<String, TreeSet<String>>();
 	public static TreeSet<String> index_names = new TreeSet<String>();
 	
+	static String stripQuotes(String str) {
+		if (str.startsWith("\""))
+			return str.substring(1, str.length() - 1);
+		else
+			return str;
+	}
+	
 	static void printUsage() {
 		System.err.println("Usage: ora2rdb.jar <input_file> [options]\n"
 				+ "Options:\n"
@@ -100,8 +107,10 @@ public class Ora2rdb {
 		walker.walk(init_listener, tree);
 		//System.out.println(init_listener.table_map.toString());
 		
-		RewritingListener converter = new RewritingListener(tokens);
-		walker.walk(converter, tree);
+//		RewritingListener converter = new RewritingListener(tokens);
+//		walker.walk(converter, tree);
+		
+		RewritingVisitor rv = new RewritingVisitor(parser);
 		
 		if (output_file != null)
 		{
@@ -116,7 +125,8 @@ public class Ora2rdb {
 			}
 		}
 		
-		ps.print(converter.rewriter.getText());
+		//ps.print(converter.rewriter.getText());
+		ps.print(rv.visit(tree));
 		ps.close();
 	}
 }

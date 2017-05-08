@@ -76,6 +76,18 @@ public class plsqlBaseListener implements plsqlListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterRelational_properties(plsqlParser.Relational_propertiesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRelational_properties(plsqlParser.Relational_propertiesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPhysical_properties(plsqlParser.Physical_propertiesContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -107,6 +119,18 @@ public class plsqlBaseListener implements plsqlListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSegment_attributes_clause(plsqlParser.Segment_attributes_clauseContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIndex_org_table_clause(plsqlParser.Index_org_table_clauseContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIndex_org_table_clause(plsqlParser.Index_org_table_clauseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -3460,6 +3484,18 @@ public class plsqlBaseListener implements plsqlListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterIs_condition(plsqlParser.Is_conditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIs_condition(plsqlParser.Is_conditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterMultiset_expression(plsqlParser.Multiset_expressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -3491,6 +3527,18 @@ public class plsqlBaseListener implements plsqlListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitRelational_expression(plsqlParser.Relational_expressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterComparsion_operator(plsqlParser.Comparsion_operatorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitComparsion_operator(plsqlParser.Comparsion_operatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -4115,6 +4163,18 @@ public class plsqlBaseListener implements plsqlListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitXmlserialize_param_ident_part(plsqlParser.Xmlserialize_param_ident_partContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterComment(plsqlParser.CommentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitComment(plsqlParser.CommentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

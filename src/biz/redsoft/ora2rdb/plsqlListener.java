@@ -58,6 +58,16 @@ public interface plsqlListener extends ParseTreeListener {
 	 */
 	void exitCreate_table(plsqlParser.Create_tableContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link plsqlParser#relational_properties}.
+	 * @param ctx the parse tree
+	 */
+	void enterRelational_properties(plsqlParser.Relational_propertiesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#relational_properties}.
+	 * @param ctx the parse tree
+	 */
+	void exitRelational_properties(plsqlParser.Relational_propertiesContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link plsqlParser#physical_properties}.
 	 * @param ctx the parse tree
 	 */
@@ -87,6 +97,16 @@ public interface plsqlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSegment_attributes_clause(plsqlParser.Segment_attributes_clauseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#index_org_table_clause}.
+	 * @param ctx the parse tree
+	 */
+	void enterIndex_org_table_clause(plsqlParser.Index_org_table_clauseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#index_org_table_clause}.
+	 * @param ctx the parse tree
+	 */
+	void exitIndex_org_table_clause(plsqlParser.Index_org_table_clauseContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link plsqlParser#physical_attributes_clause}.
 	 * @param ctx the parse tree
@@ -2878,6 +2898,16 @@ public interface plsqlListener extends ParseTreeListener {
 	 */
 	void exitEquality_expression(plsqlParser.Equality_expressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link plsqlParser#is_condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterIs_condition(plsqlParser.Is_conditionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#is_condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitIs_condition(plsqlParser.Is_conditionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link plsqlParser#multiset_expression}.
 	 * @param ctx the parse tree
 	 */
@@ -2907,6 +2937,16 @@ public interface plsqlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitRelational_expression(plsqlParser.Relational_expressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#comparsion_operator}.
+	 * @param ctx the parse tree
+	 */
+	void enterComparsion_operator(plsqlParser.Comparsion_operatorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#comparsion_operator}.
+	 * @param ctx the parse tree
+	 */
+	void exitComparsion_operator(plsqlParser.Comparsion_operatorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link plsqlParser#compound_expression}.
 	 * @param ctx the parse tree
@@ -3427,6 +3467,16 @@ public interface plsqlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitXmlserialize_param_ident_part(plsqlParser.Xmlserialize_param_ident_partContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#comment}.
+	 * @param ctx the parse tree
+	 */
+	void enterComment(plsqlParser.CommentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#comment}.
+	 * @param ctx the parse tree
+	 */
+	void exitComment(plsqlParser.CommentContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link plsqlParser#sql_plus_command}.
 	 * @param ctx the parse tree

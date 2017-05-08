@@ -52,15 +52,20 @@ public class RewritingListener extends plsqlBaseListener {
 		{
 			TreeSet<String> columns_set = Ora2rdb.table_map.get(table_name);
 			
-			for (Field_specContext field_ctx : ctx.field_spec())
+			for (Relational_propertiesContext rel_prop_ctx : ctx.relational_properties())
 			{
-				String column_name = field_ctx.column_name().getText().toUpperCase();
+				Field_specContext field_ctx = rel_prop_ctx.field_spec();
 				
-				if (column_name.startsWith("\""))
-					column_name = column_name.substring(1, column_name.length() - 1);
-				
-				if (columns_set.contains(column_name))
-					rewriter.insertAfter(field_ctx.stop, " NOT NULL");
+				if (field_ctx != null)
+				{
+					String column_name = field_ctx.column_name().getText().toUpperCase();
+
+					if (column_name.startsWith("\""))
+						column_name = column_name.substring(1, column_name.length() - 1);
+
+					if (columns_set.contains(column_name))
+						rewriter.insertAfter(field_ctx.stop, " NOT NULL");
+				}
 			}
 		}
 	}

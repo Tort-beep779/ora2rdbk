@@ -1,0 +1,812 @@
+package biz.redsoft.ora2rdb;
+
+import java.util.TreeSet;
+
+import org.antlr.v4.runtime.RuleContext;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+
+import biz.redsoft.ora2rdb.plsqlParser.*;
+
+public class RewritingVisitor extends plsqlBaseVisitor<String> {
+	TokenStream tokens;
+	String current_table;
+	TreeSet<String> current_procedure_args = new TreeSet<String>();
+	ParseTreeProperty<String> function_names = new ParseTreeProperty<String>();
+	
+	public RewritingVisitor(plsqlParser parser) {
+		this.tokens = parser.getTokenStream();
+	}
+	
+	String getRuleText(RuleContext ctx) {
+		return tokens.getText(ctx);
+	}
+	
+	@Override
+	public String visitSql_script(Sql_scriptContext ctx) {
+		String out = "";
+		
+		for (Unit_statementContext usc : ctx.unit_statement())
+		{
+			String stmt = visit(usc);
+			
+			if (stmt != null)
+				out += stmt + "\n\n";
+		}
+		
+		return out;
+	}
+	
+	@Override
+	public String visitCreate_table(Create_tableContext ctx) {
+		String out = "CREATE TABLE " + getRuleText(ctx.tableview_name()) + " (\n";
+		current_table = Ora2rdb.stripQuotes(getRuleText(ctx.tableview_name())).toUpperCase();
+		
+		for (int i = 0; i < ctx.relational_properties().size(); i++)
+		{
+			if (i != 0)
+				out += ",\n";
+			
+			out += "\t" + visit(ctx.relational_properties(i));
+		}
+		
+		out += "\n);";
+		current_table = null;
+		return out;
+	}
+	
+	@Override
+	public String visitAlter_table(Alter_tableContext ctx) {
+		String out = "ALTER TABLE " + getRuleText(ctx.tableview_name()) + " ";
+		
+		if (ctx.column_clauses() != null)
+			return null;
+			//out += visit(ctx.column_clauses());
+		else if (ctx.constraint_clauses() != null)
+			out += visit(ctx.constraint_clauses());
+		
+		out += ";";
+		return out;
+	}
+	
+	@Override
+	public String visitConstraint_clauses(Constraint_clausesContext ctx) {
+		String out = "";
+		
+		if (ctx.ADD() != null)
+		{
+			out += "ADD ";
+			
+			for (int i = 0; i < ctx.out_of_line_constraint().size(); i++)
+				out += visit(ctx.out_of_line_constraint(i));
+		}
+		
+		return out;
+	}
+	
+	@Override
+	public String visitField_spec(Field_specContext ctx) {
+		String column_name = getRuleText(ctx.column_name());
+		String out = column_name + "\t" + visit(ctx.type_spec());
+		column_name = Ora2rdb.stripQuotes(column_name).toUpperCase();
+		
+		if (current_table != null)
+		{
+			if (Ora2rdb.table_map.containsKey(current_table))
+			{
+				TreeSet<String> columns_set = Ora2rdb.table_map.get(current_table);
+				
+				if (columns_set.contains(column_name))
+					out += " NOT NULL";
+			}
+		}
+		
+		return out;
+	}
+	
+	@Override
+	public String visitType_spec(Type_specContext ctx) {
+		if (ctx.datatype() != null)
+			return visit(ctx.datatype());
+		else
+		{
+			if (ctx.PERCENT_TYPE() != null)
+				return "TYPE OF COLUMN " + getRuleText(ctx.type_name());
+			
+			return getRuleText(ctx);
+		}
+	}
+	
+	@Override
+	public String visitOut_of_line_constraint(Out_of_line_constraintContext ctx) {
+		String out = "";
+		
+		if (ctx.CONSTRAINT() != null)
+			out += "CONSTRAINT " + getRuleText(ctx.constraint_name()) + " ";
+		
+		if (ctx.PRIMARY() != null)
+		{
+			out += "PRIMARY KEY (";
+			
+			for (int i = 0; i < ctx.column_name().size(); i++)
+			{
+				if (i != 0)
+					out += ", ";
+				
+				out += visit(ctx.column_name(i));
+			}
+			
+			out += ")";
+		}
+		else if (ctx.UNIQUE() != null)
+		{
+			out += "UNIQUE (";
+			
+			for (int i = 0; i < ctx.column_name().size(); i++)
+			{
+				if (i != 0)
+					out += ", ";
+				
+				out += visit(ctx.column_name(i));
+			}
+			
+			out += ")";
+		}
+		else if (ctx.CHECK() != null)
+			out += "CHECK (" + visit(ctx.condition()) + ")";
+		else if (ctx.FOREIGN() != null)
+		{
+			out += "FOREIGN KEY (";
+			
+			for (int i = 0; i < ctx.column_name().size(); i++)
+			{
+				if (i != 0)
+					out += ", ";
+				
+				out += visit(ctx.column_name(i));
+			}
+			
+			out += ") " + visit(ctx.references_clause());
+		}
+		
+		return out;
+	}
+	
+	@Override
+	public String visitReferences_clause(References_clauseContext ctx) {
+		String out = "REFERENCES " + getRuleText(ctx.id());
+		
+		if (ctx.column_name().size() > 0)
+		{
+			out += " (";
+			
+			for (int i = 0; i < ctx.column_name().size(); i++)
+			{
+				if (i != 0)
+					out += ", ";
+				
+				out += visit(ctx.column_name(i));
+			}
+			
+			out += ")";
+		}
+		
+		if (ctx.ON() != null)
+		{
+			out += " ON DELETE ";
+			
+			if (ctx.CASCADE() != null)
+				out += "CASCADE";
+			else
+				out += "SET NULL";
+		}
+		
+		return out;
+	}
+	
+	@Override
+	public String visitEquality_expression(Equality_expressionContext ctx) {
+		String out = visit(ctx.multiset_expression());
+		
+		for (Is_conditionContext is_cond : ctx.is_condition())
+			out += " " + visit(is_cond);
+		
+		return out;
+	}
+	
+	@Override
+	public String visitIs_condition(Is_conditionContext ctx) {
+		String out = "IS ";
+		
+		if (ctx.NOT() != null)
+			out += "NOT ";
+		
+		if (ctx.NULL() != null)
+			out += "NULL";
+		
+		return out;
+	}
+	
+	@Override
+	public String visitGeneral_element_part(General_element_partContext ctx) {
+		String out = "";
+		
+		for (int i = 0; i < ctx.id_expression().size(); i++)
+		{
+			if (i != 0)
+				out += ".";
+			
+			out += visit(ctx.id_expression(i));
+		}
+		
+		if (ctx.function_argument() != null)
+		{
+			function_names.put(ctx.function_argument(), Ora2rdb.stripQuotes(getRuleText(ctx.id_expression(0))).toUpperCase());
+			out += visit(ctx.function_argument());
+		}
+		
+		return out;
+	}
+	
+	@Override
+	public String visitFunction_argument(Function_argumentContext ctx) {
+		String out = "(";
+		
+		for (int i = 0; i < ctx.argument().size(); i++)
+		{
+			if (i != 0)
+				out += ", ";
+			
+			out += visit(ctx.argument(i));
+		}
+		
+		String function_name = function_names.get(ctx);
+		
+		if (function_name != null)
+		{
+			if (function_name.equals("REPLACE"))
+				out += ", ''";
+		}
+		
+		out += ")";
+		return out;
+	}
+	
+	@Override
+	public String visitQuoted_string(Quoted_stringContext ctx) {
+		return getRuleText(ctx);
+	}
+	
+	@Override
+	public String visitRelational_expression(Relational_expressionContext ctx) {
+		String out = visit(ctx.compound_expression(0));
+		
+		for (int i = 0; i < ctx.comparsion_operator().size(); i++)
+			out += " " + getRuleText(ctx.comparsion_operator(i)) + " " + visit(ctx.compound_expression(i + 1));
+		
+		return out;
+	}
+	
+	@Override
+	public String visitNumeric(NumericContext ctx) {
+		return getRuleText(ctx);
+	}
+	
+	@Override
+	public String visitRegular_id(Regular_idContext ctx) {
+		if (ctx.LENGTH() != null)
+			return "CHAR_LENGTH";
+		else
+		{
+			String id = getRuleText(ctx);
+			
+			switch (id.toUpperCase())
+			{
+			case "SYSTIMESTAMP":
+				return "CURRENT_TIMESTAMP";
+			case "SYSDATE":
+				return "CURRENT_DATE";
+			}
+			
+			return id;
+		}
+	}
+	
+	@Override
+	public String visitColumn_name(Column_nameContext ctx) {
+		return getRuleText(ctx.id());
+	}
+	
+	@Override
+	public String visitCreate_procedure_body(Create_procedure_bodyContext ctx) {
+		String out = "SET TERM ^ ;\n\nCREATE ";
+		
+		if (ctx.REPLACE() != null)
+			out += "OR ALTER ";
+		
+		out += "PROCEDURE " + visit(ctx.procedure_name());
+		
+		if (ctx.parameter().size() != 0)
+		{
+			out += " (";
+			
+			for (int i = 0; i < ctx.parameter().size(); i++)
+			{
+				if (i != 0)
+					out += ",";
+				
+				out += "\n\t" + visit(ctx.parameter(i));
+			}
+			
+			out += "\n)";
+		}
+		
+		out += "\nAS\n";
+		
+		for (Declare_specContext dsc : ctx.declare_spec())
+			out += "\tDECLARE " + visit(dsc) + ";\n";
+		
+		if (ctx.body() != null)
+			out += visit(ctx.body());
+		
+		out += "^\n\nSET TERM ; ^";
+		current_procedure_args.clear();
+		return out;
+	}
+	
+	@Override
+	public String visitProcedure_name(Procedure_nameContext ctx) {
+		return getRuleText(ctx.id_expression());
+	}
+	
+	@Override
+	public String visitCreate_function_body(Create_function_bodyContext ctx) {
+		String out = "SET TERM ^ ;\n\nCREATE ";
+		
+		if (ctx.REPLACE() != null)
+			out += "OR ALTER ";
+		
+		out += "PROCEDURE " + visit(ctx.function_name());
+				
+		if (ctx.parameter().size() != 0)
+		{
+			out += " (";
+			
+			for (int i = 0; i < ctx.parameter().size(); i++)
+			{
+				if (i != 0)
+					out += ",";
+				
+				out += "\n\t" + visit(ctx.parameter(i));
+			}
+			
+			out += "\n)";
+		}
+		
+		out += "\nRETURNS (RET_VAL " + visit(ctx.type_spec()) + ")\nAS\n";
+		
+		for (Declare_specContext dsc : ctx.declare_spec())
+			out += "\tDECLARE " + visit(dsc) + ";\n";
+		
+		if (ctx.body() != null)
+			out += visit(ctx.body());
+		
+		out += "^\n\nSET TERM ; ^";
+		current_procedure_args.clear();
+		return out;
+	}
+	
+	@Override
+	public String visitParameter(ParameterContext ctx) {
+		String parameter_name = getRuleText(ctx.parameter_name());
+		current_procedure_args.add(Ora2rdb.stripQuotes(parameter_name).toUpperCase());
+		String out = parameter_name;
+		
+		if (ctx.type_spec() != null)
+			out += " " + visit(ctx.type_spec());
+		
+		if (ctx.default_value_part() != null)
+			out += " " + getRuleText(ctx.default_value_part());
+		
+		return out;
+	}
+	
+	@Override
+	public String visitId_expression(Id_expressionContext ctx) {
+		String out = "";
+		
+		if (ctx.regular_id() != null)
+			out += visit(ctx.regular_id());
+		else
+			out += getRuleText(ctx);
+		
+		if (current_procedure_args.contains(Ora2rdb.stripQuotes(out).toUpperCase()))
+			out = ":" + out;
+		
+		return out;
+	}
+	
+	@Override
+	public String visitBody(BodyContext ctx) {
+		return "BEGIN\n/*\n" + visit(ctx.seq_of_statements()) + "*/\nEND";
+	}
+	
+	@Override
+	public String visitSeq_of_statements(Seq_of_statementsContext ctx) {
+		String out = "";
+		
+		for (StatementContext sc : ctx.statement())
+			out += visit(sc) + ";\n";
+		
+		return out;
+	}
+	
+	@Override
+	public String visitInsert_statement(Insert_statementContext ctx) {
+		if (ctx.single_table_insert() != null)
+			return "INSERT " + visit(ctx.single_table_insert());
+		else
+			return getRuleText(ctx);
+	}
+	
+	@Override
+	public String visitSingle_table_insert(Single_table_insertContext ctx) {
+		String out = visit(ctx.insert_into_clause()) + " ";
+		
+		if (ctx.values_clause() != null)
+		{
+			out += visit(ctx.values_clause());
+			
+			if (ctx.static_returning_clause() != null)
+				out += " " + getRuleText(ctx.static_returning_clause());
+		}
+		else
+			out += getRuleText(ctx.select_statement());
+		
+		return out;
+	}
+	
+	@Override
+	public String visitInsert_into_clause(Insert_into_clauseContext ctx) {
+		String out = "INTO " + getRuleText(ctx.general_table_ref());
+		
+		if (ctx.column_name().size() != 0)
+		{
+			out += " (";
+			
+			for (int i = 0; i < ctx.column_name().size(); i++)
+			{
+				if (i != 0)
+					out += ", ";
+				
+				out += visit(ctx.column_name(i));
+			}
+			
+			out += ")";
+		}
+		
+		return out;
+	}
+	
+	@Override
+	public String visitValues_clause(Values_clauseContext ctx) {
+		return "VALUES " + visit(ctx.expression_list());
+	}
+	
+	@Override
+	public String visitExpression_list(Expression_listContext ctx) {
+		String out = "(";
+		
+		for (int i = 0; i < ctx.expression().size(); i++)
+		{
+			if (i != 0)
+				out += ", ";
+			
+			out += visit(ctx.expression(i));
+		}
+		
+		out += ")";
+		return out;
+	}
+	
+	@Override
+	public String visitQuery_block(Query_blockContext ctx) {
+		String out = "SELECT ";
+		
+		if (ctx.DISTINCT() != null)
+			out += "DISTINCT ";
+		else if (ctx.UNIQUE() != null)
+			out += "UNIQUE ";
+		else if (ctx.ALL() != null)
+			out += "ALL ";
+		
+		if (ctx.selected_element().size() != 0)
+		{
+			for (int i = 0; i < ctx.selected_element().size(); i++)
+			{
+				if (i != 0)
+					out += ", ";
+				
+				out += visit(ctx.selected_element(i));
+			}
+		}
+		else
+			out += "*";
+		
+		out += "\n" + visit(ctx.from_clause()) + "\n" + visit(ctx.where_clause());
+		
+		if (ctx.into_clause() != null)
+			out += "\n" + visit(ctx.into_clause());
+		
+		return out;
+	}
+	
+	@Override
+	public String visitFrom_clause(From_clauseContext ctx) {
+		return "FROM " + visit(ctx.table_ref_list());
+	}
+	
+	@Override
+	public String visitTable_ref_list(Table_ref_listContext ctx) {
+		String out = "";
+		
+		for (int i = 0; i < ctx.table_ref().size(); i++)
+		{
+			if (i != 0)
+				out += ", ";
+			
+			out += getRuleText(ctx.table_ref(i));
+		}
+		
+		return out;
+	}
+	
+	@Override
+	public String visitWhere_clause(Where_clauseContext ctx) {
+		return "WHERE " + visitChildren(ctx);
+	}
+	
+	@Override
+	public String visitLogical_and_expression(Logical_and_expressionContext ctx) {
+		String out = "";
+		
+		for (int i = 0; i < ctx.negated_expression().size(); i++)
+		{
+			if (i != 0)
+				out += " AND ";
+			
+			out += visit(ctx.negated_expression(i));
+		}
+		
+		return out;
+	}
+	
+	@Override
+	public String visitInto_clause(Into_clauseContext ctx) {
+		String out = "INTO ";
+		
+		for (int i = 0; i < ctx.variable_name().size(); i++)
+		{
+			if (i != 0)
+				out += ", ";
+			
+			out += visit(ctx.variable_name(i));
+		}
+		
+		return out;
+	}
+	
+	@Override
+	public String visitReturn_statement(Return_statementContext ctx) {
+		return "RET_VAL = " + getRuleText(ctx.condition()) + ";\nSUSPEND";
+	}
+	
+	@Override
+	public String visitVariable_declaration(Variable_declarationContext ctx) {
+		String out = getRuleText(ctx.variable_name()) + " " + visit(ctx.type_spec());
+		
+		if (ctx.NOT() != null)
+			out += " NOT NULL";
+		
+		if (ctx.default_value_part() != null)
+			out += " " + getRuleText(ctx.default_value_part());
+		
+		return out;
+	}
+	
+	@Override
+	public String visitDatatype(DatatypeContext ctx) {
+		String out = "";
+		
+		if (ctx.native_datatype_element().NUMBER() != null)
+		{
+			out += "NUMERIC";
+			
+			if (ctx.precision_part() == null)
+				out += "(18,4)";
+		}
+		else if (ctx.native_datatype_element().VARCHAR2() != null)
+			out += "VARCHAR";
+		else if (ctx.native_datatype_element().CLOB() != null)
+			out += "BLOB SUB_TYPE TEXT";
+		else if (ctx.native_datatype_element().RAW() != null)
+			out += "BLOB";
+		else
+			out += getRuleText(ctx.native_datatype_element());
+		
+		if (ctx.precision_part() != null && ctx.native_datatype_element().RAW() == null && ctx.native_datatype_element().TIMESTAMP() == null)
+			out += visit(ctx.precision_part());
+		
+		return out;
+	}
+	
+	@Override
+	public String visitPrecision_part(Precision_partContext ctx) {
+		String out = "(";
+		
+		if (ctx.ASTERISK() != null)
+			out += "18";
+		else
+			out += getRuleText(ctx.numeric(0));
+		
+		if (ctx.numeric().size() > 1)
+			out += "," + getRuleText(ctx.numeric(1));
+		
+		out += ")";
+		return out;
+	}
+	
+	@Override
+	public String visitComment(CommentContext ctx) {
+		String out = "COMMENT ON ";
+		
+		if (ctx.COLUMN() != null)
+			out += "COLUMN " + getRuleText(ctx.tableview_name()) + "." + getRuleText(ctx.column_name());
+		else if (ctx.TABLE() != null)
+			out += "TABLE " + getRuleText(ctx.tableview_name());
+		
+		out += " IS " + getRuleText(ctx.quoted_string()) + ";";
+		return out;
+	}
+	
+	@Override
+	public String visitCreate_sequence(Create_sequenceContext ctx) {
+		String seq_name = visit(ctx.sequence_name());
+		String out = "CREATE SEQUENCE " + seq_name + ";";
+		
+		if (ctx.sequence_start_clause().size() != 0)
+			out += "\nALTER SEQUENCE " + seq_name + " RESTART WITH " + ctx.sequence_start_clause(0).UNSIGNED_INTEGER().getText() + ";";
+		
+		return out;
+	}
+	
+	@Override
+	public String visitSequence_name(Sequence_nameContext ctx) {
+		return getRuleText(ctx.id_expression());
+	}
+	
+	@Override
+	public String visitCreate_view(Create_viewContext ctx) {
+		String out = "CREATE ";
+		
+		if (ctx.REPLACE() != null)
+			out += "OR ALTER ";
+		
+		out += "VIEW " + getRuleText(ctx.tableview_name()) + " (";
+		
+		for (int i = 0; i < ctx.id_expression().size(); i++)
+		{
+			if (i != 0)
+				out += ",";
+			
+			out += "\n\t" + getRuleText(ctx.id_expression(i));
+		}
+		
+		out += "\n)\nAS\n" + visit(ctx.subquery()) + ";";
+		return out;
+	}
+	
+	@Override
+	public String visitCreate_index(Create_indexContext ctx) {
+		String index_name = getRuleText(ctx.id_expression());
+		
+		if (Ora2rdb.index_names.contains(Ora2rdb.stripQuotes(index_name).toUpperCase()))
+			return null;
+		
+		String out = "CREATE ";
+		
+		if (ctx.UNIQUE() != null)
+			out += "UNIQUE ";
+		
+		out += "INDEX " + index_name + " ON " + visit(ctx.table_index_clause()) + ";";
+		return out;
+	}
+	
+	@Override
+	public String visitTable_index_clause(Table_index_clauseContext ctx) {
+		String out = getRuleText(ctx.tableview_name()) + " (";
+		
+		for (int i = 0; i < ctx.index_expr().size(); i++)
+		{
+			if (i != 0)
+				out += ", ";
+			
+			out += getRuleText(ctx.index_expr(i));
+		}
+		
+		out += ")";
+		return out;
+	}
+	
+	@Override
+	public String visitCreate_trigger(Create_triggerContext ctx) {
+		String out = "SET TERM ^ ;\n\nCREATE ";
+		
+		if (ctx.REPLACE() != null)
+			out += "OR ALTER ";
+		
+		out += "TRIGGER " + visit(ctx.trigger_name());
+		
+		if (ctx.simple_dml_trigger() != null)
+			out += " " + visit(ctx.simple_dml_trigger());
+		
+		out += "\nAS\n" + visit(ctx.trigger_body()) + "^\n\nSET TERM ; ^";
+		return out;
+	}
+	
+	@Override
+	public String visitTrigger_name(Trigger_nameContext ctx) {
+		return getRuleText(ctx.id_expression());
+	}
+	
+	@Override
+	public String visitSimple_dml_trigger(Simple_dml_triggerContext ctx) {
+		String out = "";
+		
+		if (ctx.BEFORE() != null)
+			out += "BEFORE";
+		else if (ctx.AFTER() != null)
+			out += "AFTER";
+		else if (ctx.INSTEAD() != null)
+			out += "INSTEAD OF";
+		
+		out += " " + visit(ctx.dml_event_clause());
+		return out;
+	}
+	
+	@Override
+	public String visitDml_event_clause(Dml_event_clauseContext ctx) {
+		String out = "";
+		
+		for (int i = 0; i < ctx.dml_event_element().size(); i++)
+		{
+			if (i != 0)
+				out += " OR ";
+			
+			out += visit(ctx.dml_event_element(i));
+		}
+		
+		out += " ON " + visit(ctx.tableview_name());
+		return out;
+	}
+	
+	@Override
+	public String visitDml_event_element(Dml_event_elementContext ctx) {
+		if (ctx.DELETE() != null)
+			return "DELETE";
+		else if (ctx.INSERT() != null)
+			return "INSERT";
+		else
+			return "UPDATE";
+	}
+	
+	@Override
+	public String visitFunction_call(Function_callContext ctx) {
+		String out = getRuleText(ctx.routine_name());
+		
+		if (ctx.function_argument() != null)
+			out += visit(ctx.function_argument());
+		
+		return out;
+	}
+}

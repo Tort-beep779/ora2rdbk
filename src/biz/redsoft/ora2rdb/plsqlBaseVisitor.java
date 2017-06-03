@@ -2068,7 +2068,7 @@ public class plsqlBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitComparsion_operator(plsqlParser.Comparsion_operatorContext ctx) { return visitChildren(ctx); }
+	@Override public T visitComparison_operator(plsqlParser.Comparison_operatorContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

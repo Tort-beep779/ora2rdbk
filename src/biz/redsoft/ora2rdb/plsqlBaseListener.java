@@ -3532,13 +3532,13 @@ public class plsqlBaseListener implements plsqlListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterComparsion_operator(plsqlParser.Comparsion_operatorContext ctx) { }
+	@Override public void enterComparison_operator(plsqlParser.Comparison_operatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitComparsion_operator(plsqlParser.Comparsion_operatorContext ctx) { }
+	@Override public void exitComparison_operator(plsqlParser.Comparison_operatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -1769,11 +1769,11 @@ public interface plsqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRelational_expression(plsqlParser.Relational_expressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link plsqlParser#comparsion_operator}.
+	 * Visit a parse tree produced by {@link plsqlParser#comparison_operator}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitComparsion_operator(plsqlParser.Comparsion_operatorContext ctx);
+	T visitComparison_operator(plsqlParser.Comparison_operatorContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link plsqlParser#compound_expression}.
 	 * @param ctx the parse tree

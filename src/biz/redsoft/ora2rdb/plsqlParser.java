@@ -250,7 +250,7 @@ public class plsqlParser extends Parser {
 		RULE_condition_wrapper = 283, RULE_expression = 284, RULE_expression_wrapper = 285, 
 		RULE_logical_and_expression = 286, RULE_negated_expression = 287, RULE_equality_expression = 288, 
 		RULE_is_condition = 289, RULE_multiset_expression = 290, RULE_multiset_type = 291, 
-		RULE_relational_expression = 292, RULE_comparsion_operator = 293, RULE_compound_expression = 294, 
+		RULE_relational_expression = 292, RULE_comparison_operator = 293, RULE_compound_expression = 294, 
 		RULE_like_type = 295, RULE_like_escape_part = 296, RULE_in_elements = 297, 
 		RULE_between_elements = 298, RULE_concatenation = 299, RULE_concatenation_wrapper = 300, 
 		RULE_additive_expression = 301, RULE_multiply_expression = 302, RULE_datetime_expression = 303, 
@@ -370,7 +370,7 @@ public class plsqlParser extends Parser {
 		"condition", "condition_wrapper", "expression", "expression_wrapper", 
 		"logical_and_expression", "negated_expression", "equality_expression", 
 		"is_condition", "multiset_expression", "multiset_type", "relational_expression", 
-		"comparsion_operator", "compound_expression", "like_type", "like_escape_part", 
+		"comparison_operator", "compound_expression", "like_type", "like_escape_part", 
 		"in_elements", "between_elements", "concatenation", "concatenation_wrapper", 
 		"additive_expression", "multiply_expression", "datetime_expression", "interval_expression", 
 		"model_expression", "model_expression_element", "single_column_for_loop", 
@@ -33921,11 +33921,11 @@ public class plsqlParser extends Parser {
 		public Compound_expressionContext compound_expression(int i) {
 			return getRuleContext(Compound_expressionContext.class,i);
 		}
-		public List<Comparsion_operatorContext> comparsion_operator() {
-			return getRuleContexts(Comparsion_operatorContext.class);
+		public List<Comparison_operatorContext> comparison_operator() {
+			return getRuleContexts(Comparison_operatorContext.class);
 		}
-		public Comparsion_operatorContext comparsion_operator(int i) {
-			return getRuleContext(Comparsion_operatorContext.class,i);
+		public Comparison_operatorContext comparison_operator(int i) {
+			return getRuleContext(Comparison_operatorContext.class,i);
 		}
 		public Relational_expressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -33963,7 +33963,7 @@ public class plsqlParser extends Parser {
 					{
 					{
 					setState(4435);
-					comparsion_operator();
+					comparison_operator();
 					setState(4436);
 					compound_expression();
 					}
@@ -33986,7 +33986,7 @@ public class plsqlParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Comparsion_operatorContext extends ParserRuleContext {
+	public static class Comparison_operatorContext extends ParserRuleContext {
 		public Not_equal_opContext not_equal_op() {
 			return getRuleContext(Not_equal_opContext.class,0);
 		}
@@ -33996,28 +33996,28 @@ public class plsqlParser extends Parser {
 		public Greater_than_or_equals_opContext greater_than_or_equals_op() {
 			return getRuleContext(Greater_than_or_equals_opContext.class,0);
 		}
-		public Comparsion_operatorContext(ParserRuleContext parent, int invokingState) {
+		public Comparison_operatorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_comparsion_operator; }
+		@Override public int getRuleIndex() { return RULE_comparison_operator; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof plsqlListener ) ((plsqlListener)listener).enterComparsion_operator(this);
+			if ( listener instanceof plsqlListener ) ((plsqlListener)listener).enterComparison_operator(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof plsqlListener ) ((plsqlListener)listener).exitComparsion_operator(this);
+			if ( listener instanceof plsqlListener ) ((plsqlListener)listener).exitComparison_operator(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof plsqlVisitor ) return ((plsqlVisitor<? extends T>)visitor).visitComparsion_operator(this);
+			if ( visitor instanceof plsqlVisitor ) return ((plsqlVisitor<? extends T>)visitor).visitComparison_operator(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final Comparsion_operatorContext comparsion_operator() throws RecognitionException {
-		Comparsion_operatorContext _localctx = new Comparsion_operatorContext(_ctx, getState());
-		enterRule(_localctx, 586, RULE_comparsion_operator);
+	public final Comparison_operatorContext comparison_operator() throws RecognitionException {
+		Comparison_operatorContext _localctx = new Comparison_operatorContext(_ctx, getState());
+		enterRule(_localctx, 586, RULE_comparison_operator);
 		try {
 			setState(4449);
 			_errHandler.sync(this);

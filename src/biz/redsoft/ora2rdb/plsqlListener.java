@@ -2938,15 +2938,15 @@ public interface plsqlListener extends ParseTreeListener {
 	 */
 	void exitRelational_expression(plsqlParser.Relational_expressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link plsqlParser#comparsion_operator}.
+	 * Enter a parse tree produced by {@link plsqlParser#comparison_operator}.
 	 * @param ctx the parse tree
 	 */
-	void enterComparsion_operator(plsqlParser.Comparsion_operatorContext ctx);
+	void enterComparison_operator(plsqlParser.Comparison_operatorContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link plsqlParser#comparsion_operator}.
+	 * Exit a parse tree produced by {@link plsqlParser#comparison_operator}.
 	 * @param ctx the parse tree
 	 */
-	void exitComparsion_operator(plsqlParser.Comparsion_operatorContext ctx);
+	void exitComparison_operator(plsqlParser.Comparison_operatorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link plsqlParser#compound_expression}.
 	 * @param ctx the parse tree

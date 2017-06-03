@@ -281,8 +281,8 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	public String visitRelational_expression(Relational_expressionContext ctx) {
 		String out = visit(ctx.compound_expression(0));
 		
-		for (int i = 0; i < ctx.comparsion_operator().size(); i++)
-			out += " " + getRuleText(ctx.comparsion_operator(i)) + " " + visit(ctx.compound_expression(i + 1));
+		for (int i = 0; i < ctx.comparison_operator().size(); i++)
+			out += " " + getRuleText(ctx.comparison_operator(i)) + " " + visit(ctx.compound_expression(i + 1));
 		
 		return out;
 	}

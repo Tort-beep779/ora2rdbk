@@ -1,5 +1,7 @@
 package biz.redsoft.ora2rdb;
 
+import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.antlr.v4.runtime.RuleContext;
@@ -11,8 +13,9 @@ import biz.redsoft.ora2rdb.plsqlParser.*;
 public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	TokenStream tokens;
 	String current_table;
-	TreeSet<String> current_procedure_args = new TreeSet<String>();
+	TreeSet<String> current_procedure_args_and_vars = new TreeSet<String>();
 	ParseTreeProperty<String> function_names = new ParseTreeProperty<String>();
+	ArrayList<String> temporary_tables_ddl = new ArrayList<String>();
 	
 	public RewritingVisitor(plsqlParser parser) {
 		this.tokens = parser.getTokenStream();
@@ -20,6 +23,64 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	
 	String getRuleText(RuleContext ctx) {
 		return tokens.getText(ctx);
+	}
+	
+	static class AssocArray {
+		static TreeMap<String, AssocArray> type_name_map = new TreeMap<String, AssocArray>();
+		static TreeSet<String> used_temporary_table_names = new TreeSet<String>();
+		static TreeMap<String, String> array_to_table_map = new TreeMap<String, String>();
+		
+		String data_type;
+		ArrayList<String> index_types_list = new ArrayList<String>();
+		
+		AssocArray(String name, String type, String index_type) {
+			type = Ora2rdb.stripQuotes(type).toUpperCase();
+			
+			if (type_name_map.containsKey(type))
+			{
+				AssocArray arr = type_name_map.get(type);
+				data_type = arr.data_type;
+				index_types_list.addAll(arr.index_types_list);
+				index_types_list.add(0, index_type);
+			}
+			else
+			{
+				data_type = type;
+				index_types_list.add(index_type);
+			}
+			
+			type_name_map.put(Ora2rdb.stripQuotes(name).toUpperCase(), this);
+		}
+		
+		String getTemporaryTableDDL(String name) {
+			name = Ora2rdb.stripQuotes(name).toUpperCase();
+			String new_name = name;
+			
+			for (int i = 1; ; i++)
+			{
+				if (used_temporary_table_names.contains(new_name))
+					new_name = name + i;
+				else
+					break;
+			}
+			
+			used_temporary_table_names.add(new_name);
+			array_to_table_map.put(name, new_name);
+			String key_fields = "";
+			String out = "CREATE GLOBAL TEMPORARY TABLE " + new_name + " (\n";
+			
+			for (int i = 0; i < index_types_list.size(); i++)
+			{
+				if (i != 0)
+					key_fields += ", ";
+				
+				out += "\tI" + (i + 1) + " " + index_types_list.get(i) + ",\n";
+				key_fields += "I" + (i + 1);
+			}
+			
+			out += "\tVAL " + data_type + ",\n\tCONSTRAINT PK_" + new_name + " PRIMARY KEY (" + key_fields + ")\n);";
+			return out;
+		}
 	}
 	
 	@Override
@@ -235,6 +296,36 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	@Override
 	public String visitGeneral_element_part(General_element_partContext ctx) {
 		String out = "";
+		String name = Ora2rdb.stripQuotes(visit(ctx.id_expression(0))).toUpperCase();
+		
+		if (AssocArray.array_to_table_map.containsKey(name) &&
+			ctx.function_argument().size() != 0)
+		{
+			String select_stmt = "(SELECT VAL FROM " + AssocArray.array_to_table_map.get(name) + " WHERE ";
+			boolean abort = false;
+			
+			for (int i = 0; i < ctx.function_argument().size(); i++)
+			{
+				if (ctx.function_argument(i).argument().size() == 1)
+				{
+					if (i != 0)
+						select_stmt += " AND ";
+					
+					select_stmt += "I" + (i + 1) + " = " + visit(ctx.function_argument(i).argument(0));
+				}
+				else
+				{
+					abort = true;
+					break;
+				}
+			}
+			
+			if (!abort)
+			{
+				select_stmt += ")";
+				return select_stmt;
+			}
+		}
 		
 		for (int i = 0; i < ctx.id_expression().size(); i++)
 		{
@@ -244,10 +335,10 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 			out += visit(ctx.id_expression(i));
 		}
 		
-		if (ctx.function_argument() != null)
+		if (ctx.function_argument().size() == 1)
 		{
-			function_names.put(ctx.function_argument(), Ora2rdb.stripQuotes(getRuleText(ctx.id_expression(0))).toUpperCase());
-			out += visit(ctx.function_argument());
+			function_names.put(ctx.function_argument(0), name);
+			out += visit(ctx.function_argument(0));
 		}
 		
 		return out;
@@ -349,14 +440,29 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 		out += "\nAS\n";
 		
 		for (Declare_specContext dsc : ctx.declare_spec())
-			out += "\tDECLARE " + visit(dsc) + ";\n";
+		{
+			String decl_spec = visit(dsc);
+			
+			if (decl_spec != null)
+				out += "\tDECLARE " + visit(dsc) + ";\n";
+		}
 		
 		if (ctx.body() != null)
 			out += visit(ctx.body());
 		
 		out += "^\n\nSET TERM ; ^";
-		current_procedure_args.clear();
-		return out;
+		current_procedure_args_and_vars.clear();
+		
+		String temp_tables_ddl = "";
+		
+		for (int i = 0; i < temporary_tables_ddl.size(); i++)
+			temp_tables_ddl += temporary_tables_ddl.get(i) + "\n\n";
+		
+		temporary_tables_ddl.clear();
+		AssocArray.type_name_map.clear();
+		AssocArray.array_to_table_map.clear();
+		
+		return temp_tables_ddl + out;
 	}
 	
 	@Override
@@ -397,14 +503,14 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 			out += visit(ctx.body());
 		
 		out += "^\n\nSET TERM ; ^";
-		current_procedure_args.clear();
+		current_procedure_args_and_vars.clear();
 		return out;
 	}
 	
 	@Override
 	public String visitParameter(ParameterContext ctx) {
 		String parameter_name = getRuleText(ctx.parameter_name());
-		current_procedure_args.add(Ora2rdb.stripQuotes(parameter_name).toUpperCase());
+		current_procedure_args_and_vars.add(Ora2rdb.stripQuotes(parameter_name).toUpperCase());
 		String out = parameter_name;
 		
 		if (ctx.type_spec() != null)
@@ -425,7 +531,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 		else
 			out += getRuleText(ctx);
 		
-		if (current_procedure_args.contains(Ora2rdb.stripQuotes(out).toUpperCase()))
+		if (current_procedure_args_and_vars.contains(Ora2rdb.stripQuotes(out).toUpperCase()))
 			out = ":" + out;
 		
 		return out;
@@ -616,7 +722,16 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	
 	@Override
 	public String visitVariable_declaration(Variable_declarationContext ctx) {
-		String out = getRuleText(ctx.variable_name()) + " " + visit(ctx.type_spec());
+		String var_name = getRuleText(ctx.variable_name());
+		String type = Ora2rdb.stripQuotes(visit(ctx.type_spec())).toUpperCase();
+		
+		if (AssocArray.type_name_map.containsKey(type))
+		{
+			temporary_tables_ddl.add(AssocArray.type_name_map.get(type).getTemporaryTableDDL(var_name));
+			return null;
+		}
+		
+		String out = var_name + " " + type;
 		
 		if (ctx.NOT() != null)
 			out += " NOT NULL";
@@ -624,6 +739,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 		if (ctx.default_value_part() != null)
 			out += " " + getRuleText(ctx.default_value_part());
 		
+		current_procedure_args_and_vars.add(Ora2rdb.stripQuotes(var_name).toUpperCase());
 		return out;
 	}
 	
@@ -862,6 +978,62 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 		else 
 			out += visit(ctx.seq_of_statements());
 		
+		return out;
+	}
+	
+	@Override
+	public String visitTable_type_dec(Table_type_decContext ctx) {
+		if (ctx.TABLE() != null)
+		{
+			if (ctx.table_indexed_by_part() != null)
+				new AssocArray(getRuleText(ctx.type_name()), visit(ctx.type_spec()), visit(ctx.table_indexed_by_part().type_spec()));
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public String visitAssignment_statement(Assignment_statementContext ctx) {
+		String out = "";
+		
+		if (ctx.general_element() != null)
+		{
+			General_element_partContext gen_elem_part_ctx = ctx.general_element().general_element_part(0);
+			String name = Ora2rdb.stripQuotes(visit(gen_elem_part_ctx.id_expression(0))).toUpperCase();
+			
+			if (AssocArray.array_to_table_map.containsKey(name) &&
+					gen_elem_part_ctx.function_argument().size() != 0)
+			{
+				String insert_stmt = "INSERT INTO " + AssocArray.array_to_table_map.get(name) + " VALUES (";
+				boolean abort = false;
+				
+				for (Function_argumentContext func_arg_ctx : gen_elem_part_ctx.function_argument())
+				{
+					if (func_arg_ctx.argument().size() == 1)
+						insert_stmt += visit(func_arg_ctx.argument(0)) + ", ";
+					else
+					{
+						abort = true;
+						break;
+					}
+				}
+				
+				if (!abort)
+				{
+					insert_stmt += visit(ctx.expression()) + ")";
+					return insert_stmt;
+				}
+			}
+			
+			out += visit(ctx.general_element());
+		}
+		else
+			out += getRuleText(ctx.bind_variable());
+		
+		if (out.startsWith(":"))
+			out = out.substring(1);
+		
+		out += " = " + visit(ctx.expression());
 		return out;
 	}
 }

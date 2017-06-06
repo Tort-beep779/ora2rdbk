@@ -553,7 +553,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 			
 			out += visit(ctx.statement(i));
 			
-			if (ctx.statement(i).if_statement() == null)
+			if (ctx.statement(i).if_statement() == null && ctx.statement(i).loop_statement() == null)
 				out += ";";
 		}
 		
@@ -1034,6 +1034,23 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 			out = out.substring(1);
 		
 		out += " = " + visit(ctx.expression());
+		return out;
+	}
+	
+	@Override
+	public String visitLoop_statement(Loop_statementContext ctx) {
+		String out = "";
+		
+		if (ctx.WHILE() != null)
+		{
+			out += "WHILE (" + visit(ctx.condition()) + ") DO\n";
+			
+			if (ctx.seq_of_statements().statement().size() > 1)
+				out += "BEGIN\n" + visit(ctx.seq_of_statements()) + "\nEND";
+			else 
+				out += visit(ctx.seq_of_statements());
+		}
+		
 		return out;
 	}
 }

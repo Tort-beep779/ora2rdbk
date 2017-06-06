@@ -1823,11 +1823,23 @@ public interface plsqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAdditive_expression(plsqlParser.Additive_expressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link plsqlParser#additive_op}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAdditive_op(plsqlParser.Additive_opContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link plsqlParser#multiply_expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitMultiply_expression(plsqlParser.Multiply_expressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link plsqlParser#multiply_op}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMultiply_op(plsqlParser.Multiply_opContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link plsqlParser#datetime_expression}.
 	 * @param ctx the parse tree

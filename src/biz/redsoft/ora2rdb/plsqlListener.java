@@ -3028,6 +3028,16 @@ public interface plsqlListener extends ParseTreeListener {
 	 */
 	void exitAdditive_expression(plsqlParser.Additive_expressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link plsqlParser#additive_op}.
+	 * @param ctx the parse tree
+	 */
+	void enterAdditive_op(plsqlParser.Additive_opContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#additive_op}.
+	 * @param ctx the parse tree
+	 */
+	void exitAdditive_op(plsqlParser.Additive_opContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link plsqlParser#multiply_expression}.
 	 * @param ctx the parse tree
 	 */
@@ -3037,6 +3047,16 @@ public interface plsqlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMultiply_expression(plsqlParser.Multiply_expressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link plsqlParser#multiply_op}.
+	 * @param ctx the parse tree
+	 */
+	void enterMultiply_op(plsqlParser.Multiply_opContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#multiply_op}.
+	 * @param ctx the parse tree
+	 */
+	void exitMultiply_op(plsqlParser.Multiply_opContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link plsqlParser#datetime_expression}.
 	 * @param ctx the parse tree

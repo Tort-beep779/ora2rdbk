@@ -1053,4 +1053,34 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 		
 		return out;
 	}
+	
+	@Override
+	public String visitAdditive_expression(Additive_expressionContext ctx) {
+		String out = visit(ctx.multiply_expression(0));
+		
+		for (int i = 0; i < ctx.additive_op().size(); i++)
+			out += " " + getRuleText(ctx.additive_op(i)) + " " + visit(ctx.multiply_expression(i + 1));
+		
+		return out;
+	}
+	
+	@Override
+	public String visitMultiply_expression(Multiply_expressionContext ctx) {
+		String out = visit(ctx.datetime_expression(0));
+		
+		for (int i = 0; i < ctx.multiply_op().size(); i++)
+			out += " " + getRuleText(ctx.multiply_op(i)) + " " + visit(ctx.datetime_expression(i + 1));
+		
+		return out;
+	}
+	
+	@Override
+	public String visitConcatenation(ConcatenationContext ctx) {
+		String out = visit(ctx.additive_expression(0));
+		
+		for (int i = 0; i < ctx.concatenation_op().size(); i++)
+			out += " " + getRuleText(ctx.concatenation_op(i)) + " " + visit(ctx.additive_expression(i + 1));
+		
+		return out;
+	}
 }

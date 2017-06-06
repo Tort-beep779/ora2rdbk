@@ -3640,6 +3640,18 @@ public class plsqlBaseListener implements plsqlListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterAdditive_op(plsqlParser.Additive_opContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAdditive_op(plsqlParser.Additive_opContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterMultiply_expression(plsqlParser.Multiply_expressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -3647,6 +3659,18 @@ public class plsqlBaseListener implements plsqlListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMultiply_expression(plsqlParser.Multiply_expressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMultiply_op(plsqlParser.Multiply_opContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMultiply_op(plsqlParser.Multiply_opContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

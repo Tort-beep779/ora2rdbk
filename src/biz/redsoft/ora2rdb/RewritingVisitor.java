@@ -26,12 +26,17 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	public String visitSql_script(Sql_scriptContext ctx) {
 		String out = "";
 		
-		for (Unit_statementContext usc : ctx.unit_statement())
+		for (int i = 0; i < ctx.unit_statement().size(); i++)
 		{
-			String stmt = visit(usc);
+			String stmt = visit(ctx.unit_statement(i));
 			
 			if (stmt != null)
-				out += stmt + "\n\n";
+			{
+				if (i != 0)
+					out += "\n";
+				
+				out += stmt + "\n";
+			}
 		}
 		
 		return out;
@@ -435,8 +440,13 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	public String visitSeq_of_statements(Seq_of_statementsContext ctx) {
 		String out = "";
 		
-		for (StatementContext sc : ctx.statement())
-			out += visit(sc) + ";\n";
+		for (int i = 0; i < ctx.statement().size(); i++)
+		{
+			if (i != 0)
+				out += "\n";
+			
+			out += visit(ctx.statement(i)) + ";";
+		}
 		
 		return out;
 	}

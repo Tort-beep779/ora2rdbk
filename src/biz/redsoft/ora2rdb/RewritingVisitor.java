@@ -539,7 +539,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	
 	@Override
 	public String visitBody(BodyContext ctx) {
-		return "BEGIN\n/*\n" + visit(ctx.seq_of_statements()) + "*/\nEND";
+		return "BEGIN\n" + visit(ctx.seq_of_statements()) + "\nEND";
 	}
 	
 	@Override

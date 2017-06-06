@@ -445,7 +445,10 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 			if (i != 0)
 				out += "\n";
 			
-			out += visit(ctx.statement(i)) + ";";
+			out += visit(ctx.statement(i));
+			
+			if (ctx.statement(i).if_statement() == null)
+				out += ";";
 		}
 		
 		return out;
@@ -816,6 +819,48 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 		
 		if (ctx.function_argument() != null)
 			out += visit(ctx.function_argument());
+		
+		return out;
+	}
+	
+	@Override
+	public String visitIf_statement(If_statementContext ctx) {
+		String out = "IF (" + visit(ctx.condition()) + ") THEN\n";
+		
+		if (ctx.seq_of_statements().statement().size() > 1)
+			out += "BEGIN\n" + visit(ctx.seq_of_statements()) + "\nEND";
+		else 
+			out += visit(ctx.seq_of_statements());
+		
+		for (int i = 0; i < ctx.elsif_part().size(); i++)
+			out += "\n" + visit(ctx.elsif_part(i));
+		
+		if (ctx.else_part() != null)
+			out += "\n" + visit(ctx.else_part());
+		
+		return out;
+	}
+	
+	@Override
+	public String visitElse_part(Else_partContext ctx) {
+		String out = "ELSE\n";
+		
+		if (ctx.seq_of_statements().statement().size() > 1)
+			out += "BEGIN\n" + visit(ctx.seq_of_statements()) + "\nEND";
+		else 
+			out += visit(ctx.seq_of_statements());
+		
+		return out;
+	}
+	
+	@Override
+	public String visitElsif_part(Elsif_partContext ctx) {
+		String out = "ELSE IF (" + visit(ctx.condition()) + ") THEN\n";
+		
+		if (ctx.seq_of_statements().statement().size() > 1)
+			out += "BEGIN\n" + visit(ctx.seq_of_statements()) + "\nEND";
+		else 
+			out += visit(ctx.seq_of_statements());
 		
 		return out;
 	}

@@ -84,7 +84,7 @@ public class Ora2rdb {
 			return;
 		}
 
-		ANTLRInputStream input = new ANTLRInputStream(is);
+		CharStream input = CharStreams.fromStream(is);
 		plsqlLexer lexer = new plsqlLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		plsqlParser parser = new plsqlParser(tokens);

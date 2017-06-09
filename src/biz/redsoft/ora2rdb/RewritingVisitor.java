@@ -361,7 +361,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 		
 		if (function_name != null)
 		{
-			if (function_name.equals("REPLACE"))
+			if (function_name.equals("REPLACE") && ctx.argument().size() == 2)
 				out += ", ''";
 		}
 		

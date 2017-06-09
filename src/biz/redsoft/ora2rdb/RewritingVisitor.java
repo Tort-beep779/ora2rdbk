@@ -34,7 +34,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 		ArrayList<String> index_types_list = new ArrayList<String>();
 		
 		AssocArray(String name, String type, String index_type) {
-			type = Ora2rdb.stripQuotes(type).toUpperCase();
+			type = Ora2rdb.getRealName(type);
 			
 			if (type_name_map.containsKey(type))
 			{
@@ -49,23 +49,24 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 				index_types_list.add(index_type);
 			}
 			
-			type_name_map.put(Ora2rdb.stripQuotes(name).toUpperCase(), this);
+			type_name_map.put(Ora2rdb.getRealName(name), this);
 		}
 		
 		String getTemporaryTableDDL(String name) {
-			name = Ora2rdb.stripQuotes(name).toUpperCase();
-			String new_name = name;
+			String real_name = Ora2rdb.getRealName(name);
+			String temp_name = real_name.toUpperCase();
+			String new_name = temp_name;
 			
 			for (int i = 1; ; i++)
 			{
 				if (used_temporary_table_names.contains(new_name))
-					new_name = name + i;
+					new_name = temp_name + i;
 				else
 					break;
 			}
 			
 			used_temporary_table_names.add(new_name);
-			array_to_table_map.put(name, new_name);
+			array_to_table_map.put(real_name, new_name);
 			String key_fields = "";
 			String out = "CREATE GLOBAL TEMPORARY TABLE " + new_name + " (\n";
 			
@@ -106,7 +107,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	@Override
 	public String visitCreate_table(Create_tableContext ctx) {
 		String out = "CREATE TABLE " + getRuleText(ctx.tableview_name()) + " (\n";
-		current_table = Ora2rdb.stripQuotes(getRuleText(ctx.tableview_name())).toUpperCase();
+		current_table = Ora2rdb.getRealName(getRuleText(ctx.tableview_name()));
 		
 		for (int i = 0; i < ctx.relational_properties().size(); i++)
 		{
@@ -154,7 +155,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	public String visitField_spec(Field_specContext ctx) {
 		String column_name = getRuleText(ctx.column_name());
 		String out = column_name + "\t" + visit(ctx.type_spec());
-		column_name = Ora2rdb.stripQuotes(column_name).toUpperCase();
+		column_name = Ora2rdb.getRealName(column_name);
 		
 		if (current_table != null)
 		{
@@ -296,7 +297,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	@Override
 	public String visitGeneral_element_part(General_element_partContext ctx) {
 		String out = "";
-		String name = Ora2rdb.stripQuotes(visit(ctx.id_expression(0))).toUpperCase();
+		String name = Ora2rdb.getRealName(visit(ctx.id_expression(0)));
 		
 		if (AssocArray.array_to_table_map.containsKey(name) &&
 			ctx.function_argument().size() != 0)
@@ -510,7 +511,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	@Override
 	public String visitParameter(ParameterContext ctx) {
 		String parameter_name = getRuleText(ctx.parameter_name());
-		current_procedure_args_and_vars.add(Ora2rdb.stripQuotes(parameter_name).toUpperCase());
+		current_procedure_args_and_vars.add(Ora2rdb.getRealName(parameter_name));
 		String out = parameter_name;
 		
 		if (ctx.type_spec() != null)
@@ -531,7 +532,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 		else
 			out += getRuleText(ctx);
 		
-		if (current_procedure_args_and_vars.contains(Ora2rdb.stripQuotes(out).toUpperCase()))
+		if (current_procedure_args_and_vars.contains(Ora2rdb.getRealName(out)))
 			out = ":" + out;
 		
 		return out;
@@ -723,11 +724,12 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	@Override
 	public String visitVariable_declaration(Variable_declarationContext ctx) {
 		String var_name = getRuleText(ctx.variable_name());
-		String type = Ora2rdb.stripQuotes(visit(ctx.type_spec())).toUpperCase();
+		String type = visit(ctx.type_spec());
+		String real_type = Ora2rdb.getRealName(type);
 		
-		if (AssocArray.type_name_map.containsKey(type))
+		if (AssocArray.type_name_map.containsKey(real_type))
 		{
-			temporary_tables_ddl.add(AssocArray.type_name_map.get(type).getTemporaryTableDDL(var_name));
+			temporary_tables_ddl.add(AssocArray.type_name_map.get(real_type).getTemporaryTableDDL(var_name));
 			return null;
 		}
 		
@@ -739,7 +741,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 		if (ctx.default_value_part() != null)
 			out += " " + getRuleText(ctx.default_value_part());
 		
-		current_procedure_args_and_vars.add(Ora2rdb.stripQuotes(var_name).toUpperCase());
+		current_procedure_args_and_vars.add(Ora2rdb.getRealName(var_name));
 		return out;
 	}
 	
@@ -839,7 +841,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	public String visitCreate_index(Create_indexContext ctx) {
 		String index_name = getRuleText(ctx.id_expression());
 		
-		if (Ora2rdb.index_names.contains(Ora2rdb.stripQuotes(index_name).toUpperCase()))
+		if (Ora2rdb.index_names.contains(Ora2rdb.getRealName(index_name)))
 			return null;
 		
 		String out = "CREATE ";
@@ -999,7 +1001,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 		if (ctx.general_element() != null)
 		{
 			General_element_partContext gen_elem_part_ctx = ctx.general_element().general_element_part(0);
-			String name = Ora2rdb.stripQuotes(visit(gen_elem_part_ctx.id_expression(0))).toUpperCase();
+			String name = Ora2rdb.getRealName(visit(gen_elem_part_ctx.id_expression(0)));
 			
 			if (AssocArray.array_to_table_map.containsKey(name) &&
 					gen_elem_part_ctx.function_argument().size() != 0)

@@ -24,15 +24,8 @@ public class InitialListener extends plsqlBaseListener {
 					
 					if (inline_constraint_ctx.NOT() != null && inline_constraint_ctx.NULL() != null)
 					{
-						String table_name = ctx.tableview_name().getText().toUpperCase();
-						
-						if (table_name.startsWith("\""))
-							table_name = table_name.substring(1, table_name.length() - 1);
-						
-						String column_name = modify_col_properties_ctx.column_name().getText().toUpperCase();
-						
-						if (column_name.startsWith("\""))
-							column_name = column_name.substring(1, column_name.length() - 1);
+						String table_name = Ora2rdb.getRealName(ctx.tableview_name().getText());
+						String column_name = Ora2rdb.getRealName(modify_col_properties_ctx.column_name().getText());
 						
 						if (Ora2rdb.table_map.containsKey(table_name))
 						{
@@ -59,19 +52,9 @@ public class InitialListener extends plsqlBaseListener {
 					TreeSet<String> columns_set = new TreeSet<String>();
 					
 					for (Column_nameContext column_name_ctx : out_of_line_constraint_ctx.column_name())
-					{
-						String column_name = column_name_ctx.getText().toUpperCase();
-						
-						if (column_name.startsWith("\""))
-							column_name = column_name.substring(1, column_name.length() - 1);
-						
-						columns_set.add(column_name);
-					}
+						columns_set.add(Ora2rdb.getRealName(column_name_ctx.getText()));
 					
-					String table_name = ctx.tableview_name().getText().toUpperCase();
-					
-					if (table_name.startsWith("\""))
-						table_name = table_name.substring(1, table_name.length() - 1);
+					String table_name = Ora2rdb.getRealName(ctx.tableview_name().getText());
 					
 					if (Ora2rdb.table_map.containsKey(table_name))
 						Ora2rdb.table_map.get(table_name).addAll(columns_set);
@@ -83,12 +66,7 @@ public class InitialListener extends plsqlBaseListener {
 					out_of_line_constraint_ctx.FOREIGN() != null ||
 					out_of_line_constraint_ctx.UNIQUE() != null)
 				{
-					String constraint_name = out_of_line_constraint_ctx.constraint_name().getText().toUpperCase();
-					
-					if (constraint_name.startsWith("\""))
-						constraint_name = constraint_name.substring(1, constraint_name.length() - 1);
-					
-					Ora2rdb.index_names.add(constraint_name);
+					Ora2rdb.index_names.add(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()));
 				}
 			}
 		}

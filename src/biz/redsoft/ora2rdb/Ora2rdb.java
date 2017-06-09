@@ -20,6 +20,13 @@ public class Ora2rdb {
 			return str;
 	}
 	
+	static String getRealName(String str) {
+		if (str.startsWith("\""))
+			return str.substring(1, str.length() - 1);
+		else
+			return str.toUpperCase();
+	}
+	
 	static void printUsage() {
 		System.err.println("Usage: ora2rdb.jar <input_file> [options]\n"
 				+ "Options:\n"

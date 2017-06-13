@@ -47,6 +47,12 @@ public interface plsqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRelational_properties(plsqlParser.Relational_propertiesContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link plsqlParser#column_definition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitColumn_definition(plsqlParser.Column_definitionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link plsqlParser#physical_properties}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

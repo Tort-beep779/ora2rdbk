@@ -68,6 +68,16 @@ public interface plsqlListener extends ParseTreeListener {
 	 */
 	void exitRelational_properties(plsqlParser.Relational_propertiesContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link plsqlParser#column_definition}.
+	 * @param ctx the parse tree
+	 */
+	void enterColumn_definition(plsqlParser.Column_definitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link plsqlParser#column_definition}.
+	 * @param ctx the parse tree
+	 */
+	void exitColumn_definition(plsqlParser.Column_definitionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link plsqlParser#physical_properties}.
 	 * @param ctx the parse tree
 	 */

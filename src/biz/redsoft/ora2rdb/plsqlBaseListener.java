@@ -88,6 +88,18 @@ public class plsqlBaseListener implements plsqlListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterColumn_definition(plsqlParser.Column_definitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitColumn_definition(plsqlParser.Column_definitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPhysical_properties(plsqlParser.Physical_propertiesContext ctx) { }
 	/**
 	 * {@inheritDoc}

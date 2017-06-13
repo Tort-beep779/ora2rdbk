@@ -59,6 +59,13 @@ public class plsqlBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitColumn_definition(plsqlParser.Column_definitionContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitPhysical_properties(plsqlParser.Physical_propertiesContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

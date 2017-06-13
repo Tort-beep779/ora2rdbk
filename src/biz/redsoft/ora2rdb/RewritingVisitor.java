@@ -152,21 +152,68 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	}
 	
 	@Override
-	public String visitField_spec(Field_specContext ctx) {
+	public String visitColumn_definition(Column_definitionContext ctx) {
 		String column_name = getRuleText(ctx.column_name());
 		String out = column_name + "\t" + visit(ctx.type_spec());
-		column_name = Ora2rdb.getRealName(column_name);
+		
+		if (ctx.default_value_part() != null)
+			out += " " + visit(ctx.default_value_part());
+		
+		boolean not_null = false;
 		
 		if (current_table != null)
 		{
 			if (Ora2rdb.table_map.containsKey(current_table))
 			{
 				TreeSet<String> columns_set = Ora2rdb.table_map.get(current_table);
-				
-				if (columns_set.contains(column_name))
+					
+				if (columns_set.contains(Ora2rdb.getRealName(column_name)))
+				{
 					out += " NOT NULL";
+					not_null = true;
+				}
 			}
 		}
+		
+		for (Inline_constraintContext inl_con_ctx : ctx.inline_constraint())
+		{
+			if (inl_con_ctx.NOT() != null && !not_null)
+				out += " " + visit(inl_con_ctx);
+		}
+		
+		return out;
+	}
+	
+	@Override
+	public String visitDefault_value_part(Default_value_partContext ctx) {
+		String out = "";
+		
+		if (ctx.ASSIGN_OP() != null)
+			out += "= ";
+		else
+			out += "DEFAULT ";
+		
+		out += visit(ctx.expression());
+		return out;
+	}
+	
+	@Override
+	public String visitInline_constraint(Inline_constraintContext ctx) {
+		String out = "";
+		
+		if (ctx.CONSTRAINT() != null)
+			out += "CONSTRAINT " + getRuleText(ctx.constraint_name()) + " ";
+		
+		if (ctx.NOT() != null)
+			out += "NOT NULL";
+		else if (ctx.PRIMARY() != null)
+			out += "PRIMARY KEY";
+		else if (ctx.UNIQUE() != null)
+			out += "UNIQUE";
+		else if (ctx.CHECK() != null)
+			out += "CHECK (" + visit(ctx.condition()) + ")";
+		else if (ctx.references_clause() != null)
+			out += visit(ctx.references_clause());
 		
 		return out;
 	}

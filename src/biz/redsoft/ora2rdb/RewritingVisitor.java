@@ -16,6 +16,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	TreeSet<String> current_procedure_args_and_vars = new TreeSet<String>();
 	ParseTreeProperty<String> function_names = new ParseTreeProperty<String>();
 	ArrayList<String> temporary_tables_ddl = new ArrayList<String>();
+	ArrayList<String> current_trigger_fields = new ArrayList<String>();
 	
 	public RewritingVisitor(plsqlParser parser) {
 		this.tokens = parser.getTokenStream();
@@ -587,7 +588,34 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	
 	@Override
 	public String visitBody(BodyContext ctx) {
-		return "BEGIN\n" + visit(ctx.seq_of_statements()) + "\nEND";
+		String out = "BEGIN\n";
+		
+		if (current_trigger_fields.size() > 0)
+		{
+			out += "IF (";
+			
+			for (int i = 0; i < current_trigger_fields.size(); i++)
+			{
+				if (i != 0)
+					out += " OR ";
+				
+				out += "NEW." + current_trigger_fields.get(i) + " <> OLD." + current_trigger_fields.get(i);
+			}
+			
+			out += ") THEN\n";
+			
+			if (ctx.seq_of_statements().statement().size() > 1)
+				out += "BEGIN\n" + visit(ctx.seq_of_statements()) + "\nEND";
+			else 
+				out += visit(ctx.seq_of_statements());
+			
+			current_trigger_fields.clear();
+		}
+		else 
+			out += visit(ctx.seq_of_statements());
+		
+		out += "\nEND";
+		return out;
 	}
 	
 	@Override
@@ -975,7 +1003,28 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 		else if (ctx.INSERT() != null)
 			return "INSERT";
 		else
+		{
+			for (Column_nameContext col_name_ctx : ctx.column_name())
+				current_trigger_fields.add(visit(col_name_ctx));
+			
 			return "UPDATE";
+		}
+	}
+	
+	@Override
+	public String visitTrigger_block(Trigger_blockContext ctx) {
+		String out = "";
+		
+		for (Declare_specContext dsc : ctx.declare_spec())
+		{
+			String decl_spec = visit(dsc);
+			
+			if (decl_spec != null)
+				out += "\tDECLARE " + visit(dsc) + ";\n";
+		}
+		
+		out += visit(ctx.body());
+		return out;
 	}
 	
 	@Override

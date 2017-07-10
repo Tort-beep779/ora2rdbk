@@ -982,6 +982,9 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	public String visitFunction_call(Function_callContext ctx) {
 		String out = getRuleText(ctx.routine_name());
 		
+		if (Ora2rdb.procedures_names.contains(Ora2rdb.getRealName(out)))
+			out = "EXECUTE PROCEDURE " + out;
+		
 		if (ctx.function_argument() != null)
 			out += visit(ctx.function_argument());
 		

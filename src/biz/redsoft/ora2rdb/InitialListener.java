@@ -71,4 +71,9 @@ public class InitialListener extends plsqlBaseListener {
 			}
 		}
 	}
+	
+	@Override
+	public void enterCreate_procedure_body(Create_procedure_bodyContext ctx) {
+		Ora2rdb.procedures_names.add(Ora2rdb.getRealName(ctx.procedure_name().id_expression().getText()));
+	}
 }

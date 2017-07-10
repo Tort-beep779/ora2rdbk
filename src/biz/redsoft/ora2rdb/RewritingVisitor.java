@@ -1080,7 +1080,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 			out += visit(ctx.general_element());
 		}
 		else
-			out += getRuleText(ctx.bind_variable());
+			out += visit(ctx.bind_variable());
 		
 		if (out.startsWith(":"))
 			out = out.substring(1);
@@ -1134,5 +1134,16 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 			out += " " + getRuleText(ctx.concatenation_op(i)) + " " + visit(ctx.additive_expression(i + 1));
 		
 		return out;
+	}
+	
+	@Override
+	public String visitBind_variable(Bind_variableContext ctx) {
+		String out = getRuleText(ctx);
+		String upper = out.toUpperCase();
+		
+		if (upper.startsWith(":OLD.") || upper.startsWith(":NEW."))
+			return out.substring(1);
+		else
+			return out;
 	}
 }

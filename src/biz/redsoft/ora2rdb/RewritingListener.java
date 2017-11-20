@@ -17,6 +17,38 @@ public class RewritingListener extends plsqlBaseListener {
 		this.tokens = tokens;
 	}
 	
+	void insertBefore(ParserRuleContext ctx, Object text) {
+		rewriter.insertBefore(ctx.start, text);
+	}
+	
+	void insertBefore(TerminalNode term, Object text) {
+		rewriter.insertBefore(term.getSymbol(), text);
+	}
+	
+	void insertAfter(ParserRuleContext ctx, Object text) {
+		rewriter.insertAfter(ctx.stop, text);
+	}
+	
+	void insertAfter(TerminalNode term, Object text) {
+		rewriter.insertAfter(term.getSymbol(), text);
+	}
+	
+	void replace(ParserRuleContext ctx, Object text) {
+		rewriter.replace(ctx.start, ctx.stop, text);
+	}
+	
+	void replace(TerminalNode term, Object text) {
+		rewriter.replace(term.getSymbol(), text);
+	}
+	
+	void delete(ParserRuleContext ctx) {
+		rewriter.delete(ctx.start, ctx.stop);
+	}
+	
+	void delete(TerminalNode term) {
+		rewriter.delete(term.getSymbol());
+	}
+	
 	void commentBlock(int start_tok_idx, int stop_tok_idx) {
 		rewriter.insertBefore(start_tok_idx, "/*");
 		rewriter.insertAfter(stop_tok_idx, "*/");
@@ -33,12 +65,12 @@ public class RewritingListener extends plsqlBaseListener {
 		if (ctx.schema_name() != null)
 		{
 			Schema_nameContext sch = ctx.schema_name();
-			rewriter.delete(sch.start, sch.stop);
-			rewriter.delete(ctx.PERIOD().getSymbol());
+			delete(sch);
+			delete(ctx.PERIOD());
 		}
 		
 		if (ctx.physical_properties() != null)
-			rewriter.delete(ctx.physical_properties().start, ctx.physical_properties().stop);
+			delete(ctx.physical_properties());
 		
 		if (ctx.lob_storage_clause().size() != 0)
 			rewriter.delete(ctx.lob_storage_clause(0).start, ctx.lob_storage_clause(ctx.lob_storage_clause().size() - 1).stop);
@@ -64,7 +96,7 @@ public class RewritingListener extends plsqlBaseListener {
 						column_name = column_name.substring(1, column_name.length() - 1);
 
 					if (columns_set.contains(column_name))
-						rewriter.insertAfter(col_def_ctx.stop, " NOT NULL");
+						insertAfter(col_def_ctx, " NOT NULL");
 				}
 			}
 		}
@@ -78,10 +110,10 @@ public class RewritingListener extends plsqlBaseListener {
 				if (ctx.type_spec().datatype().native_datatype_element() != null)
 					if (ctx.type_spec().datatype().native_datatype_element().RAW() != null)
 					{
-						rewriter.replace(ctx.type_spec().start, ctx.type_spec().stop, "BLOB");
+						replace(ctx.type_spec(), "BLOB");
 						
 						if (ctx.default_value_part() != null)
-							rewriter.delete(ctx.default_value_part().start, ctx.default_value_part().stop);
+							delete(ctx.default_value_part());
 					}
 		}
 	}
@@ -95,33 +127,33 @@ public class RewritingListener extends plsqlBaseListener {
 				if (ctx.precision_part() != null)
 				{
 					if (ctx.precision_part().ASTERISK() != null)
-						rewriter.replace(ctx.precision_part().ASTERISK().getSymbol(), "18");
+						replace(ctx.precision_part().ASTERISK(), "18");
 				}
 				else
 				{
-					rewriter.insertAfter(ctx.native_datatype_element().stop, "(18, 4)");
+					insertAfter(ctx.native_datatype_element(), "(18, 4)");
 				}
 			}
 			else if (ctx.native_datatype_element().FLOAT() != null)
 			{
 				if (ctx.precision_part() != null)
-					rewriter.replace(ctx.start, ctx.stop, "DOUBLE PRECISION");
+					replace(ctx, "DOUBLE PRECISION");
 			}
 			else if (ctx.native_datatype_element().TIMESTAMP() != null)
 			{
 				if (ctx.precision_part() != null)
-					rewriter.delete(ctx.precision_part().start, ctx.precision_part().stop);
+					delete(ctx.precision_part());
 			}
 			else if (ctx.native_datatype_element().VARCHAR2() != null ||
 					 ctx.native_datatype_element().VARCHAR() != null)
 			{
 				if (ctx.precision_part() == null)
-					rewriter.insertAfter(ctx.native_datatype_element().stop, "(250)");
+					insertAfter(ctx.native_datatype_element(), "(250)");
 			}
 			else if (ctx.native_datatype_element().NUMERIC() != null)
 			{
 				if (ctx.precision_part() == null)
-					rewriter.insertAfter(ctx.native_datatype_element().stop, "(18, 4)");
+					insertAfter(ctx.native_datatype_element(), "(18, 4)");
 			}
 		}
 	}
@@ -129,25 +161,25 @@ public class RewritingListener extends plsqlBaseListener {
 	@Override
 	public void exitPrecision_part(Precision_partContext ctx) {
 		if (ctx.BYTE() != null)
-			rewriter.delete(ctx.BYTE().getSymbol());
+			delete(ctx.BYTE());
 		else if (ctx.CHAR() != null)
-			rewriter.delete(ctx.CHAR().getSymbol());
+			delete(ctx.CHAR());
 	}
 	
 	@Override
 	public void exitNative_datatype_element(Native_datatype_elementContext ctx) {
 		if (ctx.VARCHAR2() != null || ctx.NVARCHAR2() != null)
-			rewriter.replace(ctx.start, "VARCHAR");
+			replace(ctx, "VARCHAR");
 		else if (ctx.CLOB() != null)
-			rewriter.replace(ctx.start, "BLOB SUB_TYPE 1");
+			replace(ctx, "BLOB SUB_TYPE 1");
 		else if (ctx.NUMBER() != null)
-			rewriter.replace(ctx.start, "NUMERIC");
+			replace(ctx, "NUMERIC");
 		else if (ctx.BINARY_FLOAT() != null)
-			rewriter.replace(ctx.start, "FLOAT");
+			replace(ctx, "FLOAT");
 		else if (ctx.BINARY_DOUBLE() != null)
-			rewriter.replace(ctx.start, "DOUBLE PRECISION");
+			replace(ctx, "DOUBLE PRECISION");
 		else if (ctx.NCHAR() != null)
-			rewriter.replace(ctx.start, "CHAR");
+			replace(ctx, "CHAR");
 	}
 	
 	@Override
@@ -156,8 +188,8 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		if (schema_name_ctx != null)
 		{
-			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
-			rewriter.delete(ctx.PERIOD().getSymbol());
+			delete(schema_name_ctx);
+			delete(ctx.PERIOD());
 		}
 		
 		Constraint_clausesContext constraint_clauses_ctx = ctx.constraint_clauses();
@@ -170,7 +202,7 @@ public class RewritingListener extends plsqlBaseListener {
 				Constraint_stateContext constraint_state_ctx = constraint_clauses_ctx.out_of_line_constraint(0).constraint_state();
 				
 				if (constraint_state_ctx != null)
-					rewriter.delete(constraint_state_ctx.start, constraint_state_ctx.stop);
+					delete(constraint_state_ctx);
 			}
 		}
 		else if (column_clauses_ctx != null)
@@ -183,7 +215,7 @@ public class RewritingListener extends plsqlBaseListener {
 				
 				if (modify_col_properties_ctx.inline_constraint().size() != 0)
 					if (modify_col_properties_ctx.inline_constraint(0).NULL() != null)
-						rewriter.delete(ctx.start, ctx.stop);
+						delete(ctx);
 			}
 		}
 	}
@@ -202,12 +234,12 @@ public class RewritingListener extends plsqlBaseListener {
 
 					if (function_argument_ctx != null)
 						if (function_argument_ctx.argument().size() == 2)
-							rewriter.insertAfter(function_argument_ctx.argument(1).stop, ", ''");
+							insertAfter(function_argument_ctx.argument(1), ", ''");
 				}
 			}
 			else if (regular_id_ctx.LENGTH() != null)
 			{
-				rewriter.replace(regular_id_ctx.LENGTH().getSymbol(), "CHAR_LENGTH");
+				replace(regular_id_ctx.LENGTH(), "CHAR_LENGTH");
 			}
 		}
 	}
@@ -218,8 +250,8 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		if (schema_name_ctx != null)
 		{
-			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
-			rewriter.delete(ctx.PERIOD().getSymbol());
+			delete(schema_name_ctx);
+			delete(ctx.PERIOD());
 		}
 	}
 	
@@ -232,7 +264,7 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		if (Ora2rdb.index_names.contains(index_name))
 		{
-			rewriter.delete(ctx.start, ctx.stop);
+			delete(ctx);
 			return;
 		}
 		
@@ -242,7 +274,7 @@ public class RewritingListener extends plsqlBaseListener {
 		{
 			if (index_expr_ctx.unary_expression() != null)
 			{
-				rewriter.delete(ctx.start, ctx.stop);
+				delete(ctx);
 				return;
 			}
 		}
@@ -251,22 +283,22 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		if (schema_name_ctx != null)
 		{
-			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
-			rewriter.delete(ctx.PERIOD().getSymbol());
+			delete(schema_name_ctx);
+			delete(ctx.PERIOD());
 		}
 		
 		schema_name_ctx = table_index_clause_ctx.schema_name();
 		
 		if (schema_name_ctx != null)
 		{
-			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
-			rewriter.delete(table_index_clause_ctx.PERIOD().getSymbol());
+			delete(schema_name_ctx);
+			delete(table_index_clause_ctx.PERIOD());
 		}
 		
 		Index_propertiesContext index_properties_ctx = table_index_clause_ctx.index_properties();
 		
 		if (index_properties_ctx != null)
-			rewriter.delete(index_properties_ctx.start, index_properties_ctx.stop);
+			delete(index_properties_ctx);
 	}
 	
 	@Override
@@ -276,12 +308,12 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		if (schema_name_ctx != null)
 		{
-			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
-			rewriter.delete(sequence_name_ctx.PERIOD().getSymbol());
+			delete(schema_name_ctx);
+			delete(sequence_name_ctx.PERIOD());
 		}
 		
 		for (Sequence_specContext sequence_spec_ctx : ctx.sequence_spec())
-			rewriter.delete(sequence_spec_ctx.start, sequence_spec_ctx.stop);
+			delete(sequence_spec_ctx);
 		
 		String set_generator_statements = "";
 		
@@ -290,31 +322,31 @@ public class RewritingListener extends plsqlBaseListener {
 			set_generator_statements += "ALTER SEQUENCE " + sequence_name_ctx.id_expression().getText() +
 										" RESTART WITH " + sequence_start_clause_ctx.UNSIGNED_INTEGER().getText() + ";\n";
 			
-			rewriter.delete(sequence_start_clause_ctx.start, sequence_start_clause_ctx.stop);
+			delete(sequence_start_clause_ctx);
 		}
 		
-		rewriter.insertAfter(ctx.stop, "\n" + set_generator_statements);
+		insertAfter(ctx, "\n" + set_generator_statements);
 	}
 	
 	@Override
 	public void exitCreate_view(Create_viewContext ctx) {
 		if (ctx.REPLACE() != null)
-			rewriter.replace(ctx.REPLACE().getSymbol(), "ALTER");
+			replace(ctx.REPLACE(), "ALTER");
 		
 		if (ctx.FORCE() != null)
 		{
-			rewriter.delete(ctx.FORCE().getSymbol());
+			delete(ctx.FORCE());
 			
 			if (ctx.NO() != null)
-				rewriter.delete(ctx.NO().getSymbol());
+				delete(ctx.NO());
 		}
 		
 		Schema_nameContext schema_name_ctx = ctx.schema_name();
 		
 		if (schema_name_ctx != null)
 		{
-			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
-			rewriter.delete(ctx.PERIOD().getSymbol());
+			delete(schema_name_ctx);
+			delete(ctx.PERIOD());
 		}
 	}
 	
@@ -323,10 +355,10 @@ public class RewritingListener extends plsqlBaseListener {
 		switch (ctx.getText().toUpperCase())
 		{
 		case "SYSTIMESTAMP":
-			rewriter.replace(ctx.start, ctx.stop, "CURRENT_TIMESTAMP");
+			replace(ctx, "CURRENT_TIMESTAMP");
 			break;
 		case "SYSDATE":
-			rewriter.replace(ctx.start, ctx.stop, "CURRENT_DATE");
+			replace(ctx, "CURRENT_DATE");
 		}
 	}
 	
@@ -336,61 +368,61 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		if (schema_name_ctx != null)
 		{
-			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
-			rewriter.delete(ctx.PERIOD().getSymbol());
+			delete(schema_name_ctx);
+			delete(ctx.PERIOD());
 		}
 	}
 	
 	@Override
 	public void exitCreate_function_body(Create_function_bodyContext ctx) {
 		if (ctx.CREATE() == null)
-			rewriter.insertBefore(ctx.FUNCTION().getSymbol(), "CREATE OR ALTER ");
+			insertBefore(ctx.FUNCTION(), "CREATE OR ALTER ");
 		else if (ctx.REPLACE() != null)
-			rewriter.replace(ctx.REPLACE().getSymbol(), "ALTER");
+			replace(ctx.REPLACE(), "ALTER");
 		
-		rewriter.insertBefore(ctx.start, "SET TERM ^ ;\n\n");
+		insertBefore(ctx, "SET TERM ^ ;\n\n");
 		
-		rewriter.replace(ctx.FUNCTION().getSymbol(), "PROCEDURE");
+		replace(ctx.FUNCTION(), "PROCEDURE");
 		
-		rewriter.replace(ctx.RETURN().getSymbol(), "RETURNS (RET_VAL");
-		rewriter.insertAfter(ctx.type_spec().stop, ")");
+		replace(ctx.RETURN(), "RETURNS (RET_VAL");
+		insertAfter(ctx.type_spec(), ")");
 		
 		if (ctx.IS() != null)
-			rewriter.replace(ctx.IS().getSymbol(), "AS");
+			replace(ctx.IS(), "AS");
 		
 		if (ctx.DECLARE() != null)
-			rewriter.delete(ctx.DECLARE().getSymbol());
+			delete(ctx.DECLARE());
 		
 		BodyContext body_ctx = ctx.body();
 		
 		if (body_ctx != null)
 		{
-			rewriter.insertBefore(body_ctx.END().getSymbol(), "\nSUSPEND;\n");
+			insertBefore(body_ctx.END(), "\nSUSPEND;\n");
 			commentBlock(body_ctx.BEGIN().getSymbol().getTokenIndex() + 1, body_ctx.END().getSymbol().getTokenIndex() - 1);
 		}
 		
-		rewriter.replace(ctx.SEMICOLON().getSymbol(), "^\n\nSET TERM ; ^");
+		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
 	}
 	
 	@Override
 	public void exitParameter(ParameterContext ctx) {
 		for (TerminalNode in_node : ctx.IN())
-			rewriter.delete(in_node.getSymbol());
+			delete(in_node);
 	}
 	
 	@Override
 	public void exitPragma_declaration(Pragma_declarationContext ctx) {
-		rewriter.delete(ctx.start, ctx.stop);
+		delete(ctx);
 	}
 	
 	@Override
 	public void exitVariable_declaration(Variable_declarationContext ctx) {
-		rewriter.insertBefore(ctx.start, "DECLARE ");
+		insertBefore(ctx, "DECLARE ");
 	}
 	
 	@Override
 	public void exitSql_plus_command(Sql_plus_commandContext ctx) {
-		rewriter.delete(ctx.start, ctx.stop);
+		delete(ctx);
 	}
 	
 	@Override
@@ -399,25 +431,25 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		if (schema_name_ctx != null)
 		{
-			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
-			rewriter.delete(ctx.PERIOD().getSymbol());
+			delete(schema_name_ctx);
+			delete(ctx.PERIOD());
 		}
 	}
 	
 	@Override
 	public void exitCreate_procedure_body(Create_procedure_bodyContext ctx) {
 		if (ctx.CREATE() == null)
-			rewriter.insertBefore(ctx.PROCEDURE().getSymbol(), "CREATE OR ALTER ");
+			insertBefore(ctx.PROCEDURE(), "CREATE OR ALTER ");
 		else if (ctx.REPLACE() != null)
-			rewriter.replace(ctx.REPLACE().getSymbol(), "ALTER");
+			replace(ctx.REPLACE(), "ALTER");
 		
-		rewriter.insertBefore(ctx.start, "SET TERM ^ ;\n\n");
+		insertBefore(ctx, "SET TERM ^ ;\n\n");
 		
 		if (ctx.IS() != null)
-			rewriter.replace(ctx.IS().getSymbol(), "AS");
+			replace(ctx.IS(), "AS");
 		
 		if (ctx.DECLARE() != null)
-			rewriter.delete(ctx.DECLARE().getSymbol());
+			delete(ctx.DECLARE());
 		
 		if (ctx.declare_spec().size() != 0)
 			commentBlock(ctx.declare_spec(0).start.getTokenIndex(), ctx.declare_spec(ctx.declare_spec().size() - 1).stop.getTokenIndex());
@@ -427,7 +459,7 @@ public class RewritingListener extends plsqlBaseListener {
 		if (body_ctx != null)
 			commentBlock(body_ctx.BEGIN().getSymbol().getTokenIndex() + 1, body_ctx.END().getSymbol().getTokenIndex() - 1);
 		
-		rewriter.replace(ctx.SEMICOLON().getSymbol(), "^\n\nSET TERM ; ^");
+		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
 	}
 	
 	@Override
@@ -436,21 +468,21 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		if (schema_name_ctx != null)
 		{
-			rewriter.delete(schema_name_ctx.start, schema_name_ctx.stop);
-			rewriter.delete(ctx.PERIOD().getSymbol());
+			delete(schema_name_ctx);
+			delete(ctx.PERIOD());
 		}
 	}
 	
 	@Override
 	public void exitCreate_trigger(Create_triggerContext ctx) {
-		rewriter.insertBefore(ctx.start, "SET TERM ^ ;\n\n");
+		insertBefore(ctx, "SET TERM ^ ;\n\n");
 		
 		if (ctx.REPLACE() != null)
-			rewriter.replace(ctx.REPLACE().getSymbol(), "ALTER");
+			replace(ctx.REPLACE(), "ALTER");
 		
-		rewriter.insertBefore(ctx.trigger_body().start, "AS ");
+		insertBefore(ctx.trigger_body(), "AS ");
 		
-		rewriter.replace(ctx.SEMICOLON().getSymbol(), "^\n\nSET TERM ; ^");
+		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
 	}
 	
 	@Override
@@ -460,7 +492,7 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitFor_each_row(For_each_rowContext ctx) {
-		rewriter.delete(ctx.start, ctx.stop);
+		delete(ctx);
 	}
 	
 	@Override
@@ -471,7 +503,7 @@ public class RewritingListener extends plsqlBaseListener {
 	@Override
 	public void exitTrigger_block(Trigger_blockContext ctx) {
 		if (ctx.DECLARE() != null)
-			rewriter.delete(ctx.DECLARE().getSymbol());
+			delete(ctx.DECLARE());
 		
 		BodyContext body_ctx = ctx.body();
 		
@@ -482,8 +514,8 @@ public class RewritingListener extends plsqlBaseListener {
 	@Override
 	public void exitAlter_trigger(Alter_triggerContext ctx) {
 		if (ctx.ENABLE() != null)
-			rewriter.replace(ctx.ENABLE().getSymbol(), "ACTIVE");
+			replace(ctx.ENABLE(), "ACTIVE");
 		else if (ctx.DISABLE() != null)
-			rewriter.replace(ctx.DISABLE().getSymbol(), "INACTIVE");
+			replace(ctx.DISABLE(), "INACTIVE");
 	}
 }

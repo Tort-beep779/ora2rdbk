@@ -287,8 +287,8 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		for (Sequence_start_clauseContext sequence_start_clause_ctx : ctx.sequence_start_clause())
 		{
-			set_generator_statements += "SET GENERATOR " + sequence_name_ctx.id_expression().getText() + 
-										" TO " + sequence_start_clause_ctx.UNSIGNED_INTEGER().getText() + ";\n";
+			set_generator_statements += "ALTER SEQUENCE " + sequence_name_ctx.id_expression().getText() +
+										" RESTART WITH " + sequence_start_clause_ctx.UNSIGNED_INTEGER().getText() + ";\n";
 			
 			rewriter.delete(sequence_start_clause_ctx.start, sequence_start_clause_ctx.stop);
 		}

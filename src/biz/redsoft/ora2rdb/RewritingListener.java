@@ -34,19 +34,23 @@ public class RewritingListener extends plsqlBaseListener {
 	}
 	
 	void replace(ParserRuleContext ctx, Object text) {
-		rewriter.replace(ctx.start, ctx.stop, text);
+		if (ctx != null)
+			rewriter.replace(ctx.start, ctx.stop, text);
 	}
 	
 	void replace(TerminalNode term, Object text) {
-		rewriter.replace(term.getSymbol(), text);
+		if (term != null)
+			rewriter.replace(term.getSymbol(), text);
 	}
 	
 	void delete(ParserRuleContext ctx) {
-		rewriter.delete(ctx.start, ctx.stop);
+		if (ctx != null)
+			rewriter.delete(ctx.start, ctx.stop);
 	}
 	
 	void delete(TerminalNode term) {
-		rewriter.delete(term.getSymbol());
+		if (term != null)
+			rewriter.delete(term.getSymbol());
 	}
 	
 	void commentBlock(int start_tok_idx, int stop_tok_idx) {
@@ -62,15 +66,10 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitCreate_table(Create_tableContext ctx) {
-		if (ctx.schema_name() != null)
-		{
-			Schema_nameContext sch = ctx.schema_name();
-			delete(sch);
-			delete(ctx.PERIOD());
-		}
+		delete(ctx.schema_name());
+		delete(ctx.PERIOD());
 		
-		if (ctx.physical_properties() != null)
-			delete(ctx.physical_properties());
+		delete(ctx.physical_properties());
 		
 		if (ctx.lob_storage_clause().size() != 0)
 			rewriter.delete(ctx.lob_storage_clause(0).start, ctx.lob_storage_clause(ctx.lob_storage_clause().size() - 1).stop);
@@ -111,9 +110,7 @@ public class RewritingListener extends plsqlBaseListener {
 					if (ctx.type_spec().datatype().native_datatype_element().RAW() != null)
 					{
 						replace(ctx.type_spec(), "BLOB");
-						
-						if (ctx.default_value_part() != null)
-							delete(ctx.default_value_part());
+						delete(ctx.default_value_part());
 					}
 		}
 	}
@@ -125,14 +122,9 @@ public class RewritingListener extends plsqlBaseListener {
 			if (ctx.native_datatype_element().NUMBER() != null)
 			{
 				if (ctx.precision_part() != null)
-				{
-					if (ctx.precision_part().ASTERISK() != null)
-						replace(ctx.precision_part().ASTERISK(), "18");
-				}
+					replace(ctx.precision_part().ASTERISK(), "18");
 				else
-				{
 					insertAfter(ctx.native_datatype_element(), "(18, 4)");
-				}
 			}
 			else if (ctx.native_datatype_element().FLOAT() != null)
 			{
@@ -141,8 +133,7 @@ public class RewritingListener extends plsqlBaseListener {
 			}
 			else if (ctx.native_datatype_element().TIMESTAMP() != null)
 			{
-				if (ctx.precision_part() != null)
-					delete(ctx.precision_part());
+				delete(ctx.precision_part());
 			}
 			else if (ctx.native_datatype_element().VARCHAR2() != null ||
 					 ctx.native_datatype_element().VARCHAR() != null)
@@ -160,10 +151,8 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitPrecision_part(Precision_partContext ctx) {
-		if (ctx.BYTE() != null)
-			delete(ctx.BYTE());
-		else if (ctx.CHAR() != null)
-			delete(ctx.CHAR());
+		delete(ctx.BYTE());
+		delete(ctx.CHAR());
 	}
 	
 	@Override
@@ -184,13 +173,8 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitAlter_table(Alter_tableContext ctx) {
-		Schema_nameContext schema_name_ctx = ctx.schema_name();
-		
-		if (schema_name_ctx != null)
-		{
-			delete(schema_name_ctx);
-			delete(ctx.PERIOD());
-		}
+		delete(ctx.schema_name());
+		delete(ctx.PERIOD());
 		
 		Constraint_clausesContext constraint_clauses_ctx = ctx.constraint_clauses();
 		Column_clausesContext column_clauses_ctx = ctx.column_clauses();
@@ -200,9 +184,7 @@ public class RewritingListener extends plsqlBaseListener {
 			if (constraint_clauses_ctx.out_of_line_constraint().size() != 0)
 			{
 				Constraint_stateContext constraint_state_ctx = constraint_clauses_ctx.out_of_line_constraint(0).constraint_state();
-				
-				if (constraint_state_ctx != null)
-					delete(constraint_state_ctx);
+				delete(constraint_state_ctx);
 			}
 		}
 		else if (column_clauses_ctx != null)
@@ -237,22 +219,15 @@ public class RewritingListener extends plsqlBaseListener {
 							insertAfter(function_argument_ctx.argument(1), ", ''");
 				}
 			}
-			else if (regular_id_ctx.LENGTH() != null)
-			{
-				replace(regular_id_ctx.LENGTH(), "CHAR_LENGTH");
-			}
+			
+			replace(regular_id_ctx.LENGTH(), "CHAR_LENGTH");
 		}
 	}
 	
 	@Override
 	public void exitReferences_clause(References_clauseContext ctx) {
-		Schema_nameContext schema_name_ctx = ctx.schema_name();
-		
-		if (schema_name_ctx != null)
-		{
-			delete(schema_name_ctx);
-			delete(ctx.PERIOD());
-		}
+		delete(ctx.schema_name());
+		delete(ctx.PERIOD());
 	}
 	
 	@Override
@@ -279,38 +254,19 @@ public class RewritingListener extends plsqlBaseListener {
 			}
 		}
 		
-		Schema_nameContext schema_name_ctx = ctx.schema_name();
-		
-		if (schema_name_ctx != null)
-		{
-			delete(schema_name_ctx);
-			delete(ctx.PERIOD());
-		}
-		
-		schema_name_ctx = table_index_clause_ctx.schema_name();
-		
-		if (schema_name_ctx != null)
-		{
-			delete(schema_name_ctx);
-			delete(table_index_clause_ctx.PERIOD());
-		}
-		
-		Index_propertiesContext index_properties_ctx = table_index_clause_ctx.index_properties();
-		
-		if (index_properties_ctx != null)
-			delete(index_properties_ctx);
+		delete(ctx.schema_name());
+		delete(ctx.PERIOD());
+		delete(table_index_clause_ctx.schema_name());
+		delete(table_index_clause_ctx.PERIOD());
+		delete(table_index_clause_ctx.index_properties());
 	}
 	
 	@Override
 	public void exitCreate_sequence(Create_sequenceContext ctx) {
 		Sequence_nameContext sequence_name_ctx = ctx.sequence_name();
-		Schema_nameContext schema_name_ctx = sequence_name_ctx.schema_name();
 		
-		if (schema_name_ctx != null)
-		{
-			delete(schema_name_ctx);
-			delete(sequence_name_ctx.PERIOD());
-		}
+		delete(sequence_name_ctx.schema_name());
+		delete(sequence_name_ctx.PERIOD());
 		
 		for (Sequence_specContext sequence_spec_ctx : ctx.sequence_spec())
 			delete(sequence_spec_ctx);
@@ -330,24 +286,11 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitCreate_view(Create_viewContext ctx) {
-		if (ctx.REPLACE() != null)
-			replace(ctx.REPLACE(), "ALTER");
-		
-		if (ctx.FORCE() != null)
-		{
-			delete(ctx.FORCE());
-			
-			if (ctx.NO() != null)
-				delete(ctx.NO());
-		}
-		
-		Schema_nameContext schema_name_ctx = ctx.schema_name();
-		
-		if (schema_name_ctx != null)
-		{
-			delete(schema_name_ctx);
-			delete(ctx.PERIOD());
-		}
+		replace(ctx.REPLACE(), "ALTER");
+		delete(ctx.FORCE());
+		delete(ctx.NO());
+		delete(ctx.schema_name());
+		delete(ctx.PERIOD());
 	}
 	
 	@Override
@@ -364,34 +307,24 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitFunction_name(Function_nameContext ctx) {
-		Schema_nameContext schema_name_ctx = ctx.schema_name();
-		
-		if (schema_name_ctx != null)
-		{
-			delete(schema_name_ctx);
-			delete(ctx.PERIOD());
-		}
+		delete(ctx.schema_name());
+		delete(ctx.PERIOD());
 	}
 	
 	@Override
 	public void exitCreate_function_body(Create_function_bodyContext ctx) {
 		if (ctx.CREATE() == null)
 			insertBefore(ctx.FUNCTION(), "CREATE OR ALTER ");
-		else if (ctx.REPLACE() != null)
-			replace(ctx.REPLACE(), "ALTER");
 		
+		replace(ctx.REPLACE(), "ALTER");
 		insertBefore(ctx, "SET TERM ^ ;\n\n");
-		
 		replace(ctx.FUNCTION(), "PROCEDURE");
 		
 		replace(ctx.RETURN(), "RETURNS (RET_VAL");
 		insertAfter(ctx.type_spec(), ")");
 		
-		if (ctx.IS() != null)
-			replace(ctx.IS(), "AS");
-		
-		if (ctx.DECLARE() != null)
-			delete(ctx.DECLARE());
+		replace(ctx.IS(), "AS");
+		delete(ctx.DECLARE());
 		
 		BodyContext body_ctx = ctx.body();
 		
@@ -427,29 +360,19 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitProcedure_name(Procedure_nameContext ctx) {
-		Schema_nameContext schema_name_ctx = ctx.schema_name();
-		
-		if (schema_name_ctx != null)
-		{
-			delete(schema_name_ctx);
-			delete(ctx.PERIOD());
-		}
+		delete(ctx.schema_name());
+		delete(ctx.PERIOD());
 	}
 	
 	@Override
 	public void exitCreate_procedure_body(Create_procedure_bodyContext ctx) {
 		if (ctx.CREATE() == null)
 			insertBefore(ctx.PROCEDURE(), "CREATE OR ALTER ");
-		else if (ctx.REPLACE() != null)
-			replace(ctx.REPLACE(), "ALTER");
-		
+
+		replace(ctx.REPLACE(), "ALTER");
 		insertBefore(ctx, "SET TERM ^ ;\n\n");
-		
-		if (ctx.IS() != null)
-			replace(ctx.IS(), "AS");
-		
-		if (ctx.DECLARE() != null)
-			delete(ctx.DECLARE());
+		replace(ctx.IS(), "AS");
+		delete(ctx.DECLARE());
 		
 		if (ctx.declare_spec().size() != 0)
 			commentBlock(ctx.declare_spec(0).start.getTokenIndex(), ctx.declare_spec(ctx.declare_spec().size() - 1).stop.getTokenIndex());
@@ -464,24 +387,15 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitTrigger_name(Trigger_nameContext ctx) {
-		Schema_nameContext schema_name_ctx = ctx.schema_name();
-		
-		if (schema_name_ctx != null)
-		{
-			delete(schema_name_ctx);
-			delete(ctx.PERIOD());
-		}
+		delete(ctx.schema_name());
+		delete(ctx.PERIOD());
 	}
 	
 	@Override
 	public void exitCreate_trigger(Create_triggerContext ctx) {
 		insertBefore(ctx, "SET TERM ^ ;\n\n");
-		
-		if (ctx.REPLACE() != null)
-			replace(ctx.REPLACE(), "ALTER");
-		
+		replace(ctx.REPLACE(), "ALTER");
 		insertBefore(ctx.trigger_body(), "AS ");
-		
 		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
 	}
 	
@@ -502,8 +416,7 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitTrigger_block(Trigger_blockContext ctx) {
-		if (ctx.DECLARE() != null)
-			delete(ctx.DECLARE());
+		delete(ctx.DECLARE());
 		
 		BodyContext body_ctx = ctx.body();
 		
@@ -513,9 +426,7 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitAlter_trigger(Alter_triggerContext ctx) {
-		if (ctx.ENABLE() != null)
-			replace(ctx.ENABLE(), "ACTIVE");
-		else if (ctx.DISABLE() != null)
-			replace(ctx.DISABLE(), "INACTIVE");
+		replace(ctx.ENABLE(), "ACTIVE");
+		replace(ctx.DISABLE(), "INACTIVE");
 	}
 }

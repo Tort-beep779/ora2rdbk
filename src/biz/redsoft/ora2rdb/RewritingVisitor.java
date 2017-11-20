@@ -164,9 +164,9 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 		
 		if (current_table != null)
 		{
-			if (Ora2rdb.table_map.containsKey(current_table))
+			if (Ora2rdb.table_not_null_cols.containsKey(current_table))
 			{
-				TreeSet<String> columns_set = Ora2rdb.table_map.get(current_table);
+				TreeSet<String> columns_set = Ora2rdb.table_not_null_cols.get(current_table);
 					
 				if (columns_set.contains(Ora2rdb.getRealName(column_name)))
 				{

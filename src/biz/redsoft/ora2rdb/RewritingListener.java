@@ -48,9 +48,9 @@ public class RewritingListener extends plsqlBaseListener {
 		if (table_name.startsWith("\""))
 			table_name = table_name.substring(1, table_name.length() - 1);
 		
-		if (Ora2rdb.table_map.containsKey(table_name))
+		if (Ora2rdb.table_not_null_cols.containsKey(table_name))
 		{
-			TreeSet<String> columns_set = Ora2rdb.table_map.get(table_name);
+			TreeSet<String> columns_set = Ora2rdb.table_not_null_cols.get(table_name);
 			
 			for (Relational_propertiesContext rel_prop_ctx : ctx.relational_properties())
 			{

@@ -27,15 +27,15 @@ public class InitialListener extends plsqlBaseListener {
 						String table_name = Ora2rdb.getRealName(ctx.tableview_name().getText());
 						String column_name = Ora2rdb.getRealName(modify_col_properties_ctx.column_name().getText());
 						
-						if (Ora2rdb.table_map.containsKey(table_name))
+						if (Ora2rdb.table_not_null_cols.containsKey(table_name))
 						{
-							Ora2rdb.table_map.get(table_name).add(column_name);
+							Ora2rdb.table_not_null_cols.get(table_name).add(column_name);
 						}
 						else
 						{
 							TreeSet<String> columns_set = new TreeSet<String>();
 							columns_set.add(column_name);
-							Ora2rdb.table_map.put(table_name, columns_set);
+							Ora2rdb.table_not_null_cols.put(table_name, columns_set);
 						}
 					}
 				}
@@ -56,10 +56,10 @@ public class InitialListener extends plsqlBaseListener {
 					
 					String table_name = Ora2rdb.getRealName(ctx.tableview_name().getText());
 					
-					if (Ora2rdb.table_map.containsKey(table_name))
-						Ora2rdb.table_map.get(table_name).addAll(columns_set);
+					if (Ora2rdb.table_not_null_cols.containsKey(table_name))
+						Ora2rdb.table_not_null_cols.get(table_name).addAll(columns_set);
 					else
-						Ora2rdb.table_map.put(table_name, columns_set);
+						Ora2rdb.table_not_null_cols.put(table_name, columns_set);
 				}
 				
 				if (out_of_line_constraint_ctx.PRIMARY() != null || 

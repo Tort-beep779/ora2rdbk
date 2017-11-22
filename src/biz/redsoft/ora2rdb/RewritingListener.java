@@ -64,6 +64,10 @@ public class RewritingListener extends plsqlBaseListener {
 				rewriter.delete(tok);
 	}
 	
+	String getRuleText(RuleContext ctx) {
+		return tokens.getText(ctx);
+	}
+	
 	@Override
 	public void exitCreate_table(Create_tableContext ctx) {
 		delete(ctx.schema_name());
@@ -74,10 +78,7 @@ public class RewritingListener extends plsqlBaseListener {
 		if (ctx.lob_storage_clause().size() != 0)
 			rewriter.delete(ctx.lob_storage_clause(0).start, ctx.lob_storage_clause(ctx.lob_storage_clause().size() - 1).stop);
 		
-		String table_name = ctx.tableview_name().getText().toUpperCase();
-		
-		if (table_name.startsWith("\""))
-			table_name = table_name.substring(1, table_name.length() - 1);
+		String table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name()));
 		
 		if (Ora2rdb.table_not_null_cols.containsKey(table_name))
 		{
@@ -89,10 +90,7 @@ public class RewritingListener extends plsqlBaseListener {
 				
 				if (col_def_ctx != null)
 				{
-					String column_name = col_def_ctx.column_name().getText().toUpperCase();
-
-					if (column_name.startsWith("\""))
-						column_name = column_name.substring(1, column_name.length() - 1);
+					String column_name = Ora2rdb.getRealName(getRuleText(col_def_ctx.column_name()));
 
 					if (columns_set.contains(column_name))
 						insertAfter(col_def_ctx, " NOT NULL");
@@ -232,10 +230,7 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitCreate_index(Create_indexContext ctx) {
-		String index_name = ctx.id_expression().getText().toUpperCase();
-		
-		if (index_name.startsWith("\""))
-			index_name = index_name.substring(1, index_name.length() - 1);
+		String index_name = Ora2rdb.getRealName(getRuleText(ctx.id_expression()));
 		
 		if (Ora2rdb.index_names.contains(index_name))
 		{
@@ -275,7 +270,7 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		for (Sequence_start_clauseContext sequence_start_clause_ctx : ctx.sequence_start_clause())
 		{
-			set_generator_statements += "ALTER SEQUENCE " + sequence_name_ctx.id_expression().getText() +
+			set_generator_statements += "ALTER SEQUENCE " + getRuleText(sequence_name_ctx.id_expression()) +
 										" RESTART WITH " + sequence_start_clause_ctx.UNSIGNED_INTEGER().getText() + ";\n";
 			
 			delete(sequence_start_clause_ctx);
@@ -295,7 +290,7 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitRegular_id(Regular_idContext ctx) {
-		switch (ctx.getText().toUpperCase())
+		switch (getRuleText(ctx).toUpperCase())
 		{
 		case "SYSTIMESTAMP":
 			replace(ctx, "CURRENT_TIMESTAMP");

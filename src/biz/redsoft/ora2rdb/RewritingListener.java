@@ -173,6 +173,15 @@ public class RewritingListener extends plsqlBaseListener {
 	}
 	
 	@Override
+	public void exitTableview_name(Tableview_nameContext ctx) {
+		if (ctx.id_expression() != null)
+		{
+			delete(ctx.id().id_expression());
+			delete(ctx.PERIOD());
+		}
+	}
+	
+	@Override
 	public void exitOut_of_line_constraint(Out_of_line_constraintContext ctx) {
 		delete(ctx.constraint_state());
 	}

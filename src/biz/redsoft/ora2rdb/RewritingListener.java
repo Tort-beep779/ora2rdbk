@@ -437,4 +437,9 @@ public class RewritingListener extends plsqlBaseListener {
 		replace(ctx.ENABLE(), "ACTIVE");
 		replace(ctx.DISABLE(), "INACTIVE");
 	}
+	
+	@Override
+	public void exitLabel_name(Label_nameContext ctx) {
+		delete(ctx);
+	}
 }

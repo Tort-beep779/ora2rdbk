@@ -1,5 +1,6 @@
 package biz.redsoft.ora2rdb;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -11,6 +12,7 @@ import biz.redsoft.ora2rdb.plsqlParser.*;
 public class RewritingListener extends plsqlBaseListener {
 	TokenStreamRewriter rewriter;
 	CommonTokenStream tokens;
+	ArrayList<String> current_trigger_fields = new ArrayList<String>();
 	
 	public RewritingListener(CommonTokenStream tokens) {
 		rewriter = new TokenStreamRewriter(tokens);
@@ -429,6 +431,43 @@ public class RewritingListener extends plsqlBaseListener {
 	@Override
 	public void exitTrigger_when_clause(Trigger_when_clauseContext ctx) {
 		commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+	}
+	
+	@Override
+	public void exitDml_event_element(Dml_event_elementContext ctx) {
+		for (Column_nameContext col_name_ctx : ctx.column_name())
+			current_trigger_fields.add(getRuleText(col_name_ctx));
+		
+		delete(ctx.OF());
+		delete(ctx.column_name());
+	}
+	
+	@Override
+	public void exitBody(BodyContext ctx) {
+		if (current_trigger_fields.size() > 0)
+		{
+			String update_condition = "\nIF (";
+			
+			for (int i = 0; i < current_trigger_fields.size(); i++)
+			{
+				if (i != 0)
+					update_condition += " OR ";
+				
+				update_condition += "NEW." + current_trigger_fields.get(i) + " <> OLD." + current_trigger_fields.get(i);
+			}
+			
+			update_condition += ") THEN";
+			
+			if (ctx.seq_of_statements().statement().size() > 1)
+				update_condition += "\nBEGIN";
+				
+			insertAfter(ctx.BEGIN(), update_condition);
+				
+			if (ctx.seq_of_statements().statement().size() > 1)
+				insertBefore(ctx.END(), "END\n");
+			
+			current_trigger_fields.clear();
+		}
 	}
 	
 	@Override

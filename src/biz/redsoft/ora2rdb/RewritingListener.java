@@ -53,6 +53,11 @@ public class RewritingListener extends plsqlBaseListener {
 			rewriter.delete(term.getSymbol());
 	}
 	
+	void delete(List<? extends ParserRuleContext> ctx_list) {
+		if (ctx_list.size() != 0)
+			rewriter.delete(ctx_list.get(0).start, ctx_list.get(ctx_list.size() - 1).stop);
+	}
+	
 	void commentBlock(int start_tok_idx, int stop_tok_idx) {
 		rewriter.insertBefore(start_tok_idx, "/*");
 		rewriter.insertAfter(stop_tok_idx, "*/");
@@ -74,9 +79,7 @@ public class RewritingListener extends plsqlBaseListener {
 		delete(ctx.PERIOD());
 		
 		delete(ctx.physical_properties());
-		
-		if (ctx.lob_storage_clause().size() != 0)
-			rewriter.delete(ctx.lob_storage_clause(0).start, ctx.lob_storage_clause(ctx.lob_storage_clause().size() - 1).stop);
+		delete(ctx.lob_storage_clause());
 		
 		String table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name()));
 		

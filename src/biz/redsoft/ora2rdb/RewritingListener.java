@@ -405,6 +405,12 @@ public class RewritingListener extends plsqlBaseListener {
 	}
 	
 	@Override
+	public void exitType_spec(Type_specContext ctx) {
+		if (ctx.PERCENT_TYPE() != null)
+			replace(ctx, "TYPE OF COLUMN " + getRuleText(ctx.type_name()));
+	}
+	
+	@Override
 	public void exitTrigger_name(Trigger_nameContext ctx) {
 		delete(ctx.schema_name());
 		delete(ctx.PERIOD());

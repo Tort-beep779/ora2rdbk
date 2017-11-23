@@ -297,6 +297,11 @@ public class RewritingListener extends plsqlBaseListener {
 	}
 	
 	@Override
+	public void exitSubquery_restriction_clause(Subquery_restriction_clauseContext ctx) {
+		delete(ctx);
+	}
+	
+	@Override
 	public void exitRegular_id(Regular_idContext ctx) {
 		switch (getRuleText(ctx).toUpperCase())
 		{

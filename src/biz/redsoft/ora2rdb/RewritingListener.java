@@ -173,6 +173,11 @@ public class RewritingListener extends plsqlBaseListener {
 	}
 	
 	@Override
+	public void exitOut_of_line_constraint(Out_of_line_constraintContext ctx) {
+		delete(ctx.constraint_state());
+	}
+	
+	@Override
 	public void exitAlter_table(Alter_tableContext ctx) {
 		delete(ctx.schema_name());
 		delete(ctx.PERIOD());

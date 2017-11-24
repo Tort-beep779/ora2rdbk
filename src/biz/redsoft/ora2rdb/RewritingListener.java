@@ -385,6 +385,15 @@ public class RewritingListener extends plsqlBaseListener {
 	}
 	
 	@Override
+	public void exitBind_variable(Bind_variableContext ctx) {
+		String var = getRuleText(ctx);
+		String upper = var.toUpperCase();
+		
+		if (upper.startsWith(":OLD.") || upper.startsWith(":NEW."))
+			replace(ctx, var.substring(1));
+	}
+	
+	@Override
 	public void exitSql_plus_command(Sql_plus_commandContext ctx) {
 		delete(ctx);
 	}

@@ -12,6 +12,7 @@ import biz.redsoft.ora2rdb.plsqlParser.*;
 public class RewritingListener extends plsqlBaseListener {
 	TokenStreamRewriter rewriter;
 	CommonTokenStream tokens;
+	TreeSet<String> current_procedure_args_and_vars = new TreeSet<String>();
 	ArrayList<String> current_trigger_fields = new ArrayList<String>();
 	
 	public RewritingListener(CommonTokenStream tokens) {
@@ -360,6 +361,8 @@ public class RewritingListener extends plsqlBaseListener {
 	public void exitParameter(ParameterContext ctx) {
 		for (TerminalNode in_node : ctx.IN())
 			delete(in_node);
+		
+		current_procedure_args_and_vars.add(Ora2rdb.getRealName(getRuleText(ctx.parameter_name())));
 	}
 	
 	@Override
@@ -370,6 +373,15 @@ public class RewritingListener extends plsqlBaseListener {
 	@Override
 	public void exitVariable_declaration(Variable_declarationContext ctx) {
 		insertBefore(ctx, "DECLARE ");
+		current_procedure_args_and_vars.add(Ora2rdb.getRealName(getRuleText(ctx.variable_name())));
+	}
+	
+	@Override
+	public void exitId_expression(Id_expressionContext ctx) {
+		String id = getRuleText(ctx);
+		
+		if (current_procedure_args_and_vars.contains(Ora2rdb.getRealName(id)))
+			replace(ctx, ":" + id);
 	}
 	
 	@Override
@@ -474,6 +486,8 @@ public class RewritingListener extends plsqlBaseListener {
 			
 			current_trigger_fields.clear();
 		}
+		
+		current_procedure_args_and_vars.clear();
 	}
 	
 	@Override

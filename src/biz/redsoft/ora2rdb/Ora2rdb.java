@@ -115,10 +115,10 @@ public class Ora2rdb {
 		walker.walk(init_listener, tree);
 		//System.out.println(init_listener.table_map.toString());
 		
-//		RewritingListener converter = new RewritingListener(tokens);
-//		walker.walk(converter, tree);
+		RewritingListener converter = new RewritingListener(tokens);
+		walker.walk(converter, tree);
 		
-		RewritingVisitor rv = new RewritingVisitor(parser);
+		//RewritingVisitor rv = new RewritingVisitor(parser);
 		
 		if (output_file != null)
 		{
@@ -133,8 +133,8 @@ public class Ora2rdb {
 			}
 		}
 		
-		//ps.print(converter.rewriter.getText());
-		ps.print(rv.visit(tree));
+		ps.print(converter.rewriter.getText());
+		//ps.print(rv.visit(tree));
 		ps.close();
 	}
 }

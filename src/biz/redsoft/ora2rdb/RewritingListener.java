@@ -76,6 +76,10 @@ public class RewritingListener extends plsqlBaseListener {
 		return tokens.getText(ctx);
 	}
 	
+	String getRewriterText(ParserRuleContext ctx) {
+		return rewriter.getText(ctx.getSourceInterval());
+	}
+	
 	@Override
 	public void exitCreate_table(Create_tableContext ctx) {
 		delete(ctx.schema_name());
@@ -518,5 +522,11 @@ public class RewritingListener extends plsqlBaseListener {
 	@Override
 	public void exitLabel_name(Label_nameContext ctx) {
 		delete(ctx);
+	}
+	
+	@Override
+	public void exitFunction_call(Function_callContext ctx) {
+		if (Ora2rdb.procedures_names.contains(Ora2rdb.getRealName(getRuleText(ctx.routine_name()))))
+			replace(ctx, "EXECUTE PROCEDURE " + getRewriterText(ctx));
 	}
 }

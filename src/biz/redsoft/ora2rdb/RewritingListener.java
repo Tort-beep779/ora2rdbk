@@ -445,7 +445,7 @@ public class RewritingListener extends plsqlBaseListener {
 	public void exitCreate_trigger(Create_triggerContext ctx) {
 		insertBefore(ctx, "SET TERM ^ ;\n\n");
 		replace(ctx.REPLACE(), "ALTER");
-		insertBefore(ctx.trigger_body(), "AS ");
+		insertBefore(ctx.trigger_body(), "AS\n");
 		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
 	}
 	

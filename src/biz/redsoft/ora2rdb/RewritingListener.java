@@ -353,10 +353,7 @@ public class RewritingListener extends plsqlBaseListener {
 		BodyContext body_ctx = ctx.body();
 		
 		if (body_ctx != null)
-		{
 			insertBefore(body_ctx.END(), "\nSUSPEND;\n");
-			commentBlock(body_ctx.BEGIN().getSymbol().getTokenIndex() + 1, body_ctx.END().getSymbol().getTokenIndex() - 1);
-		}
 		
 		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
 	}
@@ -420,11 +417,6 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		if (ctx.declare_spec().size() != 0)
 			commentBlock(ctx.declare_spec(0).start.getTokenIndex(), ctx.declare_spec(ctx.declare_spec().size() - 1).stop.getTokenIndex());
-		
-		BodyContext body_ctx = ctx.body();
-		
-		if (body_ctx != null)
-			commentBlock(body_ctx.BEGIN().getSymbol().getTokenIndex() + 1, body_ctx.END().getSymbol().getTokenIndex() - 1);
 		
 		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
 	}
@@ -506,11 +498,6 @@ public class RewritingListener extends plsqlBaseListener {
 	@Override
 	public void exitTrigger_block(Trigger_blockContext ctx) {
 		delete(ctx.DECLARE());
-		
-		BodyContext body_ctx = ctx.body();
-		
-		if (body_ctx != null)
-			commentBlock(body_ctx.BEGIN().getSymbol().getTokenIndex() + 1, body_ctx.END().getSymbol().getTokenIndex() - 1);
 	}
 	
 	@Override

@@ -72,6 +72,25 @@ public class RewritingListener extends plsqlBaseListener {
 				rewriter.delete(tok);
 	}
 	
+	String getIndentation(ParserRuleContext ctx) {
+		Integer tok_idx = ctx.start.getTokenIndex();
+		
+		if (tok_idx > 0)
+		{
+			List<Token> spc_tok_list = tokens.getTokens(tok_idx - 1, tok_idx, plsqlLexer.SPACES);
+			
+			if (spc_tok_list != null)
+			{
+				String spc = spc_tok_list.get(0).getText();
+				Integer idx1 = spc.lastIndexOf('\r');
+				Integer idx2 = spc.lastIndexOf('\n');
+				return spc.substring((idx1 > idx2 ? idx1 : idx2) + 1);
+			}
+		}
+		
+		return "";
+	}
+	
 	String getRuleText(RuleContext ctx) {
 		return tokens.getText(ctx);
 	}
@@ -515,5 +534,54 @@ public class RewritingListener extends plsqlBaseListener {
 	public void exitFunction_call(Function_callContext ctx) {
 		if (Ora2rdb.procedures_names.contains(Ora2rdb.getRealName(getRuleText(ctx.routine_name()))))
 			replace(ctx, "EXECUTE PROCEDURE " + getRewriterText(ctx));
+	}
+	
+	@Override
+	public void exitIf_statement(If_statementContext ctx) {
+		insertBefore(ctx.condition(), "(");
+		insertAfter(ctx.condition(), ")");
+		
+		if (ctx.seq_of_statements().statement().size() > 1)
+		{
+			String indentation = getIndentation(ctx);
+			insertAfter(ctx.THEN(), "\n" + indentation + "BEGIN");
+			insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
+		}
+		
+		delete(ctx.IF(1));
+		delete(ctx.END());
+	}
+	
+	@Override
+	public void exitElsif_part(Elsif_partContext ctx) {
+		replace(ctx.ELSIF(), "ELSE IF");
+		insertBefore(ctx.condition(), "(");
+		insertAfter(ctx.condition(), ")");
+		
+		if (ctx.seq_of_statements().statement().size() > 1)
+		{
+			String indentation = getIndentation(ctx);
+			insertAfter(ctx.THEN(), "\n" + indentation + "BEGIN");
+			insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
+		}
+	}
+	
+	@Override
+	public void exitElse_part(Else_partContext ctx) {
+		if (ctx.seq_of_statements().statement().size() > 1)
+		{
+			String indentation = getIndentation(ctx);
+			insertAfter(ctx.ELSE(), "\n" + indentation + "BEGIN");
+			insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
+		}
+	}
+	
+	@Override
+	public void exitSeq_of_statements(Seq_of_statementsContext ctx) {
+		for (int i = 0; i < ctx.statement().size(); i++)
+		{
+			if (ctx.statement(i).if_statement() != null)
+				delete(ctx.SEMICOLON(i));
+		}
 	}
 }

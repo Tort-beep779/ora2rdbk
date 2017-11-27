@@ -533,6 +533,19 @@ public class RewritingListener extends plsqlBaseListener {
 	}
 	
 	@Override
+	public void exitAssignment_statement(Assignment_statementContext ctx) {
+		if (ctx.general_element() != null)
+		{
+			String target = getRewriterText(ctx.general_element());
+			
+			if (target.startsWith(":"))
+				replace(ctx.general_element(), target.substring(1));
+		}
+		
+		replace(ctx.ASSIGN_OP(), "=");
+	}
+	
+	@Override
 	public void exitIf_statement(If_statementContext ctx) {
 		insertBefore(ctx.condition(), "(");
 		insertAfter(ctx.condition(), ")");

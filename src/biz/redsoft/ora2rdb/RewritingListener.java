@@ -433,10 +433,6 @@ public class RewritingListener extends plsqlBaseListener {
 		insertBefore(ctx, "SET TERM ^ ;\n\n");
 		replace(ctx.IS(), "AS");
 		delete(ctx.DECLARE());
-		
-		if (ctx.declare_spec().size() != 0)
-			commentBlock(ctx.declare_spec(0).start.getTokenIndex(), ctx.declare_spec(ctx.declare_spec().size() - 1).stop.getTokenIndex());
-		
 		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
 	}
 	

@@ -21,19 +21,23 @@ public class RewritingListener extends plsqlBaseListener {
 	}
 	
 	void insertBefore(ParserRuleContext ctx, Object text) {
-		rewriter.insertBefore(ctx.start, text);
+		if (ctx != null)
+			rewriter.insertBefore(ctx.start, text);
 	}
 	
 	void insertBefore(TerminalNode term, Object text) {
-		rewriter.insertBefore(term.getSymbol(), text);
+		if (term != null)
+			rewriter.insertBefore(term.getSymbol(), text);
 	}
 	
 	void insertAfter(ParserRuleContext ctx, Object text) {
-		rewriter.insertAfter(ctx.stop, text);
+		if (ctx != null)
+			rewriter.insertAfter(ctx.stop, text);
 	}
 	
 	void insertAfter(TerminalNode term, Object text) {
-		rewriter.insertAfter(term.getSymbol(), text);
+		if (term != null)
+			rewriter.insertAfter(term.getSymbol(), text);
 	}
 	
 	void replace(ParserRuleContext ctx, Object text) {
@@ -586,10 +590,27 @@ public class RewritingListener extends plsqlBaseListener {
 	}
 	
 	@Override
+	public void exitLoop_statement(Loop_statementContext ctx) {
+		insertBefore(ctx.condition(), "(");
+		insertAfter(ctx.condition(), ")");
+		replace(ctx.LOOP(0), "DO");
+		
+		if (ctx.seq_of_statements().statement().size() > 1)
+		{
+			String indentation = getIndentation(ctx);
+			insertAfter(ctx.LOOP(0), "\n" + indentation + "BEGIN");
+			insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
+		}
+		
+		delete(ctx.END());
+		delete(ctx.LOOP(1));
+	}
+	
+	@Override
 	public void exitSeq_of_statements(Seq_of_statementsContext ctx) {
 		for (int i = 0; i < ctx.statement().size(); i++)
 		{
-			if (ctx.statement(i).if_statement() != null)
+			if (ctx.statement(i).if_statement() != null || ctx.statement(i).loop_statement() != null)
 				delete(ctx.SEMICOLON(i));
 		}
 	}

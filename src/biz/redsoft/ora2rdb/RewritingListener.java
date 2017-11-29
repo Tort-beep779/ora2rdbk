@@ -126,7 +126,21 @@ public class RewritingListener extends plsqlBaseListener {
 					String column_name = Ora2rdb.getRealName(getRuleText(col_def_ctx.column_name()));
 
 					if (columns_set.contains(column_name))
-						insertAfter(col_def_ctx, " NOT NULL");
+					{
+						boolean not_null = false;
+						
+						for (Inline_constraintContext inl_con_ctx : col_def_ctx.inline_constraint())
+						{
+							if (inl_con_ctx.NOT() != null)
+							{
+								not_null = true;
+								break;
+							}
+						}
+						
+						if (!not_null)
+							insertAfter(col_def_ctx, " NOT NULL");
+					}
 				}
 			}
 		}

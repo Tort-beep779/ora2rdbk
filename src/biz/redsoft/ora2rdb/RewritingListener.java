@@ -2,6 +2,7 @@ package biz.redsoft.ora2rdb;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.TreeSet;
 
 import org.antlr.v4.runtime.*;
@@ -12,7 +13,7 @@ import biz.redsoft.ora2rdb.plsqlParser.*;
 public class RewritingListener extends plsqlBaseListener {
 	TokenStreamRewriter rewriter;
 	CommonTokenStream tokens;
-	TreeSet<String> current_procedure_args_and_vars = new TreeSet<String>();
+	Stack<TreeSet<String>> scopes = new Stack<TreeSet<String>>();
 	ArrayList<String> current_trigger_fields = new ArrayList<String>();
 	
 	public RewritingListener(CommonTokenStream tokens) {
@@ -101,6 +102,28 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	String getRewriterText(ParserRuleContext ctx) {
 		return rewriter.getText(ctx.getSourceInterval());
+	}
+	
+	void pushScope() {
+		scopes.push(new TreeSet<String>());
+	}
+	
+	void popScope() {
+		scopes.pop();
+	}
+	
+	void declareVar(ParserRuleContext var_name_ctx) {
+		scopes.peek().add(Ora2rdb.getRealName(getRuleText(var_name_ctx)));
+	}
+	
+	boolean containsInScope(ParserRuleContext var_name_ctx) {
+		for (TreeSet<String> scope : scopes)
+		{
+			if (scope.contains(Ora2rdb.getRealName(getRuleText(var_name_ctx))))
+				return true;
+		}
+		
+		return false;
 	}
 	
 	@Override
@@ -373,6 +396,11 @@ public class RewritingListener extends plsqlBaseListener {
 	}
 	
 	@Override
+	public void enterCreate_function_body(Create_function_bodyContext ctx) {
+		pushScope();
+	}
+	
+	@Override
 	public void exitCreate_function_body(Create_function_bodyContext ctx) {
 		if (ctx.CREATE() == null)
 			insertBefore(ctx.FUNCTION(), "CREATE OR ALTER ");
@@ -385,7 +413,6 @@ public class RewritingListener extends plsqlBaseListener {
 		insertAfter(ctx.type_spec(), ")");
 		
 		replace(ctx.IS(), "AS");
-		delete(ctx.DECLARE());
 		
 		BodyContext body_ctx = ctx.body();
 		
@@ -393,6 +420,8 @@ public class RewritingListener extends plsqlBaseListener {
 			insertBefore(body_ctx.END(), "\nSUSPEND;\n");
 		
 		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
+		
+		popScope();
 	}
 	
 	@Override
@@ -400,7 +429,7 @@ public class RewritingListener extends plsqlBaseListener {
 		for (TerminalNode in_node : ctx.IN())
 			delete(in_node);
 		
-		current_procedure_args_and_vars.add(Ora2rdb.getRealName(getRuleText(ctx.parameter_name())));
+		declareVar(ctx.parameter_name());
 	}
 	
 	@Override
@@ -411,15 +440,13 @@ public class RewritingListener extends plsqlBaseListener {
 	@Override
 	public void exitVariable_declaration(Variable_declarationContext ctx) {
 		insertBefore(ctx, "DECLARE ");
-		current_procedure_args_and_vars.add(Ora2rdb.getRealName(getRuleText(ctx.variable_name())));
+		declareVar(ctx.variable_name());
 	}
 	
 	@Override
 	public void exitId_expression(Id_expressionContext ctx) {
-		String id = getRuleText(ctx);
-		
-		if (current_procedure_args_and_vars.contains(Ora2rdb.getRealName(id)))
-			replace(ctx, ":" + id);
+		if (containsInScope(ctx))
+			replace(ctx, ":" + getRuleText(ctx));
 	}
 	
 	@Override
@@ -443,6 +470,11 @@ public class RewritingListener extends plsqlBaseListener {
 	}
 	
 	@Override
+	public void enterCreate_procedure_body(Create_procedure_bodyContext ctx) {
+		pushScope();
+	}
+	
+	@Override
 	public void exitCreate_procedure_body(Create_procedure_bodyContext ctx) {
 		if (ctx.CREATE() == null)
 			insertBefore(ctx.PROCEDURE(), "CREATE OR ALTER ");
@@ -450,8 +482,9 @@ public class RewritingListener extends plsqlBaseListener {
 		replace(ctx.REPLACE(), "ALTER");
 		insertBefore(ctx, "SET TERM ^ ;\n\n");
 		replace(ctx.IS(), "AS");
-		delete(ctx.DECLARE());
 		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
+		
+		popScope();
 	}
 	
 	@Override
@@ -467,11 +500,18 @@ public class RewritingListener extends plsqlBaseListener {
 	}
 	
 	@Override
+	public void enterCreate_trigger(Create_triggerContext ctx) {
+		pushScope();
+	}
+	
+	@Override
 	public void exitCreate_trigger(Create_triggerContext ctx) {
 		insertBefore(ctx, "SET TERM ^ ;\n\n");
 		replace(ctx.REPLACE(), "ALTER");
 		insertBefore(ctx.trigger_body(), "AS\n");
 		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
+		
+		popScope();
 	}
 	
 	@Override
@@ -496,6 +536,16 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		delete(ctx.OF());
 		delete(ctx.column_name());
+	}
+	
+	@Override
+	public void enterBlock(BlockContext ctx) {
+		pushScope();
+	}
+	
+	@Override
+	public void exitBlock(BlockContext ctx) {
+		popScope();
 	}
 	
 	@Override
@@ -524,13 +574,11 @@ public class RewritingListener extends plsqlBaseListener {
 			
 			current_trigger_fields.clear();
 		}
-		
-		current_procedure_args_and_vars.clear();
 	}
 	
 	@Override
 	public void exitTrigger_block(Trigger_blockContext ctx) {
-		delete(ctx.DECLARE());
+		delete(ctx.block().DECLARE());
 	}
 	
 	@Override

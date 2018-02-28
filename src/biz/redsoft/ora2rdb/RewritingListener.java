@@ -15,10 +15,27 @@ public class RewritingListener extends plsqlBaseListener {
 	CommonTokenStream tokens;
 	Stack<TreeSet<String>> scopes = new Stack<TreeSet<String>>();
 	ArrayList<String> current_trigger_fields = new ArrayList<String>();
+	View current_view;
+	
+	ArrayList<Create_tableContext> tables = new ArrayList<Create_tableContext>();
 	
 	public RewritingListener(CommonTokenStream tokens) {
 		rewriter = new TokenStreamRewriter(tokens);
 		this.tokens = tokens;
+	}
+	
+	public String getText() {
+		StringBuilder out = new StringBuilder();
+
+		for (Create_tableContext table : tables)
+			out.append(getRewriterText(table)).append("\n\n");
+
+		ArrayList<View> views = View.sort(Ora2rdb.views.values());
+
+		for (View view : views)
+			out.append(getRewriterText(view.ctx)).append("\n\n");
+		
+		return out.toString();
 	}
 	
 	void insertBefore(ParserRuleContext ctx, Object text) {
@@ -128,6 +145,8 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitCreate_table(Create_tableContext ctx) {
+		tables.add(ctx);
+		
 		delete(ctx.schema_name());
 		delete(ctx.PERIOD());
 		
@@ -364,12 +383,30 @@ public class RewritingListener extends plsqlBaseListener {
 	}
 	
 	@Override
+	public void enterCreate_view(Create_viewContext ctx) {
+		current_view = Ora2rdb.views.get(Ora2rdb.getRealName(getRuleText(ctx.tableview_name())));
+	}
+	
+	@Override
 	public void exitCreate_view(Create_viewContext ctx) {
 		replace(ctx.REPLACE(), "ALTER");
 		delete(ctx.FORCE());
 		delete(ctx.NO());
 		delete(ctx.schema_name());
 		delete(ctx.PERIOD());
+		
+		current_view = null;
+	}
+	
+	@Override
+	public void exitDml_table_expression_clause(Dml_table_expression_clauseContext ctx) {
+		if (current_view != null && ctx.tableview_name() != null)
+		{
+			String dependency_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name()));
+
+			if (Ora2rdb.views.containsKey(dependency_name))
+				current_view.dependencies.add(Ora2rdb.views.get(dependency_name));
+		}
 	}
 	
 	@Override

@@ -13,6 +13,7 @@ public class Ora2rdb {
 	public static TreeMap<String, TreeSet<String>> table_not_null_cols = new TreeMap<String, TreeSet<String>>();
 	public static TreeSet<String> index_names = new TreeSet<String>();
 	public static TreeSet<String> procedures_names = new TreeSet<String>();
+	public static TreeMap<String, View> views = new TreeMap<String, View>();
 	
 	static String stripQuotes(String str) {
 		if (str.startsWith("\""))

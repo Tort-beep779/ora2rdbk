@@ -305,23 +305,36 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitGeneral_element_part(General_element_partContext ctx) {
-		Regular_idContext regular_id_ctx = ctx.id_expression(0).regular_id();
-		
-		if (regular_id_ctx != null)
+		if (ctx.id_expression().size() > 1)
 		{
-			if (regular_id_ctx.REPLACE() != null)
+			for (Id_expressionContext id_expr_ctx : ctx.id_expression())
 			{
-				if (ctx.function_argument().size() == 1)
-				{
-					Function_argumentContext function_argument_ctx = ctx.function_argument(0);
+				String id = getRewriterText(id_expr_ctx);
 
-					if (function_argument_ctx != null)
-						if (function_argument_ctx.argument().size() == 2)
-							insertAfter(function_argument_ctx.argument(1), ", ''");
-				}
+				if (id.startsWith(":"))
+					replace(id_expr_ctx, id.substring(1));
 			}
-			
-			replace(regular_id_ctx.LENGTH(), "CHAR_LENGTH");
+		}
+		else
+		{
+			Regular_idContext regular_id_ctx = ctx.id_expression(0).regular_id();
+
+			if (regular_id_ctx != null)
+			{
+				if (regular_id_ctx.REPLACE() != null)
+				{
+					if (ctx.function_argument().size() == 1)
+					{
+						Function_argumentContext function_argument_ctx = ctx.function_argument(0);
+
+						if (function_argument_ctx != null)
+							if (function_argument_ctx.argument().size() == 2)
+								insertAfter(function_argument_ctx.argument(1), ", ''");
+					}
+				}
+
+				replace(regular_id_ctx.LENGTH(), "CHAR_LENGTH");
+			}
 		}
 	}
 	

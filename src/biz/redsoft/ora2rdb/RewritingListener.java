@@ -722,7 +722,11 @@ public class RewritingListener extends plsqlBaseListener {
 	public void exitSeq_of_statements(Seq_of_statementsContext ctx) {
 		for (int i = 0; i < ctx.statement().size(); i++)
 		{
-			if (ctx.statement(i).if_statement() != null || ctx.statement(i).loop_statement() != null)
+			StatementContext stmt_ctx = ctx.statement(i);
+
+			if (stmt_ctx.if_statement() != null ||
+					stmt_ctx.loop_statement() != null ||
+					stmt_ctx.body() != null)
 				delete(ctx.SEMICOLON(i));
 		}
 	}

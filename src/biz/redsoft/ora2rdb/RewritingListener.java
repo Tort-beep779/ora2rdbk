@@ -426,7 +426,17 @@ public class RewritingListener extends plsqlBaseListener {
 	public void exitSubquery_restriction_clause(Subquery_restriction_clauseContext ctx) {
 		delete(ctx);
 	}
-	
+
+	@Override
+	public void exitQuery_block(Query_blockContext ctx) {
+		if (ctx.into_clause() != null)
+		{
+			String into_clause = getRewriterText(ctx.into_clause());
+			delete(ctx.into_clause());
+			replace(ctx, getRewriterText(ctx) + " " + into_clause);
+		}
+	}
+
 	@Override
 	public void exitRegular_id(Regular_idContext ctx) {
 		switch (getRuleText(ctx).toUpperCase())

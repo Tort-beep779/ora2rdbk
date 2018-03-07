@@ -15,6 +15,7 @@ public class RewritingListener extends plsqlBaseListener {
 	CommonTokenStream tokens;
 	Stack<TreeSet<String>> scopes = new Stack<TreeSet<String>>();
 	ArrayList<String> current_trigger_fields = new ArrayList<String>();
+	String current_trigger_when_condition;
 	View current_view;
 	
 	ArrayList<Create_tableContext> tables = new ArrayList<Create_tableContext>();
@@ -586,7 +587,8 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitTrigger_when_clause(Trigger_when_clauseContext ctx) {
-		commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+		current_trigger_when_condition = getRewriterText(ctx.condition());
+		delete(ctx);
 	}
 	
 	@Override
@@ -610,9 +612,10 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitBody(BodyContext ctx) {
-		if (current_trigger_fields.size() > 0)
+		if (current_trigger_fields.size() > 0 || current_trigger_when_condition != null)
 		{
-			String update_condition = "\nIF (";
+			String execute_condition = "\nIF (";
+			String update_condition = "";
 			
 			for (int i = 0; i < current_trigger_fields.size(); i++)
 			{
@@ -621,18 +624,26 @@ public class RewritingListener extends plsqlBaseListener {
 				
 				update_condition += "NEW." + current_trigger_fields.get(i) + " <> OLD." + current_trigger_fields.get(i);
 			}
-			
-			update_condition += ") THEN";
+
+			if (current_trigger_fields.size() > 0 && current_trigger_when_condition != null)
+				execute_condition += "(" + update_condition + ") AND (" + current_trigger_when_condition + ")";
+			else if (current_trigger_fields.size() > 0)
+				execute_condition += update_condition;
+			else
+				execute_condition += current_trigger_when_condition;
+
+			execute_condition += ") THEN";
 			
 			if (ctx.seq_of_statements().statement().size() > 1)
-				update_condition += "\nBEGIN";
+				execute_condition += "\nBEGIN";
 				
-			insertAfter(ctx.BEGIN(), update_condition);
+			insertAfter(ctx.BEGIN(), execute_condition);
 				
 			if (ctx.seq_of_statements().statement().size() > 1)
 				insertBefore(ctx.END(), "END\n");
 			
 			current_trigger_fields.clear();
+			current_trigger_when_condition = null;
 		}
 	}
 	

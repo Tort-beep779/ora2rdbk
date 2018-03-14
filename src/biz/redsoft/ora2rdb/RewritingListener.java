@@ -474,12 +474,6 @@ public class RewritingListener extends plsqlBaseListener {
 		insertAfter(ctx.type_spec(), ")");
 		
 		replace(ctx.IS(), "AS");
-		
-		BodyContext body_ctx = ctx.body();
-		
-		if (body_ctx != null)
-			insertBefore(body_ctx.END(), "\nSUSPEND;\n");
-		
 		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
 		
 		popScope();
@@ -738,7 +732,21 @@ public class RewritingListener extends plsqlBaseListener {
 		delete(ctx.END());
 		delete(ctx.LOOP(1));
 	}
-	
+
+	@Override
+	public void exitReturn_statement(Return_statementContext ctx) {
+		String indentation = getIndentation(ctx);
+
+		if (ctx.condition() != null)
+		{
+			replace(ctx, "RET_VAL = " + getRewriterText(ctx.condition()) + ";\n" +
+					indentation + "SUSPEND;\n" +
+					indentation + "EXIT");
+		}
+		else
+			replace(ctx, "EXIT");
+	}
+
 	@Override
 	public void exitSeq_of_statements(Seq_of_statementsContext ctx) {
 		for (int i = 0; i < ctx.statement().size(); i++)

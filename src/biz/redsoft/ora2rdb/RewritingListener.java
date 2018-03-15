@@ -248,7 +248,7 @@ public class RewritingListener extends plsqlBaseListener {
 		if (ctx.VARCHAR2() != null || ctx.NVARCHAR2() != null)
 			replace(ctx, "VARCHAR");
 		else if (ctx.CLOB() != null)
-			replace(ctx, "BLOB SUB_TYPE 1");
+			replace(ctx, "BLOB SUB_TYPE TEXT");
 		else if (ctx.NUMBER() != null)
 			replace(ctx, "NUMERIC");
 		else if (ctx.BINARY_FLOAT() != null)

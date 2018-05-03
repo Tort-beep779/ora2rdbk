@@ -18,7 +18,15 @@ public class RewritingListener extends plsqlBaseListener {
 	String current_trigger_when_condition;
 	View current_view;
 	
+	ArrayList<Create_sequenceContext> sequences = new ArrayList<Create_sequenceContext>();
 	ArrayList<Create_tableContext> tables = new ArrayList<Create_tableContext>();
+	ArrayList<CommentContext> comments = new ArrayList<CommentContext>();
+	ArrayList<Alter_tableContext> alter_tables = new ArrayList<Alter_tableContext>();
+	ArrayList<Create_indexContext> create_indexes = new ArrayList<Create_indexContext>();
+	ArrayList<Create_function_bodyContext> create_functions = new ArrayList<Create_function_bodyContext>();
+	ArrayList<Create_procedure_bodyContext> create_procedures = new ArrayList<Create_procedure_bodyContext>();
+	ArrayList<Create_triggerContext> create_triggers = new ArrayList<Create_triggerContext>();
+	ArrayList<Alter_triggerContext> alter_triggers = new ArrayList<Alter_triggerContext>();
 	
 	public RewritingListener(CommonTokenStream tokens) {
 		rewriter = new TokenStreamRewriter(tokens);
@@ -28,6 +36,9 @@ public class RewritingListener extends plsqlBaseListener {
 	public String getText() {
 		StringBuilder out = new StringBuilder();
 
+		for (Create_sequenceContext sequence : sequences)
+			out.append(getRewriterText(sequence)).append("\n\n");
+
 		for (Create_tableContext table : tables)
 			out.append(getRewriterText(table)).append("\n\n");
 
@@ -35,6 +46,31 @@ public class RewritingListener extends plsqlBaseListener {
 
 		for (View view : views)
 			out.append(getRewriterText(view.ctx)).append("\n\n");
+
+		for (CommentContext comment : comments)
+			out.append(getRewriterText(comment)).append("\n\n");
+
+		for (Alter_tableContext alter_table : alter_tables)
+			out.append(getRewriterText(alter_table)).append("\n\n");
+
+		for (Create_indexContext create_index : create_indexes)
+			out.append(getRewriterText(create_index)).append("\n\n");
+
+		out.append("SET TERM ^ ;\n\n");
+
+		for (Create_function_bodyContext create_function : create_functions)
+			out.append(getRewriterText(create_function)).append("\n\n");
+
+		for (Create_procedure_bodyContext create_procedure : create_procedures)
+			out.append(getRewriterText(create_procedure)).append("\n\n");
+
+		for (Create_triggerContext create_trigger : create_triggers)
+			out.append(getRewriterText(create_trigger)).append("\n\n");
+
+		out.append("SET TERM ; ^\n\n");
+
+		for (Alter_triggerContext alter_trigger : alter_triggers)
+			out.append(getRewriterText(alter_trigger)).append("\n\n");
 		
 		return out.toString();
 	}
@@ -146,8 +182,6 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitCreate_table(Create_tableContext ctx) {
-		tables.add(ctx);
-		
 		delete(ctx.schema_name());
 		delete(ctx.PERIOD());
 		
@@ -187,6 +221,8 @@ public class RewritingListener extends plsqlBaseListener {
 				}
 			}
 		}
+
+		tables.add(ctx);
 	}
 	
 	@Override
@@ -298,10 +334,17 @@ public class RewritingListener extends plsqlBaseListener {
 				Modify_col_propertiesContext modify_col_properties_ctx = modify_column_clauses_ctx.modify_col_properties(0);
 				
 				if (modify_col_properties_ctx.inline_constraint().size() != 0)
+				{
 					if (modify_col_properties_ctx.inline_constraint(0).NULL() != null)
+					{
 						delete(ctx);
+						return;
+					}
+				}
 			}
 		}
+
+		alter_tables.add(ctx);
 	}
 	
 	@Override
@@ -391,6 +434,8 @@ public class RewritingListener extends plsqlBaseListener {
 		delete(table_index_clause_ctx.schema_name());
 		delete(table_index_clause_ctx.PERIOD());
 		delete(table_index_clause_ctx.index_properties());
+
+		create_indexes.add(ctx);
 	}
 	
 	@Override
@@ -407,13 +452,15 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		for (Sequence_start_clauseContext sequence_start_clause_ctx : ctx.sequence_start_clause())
 		{
-			set_generator_statements += "ALTER SEQUENCE " + getRuleText(sequence_name_ctx.id_expression()) +
-										" RESTART WITH " + sequence_start_clause_ctx.UNSIGNED_INTEGER().getText() + ";\n";
+			set_generator_statements += "\nALTER SEQUENCE " + getRuleText(sequence_name_ctx.id_expression()) +
+										" RESTART WITH " + sequence_start_clause_ctx.UNSIGNED_INTEGER().getText() + ";";
 			
 			delete(sequence_start_clause_ctx);
 		}
 		
-		insertAfter(ctx, "\n" + set_generator_statements);
+		replace(ctx, getRewriterText(ctx) + set_generator_statements);
+
+		sequences.add(ctx);
 	}
 	
 	@Override
@@ -446,6 +493,11 @@ public class RewritingListener extends plsqlBaseListener {
 	@Override
 	public void exitSubquery_restriction_clause(Subquery_restriction_clauseContext ctx) {
 		delete(ctx);
+	}
+
+	@Override
+	public void exitComment(CommentContext ctx) {
+		comments.add(ctx);
 	}
 
 	@Override
@@ -483,20 +535,23 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitCreate_function_body(Create_function_bodyContext ctx) {
-		if (ctx.CREATE() == null)
-			insertBefore(ctx.FUNCTION(), "CREATE OR ALTER ");
+		if (!Ora2rdb.reorder)
+		{
+			insertBefore(ctx, "SET TERM ^ ;\n\n");
+			insertAfter(ctx.SEMICOLON(), "\n\nSET TERM ; ^");
+		}
 		
 		replace(ctx.REPLACE(), "ALTER");
-		insertBefore(ctx, "SET TERM ^ ;\n\n");
 		replace(ctx.FUNCTION(), "PROCEDURE");
 		
 		replace(ctx.RETURN(), "RETURNS (RET_VAL");
 		insertAfter(ctx.type_spec(), ")");
 		
 		replace(ctx.IS(), "AS");
-		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
+		replace(ctx.SEMICOLON(), "^");
 		
 		popScope();
+		create_functions.add(ctx);
 	}
 	
 	@Override
@@ -551,15 +606,18 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitCreate_procedure_body(Create_procedure_bodyContext ctx) {
-		if (ctx.CREATE() == null)
-			insertBefore(ctx.PROCEDURE(), "CREATE OR ALTER ");
+		if (!Ora2rdb.reorder)
+		{
+			insertBefore(ctx, "SET TERM ^ ;\n\n");
+			insertAfter(ctx.SEMICOLON(), "\n\nSET TERM ; ^");
+		}
 
 		replace(ctx.REPLACE(), "ALTER");
-		insertBefore(ctx, "SET TERM ^ ;\n\n");
 		replace(ctx.IS(), "AS");
-		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
+		replace(ctx.SEMICOLON(), "^");
 		
 		popScope();
+		create_procedures.add(ctx);
 	}
 	
 	@Override
@@ -581,12 +639,18 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitCreate_trigger(Create_triggerContext ctx) {
-		insertBefore(ctx, "SET TERM ^ ;\n\n");
+		if (!Ora2rdb.reorder)
+		{
+			insertBefore(ctx, "SET TERM ^ ;\n\n");
+			insertAfter(ctx.SEMICOLON(), "\n\nSET TERM ; ^");
+		}
+
 		replace(ctx.REPLACE(), "ALTER");
 		insertBefore(ctx.trigger_body(), "AS\n");
-		replace(ctx.SEMICOLON(), "^\n\nSET TERM ; ^");
+		replace(ctx.SEMICOLON(), "^");
 		
 		popScope();
+		create_triggers.add(ctx);
 	}
 	
 	@Override
@@ -670,6 +734,8 @@ public class RewritingListener extends plsqlBaseListener {
 	public void exitAlter_trigger(Alter_triggerContext ctx) {
 		replace(ctx.ENABLE(), "ACTIVE");
 		replace(ctx.DISABLE(), "INACTIVE");
+
+		alter_triggers.add(ctx);
 	}
 	
 	@Override

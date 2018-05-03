@@ -14,6 +14,8 @@ public class Ora2rdb {
 	public static TreeSet<String> index_names = new TreeSet<String>();
 	public static TreeSet<String> procedures_names = new TreeSet<String>();
 	public static TreeMap<String, View> views = new TreeMap<String, View>();
+
+	public static boolean reorder = false;
 	
 	static String stripQuotes(String str) {
 		if (str.startsWith("\""))
@@ -30,11 +32,15 @@ public class Ora2rdb {
 	}
 	
 	static void printUsage() {
-		System.err.println("Usage: ora2rdb.jar <input_file> [options]\n"
-				+ "Options:\n"
-				+ "\t-o <output_file>\n"
-				+ "Notes:\n"
-				+ "\t\"stdin\" may be used as a value of <input_file>");
+		System.err.println("Usage: ora2rdb.jar <input_file> [options]\n" +
+				"Options:\n" +
+				"    -o <output_file>    Specify output file.\n" +
+				"    -r                  Reorder CREATE VIEW statements in according to their\n" +
+				"                        dependencies. It allows to perform FORCE clause\n" +
+				"                        conversion. Use this option only for scripts which\n" +
+				"                        contain DB metadata.\n" +
+				"Notes:\n" +
+				"    \"stdin\" may be used as a value of <input_file>.");
 	}
 	
 	public static void main(String[] args) throws Exception {
@@ -78,6 +84,10 @@ public class Ora2rdb {
 						return;
 					}
 					
+					break;
+
+				case "-r":
+					reorder = true;
 					break;
 					
 				default:
@@ -133,8 +143,12 @@ public class Ora2rdb {
 				return;
 			}
 		}
-		
-		ps.print(converter.rewriter.getText());
+
+		if (reorder)
+			ps.print(converter.getText());
+		else
+			ps.print(converter.rewriter.getText());
+
 		//ps.print(rv.visit(tree));
 		ps.close();
 	}

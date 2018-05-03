@@ -49,7 +49,7 @@
     <!--next target was created by Eclipse Runnable JAR Export Wizard-->
     <property name="dir.buildfile" value="."/>
     <property name="dir.jarfile" value="${dir.buildfile}/jar"/>
-    <target name="create_run_jar">
+    <target name="create_run_jar" depends="compile">
         <jar destfile="${dir.jarfile}/ora2rdb.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="biz.redsoft.ora2rdb.Ora2rdb"/>

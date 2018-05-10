@@ -56,7 +56,12 @@ public class RewritingListener extends plsqlBaseListener {
 		for (Create_indexContext create_index : create_indexes)
 			out.append(getRewriterText(create_index)).append("\n\n");
 
-		out.append("SET TERM ^ ;\n\n");
+		boolean plsql = !create_functions.isEmpty() ||
+						!create_procedures.isEmpty() ||
+						!create_triggers.isEmpty();
+
+		if (plsql)
+			out.append("SET TERM ^ ;\n\n");
 
 		for (Create_function_bodyContext create_function : create_functions)
 			out.append(getRewriterText(create_function)).append("\n\n");
@@ -67,7 +72,8 @@ public class RewritingListener extends plsqlBaseListener {
 		for (Create_triggerContext create_trigger : create_triggers)
 			out.append(getRewriterText(create_trigger)).append("\n\n");
 
-		out.append("SET TERM ; ^\n\n");
+		if (plsql)
+			out.append("SET TERM ; ^\n\n");
 
 		for (Alter_triggerContext alter_trigger : alter_triggers)
 			out.append(getRewriterText(alter_trigger)).append("\n\n");

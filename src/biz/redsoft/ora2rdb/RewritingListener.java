@@ -593,7 +593,15 @@ public class RewritingListener extends plsqlBaseListener {
 		if (upper.startsWith(":OLD.") || upper.startsWith(":NEW."))
 			replace(ctx, var.substring(1));
 	}
-	
+
+	@Override
+	public void exitColumn_name(Column_nameContext ctx) {
+		String name = getRewriterText(ctx);
+
+		if (name.startsWith(":"))
+			replace(ctx, name.substring(1));
+	}
+
 	@Override
 	public void exitSql_plus_command(Sql_plus_commandContext ctx) {
 		delete(ctx);

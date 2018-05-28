@@ -2,7 +2,6 @@ package biz.redsoft.ora2rdb;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 import java.util.TreeSet;
 
 import org.antlr.v4.runtime.*;
@@ -13,10 +12,9 @@ import biz.redsoft.ora2rdb.plsqlParser.*;
 public class RewritingListener extends plsqlBaseListener {
 	TokenStreamRewriter rewriter;
 	CommonTokenStream tokens;
-	Stack<TreeSet<String>> scopes = new Stack<TreeSet<String>>();
-	ArrayList<String> current_trigger_fields = new ArrayList<String>();
-	String current_trigger_when_condition;
+
 	View current_view;
+	PLSQLBlock current_plsql_block;
 	
 	ArrayList<Create_sequenceContext> sequences = new ArrayList<Create_sequenceContext>();
 	ArrayList<Create_tableContext> tables = new ArrayList<Create_tableContext>();
@@ -27,6 +25,8 @@ public class RewritingListener extends plsqlBaseListener {
 	ArrayList<Create_procedure_bodyContext> create_procedures = new ArrayList<Create_procedure_bodyContext>();
 	ArrayList<Create_triggerContext> create_triggers = new ArrayList<Create_triggerContext>();
 	ArrayList<Alter_triggerContext> alter_triggers = new ArrayList<Alter_triggerContext>();
+
+	ArrayList<String> create_temporary_tables = new ArrayList<String>();
 	
 	public RewritingListener(CommonTokenStream tokens) {
 		rewriter = new TokenStreamRewriter(tokens);
@@ -55,6 +55,9 @@ public class RewritingListener extends plsqlBaseListener {
 
 		for (Create_indexContext create_index : create_indexes)
 			out.append(getRewriterText(create_index)).append("\n\n");
+
+		for (String create_temporary_table : create_temporary_tables)
+			out.append(create_temporary_table);
 
 		boolean plsql = !create_functions.isEmpty() ||
 						!create_procedures.isEmpty() ||
@@ -163,27 +166,19 @@ public class RewritingListener extends plsqlBaseListener {
 	String getRewriterText(ParserRuleContext ctx) {
 		return rewriter.getText(ctx.getSourceInterval());
 	}
-	
+
 	void pushScope() {
-		scopes.push(new TreeSet<String>());
+		if (current_plsql_block == null)
+			current_plsql_block = new PLSQLBlock();
+		else
+			current_plsql_block.pushScope();
 	}
-	
+
 	void popScope() {
-		scopes.pop();
-	}
-	
-	void declareVar(ParserRuleContext var_name_ctx) {
-		scopes.peek().add(Ora2rdb.getRealName(getRuleText(var_name_ctx)));
-	}
-	
-	boolean containsInScope(ParserRuleContext var_name_ctx) {
-		for (TreeSet<String> scope : scopes)
-		{
-			if (scope.contains(Ora2rdb.getRealName(getRuleText(var_name_ctx))))
-				return true;
-		}
-		
-		return false;
+		if (current_plsql_block.scopes.size() == 1)
+			current_plsql_block = null;
+		else
+			current_plsql_block.popScope();
 	}
 	
 	@Override
@@ -367,6 +362,38 @@ public class RewritingListener extends plsqlBaseListener {
 		}
 		else
 		{
+			String name = Ora2rdb.getRealName(getRuleText(ctx.id_expression(0)));
+
+			if (current_plsql_block != null && current_plsql_block.array_to_table.containsKey(name) &&
+					ctx.function_argument().size() != 0)
+			{
+				String select_stmt = "(SELECT VAL FROM " + current_plsql_block.array_to_table.get(name) + " WHERE ";
+				boolean abort = false;
+
+				for (int i = 0; i < ctx.function_argument().size(); i++)
+				{
+					if (ctx.function_argument(i).argument().size() == 1)
+					{
+						if (i != 0)
+							select_stmt += " AND ";
+
+						select_stmt += "I" + (i + 1) + " = " + getRewriterText(ctx.function_argument(i).argument(0));
+					}
+					else
+					{
+						abort = true;
+						break;
+					}
+				}
+
+				if (!abort)
+				{
+					select_stmt += ")";
+					replace(ctx, select_stmt);
+					return;
+				}
+			}
+
 			Regular_idContext regular_id_ctx = ctx.id_expression(0).regular_id();
 
 			if (regular_id_ctx != null)
@@ -541,12 +568,6 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitCreate_function_body(Create_function_bodyContext ctx) {
-		if (!Ora2rdb.reorder)
-		{
-			insertBefore(ctx, "SET TERM ^ ;\n\n");
-			insertAfter(ctx.SEMICOLON(), "\n\nSET TERM ; ^");
-		}
-		
 		replace(ctx.REPLACE(), "ALTER");
 		replace(ctx.FUNCTION(), "PROCEDURE");
 		
@@ -555,6 +576,16 @@ public class RewritingListener extends plsqlBaseListener {
 		
 		replace(ctx.IS(), "AS");
 		replace(ctx.SEMICOLON(), "^");
+
+		StringBuilder temp_tables_ddl = new StringBuilder();
+
+		for (String table_ddl : current_plsql_block.temporary_tables_ddl)
+			temp_tables_ddl.append(table_ddl).append("\n\n");
+
+		if (!Ora2rdb.reorder)
+			replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
+		else
+			create_temporary_tables.add(temp_tables_ddl.toString());
 		
 		popScope();
 		create_functions.add(ctx);
@@ -564,8 +595,9 @@ public class RewritingListener extends plsqlBaseListener {
 	public void exitParameter(ParameterContext ctx) {
 		for (TerminalNode in_node : ctx.IN())
 			delete(in_node);
-		
-		declareVar(ctx.parameter_name());
+
+		if (current_plsql_block != null)
+			current_plsql_block.declareVar(Ora2rdb.getRealName(getRuleText(ctx.parameter_name())));
 	}
 	
 	@Override
@@ -575,13 +607,42 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitVariable_declaration(Variable_declarationContext ctx) {
+		String name = Ora2rdb.getRealName(getRuleText(ctx.variable_name()));
+		String type = Ora2rdb.getRealName(getRuleText(ctx.type_spec()));
+
+		if (current_plsql_block != null)
+		{
+			if (current_plsql_block.array_types.containsKey(type))
+			{
+				current_plsql_block.declareArray(name, type);
+				commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+				return;
+			}
+
+			current_plsql_block.declareVar(name);
+		}
+
 		insertBefore(ctx, "DECLARE ");
-		declareVar(ctx.variable_name());
 	}
-	
+
+	@Override
+	public void exitTable_declaration(Table_declarationContext ctx) {
+		commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+	}
+
+	@Override
+	public void exitTable_type_dec(Table_type_decContext ctx) {
+		if (current_plsql_block != null && ctx.TABLE() != null && ctx.table_indexed_by_part() != null)
+		{
+			current_plsql_block.declareTypeOfArray(Ora2rdb.getRealName(getRuleText(ctx.type_name())),
+					Ora2rdb.getRealName(getRewriterText(ctx.type_spec())),
+					getRewriterText(ctx.table_indexed_by_part().type_spec()));
+		}
+	}
+
 	@Override
 	public void exitId_expression(Id_expressionContext ctx) {
-		if (containsInScope(ctx))
+		if (current_plsql_block != null && current_plsql_block.containsInScope(Ora2rdb.getRealName(getRuleText(ctx))))
 			replace(ctx, ":" + getRuleText(ctx));
 	}
 	
@@ -620,16 +681,20 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitCreate_procedure_body(Create_procedure_bodyContext ctx) {
-		if (!Ora2rdb.reorder)
-		{
-			insertBefore(ctx, "SET TERM ^ ;\n\n");
-			insertAfter(ctx.SEMICOLON(), "\n\nSET TERM ; ^");
-		}
-
 		replace(ctx.REPLACE(), "ALTER");
 		replace(ctx.IS(), "AS");
 		replace(ctx.SEMICOLON(), "^");
-		
+
+		StringBuilder temp_tables_ddl = new StringBuilder();
+
+		for (String table_ddl : current_plsql_block.temporary_tables_ddl)
+			temp_tables_ddl.append(table_ddl).append("\n\n");
+
+		if (!Ora2rdb.reorder)
+			replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
+		else
+			create_temporary_tables.add(temp_tables_ddl.toString());
+
 		popScope();
 		create_procedures.add(ctx);
 	}
@@ -653,16 +718,20 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitCreate_trigger(Create_triggerContext ctx) {
-		if (!Ora2rdb.reorder)
-		{
-			insertBefore(ctx, "SET TERM ^ ;\n\n");
-			insertAfter(ctx.SEMICOLON(), "\n\nSET TERM ; ^");
-		}
-
 		replace(ctx.REPLACE(), "ALTER");
 		insertBefore(ctx.trigger_body(), "AS\n");
 		replace(ctx.SEMICOLON(), "^");
-		
+
+		StringBuilder temp_tables_ddl = new StringBuilder();
+
+		for (String table_ddl : current_plsql_block.temporary_tables_ddl)
+			temp_tables_ddl.append(table_ddl).append("\n\n");
+
+		if (!Ora2rdb.reorder)
+			replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
+		else
+			create_temporary_tables.add(temp_tables_ddl.toString());
+
 		popScope();
 		create_triggers.add(ctx);
 	}
@@ -679,14 +748,19 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitTrigger_when_clause(Trigger_when_clauseContext ctx) {
-		current_trigger_when_condition = getRewriterText(ctx.condition());
+		if (current_plsql_block != null)
+			current_plsql_block.trigger_when_condition = getRewriterText(ctx.condition());
+
 		delete(ctx);
 	}
 	
 	@Override
 	public void exitDml_event_element(Dml_event_elementContext ctx) {
-		for (Column_nameContext col_name_ctx : ctx.column_name())
-			current_trigger_fields.add(getRuleText(col_name_ctx));
+		if (current_plsql_block != null)
+		{
+			for (Column_nameContext col_name_ctx : ctx.column_name())
+				current_plsql_block.trigger_fields.add(getRuleText(col_name_ctx));
+		}
 		
 		delete(ctx.OF());
 		delete(ctx.column_name());
@@ -704,25 +778,26 @@ public class RewritingListener extends plsqlBaseListener {
 	
 	@Override
 	public void exitBody(BodyContext ctx) {
-		if (current_trigger_fields.size() > 0 || current_trigger_when_condition != null)
+		if (current_plsql_block != null &&
+				(current_plsql_block.trigger_fields.size() > 0 || current_plsql_block.trigger_when_condition != null))
 		{
 			String execute_condition = "\nIF (";
 			String update_condition = "";
 			
-			for (int i = 0; i < current_trigger_fields.size(); i++)
+			for (int i = 0; i < current_plsql_block.trigger_fields.size(); i++)
 			{
 				if (i != 0)
 					update_condition += " OR ";
 				
-				update_condition += "NEW." + current_trigger_fields.get(i) + " <> OLD." + current_trigger_fields.get(i);
+				update_condition += "NEW." + current_plsql_block.trigger_fields.get(i) + " <> OLD." + current_plsql_block.trigger_fields.get(i);
 			}
 
-			if (current_trigger_fields.size() > 0 && current_trigger_when_condition != null)
-				execute_condition += "(" + update_condition + ") AND (" + current_trigger_when_condition + ")";
-			else if (current_trigger_fields.size() > 0)
+			if (current_plsql_block.trigger_fields.size() > 0 && current_plsql_block.trigger_when_condition != null)
+				execute_condition += "(" + update_condition + ") AND (" + current_plsql_block.trigger_when_condition + ")";
+			else if (current_plsql_block.trigger_fields.size() > 0)
 				execute_condition += update_condition;
 			else
-				execute_condition += current_trigger_when_condition;
+				execute_condition += current_plsql_block.trigger_when_condition;
 
 			execute_condition += ") THEN";
 			
@@ -733,9 +808,6 @@ public class RewritingListener extends plsqlBaseListener {
 				
 			if (ctx.seq_of_statements().statement().size() > 1)
 				insertBefore(ctx.END(), "END\n");
-			
-			current_trigger_fields.clear();
-			current_trigger_when_condition = null;
 		}
 	}
 	
@@ -767,8 +839,43 @@ public class RewritingListener extends plsqlBaseListener {
 	public void exitAssignment_statement(Assignment_statementContext ctx) {
 		if (ctx.general_element() != null)
 		{
+			if (ctx.general_element().general_element_part().size() == 1)
+			{
+				General_element_partContext gen_elem_part_ctx = ctx.general_element().general_element_part(0);
+
+				if (gen_elem_part_ctx.id_expression().size() == 1)
+				{
+					String name = Ora2rdb.getRealName(getRuleText(gen_elem_part_ctx.id_expression(0)));
+
+					if (current_plsql_block != null && current_plsql_block.array_to_table.containsKey(name) &&
+							gen_elem_part_ctx.function_argument().size() != 0)
+					{
+						String insert_stmt = "UPDATE OR INSERT INTO " + current_plsql_block.array_to_table.get(name) + " VALUES (";
+						boolean abort = false;
+
+						for (Function_argumentContext func_arg_ctx : gen_elem_part_ctx.function_argument())
+						{
+							if (func_arg_ctx.argument().size() == 1)
+								insert_stmt += getRewriterText(func_arg_ctx.argument(0)) + ", ";
+							else
+							{
+								abort = true;
+								break;
+							}
+						}
+
+						if (!abort)
+						{
+							insert_stmt += getRewriterText(ctx.expression()) + ")";
+							replace(ctx, insert_stmt);
+							return;
+						}
+					}
+				}
+			}
+
 			String target = getRewriterText(ctx.general_element());
-			
+
 			if (target.startsWith(":"))
 				replace(ctx.general_element(), target.substring(1));
 		}

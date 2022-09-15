@@ -67,7 +67,7 @@ public class InitialListener extends PlSqlParserBaseListener {
 				}
 				
 				if (out_of_line_constraint_ctx.PRIMARY() != null || 
-					out_of_line_constraint_ctx.FOREIGN() != null ||
+					out_of_line_constraint_ctx.foreign_key_clause().FOREIGN() != null ||
 					out_of_line_constraint_ctx.UNIQUE() != null)
 				{
 					Ora2rdb.index_names.add(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()));

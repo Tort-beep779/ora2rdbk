@@ -4,7 +4,8 @@
     <property name="build.dir" value="bin"/>
     <property name="src.dir"   value="src"/>
     <property name="gen.dir"   value="gen"/>
-    <property name="grammar"   value="grammars-v4/plsql/plsql.g4"/>
+    <property name="grammarLexer"   value="grammars-v4/plsql/PlSqlLexer.g4"/>
+    <property name="grammarParser"   value="grammars-v4/plsql/PlSqlParser.g4"/>
 
     <path id="classpath">
         <pathelement location="${build.dir}"/>
@@ -20,7 +21,8 @@
         <java classname="org.antlr.v4.Tool" fork="true" failonerror="true">
             <arg line="-package biz.redsoft.ora2rdb"/>
             <arg value="-visitor"/>
-            <arg value="${grammar}"/>
+            <arg value="${grammarLexer}"/>
+            <arg value="${grammarParser}"/>
             <arg line="-o ${gen.dir}/biz/redsoft/ora2rdb"/>
             <classpath refid="classpath"/>
         </java>
@@ -30,7 +32,6 @@
         <mkdir dir="${build.dir}"/>
 
         <javac destdir="${build.dir}" includeantruntime="false">
-            <src path="${src.dir}"/>
             <src path="${gen.dir}"/>
             <classpath refid="classpath"/>
         </javac>
@@ -38,10 +39,10 @@
 
     <target name="run_testrig">
         <java classname="org.antlr.v4.gui.TestRig" fork="true" failonerror="true">
-            <arg value="biz.redsoft.ora2rdb.plsql"/>
+            <arg value="biz.redsoft.ora2rdb.PlSql"/>
             <arg value="sql_script"/>
             <arg value="-gui"/>
-            <arg value="tests/test.sql"/>
+            <arg value="tests/hr_ora.sql"/>
             <classpath refid="classpath"/>
         </java>
     </target>

@@ -2,8 +2,7 @@ package biz.redsoft.ora2rdb;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
-import biz.redsoft.ora2rdb.plsqlParser.Create_viewContext;
+import biz.redsoft.ora2rdb.PlSqlParser.*;
 
 public class View {
 	Create_viewContext ctx;
@@ -13,6 +12,8 @@ public class View {
 	public View(Create_viewContext c) {
 		ctx = c;
 	}
+
+
 
 	static ArrayList<View> sort(Collection<View> views) {
 		ArrayList<View> sorted_views = new ArrayList<View>();

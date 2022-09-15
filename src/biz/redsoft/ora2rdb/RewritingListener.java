@@ -7,9 +7,9 @@ import java.util.TreeSet;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import biz.redsoft.ora2rdb.plsqlParser.*;
+import biz.redsoft.ora2rdb.PlSqlParser.*;
 
-public class RewritingListener extends plsqlBaseListener {
+public class RewritingListener extends PlSqlParserBaseListener {
 	TokenStreamRewriter rewriter;
 	CommonTokenStream tokens;
 

@@ -8,9 +8,9 @@ import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
-import biz.redsoft.ora2rdb.plsqlParser.*;
+import biz.redsoft.ora2rdb.PlSqlParser.*;
 
-public class RewritingVisitor extends plsqlBaseVisitor<String> {
+public class RewritingVisitor extends PlSqlParserBaseVisitor<String> {
 	TokenStream tokens;
 	String current_table;
 	TreeSet<String> current_procedure_args_and_vars = new TreeSet<String>();
@@ -18,7 +18,7 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	ArrayList<String> temporary_tables_ddl = new ArrayList<String>();
 	ArrayList<String> current_trigger_fields = new ArrayList<String>();
 	
-	public RewritingVisitor(plsqlParser parser) {
+	public RewritingVisitor(PlSqlParser parser) {
 		this.tokens = parser.getTokenStream();
 	}
 	
@@ -109,7 +109,8 @@ public class RewritingVisitor extends plsqlBaseVisitor<String> {
 	public String visitCreate_table(Create_tableContext ctx) {
 		String out = "CREATE TABLE " + getRuleText(ctx.tableview_name()) + " (\n";
 		current_table = Ora2rdb.getRealName(getRuleText(ctx.tableview_name()));
-		
+
+
 		for (int i = 0; i < ctx.relational_properties().size(); i++)
 		{
 			if (i != 0)

@@ -65,12 +65,13 @@ public class InitialListener extends PlSqlParserBaseListener {
 					else
 						Ora2rdb.table_not_null_cols.put(table_name, columns_set);
 				}
-				
-				if (out_of_line_constraint_ctx.PRIMARY() != null || 
-					out_of_line_constraint_ctx.foreign_key_clause().FOREIGN() != null ||
-					out_of_line_constraint_ctx.UNIQUE() != null)
-				{
-					Ora2rdb.index_names.add(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()));
+				if(out_of_line_constraint_ctx.foreign_key_clause()!=null) {
+
+					if (	out_of_line_constraint_ctx.PRIMARY() != null ||
+							out_of_line_constraint_ctx.UNIQUE() != null  ||
+							out_of_line_constraint_ctx.foreign_key_clause().FOREIGN() != null) {
+						Ora2rdb.index_names.add(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()));
+					}
 				}
 			}
 		}

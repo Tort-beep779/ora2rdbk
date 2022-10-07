@@ -10,960 +10,899 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import biz.redsoft.ora2rdb.PlSqlParser.*;
 
 public class RewritingListener extends PlSqlParserBaseListener {
-	TokenStreamRewriter rewriter;
-	CommonTokenStream tokens;
-
-	View current_view;
-	PLSQLBlock current_plsql_block;
-	
-	ArrayList<Create_sequenceContext> sequences = new ArrayList<Create_sequenceContext>();
-	ArrayList<Create_tableContext> tables = new ArrayList<Create_tableContext>();
-	ArrayList<CommentContext> comments = new ArrayList<CommentContext>();
-	ArrayList<Alter_tableContext> alter_tables = new ArrayList<Alter_tableContext>();
-	ArrayList<Create_indexContext> create_indexes = new ArrayList<Create_indexContext>();
-	ArrayList<Create_function_bodyContext> create_functions = new ArrayList<Create_function_bodyContext>();
-	ArrayList<Create_procedure_bodyContext> create_procedures = new ArrayList<Create_procedure_bodyContext>();
-	ArrayList<Create_triggerContext> create_triggers = new ArrayList<Create_triggerContext>();
-	ArrayList<Alter_triggerContext> alter_triggers = new ArrayList<Alter_triggerContext>();
-
-	ArrayList<String> create_temporary_tables = new ArrayList<String>();
-	
-	public RewritingListener(CommonTokenStream tokens) {
-		rewriter = new TokenStreamRewriter(tokens);
-		this.tokens = tokens;
-	}
-	
-	public String getText() {
-		StringBuilder out = new StringBuilder();
-
-		for (Create_sequenceContext sequence : sequences)
-			out.append(getRewriterText(sequence)).append("\n\n");
-
-		for (Create_tableContext table : tables)
-			out.append(getRewriterText(table)).append("\n\n");
-
-		ArrayList<View> views = View.sort(Ora2rdb.views.values());
-
-		for (View view : views)
-			out.append(getRewriterText(view.ctx)).append("\n\n");
-
-		for (CommentContext comment : comments)
-			out.append(getRewriterText(comment)).append("\n\n");
-
-		for (Alter_tableContext alter_table : alter_tables)
-			out.append(getRewriterText(alter_table)).append("\n\n");
-
-		for (Create_indexContext create_index : create_indexes)
-			out.append(getRewriterText(create_index)).append("\n\n");
-
-		for (String create_temporary_table : create_temporary_tables)
-			out.append(create_temporary_table);
-
-		boolean plsql = !create_functions.isEmpty() ||
-						!create_procedures.isEmpty() ||
-						!create_triggers.isEmpty();
-
-		if (plsql)
-			out.append("SET TERM ^ ;\n\n");
-
-		for (Create_function_bodyContext create_function : create_functions)
-			out.append(getRewriterText(create_function)).append("\n\n");
-
-		for (Create_procedure_bodyContext create_procedure : create_procedures)
-			out.append(getRewriterText(create_procedure)).append("\n\n");
-
-		for (Create_triggerContext create_trigger : create_triggers)
-			out.append(getRewriterText(create_trigger)).append("\n\n");
-
-		if (plsql)
-			out.append("SET TERM ; ^\n\n");
-
-		for (Alter_triggerContext alter_trigger : alter_triggers)
-			out.append(getRewriterText(alter_trigger)).append("\n\n");
-		
-		return out.toString();
-	}
-	
-	void insertBefore(ParserRuleContext ctx, Object text) {
-		if (ctx != null)
-			rewriter.insertBefore(ctx.start, text);
-	}
-	
-	void insertBefore(TerminalNode term, Object text) {
-		if (term != null)
-			rewriter.insertBefore(term.getSymbol(), text);
-	}
-	
-	void insertAfter(ParserRuleContext ctx, Object text) {
-		if (ctx != null)
-			rewriter.insertAfter(ctx.stop, text);
-	}
-	
-	void insertAfter(TerminalNode term, Object text) {
-		if (term != null)
-			rewriter.insertAfter(term.getSymbol(), text);
-	}
-	
-	void replace(ParserRuleContext ctx, Object text) {
-		if (ctx != null)
-			rewriter.replace(ctx.start, ctx.stop, text);
-	}
-	
-	void replace(TerminalNode term, Object text) {
-		if (term != null)
-			rewriter.replace(term.getSymbol(), text);
-	}
-	
-	void delete(ParserRuleContext ctx) {
-		if (ctx != null)
-			rewriter.delete(ctx.start, ctx.stop);
-	}
-	
-	void delete(TerminalNode term) {
-		if (term != null)
-			rewriter.delete(term.getSymbol());
-	}
-	
-	void delete(List<? extends ParserRuleContext> ctx_list) {
-		if (ctx_list.size() != 0)
-			rewriter.delete(ctx_list.get(0).start, ctx_list.get(ctx_list.size() - 1).stop);
-	}
-	
-	void commentBlock(int start_tok_idx, int stop_tok_idx) {
-		rewriter.insertBefore(start_tok_idx, "/*");
-		rewriter.insertAfter(stop_tok_idx, "*/");
-		
-		List<Token> multi_line_comments = tokens.getTokens(start_tok_idx, stop_tok_idx, plsqlLexer.MULTI_LINE_COMMENT);
-		
-		if (multi_line_comments != null)
-			for (Token tok : multi_line_comments)
-				rewriter.delete(tok);
-	}
-	
-	String getIndentation(ParserRuleContext ctx) {
-		Integer tok_idx = ctx.start.getTokenIndex();
-		
-		if (tok_idx > 0)
-		{
-			List<Token> spc_tok_list = tokens.getTokens(tok_idx - 1, tok_idx, plsqlLexer.SPACES);
-			
-			if (spc_tok_list != null)
-			{
-				String spc = spc_tok_list.get(0).getText();
-				Integer idx1 = spc.lastIndexOf('\r');
-				Integer idx2 = spc.lastIndexOf('\n');
-				return spc.substring((idx1 > idx2 ? idx1 : idx2) + 1);
-			}
-		}
-		
-		return "";
-	}
-	
-	String getRuleText(RuleContext ctx) {
-		return tokens.getText(ctx);
-	}
-	
-	String getRewriterText(ParserRuleContext ctx) {
-		return rewriter.getText(ctx.getSourceInterval());
-	}
-
-	void pushScope() {
-		if (current_plsql_block == null)
-			current_plsql_block = new PLSQLBlock();
-		else
-			current_plsql_block.pushScope();
-	}
-
-	void popScope() {
-		if (current_plsql_block.scopes.size() == 1)
-			current_plsql_block = null;
-		else
-			current_plsql_block.popScope();
-	}
-	
-	@Override
-	public void exitCreate_table(Create_tableContext ctx) {
-		delete(ctx.schema_name());
-		delete(ctx.PERIOD());
-		
-		delete(ctx.physical_properties());
-		delete(ctx.lob_storage_clause());
-		
-		String table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name()));
-		
-		if (Ora2rdb.table_not_null_cols.containsKey(table_name))
-		{
-			TreeSet<String> columns_set = Ora2rdb.table_not_null_cols.get(table_name);
-			
-			for (Relational_propertiesContext rel_prop_ctx : ctx.relational_properties())
-			{
-				Column_definitionContext col_def_ctx = rel_prop_ctx.column_definition();
-				
-				if (col_def_ctx != null)
-				{
-					String column_name = Ora2rdb.getRealName(getRuleText(col_def_ctx.column_name()));
-
-					if (columns_set.contains(column_name))
-					{
-						boolean not_null = false;
-						
-						for (Inline_constraintContext inl_con_ctx : col_def_ctx.inline_constraint())
-						{
-							if (inl_con_ctx.NOT() != null)
-							{
-								not_null = true;
-								break;
-							}
-						}
-						
-						if (!not_null)
-							insertAfter(col_def_ctx, " NOT NULL");
-					}
-				}
-			}
-		}
-
-		tables.add(ctx);
-	}
-	
-	@Override
-	public void exitColumn_definition(Column_definitionContext ctx) {
-		if (ctx.type_spec() != null)
-		{
-			if (ctx.type_spec().datatype() != null)
-				if (ctx.type_spec().datatype().native_datatype_element() != null)
-					if (ctx.type_spec().datatype().native_datatype_element().RAW() != null)
-					{
-						replace(ctx.type_spec(), "BLOB");
-						delete(ctx.default_value_part());
-					}
-		}
-	}
-	
-	@Override
-	public void exitDatatype(DatatypeContext ctx) {
-		if (ctx.native_datatype_element() != null)
-		{
-			if (ctx.native_datatype_element().NUMBER() != null)
-			{
-				if (ctx.precision_part() != null)
-					replace(ctx.precision_part().ASTERISK(), "18");
-				else
-					insertAfter(ctx.native_datatype_element(), "(18, 4)");
-			}
-			else if (ctx.native_datatype_element().FLOAT() != null)
-			{
-				if (ctx.precision_part() != null)
-					replace(ctx, "DOUBLE PRECISION");
-			}
-			else if (ctx.native_datatype_element().TIMESTAMP() != null)
-			{
-				delete(ctx.precision_part());
-			}
-			else if (ctx.native_datatype_element().VARCHAR2() != null ||
-					 ctx.native_datatype_element().VARCHAR() != null)
-			{
-				if (ctx.precision_part() == null)
-					insertAfter(ctx.native_datatype_element(), "(250)");
-			}
-			else if (ctx.native_datatype_element().NUMERIC() != null)
-			{
-				if (ctx.precision_part() == null)
-					insertAfter(ctx.native_datatype_element(), "(18, 4)");
-			}
-		}
-	}
-	
-	@Override
-	public void exitPrecision_part(Precision_partContext ctx) {
-		delete(ctx.BYTE());
-		delete(ctx.CHAR());
-	}
-	
-	@Override
-	public void exitNative_datatype_element(Native_datatype_elementContext ctx) {
-		if (ctx.VARCHAR2() != null || ctx.NVARCHAR2() != null)
-			replace(ctx, "VARCHAR");
-		else if (ctx.CLOB() != null)
-			replace(ctx, "BLOB SUB_TYPE TEXT");
-		else if (ctx.NUMBER() != null)
-			replace(ctx, "NUMERIC");
-		else if (ctx.BINARY_FLOAT() != null)
-			replace(ctx, "FLOAT");
-		else if (ctx.BINARY_DOUBLE() != null)
-			replace(ctx, "DOUBLE PRECISION");
-		else if (ctx.NCHAR() != null)
-			replace(ctx, "CHAR");
-	}
-	
-	@Override
-	public void exitTableview_name(Tableview_nameContext ctx) {
-		if (ctx.id_expression() != null)
-		{
-			delete(ctx.id().id_expression());
-			delete(ctx.PERIOD());
-		}
-	}
-	
-	@Override
-	public void exitOut_of_line_constraint(Out_of_line_constraintContext ctx) {
-		delete(ctx.constraint_state());
-	}
-	
-	@Override
-	public void exitAlter_table(Alter_tableContext ctx) {
-		delete(ctx.schema_name());
-		delete(ctx.PERIOD());
-		
-		Constraint_clausesContext constraint_clauses_ctx = ctx.constraint_clauses();
-		Column_clausesContext column_clauses_ctx = ctx.column_clauses();
-		
-		if (constraint_clauses_ctx != null)
-		{	
-			if (constraint_clauses_ctx.out_of_line_constraint().size() != 0)
-			{
-				Constraint_stateContext constraint_state_ctx = constraint_clauses_ctx.out_of_line_constraint(0).constraint_state();
-				delete(constraint_state_ctx);
-			}
-		}
-		else if (column_clauses_ctx != null)
-		{
-			Modify_column_clausesContext modify_column_clauses_ctx = column_clauses_ctx.modify_column_clauses(0);
-			
-			if (modify_column_clauses_ctx.modify_col_properties().size() != 0)
-			{
-				Modify_col_propertiesContext modify_col_properties_ctx = modify_column_clauses_ctx.modify_col_properties(0);
-				
-				if (modify_col_properties_ctx.inline_constraint().size() != 0)
-				{
-					if (modify_col_properties_ctx.inline_constraint(0).NULL() != null)
-					{
-						delete(ctx);
-						return;
-					}
-				}
-			}
-		}
-
-		alter_tables.add(ctx);
-	}
-	
-	@Override
-	public void exitGeneral_element_part(General_element_partContext ctx) {
-		if (ctx.id_expression().size() > 1)
-		{
-			for (Id_expressionContext id_expr_ctx : ctx.id_expression())
-			{
-				String id = getRewriterText(id_expr_ctx);
-
-				if (id.startsWith(":"))
-					replace(id_expr_ctx, id.substring(1));
-			}
-		}
-		else
-		{
-			String name = Ora2rdb.getRealName(getRuleText(ctx.id_expression(0)));
-
-			if (current_plsql_block != null && current_plsql_block.array_to_table.containsKey(name) &&
-					ctx.function_argument().size() != 0)
-			{
-				String select_stmt = "(SELECT VAL FROM " + current_plsql_block.array_to_table.get(name) + " WHERE ";
-				boolean abort = false;
-
-				for (int i = 0; i < ctx.function_argument().size(); i++)
-				{
-					if (ctx.function_argument(i).argument().size() == 1)
-					{
-						if (i != 0)
-							select_stmt += " AND ";
-
-						select_stmt += "I" + (i + 1) + " = " + getRewriterText(ctx.function_argument(i).argument(0));
-					}
-					else
-					{
-						abort = true;
-						break;
-					}
-				}
-
-				if (!abort)
-				{
-					select_stmt += ")";
-					replace(ctx, select_stmt);
-					return;
-				}
-			}
-
-			Regular_idContext regular_id_ctx = ctx.id_expression(0).regular_id();
-
-			if (regular_id_ctx != null)
-			{
-				if (regular_id_ctx.REPLACE() != null)
-				{
-					if (ctx.function_argument().size() == 1)
-					{
-						Function_argumentContext function_argument_ctx = ctx.function_argument(0);
-
-						if (function_argument_ctx != null)
-							if (function_argument_ctx.argument().size() == 2)
-								insertAfter(function_argument_ctx.argument(1), ", ''");
-					}
-				}
-				else if (Ora2rdb.getRealName(getRuleText(regular_id_ctx)).equals("SUBSTR"))
-				{
-					if (ctx.function_argument().size() == 1)
-					{
-						replace(regular_id_ctx, "SUBSTRING");
-						Function_argumentContext function_argument_ctx = ctx.function_argument(0);
-
-						if (function_argument_ctx.argument().size() == 2)
-						{
-							replace(function_argument_ctx, "(" + getRewriterText(function_argument_ctx.argument(0)) +
-									" FROM " + getRewriterText(function_argument_ctx.argument(1)) + ")");
-						}
-						else if (function_argument_ctx.argument().size() == 3)
-						{
-							replace(function_argument_ctx, "(" + getRewriterText(function_argument_ctx.argument(0)) +
-									" FROM " + getRewriterText(function_argument_ctx.argument(1)) +
-									" FOR " + getRewriterText(function_argument_ctx.argument(2)) + ")");
-						}
-					}
-				}
-
-				replace(regular_id_ctx.LENGTH(), "CHAR_LENGTH");
-			}
-		}
-	}
-	
-	@Override
-	public void exitReferences_clause(References_clauseContext ctx) {
-		delete(ctx.schema_name());
-		delete(ctx.PERIOD());
-	}
-	
-	@Override
-	public void exitCreate_index(Create_indexContext ctx) {
-		String index_name = Ora2rdb.getRealName(getRuleText(ctx.id_expression()));
-		
-		if (Ora2rdb.index_names.contains(index_name))
-		{
-			delete(ctx);
-			return;
-		}
-		
-		Table_index_clauseContext table_index_clause_ctx = ctx.table_index_clause();
-		
-		for (Index_exprContext index_expr_ctx : table_index_clause_ctx.index_expr())
-		{
-			if (index_expr_ctx.unary_expression() != null)
-			{
-				delete(ctx);
-				return;
-			}
-		}
-		
-		delete(ctx.schema_name());
-		delete(ctx.PERIOD());
-		delete(table_index_clause_ctx.schema_name());
-		delete(table_index_clause_ctx.PERIOD());
-		delete(table_index_clause_ctx.index_properties());
-
-		create_indexes.add(ctx);
-	}
-	
-	@Override
-	public void exitCreate_sequence(Create_sequenceContext ctx) {
-		Sequence_nameContext sequence_name_ctx = ctx.sequence_name();
-		
-		delete(sequence_name_ctx.schema_name());
-		delete(sequence_name_ctx.PERIOD());
-		
-		for (Sequence_specContext sequence_spec_ctx : ctx.sequence_spec())
-			delete(sequence_spec_ctx);
-		
-		String set_generator_statements = "";
-		
-		for (Sequence_start_clauseContext sequence_start_clause_ctx : ctx.sequence_start_clause())
-		{
-			set_generator_statements += "\nALTER SEQUENCE " + getRuleText(sequence_name_ctx.id_expression()) +
-										" RESTART WITH " + sequence_start_clause_ctx.UNSIGNED_INTEGER().getText() + ";";
-			
-			delete(sequence_start_clause_ctx);
-		}
-		
-		replace(ctx, getRewriterText(ctx) + set_generator_statements);
-
-		sequences.add(ctx);
-	}
-	
-	@Override
-	public void enterCreate_view(Create_viewContext ctx) {
-		current_view = Ora2rdb.views.get(Ora2rdb.getRealName(getRuleText(ctx.tableview_name())));
-	}
-	
-	@Override
-	public void exitCreate_view(Create_viewContext ctx) {
-		replace(ctx.REPLACE(), "ALTER");
-		delete(ctx.FORCE());
-		delete(ctx.NO());
-		delete(ctx.schema_name());
-		delete(ctx.PERIOD());
-		
-		current_view = null;
-	}
-	
-	@Override
-	public void exitDml_table_expression_clause(Dml_table_expression_clauseContext ctx) {
-		if (current_view != null && ctx.tableview_name() != null)
-		{
-			String dependency_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name()));
-
-			if (Ora2rdb.views.containsKey(dependency_name))
-				current_view.dependencies.add(Ora2rdb.views.get(dependency_name));
-		}
-	}
-	
-	@Override
-	public void exitSubquery_restriction_clause(Subquery_restriction_clauseContext ctx) {
-		delete(ctx);
-	}
-
-	@Override
-	public void exitComment(CommentContext ctx) {
-		comments.add(ctx);
-	}
-
-	@Override
-	public void exitQuery_block(Query_blockContext ctx) {
-		if (ctx.into_clause() != null)
-		{
-			String into_clause = getRewriterText(ctx.into_clause());
-			delete(ctx.into_clause());
-			replace(ctx, getRewriterText(ctx) + " " + into_clause);
-		}
-	}
-
-	@Override
-	public void exitRegular_id(Regular_idContext ctx) {
-		switch (getRuleText(ctx).toUpperCase())
-		{
-		case "SYSTIMESTAMP":
-			replace(ctx, "CURRENT_TIMESTAMP");
-			break;
-		case "SYSDATE":
-			replace(ctx, "CURRENT_DATE");
-		}
-	}
-	
-	@Override
-	public void exitFunction_name(Function_nameContext ctx) {
-		delete(ctx.schema_name());
-		delete(ctx.PERIOD());
-	}
-	
-	@Override
-	public void enterCreate_function_body(Create_function_bodyContext ctx) {
-		pushScope();
-	}
-	
-	@Override
-	public void exitCreate_function_body(Create_function_bodyContext ctx) {
-		replace(ctx.REPLACE(), "ALTER");
-		replace(ctx.FUNCTION(), "PROCEDURE");
-		
-		replace(ctx.RETURN(), "RETURNS (RET_VAL");
-		insertAfter(ctx.type_spec(), ")");
-		
-		replace(ctx.IS(), "AS");
-		replace(ctx.SEMICOLON(), "^");
-
-		StringBuilder temp_tables_ddl = new StringBuilder();
-
-		for (String table_ddl : current_plsql_block.temporary_tables_ddl)
-			temp_tables_ddl.append(table_ddl).append("\n\n");
-
-		if (!Ora2rdb.reorder)
-			replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
-		else
-			create_temporary_tables.add(temp_tables_ddl.toString());
-		
-		popScope();
-		create_functions.add(ctx);
-	}
-	
-	@Override
-	public void exitParameter(ParameterContext ctx) {
-		for (TerminalNode in_node : ctx.IN())
-			delete(in_node);
-
-		if (current_plsql_block != null)
-			current_plsql_block.declareVar(Ora2rdb.getRealName(getRuleText(ctx.parameter_name())));
-	}
-	
-	@Override
-	public void exitPragma_declaration(Pragma_declarationContext ctx) {
-		delete(ctx);
-	}
-	
-	@Override
-	public void exitVariable_declaration(Variable_declarationContext ctx) {
-		String name = Ora2rdb.getRealName(getRuleText(ctx.variable_name()));
-		String type = Ora2rdb.getRealName(getRuleText(ctx.type_spec()));
-
-		if (current_plsql_block != null)
-		{
-			if (current_plsql_block.array_types.containsKey(type))
-			{
-				current_plsql_block.declareArray(name, type);
-				commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
-				return;
-			}
-
-			current_plsql_block.declareVar(name);
-		}
-
-		insertBefore(ctx, "DECLARE ");
-	}
-
-	@Override
-	public void exitTable_declaration(Table_declarationContext ctx) {
-		commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
-	}
-
-	@Override
-	public void exitTable_type_dec(Table_type_decContext ctx) {
-		if (current_plsql_block != null && ctx.TABLE() != null && ctx.table_indexed_by_part() != null)
-		{
-			current_plsql_block.declareTypeOfArray(Ora2rdb.getRealName(getRuleText(ctx.type_name())),
-					Ora2rdb.getRealName(getRewriterText(ctx.type_spec())),
-					getRewriterText(ctx.table_indexed_by_part().type_spec()));
-		}
-	}
-
-	@Override
-	public void exitId_expression(Id_expressionContext ctx) {
-		if (current_plsql_block != null && current_plsql_block.containsInScope(Ora2rdb.getRealName(getRuleText(ctx))))
-			replace(ctx, ":" + getRuleText(ctx));
-	}
-	
-	@Override
-	public void exitBind_variable(Bind_variableContext ctx) {
-		String var = getRuleText(ctx);
-		String upper = var.toUpperCase();
-		
-		if (upper.startsWith(":OLD.") || upper.startsWith(":NEW."))
-			replace(ctx, var.substring(1));
-	}
-
-	@Override
-	public void exitColumn_name(Column_nameContext ctx) {
-		String name = getRewriterText(ctx);
-
-		if (name.startsWith(":"))
-			replace(ctx, name.substring(1));
-	}
-
-	@Override
-	public void exitSql_plus_command(Sql_plus_commandContext ctx) {
-		delete(ctx);
-	}
-	
-	@Override
-	public void exitProcedure_name(Procedure_nameContext ctx) {
-		delete(ctx.schema_name());
-		delete(ctx.PERIOD());
-	}
-	
-	@Override
-	public void enterCreate_procedure_body(Create_procedure_bodyContext ctx) {
-		pushScope();
-	}
-	
-	@Override
-	public void exitCreate_procedure_body(Create_procedure_bodyContext ctx) {
-		replace(ctx.REPLACE(), "ALTER");
-		replace(ctx.IS(), "AS");
-		replace(ctx.SEMICOLON(), "^");
-
-		StringBuilder temp_tables_ddl = new StringBuilder();
-
-		for (String table_ddl : current_plsql_block.temporary_tables_ddl)
-			temp_tables_ddl.append(table_ddl).append("\n\n");
-
-		if (!Ora2rdb.reorder)
-			replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
-		else
-			create_temporary_tables.add(temp_tables_ddl.toString());
-
-		popScope();
-		create_procedures.add(ctx);
-	}
-	
-	@Override
-	public void exitType_spec(Type_specContext ctx) {
-		if (ctx.PERCENT_TYPE() != null)
-			replace(ctx, "TYPE OF COLUMN " + getRuleText(ctx.type_name()));
-	}
-	
-	@Override
-	public void exitTrigger_name(Trigger_nameContext ctx) {
-		delete(ctx.schema_name());
-		delete(ctx.PERIOD());
-	}
-	
-	@Override
-	public void enterCreate_trigger(Create_triggerContext ctx) {
-		pushScope();
-	}
-	
-	@Override
-	public void exitCreate_trigger(Create_triggerContext ctx) {
-		replace(ctx.REPLACE(), "ALTER");
-		insertBefore(ctx.trigger_body(), "AS\n");
-		replace(ctx.SEMICOLON(), "^");
-
-		StringBuilder temp_tables_ddl = new StringBuilder();
-
-		for (String table_ddl : current_plsql_block.temporary_tables_ddl)
-			temp_tables_ddl.append(table_ddl).append("\n\n");
-
-		if (!Ora2rdb.reorder)
-			replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
-		else
-			create_temporary_tables.add(temp_tables_ddl.toString());
-
-		popScope();
-		create_triggers.add(ctx);
-	}
-	
-	@Override
-	public void exitReferencing_clause(Referencing_clauseContext ctx) {
-		commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
-	}
-	
-	@Override
-	public void exitFor_each_row(For_each_rowContext ctx) {
-		delete(ctx);
-	}
-	
-	@Override
-	public void exitTrigger_when_clause(Trigger_when_clauseContext ctx) {
-		if (current_plsql_block != null)
-			current_plsql_block.trigger_when_condition = getRewriterText(ctx.condition());
-
-		delete(ctx);
-	}
-	
-	@Override
-	public void exitDml_event_element(Dml_event_elementContext ctx) {
-		if (current_plsql_block != null)
-		{
-			for (Column_nameContext col_name_ctx : ctx.column_name())
-				current_plsql_block.trigger_fields.add(getRuleText(col_name_ctx));
-		}
-		
-		delete(ctx.OF());
-		delete(ctx.column_name());
-	}
-	
-	@Override
-	public void enterBlock(BlockContext ctx) {
-		pushScope();
-	}
-	
-	@Override
-	public void exitBlock(BlockContext ctx) {
-		popScope();
-	}
-	
-	@Override
-	public void exitBody(BodyContext ctx) {
-		if (current_plsql_block != null &&
-				(current_plsql_block.trigger_fields.size() > 0 || current_plsql_block.trigger_when_condition != null))
-		{
-			String execute_condition = "\nIF (";
-			String update_condition = "";
-			
-			for (int i = 0; i < current_plsql_block.trigger_fields.size(); i++)
-			{
-				if (i != 0)
-					update_condition += " OR ";
-				
-				update_condition += "NEW." + current_plsql_block.trigger_fields.get(i) + " <> OLD." + current_plsql_block.trigger_fields.get(i);
-			}
-
-			if (current_plsql_block.trigger_fields.size() > 0 && current_plsql_block.trigger_when_condition != null)
-				execute_condition += "(" + update_condition + ") AND (" + current_plsql_block.trigger_when_condition + ")";
-			else if (current_plsql_block.trigger_fields.size() > 0)
-				execute_condition += update_condition;
-			else
-				execute_condition += current_plsql_block.trigger_when_condition;
-
-			execute_condition += ") THEN";
-			
-			if (ctx.seq_of_statements().statement().size() > 1)
-				execute_condition += "\nBEGIN";
-				
-			insertAfter(ctx.BEGIN(), execute_condition);
-				
-			if (ctx.seq_of_statements().statement().size() > 1)
-				insertBefore(ctx.END(), "END\n");
-		}
-	}
-	
-	@Override
-	public void exitTrigger_block(Trigger_blockContext ctx) {
-		delete(ctx.block().DECLARE());
-	}
-	
-	@Override
-	public void exitAlter_trigger(Alter_triggerContext ctx) {
-		replace(ctx.ENABLE(), "ACTIVE");
-		replace(ctx.DISABLE(), "INACTIVE");
-
-		alter_triggers.add(ctx);
-	}
-	
-	@Override
-	public void exitLabel_name(Label_nameContext ctx) {
-		delete(ctx);
-	}
-	
-	@Override
-	public void exitFunction_call(Function_callContext ctx) {
-		if (Ora2rdb.procedures_names.contains(Ora2rdb.getRealName(getRuleText(ctx.routine_name()))))
-			replace(ctx, "EXECUTE PROCEDURE " + getRewriterText(ctx));
-	}
-	
-	@Override
-	public void exitAssignment_statement(Assignment_statementContext ctx) {
-		if (ctx.general_element() != null)
-		{
-			if (ctx.general_element().general_element_part().size() == 1)
-			{
-				General_element_partContext gen_elem_part_ctx = ctx.general_element().general_element_part(0);
-
-				if (gen_elem_part_ctx.id_expression().size() == 1)
-				{
-					String name = Ora2rdb.getRealName(getRuleText(gen_elem_part_ctx.id_expression(0)));
-
-					if (current_plsql_block != null && current_plsql_block.array_to_table.containsKey(name) &&
-							gen_elem_part_ctx.function_argument().size() != 0)
-					{
-						String insert_stmt = "UPDATE OR INSERT INTO " + current_plsql_block.array_to_table.get(name) + " VALUES (";
-						boolean abort = false;
-
-						for (Function_argumentContext func_arg_ctx : gen_elem_part_ctx.function_argument())
-						{
-							if (func_arg_ctx.argument().size() == 1)
-								insert_stmt += getRewriterText(func_arg_ctx.argument(0)) + ", ";
-							else
-							{
-								abort = true;
-								break;
-							}
-						}
-
-						if (!abort)
-						{
-							insert_stmt += getRewriterText(ctx.expression()) + ")";
-							replace(ctx, insert_stmt);
-							return;
-						}
-					}
-				}
-			}
-
-			String target = getRewriterText(ctx.general_element());
-
-			if (target.startsWith(":"))
-				replace(ctx.general_element(), target.substring(1));
-		}
-		
-		replace(ctx.ASSIGN_OP(), "=");
-	}
-	
-	@Override
-	public void exitIf_statement(If_statementContext ctx) {
-		insertBefore(ctx.condition(), "(");
-		insertAfter(ctx.condition(), ")");
-		
-		if (ctx.seq_of_statements().statement().size() > 1)
-		{
-			String indentation = getIndentation(ctx);
-			insertAfter(ctx.THEN(), "\n" + indentation + "BEGIN");
-			insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
-		}
-		
-		delete(ctx.IF(1));
-		delete(ctx.END());
-	}
-	
-	@Override
-	public void exitElsif_part(Elsif_partContext ctx) {
-		replace(ctx.ELSIF(), "ELSE IF");
-		insertBefore(ctx.condition(), "(");
-		insertAfter(ctx.condition(), ")");
-		
-		if (ctx.seq_of_statements().statement().size() > 1)
-		{
-			String indentation = getIndentation(ctx);
-			insertAfter(ctx.THEN(), "\n" + indentation + "BEGIN");
-			insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
-		}
-	}
-	
-	@Override
-	public void exitElse_part(Else_partContext ctx) {
-		if (ctx.seq_of_statements().statement().size() > 1)
-		{
-			String indentation = getIndentation(ctx);
-			insertAfter(ctx.ELSE(), "\n" + indentation + "BEGIN");
-			insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
-		}
-	}
-	
-	@Override
-	public void exitLoop_statement(Loop_statementContext ctx) {
-		insertBefore(ctx.condition(), "(");
-		insertAfter(ctx.condition(), ")");
-		replace(ctx.LOOP(0), "DO");
-		
-		if (ctx.seq_of_statements().statement().size() > 1)
-		{
-			String indentation = getIndentation(ctx);
-			insertAfter(ctx.LOOP(0), "\n" + indentation + "BEGIN");
-			insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
-		}
-		
-		delete(ctx.END());
-		delete(ctx.LOOP(1));
-	}
-
-	@Override
-	public void exitReturn_statement(Return_statementContext ctx) {
-		String indentation = getIndentation(ctx);
-
-		if (ctx.condition() != null)
-		{
-			replace(ctx, "RET_VAL = " + getRewriterText(ctx.condition()) + ";\n" +
-					indentation + "SUSPEND;\n" +
-					indentation + "EXIT");
-		}
-		else
-			replace(ctx, "EXIT");
-	}
-
-	@Override
-	public void exitSeq_of_statements(Seq_of_statementsContext ctx) {
-		for (int i = 0; i < ctx.statement().size(); i++)
-		{
-			StatementContext stmt_ctx = ctx.statement(i);
-
-			if (stmt_ctx.if_statement() != null ||
-					stmt_ctx.loop_statement() != null ||
-					stmt_ctx.body() != null)
-				delete(ctx.SEMICOLON(i));
-		}
-	}
+    TokenStreamRewriter rewriter;
+    CommonTokenStream tokens;
+
+    View current_view;
+    PLSQLBlock current_plsql_block;
+
+    ArrayList<Create_sequenceContext> sequences = new ArrayList<Create_sequenceContext>();
+    ArrayList<Create_tableContext> tables = new ArrayList<Create_tableContext>();
+    ArrayList<Comment_on_tableContext> comments = new ArrayList<Comment_on_tableContext>();
+    ArrayList<Alter_tableContext> alter_tables = new ArrayList<Alter_tableContext>();
+    ArrayList<Create_indexContext> create_indexes = new ArrayList<Create_indexContext>();
+    ArrayList<Create_function_bodyContext> create_functions = new ArrayList<Create_function_bodyContext>();
+    ArrayList<Create_procedure_bodyContext> create_procedures = new ArrayList<Create_procedure_bodyContext>();
+    ArrayList<Create_triggerContext> create_triggers = new ArrayList<Create_triggerContext>();
+    ArrayList<Alter_triggerContext> alter_triggers = new ArrayList<Alter_triggerContext>();
+
+    ArrayList<String> create_temporary_tables = new ArrayList<String>();
+
+    public RewritingListener(CommonTokenStream tokens) {
+        rewriter = new TokenStreamRewriter(tokens);
+        this.tokens = tokens;
+    }
+
+    public String getText() {
+        StringBuilder out = new StringBuilder();
+
+        for (Create_sequenceContext sequence : sequences)
+            out.append(getRewriterText(sequence)).append("\n\n");
+
+        for (Create_tableContext table : tables)
+            out.append(getRewriterText(table)).append("\n\n");
+
+        ArrayList<View> views = View.sort(Ora2rdb.views.values());
+
+        for (View view : views)
+            out.append(getRewriterText(view.ctx)).append("\n\n");
+
+        for (Comment_on_tableContext comment : comments)
+            out.append(getRewriterText(comment)).append("\n\n");
+
+        for (Alter_tableContext alter_table : alter_tables)
+            out.append(getRewriterText(alter_table)).append("\n\n");
+
+        for (Create_indexContext create_index : create_indexes)
+            out.append(getRewriterText(create_index)).append("\n\n");
+
+        for (String create_temporary_table : create_temporary_tables)
+            out.append(create_temporary_table);
+
+        boolean plsql = !create_functions.isEmpty() ||
+                !create_procedures.isEmpty() ||
+                !create_triggers.isEmpty();
+
+        if (plsql)
+            out.append("SET TERM ^ ;\n\n");
+
+        for (Create_function_bodyContext create_function : create_functions)
+            out.append(getRewriterText(create_function)).append("\n\n");
+
+        for (Create_procedure_bodyContext create_procedure : create_procedures)
+            out.append(getRewriterText(create_procedure)).append("\n\n");
+
+        for (Create_triggerContext create_trigger : create_triggers)
+            out.append(getRewriterText(create_trigger)).append("\n\n");
+
+        if (plsql)
+            out.append("SET TERM ; ^\n\n");
+
+        for (Alter_triggerContext alter_trigger : alter_triggers)
+            out.append(getRewriterText(alter_trigger)).append("\n\n");
+
+        return out.toString();
+    }
+
+    void insertBefore(ParserRuleContext ctx, Object text) {
+        if (ctx != null)
+            rewriter.insertBefore(ctx.start, text);
+    }
+
+    void insertBefore(TerminalNode term, Object text) {
+        if (term != null)
+            rewriter.insertBefore(term.getSymbol(), text);
+    }
+
+    void insertAfter(ParserRuleContext ctx, Object text) {
+        if (ctx != null)
+            rewriter.insertAfter(ctx.stop, text);
+    }
+
+    void insertAfter(TerminalNode term, Object text) {
+        if (term != null)
+            rewriter.insertAfter(term.getSymbol(), text);
+    }
+
+    void replace(ParserRuleContext ctx, Object text) {
+        if (ctx != null)
+            rewriter.replace(ctx.start, ctx.stop, text);
+    }
+
+    void replace(TerminalNode term, Object text) {
+        if (term != null)
+            rewriter.replace(term.getSymbol(), text);
+    }
+
+    void delete(ParserRuleContext ctx) {
+        if (ctx != null)
+            rewriter.delete(ctx.start, ctx.stop);
+    }
+
+    void delete(TerminalNode term) {
+        if (term != null)
+            rewriter.delete(term.getSymbol());
+    }
+
+    void delete(List<? extends ParserRuleContext> ctx_list) {
+        if (ctx_list.size() != 0)
+            rewriter.delete(ctx_list.get(0).start, ctx_list.get(ctx_list.size() - 1).stop);
+    }
+
+    void commentBlock(int start_tok_idx, int stop_tok_idx) {
+        rewriter.insertBefore(start_tok_idx, "/*");
+        rewriter.insertAfter(stop_tok_idx, "*/");
+
+        List<Token> multi_line_comments = tokens.getTokens(start_tok_idx, stop_tok_idx, PlSqlLexer.MULTI_LINE_COMMENT);
+
+        if (multi_line_comments != null)
+            for (Token tok : multi_line_comments)
+                rewriter.delete(tok);
+    }
+
+    String getIndentation(ParserRuleContext ctx) {
+        Integer tok_idx = ctx.start.getTokenIndex();
+
+        if (tok_idx > 0) {
+            List<Token> spc_tok_list = tokens.getTokens(tok_idx - 1, tok_idx, PlSqlLexer.SPACES);
+
+            if (spc_tok_list != null) {
+                String spc = spc_tok_list.get(0).getText();
+                Integer idx1 = spc.lastIndexOf('\r');
+                Integer idx2 = spc.lastIndexOf('\n');
+                return spc.substring((idx1 > idx2 ? idx1 : idx2) + 1);
+            }
+        }
+
+        return "";
+    }
+
+    String getRuleText(RuleContext ctx) {
+        return tokens.getText(ctx);
+    }
+
+    String getRewriterText(ParserRuleContext ctx) {
+        return rewriter.getText(ctx.getSourceInterval());
+    }
+
+    void pushScope() {
+        if (current_plsql_block == null)
+            current_plsql_block = new PLSQLBlock();
+        else
+            current_plsql_block.pushScope();
+    }
+
+    void popScope() {
+        if (current_plsql_block.scopes.size() == 1)
+            current_plsql_block = null;
+        else
+            current_plsql_block.popScope();
+    }
+
+    @Override
+    public void exitCreate_table(Create_tableContext ctx) {
+
+        if (ctx.tableview_name().PERIOD().size() >= 1)
+            delete(ctx.tableview_name().PERIOD(0));
+
+        delete(ctx.schema_name());
+        delete(ctx.physical_properties());
+
+        if (ctx.object_table().column_properties() != null)
+            delete(ctx.object_table().column_properties().lob_storage_clause());
+
+
+        String table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name()));
+
+        if (Ora2rdb.table_not_null_cols.containsKey(table_name)) {
+            TreeSet<String> columns_set = Ora2rdb.table_not_null_cols.get(table_name);
+
+
+            if (ctx.relational_table() != null) {
+                Relational_tableContext relational_tableContext = ctx.relational_table();
+
+                for (Relational_propertyContext rel_prop_ctx : relational_tableContext.relational_property()) {
+
+                    Column_definitionContext col_def_ctx = rel_prop_ctx.column_definition();
+
+                    if (col_def_ctx != null) {
+                        String column_name = Ora2rdb.getRealName(getRuleText(col_def_ctx.column_name()));
+
+                        if (columns_set.contains(column_name)) {
+                            boolean not_null = false;
+
+                            for (Inline_constraintContext inl_con_ctx : col_def_ctx.inline_constraint()) {
+                                if (inl_con_ctx.NOT() != null) {
+                                    not_null = true;
+                                    break;
+                                }
+                            }
+
+                            if (!not_null)
+                                insertAfter(col_def_ctx, " NOT NULL");
+                        }
+                    }
+                }
+            }
+        }
+
+        tables.add(ctx);
+    }
+
+    @Override
+    public void exitColumn_definition(Column_definitionContext ctx) {
+        if (ctx != null) {
+            ctx.
+            if (ctx.datatype() != null)
+                if (ctx.datatype().native_datatype_element() != null)
+                    if (ctx.datatype().native_datatype_element().RAW() != null) {
+                        replace(ctx, "BLOB");
+                        delete(ctx.default_value_part());
+                    }
+        }
+    }
+
+    @Override
+    public void exitDatatype(DatatypeContext ctx) {
+        if (ctx.native_datatype_element() != null) {
+            if (ctx.native_datatype_element().NUMBER() != null) {
+                if (ctx.precision_part() != null)
+                    replace(ctx.precision_part().ASTERISK(), "18");
+                else
+                    insertAfter(ctx.native_datatype_element(), "(18, 4)");
+            } else if (ctx.native_datatype_element().FLOAT() != null) {
+                if (ctx.precision_part() != null)
+                    replace(ctx, "DOUBLE PRECISION");
+            } else if (ctx.native_datatype_element().TIMESTAMP() != null) {
+                delete(ctx.precision_part());
+            } else if (ctx.native_datatype_element().VARCHAR2() != null ||
+                    ctx.native_datatype_element().VARCHAR() != null) {
+                if (ctx.precision_part() == null)
+                    insertAfter(ctx.native_datatype_element(), "(250)");
+            } else if (ctx.native_datatype_element().NUMERIC() != null) {
+                if (ctx.precision_part() == null)
+                    insertAfter(ctx.native_datatype_element(), "(18, 4)");
+            }
+        }
+    }
+
+    @Override
+    public void exitPrecision_part(Precision_partContext ctx) {
+        delete(ctx.BYTE());
+        delete(ctx.CHAR());
+    }
+
+    @Override
+    public void exitNative_datatype_element(Native_datatype_elementContext ctx) {
+        if (ctx.VARCHAR2() != null || ctx.NVARCHAR2() != null)
+            replace(ctx, "VARCHAR");
+        else if (ctx.CLOB() != null)
+            replace(ctx, "BLOB SUB_TYPE TEXT");
+        else if (ctx.NUMBER() != null)
+            replace(ctx, "NUMERIC");
+        else if (ctx.BINARY_FLOAT() != null)
+            replace(ctx, "FLOAT");
+        else if (ctx.BINARY_DOUBLE() != null)
+            replace(ctx, "DOUBLE PRECISION");
+        else if (ctx.NCHAR() != null)
+            replace(ctx, "CHAR");
+    }
+
+    @Override
+    public void exitTableview_name(Tableview_nameContext ctx) {
+        if (ctx.id_expression() != null) {
+            delete(ctx.id_expression());
+            delete(ctx.PERIOD());
+
+        }
+    }
+
+    @Override
+    public void exitOut_of_line_constraint(Out_of_line_constraintContext ctx) {
+        delete(ctx.constraint_state());
+    }
+
+    @Override
+    public void exitAlter_table(Alter_tableContext ctx) {
+        delete(ctx.schema_name());
+        delete(ctx.PERIOD());
+
+        Constraint_clausesContext constraint_clauses_ctx = ctx.constraint_clauses();
+        Column_clausesContext column_clauses_ctx = ctx.column_clauses();
+
+        if (constraint_clauses_ctx != null) {
+            if (constraint_clauses_ctx.out_of_line_constraint().size() != 0) {
+                Constraint_stateContext constraint_state_ctx = constraint_clauses_ctx.out_of_line_constraint(0).constraint_state();
+                delete(constraint_state_ctx);
+            }
+        } else if (column_clauses_ctx != null) {
+            Modify_column_clausesContext modify_column_clauses_ctx = column_clauses_ctx.modify_column_clauses(0);
+
+            if (modify_column_clauses_ctx.modify_col_properties().size() != 0) {
+                Modify_col_propertiesContext modify_col_properties_ctx = modify_column_clauses_ctx.modify_col_properties(0);
+
+                if (modify_col_properties_ctx.inline_constraint().size() != 0) {
+                    if (modify_col_properties_ctx.inline_constraint(0).NULL() != null) {
+                        delete(ctx);
+                        return;
+                    }
+                }
+            }
+        }
+
+        alter_tables.add(ctx);
+    }
+
+    @Override
+    public void exitGeneral_element_part(General_element_partContext ctx) {
+        if (ctx.id_expression().size() > 1) {
+            for (Id_expressionContext id_expr_ctx : ctx.id_expression()) {
+                String id = getRewriterText(id_expr_ctx);
+
+                if (id.startsWith(":"))
+                    replace(id_expr_ctx, id.substring(1));
+            }
+        } else {
+            String name = Ora2rdb.getRealName(getRuleText(ctx.id_expression(0)));
+
+            if (current_plsql_block != null && current_plsql_block.array_to_table.containsKey(name) &&
+                    ctx.function_argument().size() != 0) {
+                String select_stmt = "(SELECT VAL FROM " + current_plsql_block.array_to_table.get(name) + " WHERE ";
+                boolean abort = false;
+
+                for (int i = 0; i < ctx.function_argument().size(); i++) {
+                    if (ctx.function_argument(i).argument().size() == 1) {
+                        if (i != 0)
+                            select_stmt += " AND ";
+
+                        select_stmt += "I" + (i + 1) + " = " + getRewriterText(ctx.function_argument(i).argument(0));
+                    } else {
+                        abort = true;
+                        break;
+                    }
+                }
+
+                if (!abort) {
+                    select_stmt += ")";
+                    replace(ctx, select_stmt);
+                    return;
+                }
+            }
+
+            Regular_idContext regular_id_ctx = ctx.id_expression(0).regular_id();
+
+            if (regular_id_ctx != null) {
+                if (regular_id_ctx.REPLACE() != null) {
+                    if (ctx.function_argument().size() == 1) {
+                        Function_argumentContext function_argument_ctx = ctx.function_argument(0);
+
+                        if (function_argument_ctx != null)
+                            if (function_argument_ctx.argument().size() == 2)
+                                insertAfter(function_argument_ctx.argument(1), ", ''");
+                    }
+                } else if (Ora2rdb.getRealName(getRuleText(regular_id_ctx)).equals("SUBSTR")) {
+                    if (ctx.function_argument().size() == 1) {
+                        replace(regular_id_ctx, "SUBSTRING");
+                        Function_argumentContext function_argument_ctx = ctx.function_argument(0);
+
+                        if (function_argument_ctx.argument().size() == 2) {
+                            replace(function_argument_ctx, "(" + getRewriterText(function_argument_ctx.argument(0)) +
+                                    " FROM " + getRewriterText(function_argument_ctx.argument(1)) + ")");
+                        } else if (function_argument_ctx.argument().size() == 3) {
+                            replace(function_argument_ctx, "(" + getRewriterText(function_argument_ctx.argument(0)) +
+                                    " FROM " + getRewriterText(function_argument_ctx.argument(1)) +
+                                    " FOR " + getRewriterText(function_argument_ctx.argument(2)) + ")");
+                        }
+                    }
+                }
+
+                replace(regular_id_ctx.LENGTH(), "CHAR_LENGTH");
+            }
+        }
+    }
+
+    @Override
+    public void exitReferences_clause(References_clauseContext ctx) {
+        delete(ctx.schema_name());
+        delete(ctx.PERIOD());
+    }
+
+    @Override
+    public void exitCreate_index(Create_indexContext ctx) {
+        String index_name = Ora2rdb.getRealName(getRuleText(ctx.id_expression()));
+
+        if (Ora2rdb.index_names.contains(index_name)) {
+            delete(ctx);
+            return;
+        }
+
+        Table_index_clauseContext table_index_clause_ctx = ctx.table_index_clause();
+
+        for (Index_exprContext index_expr_ctx : table_index_clause_ctx.index_expr()) {
+            if (index_expr_ctx.unary_expression() != null) {
+                delete(ctx);
+                return;
+            }
+        }
+
+        delete(ctx.schema_name());
+        delete(ctx.PERIOD());
+        delete(table_index_clause_ctx.schema_name());
+        delete(table_index_clause_ctx.PERIOD());
+        delete(table_index_clause_ctx.index_properties());
+
+        create_indexes.add(ctx);
+    }
+
+    @Override
+    public void exitCreate_sequence(Create_sequenceContext ctx) {
+        Sequence_nameContext sequence_name_ctx = ctx.sequence_name();
+
+        delete(sequence_name_ctx.schema_name());
+        delete(sequence_name_ctx.PERIOD());
+
+        for (Sequence_specContext sequence_spec_ctx : ctx.sequence_spec())
+            delete(sequence_spec_ctx);
+
+        String set_generator_statements = "";
+
+        for (Sequence_start_clauseContext sequence_start_clause_ctx : ctx.sequence_start_clause()) {
+            set_generator_statements += "\nALTER SEQUENCE " + getRuleText(sequence_name_ctx.id_expression()) +
+                    " RESTART WITH " + sequence_start_clause_ctx.UNSIGNED_INTEGER().getText() + ";";
+
+            delete(sequence_start_clause_ctx);
+        }
+
+        replace(ctx, getRewriterText(ctx) + set_generator_statements);
+
+        sequences.add(ctx);
+    }
+
+    @Override
+    public void enterCreate_view(Create_viewContext ctx) {
+        current_view = Ora2rdb.views.get(Ora2rdb.getRealName(getRuleText(ctx.tableview_name())));
+    }
+
+    @Override
+    public void exitCreate_view(Create_viewContext ctx) {
+        replace(ctx.REPLACE(), "ALTER");
+        delete(ctx.FORCE());
+        delete(ctx.NO());
+        delete(ctx.schema_name());
+        delete(ctx.PERIOD());
+
+        current_view = null;
+    }
+
+    @Override
+    public void exitDml_table_expression_clause(Dml_table_expression_clauseContext ctx) {
+        if (current_view != null && ctx.tableview_name() != null) {
+            String dependency_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name()));
+
+            if (Ora2rdb.views.containsKey(dependency_name))
+                current_view.dependencies.add(Ora2rdb.views.get(dependency_name));
+        }
+    }
+
+    @Override
+    public void exitSubquery_restriction_clause(Subquery_restriction_clauseContext ctx) {
+        delete(ctx);
+    }
+
+    @Override
+    public void exitComment(CommentContext ctx) {
+        comments.add(ctx);
+    }
+
+    @Override
+    public void exitQuery_block(Query_blockContext ctx) {
+        if (ctx.into_clause() != null) {
+            String into_clause = getRewriterText(ctx.into_clause());
+            delete(ctx.into_clause());
+            replace(ctx, getRewriterText(ctx) + " " + into_clause);
+        }
+    }
+
+    @Override
+    public void exitRegular_id(Regular_idContext ctx) {
+        switch (getRuleText(ctx).toUpperCase()) {
+            case "SYSTIMESTAMP":
+                replace(ctx, "CURRENT_TIMESTAMP");
+                break;
+            case "SYSDATE":
+                replace(ctx, "CURRENT_DATE");
+        }
+    }
+
+    @Override
+    public void exitFunction_name(Function_nameContext ctx) {
+        delete(ctx.schema_name());
+        delete(ctx.PERIOD());
+    }
+
+    @Override
+    public void enterCreate_function_body(Create_function_bodyContext ctx) {
+        pushScope();
+    }
+
+    @Override
+    public void exitCreate_function_body(Create_function_bodyContext ctx) {
+        replace(ctx.REPLACE(), "ALTER");
+        replace(ctx.FUNCTION(), "PROCEDURE");
+
+        replace(ctx.RETURN(), "RETURNS (RET_VAL");
+        insertAfter(ctx.type_spec(), ")");
+
+        replace(ctx.IS(), "AS");
+        replace(ctx.SEMICOLON(), "^");
+
+        StringBuilder temp_tables_ddl = new StringBuilder();
+
+        for (String table_ddl : current_plsql_block.temporary_tables_ddl)
+            temp_tables_ddl.append(table_ddl).append("\n\n");
+
+        if (!Ora2rdb.reorder)
+            replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
+        else
+            create_temporary_tables.add(temp_tables_ddl.toString());
+
+        popScope();
+        create_functions.add(ctx);
+    }
+
+    @Override
+    public void exitParameter(ParameterContext ctx) {
+        for (TerminalNode in_node : ctx.IN())
+            delete(in_node);
+
+        if (current_plsql_block != null)
+            current_plsql_block.declareVar(Ora2rdb.getRealName(getRuleText(ctx.parameter_name())));
+    }
+
+    @Override
+    public void exitPragma_declaration(Pragma_declarationContext ctx) {
+        delete(ctx);
+    }
+
+    @Override
+    public void exitVariable_declaration(Variable_declarationContext ctx) {
+        String name = Ora2rdb.getRealName(getRuleText(ctx.variable_name()));
+        String type = Ora2rdb.getRealName(getRuleText(ctx.type_spec()));
+
+        if (current_plsql_block != null) {
+            if (current_plsql_block.array_types.containsKey(type)) {
+                current_plsql_block.declareArray(name, type);
+                commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+                return;
+            }
+
+            current_plsql_block.declareVar(name);
+        }
+
+        insertBefore(ctx, "DECLARE ");
+    }
+
+    @Override
+    public void exitTable_declaration(Table_declarationContext ctx) {
+        commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+    }
+
+    @Override
+    public void exitTable_type_dec(Table_type_decContext ctx) {
+        if (current_plsql_block != null && ctx.TABLE() != null && ctx.table_indexed_by_part() != null) {
+            current_plsql_block.declareTypeOfArray(Ora2rdb.getRealName(getRuleText(ctx.type_name())),
+                    Ora2rdb.getRealName(getRewriterText(ctx.type_spec())),
+                    getRewriterText(ctx.table_indexed_by_part().type_spec()));
+        }
+    }
+
+    @Override
+    public void exitId_expression(Id_expressionContext ctx) {
+        if (current_plsql_block != null && current_plsql_block.containsInScope(Ora2rdb.getRealName(getRuleText(ctx))))
+            replace(ctx, ":" + getRuleText(ctx));
+    }
+
+    @Override
+    public void exitBind_variable(Bind_variableContext ctx) {
+        String var = getRuleText(ctx);
+        String upper = var.toUpperCase();
+
+        if (upper.startsWith(":OLD.") || upper.startsWith(":NEW."))
+            replace(ctx, var.substring(1));
+    }
+
+    @Override
+    public void exitColumn_name(Column_nameContext ctx) {
+        String name = getRewriterText(ctx);
+
+        if (name.startsWith(":"))
+            replace(ctx, name.substring(1));
+    }
+
+    @Override
+    public void exitSql_plus_command(Sql_plus_commandContext ctx) {
+        delete(ctx);
+    }
+
+    @Override
+    public void exitProcedure_name(Procedure_nameContext ctx) {
+        delete(ctx.schema_name());
+        delete(ctx.PERIOD());
+    }
+
+    @Override
+    public void enterCreate_procedure_body(Create_procedure_bodyContext ctx) {
+        pushScope();
+    }
+
+    @Override
+    public void exitCreate_procedure_body(Create_procedure_bodyContext ctx) {
+        replace(ctx.REPLACE(), "ALTER");
+        replace(ctx.IS(), "AS");
+        replace(ctx.SEMICOLON(), "^");
+
+        StringBuilder temp_tables_ddl = new StringBuilder();
+
+        for (String table_ddl : current_plsql_block.temporary_tables_ddl)
+            temp_tables_ddl.append(table_ddl).append("\n\n");
+
+        if (!Ora2rdb.reorder)
+            replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
+        else
+            create_temporary_tables.add(temp_tables_ddl.toString());
+
+        popScope();
+        create_procedures.add(ctx);
+    }
+
+    @Override
+    public void exitType_spec(Type_specContext ctx) {
+        if (ctx.PERCENT_TYPE() != null)
+            replace(ctx, "TYPE OF COLUMN " + getRuleText(ctx.type_name()));
+    }
+
+    @Override
+    public void exitTrigger_name(Trigger_nameContext ctx) {
+        delete(ctx.schema_name());
+        delete(ctx.PERIOD());
+    }
+
+    @Override
+    public void enterCreate_trigger(Create_triggerContext ctx) {
+        pushScope();
+    }
+
+    @Override
+    public void exitCreate_trigger(Create_triggerContext ctx) {
+        replace(ctx.REPLACE(), "ALTER");
+        insertBefore(ctx.trigger_body(), "AS\n");
+        replace(ctx.SEMICOLON(), "^");
+
+        StringBuilder temp_tables_ddl = new StringBuilder();
+
+        for (String table_ddl : current_plsql_block.temporary_tables_ddl)
+            temp_tables_ddl.append(table_ddl).append("\n\n");
+
+        if (!Ora2rdb.reorder)
+            replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
+        else
+            create_temporary_tables.add(temp_tables_ddl.toString());
+
+        popScope();
+        create_triggers.add(ctx);
+    }
+
+    @Override
+    public void exitReferencing_clause(Referencing_clauseContext ctx) {
+        commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+    }
+
+    @Override
+    public void exitFor_each_row(For_each_rowContext ctx) {
+        delete(ctx);
+    }
+
+    @Override
+    public void exitTrigger_when_clause(Trigger_when_clauseContext ctx) {
+        if (current_plsql_block != null)
+            current_plsql_block.trigger_when_condition = getRewriterText(ctx.condition());
+
+        delete(ctx);
+    }
+
+    @Override
+    public void exitDml_event_element(Dml_event_elementContext ctx) {
+        if (current_plsql_block != null) {
+            for (Column_nameContext col_name_ctx : ctx.column_name())
+                current_plsql_block.trigger_fields.add(getRuleText(col_name_ctx));
+        }
+
+        delete(ctx.OF());
+        delete(ctx.column_name());
+    }
+
+    @Override
+    public void enterBlock(BlockContext ctx) {
+        pushScope();
+    }
+
+    @Override
+    public void exitBlock(BlockContext ctx) {
+        popScope();
+    }
+
+    @Override
+    public void exitBody(BodyContext ctx) {
+        if (current_plsql_block != null &&
+                (current_plsql_block.trigger_fields.size() > 0 || current_plsql_block.trigger_when_condition != null)) {
+            String execute_condition = "\nIF (";
+            String update_condition = "";
+
+            for (int i = 0; i < current_plsql_block.trigger_fields.size(); i++) {
+                if (i != 0)
+                    update_condition += " OR ";
+
+                update_condition += "NEW." + current_plsql_block.trigger_fields.get(i) + " <> OLD." + current_plsql_block.trigger_fields.get(i);
+            }
+
+            if (current_plsql_block.trigger_fields.size() > 0 && current_plsql_block.trigger_when_condition != null)
+                execute_condition += "(" + update_condition + ") AND (" + current_plsql_block.trigger_when_condition + ")";
+            else if (current_plsql_block.trigger_fields.size() > 0)
+                execute_condition += update_condition;
+            else
+                execute_condition += current_plsql_block.trigger_when_condition;
+
+            execute_condition += ") THEN";
+
+            if (ctx.seq_of_statements().statement().size() > 1)
+                execute_condition += "\nBEGIN";
+
+            insertAfter(ctx.BEGIN(), execute_condition);
+
+            if (ctx.seq_of_statements().statement().size() > 1)
+                insertBefore(ctx.END(), "END\n");
+        }
+    }
+
+    @Override
+    public void exitTrigger_block(Trigger_blockContext ctx) {
+        delete(ctx.block().DECLARE());
+    }
+
+    @Override
+    public void exitAlter_trigger(Alter_triggerContext ctx) {
+        replace(ctx.ENABLE(), "ACTIVE");
+        replace(ctx.DISABLE(), "INACTIVE");
+
+        alter_triggers.add(ctx);
+    }
+
+    @Override
+    public void exitLabel_name(Label_nameContext ctx) {
+        delete(ctx);
+    }
+
+    @Override
+    public void exitFunction_call(Function_callContext ctx) {
+        if (Ora2rdb.procedures_names.contains(Ora2rdb.getRealName(getRuleText(ctx.routine_name()))))
+            replace(ctx, "EXECUTE PROCEDURE " + getRewriterText(ctx));
+    }
+
+    @Override
+    public void exitAssignment_statement(Assignment_statementContext ctx) {
+        if (ctx.general_element() != null) {
+            if (ctx.general_element().general_element_part().size() == 1) {
+                General_element_partContext gen_elem_part_ctx = ctx.general_element().general_element_part(0);
+
+                if (gen_elem_part_ctx.id_expression().size() == 1) {
+                    String name = Ora2rdb.getRealName(getRuleText(gen_elem_part_ctx.id_expression(0)));
+
+                    if (current_plsql_block != null && current_plsql_block.array_to_table.containsKey(name) &&
+                            gen_elem_part_ctx.function_argument().size() != 0) {
+                        String insert_stmt = "UPDATE OR INSERT INTO " + current_plsql_block.array_to_table.get(name) + " VALUES (";
+                        boolean abort = false;
+
+                        for (Function_argumentContext func_arg_ctx : gen_elem_part_ctx.function_argument()) {
+                            if (func_arg_ctx.argument().size() == 1)
+                                insert_stmt += getRewriterText(func_arg_ctx.argument(0)) + ", ";
+                            else {
+                                abort = true;
+                                break;
+                            }
+                        }
+
+                        if (!abort) {
+                            insert_stmt += getRewriterText(ctx.expression()) + ")";
+                            replace(ctx, insert_stmt);
+                            return;
+                        }
+                    }
+                }
+            }
+
+            String target = getRewriterText(ctx.general_element());
+
+            if (target.startsWith(":"))
+                replace(ctx.general_element(), target.substring(1));
+        }
+
+        replace(ctx.ASSIGN_OP(), "=");
+    }
+
+    @Override
+    public void exitIf_statement(If_statementContext ctx) {
+        insertBefore(ctx.condition(), "(");
+        insertAfter(ctx.condition(), ")");
+
+        if (ctx.seq_of_statements().statement().size() > 1) {
+            String indentation = getIndentation(ctx);
+            insertAfter(ctx.THEN(), "\n" + indentation + "BEGIN");
+            insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
+        }
+
+        delete(ctx.IF(1));
+        delete(ctx.END());
+    }
+
+    @Override
+    public void exitElsif_part(Elsif_partContext ctx) {
+        replace(ctx.ELSIF(), "ELSE IF");
+        insertBefore(ctx.condition(), "(");
+        insertAfter(ctx.condition(), ")");
+
+        if (ctx.seq_of_statements().statement().size() > 1) {
+            String indentation = getIndentation(ctx);
+            insertAfter(ctx.THEN(), "\n" + indentation + "BEGIN");
+            insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
+        }
+    }
+
+    @Override
+    public void exitElse_part(Else_partContext ctx) {
+        if (ctx.seq_of_statements().statement().size() > 1) {
+            String indentation = getIndentation(ctx);
+            insertAfter(ctx.ELSE(), "\n" + indentation + "BEGIN");
+            insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
+        }
+    }
+
+    @Override
+    public void exitLoop_statement(Loop_statementContext ctx) {
+        insertBefore(ctx.condition(), "(");
+        insertAfter(ctx.condition(), ")");
+        replace(ctx.LOOP(0), "DO");
+
+        if (ctx.seq_of_statements().statement().size() > 1) {
+            String indentation = getIndentation(ctx);
+            insertAfter(ctx.LOOP(0), "\n" + indentation + "BEGIN");
+            insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
+        }
+
+        delete(ctx.END());
+        delete(ctx.LOOP(1));
+    }
+
+    @Override
+    public void exitReturn_statement(Return_statementContext ctx) {
+        String indentation = getIndentation(ctx);
+
+        if (ctx.condition() != null) {
+            replace(ctx, "RET_VAL = " + getRewriterText(ctx.condition()) + ";\n" +
+                    indentation + "SUSPEND;\n" +
+                    indentation + "EXIT");
+        } else
+            replace(ctx, "EXIT");
+    }
+
+    @Override
+    public void exitSeq_of_statements(Seq_of_statementsContext ctx) {
+        for (int i = 0; i < ctx.statement().size(); i++) {
+            StatementContext stmt_ctx = ctx.statement(i);
+
+            if (stmt_ctx.if_statement() != null ||
+                    stmt_ctx.loop_statement() != null ||
+                    stmt_ctx.body() != null)
+                delete(ctx.SEMICOLON(i));
+        }
+    }
 }

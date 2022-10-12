@@ -104,9 +104,9 @@ public class Ora2rdb {
 		}
 
 		CharStream input = CharStreams.fromStream(is);
-		plsqlLexer lexer = new plsqlLexer(input);
+		PlSqlLexer lexer = new PlSqlLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		plsqlParser parser = new plsqlParser(tokens);
+		PlSqlParser parser = new PlSqlParser(tokens);
 		parser.setErrorHandler(new BailErrorStrategy());
 		ParserRuleContext tree;
 		

@@ -232,7 +232,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitColumn_definition(Column_definitionContext ctx) {
         if (ctx != null) {
-            ctx.
             if (ctx.datatype() != null)
                 if (ctx.datatype().native_datatype_element() != null)
                     if (ctx.datatype().native_datatype_element().RAW() != null) {
@@ -292,7 +291,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitTableview_name(Tableview_nameContext ctx) {
         if (ctx.id_expression() != null) {
             delete(ctx.id_expression());
-            delete(ctx.PERIOD());
+
+            if(ctx.PERIOD().size() > 0)
+                delete(ctx.PERIOD(0));
 
         }
     }
@@ -304,6 +305,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitAlter_table(Alter_tableContext ctx) {
+
         delete(ctx.schema_name());
         delete(ctx.PERIOD());
 
@@ -316,15 +318,19 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 delete(constraint_state_ctx);
             }
         } else if (column_clauses_ctx != null) {
-            Modify_column_clausesContext modify_column_clauses_ctx = column_clauses_ctx.modify_column_clauses(0);
 
-            if (modify_column_clauses_ctx.modify_col_properties().size() != 0) {
-                Modify_col_propertiesContext modify_col_properties_ctx = modify_column_clauses_ctx.modify_col_properties(0);
+            Add_modify_drop_column_clausesContext add_modify_drop_column_clausesContext = column_clauses_ctx.add_modify_drop_column_clauses();
+            if (add_modify_drop_column_clausesContext != null) {
+                Modify_column_clausesContext modify_column_clauses_ctx = add_modify_drop_column_clausesContext.modify_column_clauses(0);
 
-                if (modify_col_properties_ctx.inline_constraint().size() != 0) {
-                    if (modify_col_properties_ctx.inline_constraint(0).NULL() != null) {
-                        delete(ctx);
-                        return;
+                if (modify_column_clauses_ctx.modify_col_properties().size() != 0) {
+                    Modify_col_propertiesContext modify_col_properties_ctx = modify_column_clauses_ctx.modify_col_properties(0);
+
+                    if (modify_col_properties_ctx.inline_constraint().size() != 0) {
+                        if (modify_col_properties_ctx.inline_constraint(0).NULL_() != null) {
+                            delete(ctx);
+                            return;
+                        }
                     }
                 }
             }

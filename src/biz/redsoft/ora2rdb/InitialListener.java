@@ -14,7 +14,7 @@ public class InitialListener extends PlSqlParserBaseListener {
 			Add_modify_drop_column_clausesContext add_modify_drop_column_clauses_ctx = columns_ctx.add_modify_drop_column_clauses();
 			if (add_modify_drop_column_clauses_ctx != null)
 			{
-				if (add_modify_drop_column_clauses_ctx.constraint_clauses().size() != 0)
+				if (add_modify_drop_column_clauses_ctx.constraint_clauses() != null)
 				{
 					Modify_column_clausesContext modify_column_clauses_ctx = add_modify_drop_column_clauses_ctx.modify_column_clauses(0);
 					if (modify_column_clauses_ctx.modify_col_properties().size() != 0)
@@ -27,7 +27,7 @@ public class InitialListener extends PlSqlParserBaseListener {
 
 							if (inline_constraint_ctx.NOT() != null && inline_constraint_ctx.NULL_() != null)
 							{
-								String table_name = Ora2rdb.getRealName(ctx.tableview_name().getText());
+								String table_name = Ora2rdb.getRealName(ctx.tableview_name().id_expression().getText());
 								String column_name = Ora2rdb.getRealName(modify_col_properties_ctx.column_name().getText());
 
 								if (Ora2rdb.table_not_null_cols.containsKey(table_name))
@@ -58,21 +58,33 @@ public class InitialListener extends PlSqlParserBaseListener {
 					for (Column_nameContext column_name_ctx : out_of_line_constraint_ctx.column_name())
 						columns_set.add(Ora2rdb.getRealName(column_name_ctx.getText()));
 
-					String table_name = Ora2rdb.getRealName(ctx.tableview_name().getText());
+					String table_name = Ora2rdb.getRealName(ctx.tableview_name().id_expression().getText());
 
 					if (Ora2rdb.table_not_null_cols.containsKey(table_name))
 						Ora2rdb.table_not_null_cols.get(table_name).addAll(columns_set);
 					else
 						Ora2rdb.table_not_null_cols.put(table_name, columns_set);
 				}
-				if(out_of_line_constraint_ctx.foreign_key_clause()!=null) {
-
+				/*if(out_of_line_constraint_ctx.foreign_key_clause()!=null) {
+					Foreign_key_clauseContext foreign_key_clause = out_of_line_constraint_ctx.foreign_key_clause();
+}
 					if (	out_of_line_constraint_ctx.PRIMARY() != null ||
 							out_of_line_constraint_ctx.UNIQUE() != null  ||
-							out_of_line_constraint_ctx.foreign_key_clause().FOREIGN() != null) {
+							foreign_key_clause.FOREIGN() != null) {
 						Ora2rdb.index_names.add(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()));
 					}
+				*/
+				if(out_of_line_constraint_ctx.PRIMARY() != null)
+					Ora2rdb.index_names.add(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()));
+				else if (out_of_line_constraint_ctx.UNIQUE() != null)
+					Ora2rdb.index_names.add(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()));
+				else if (out_of_line_constraint_ctx.foreign_key_clause()!=null) {
+					if(out_of_line_constraint_ctx.foreign_key_clause().FOREIGN() != null)
+						Ora2rdb.index_names.add(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()));
+
 				}
+
+
 			}
 		}
 	}

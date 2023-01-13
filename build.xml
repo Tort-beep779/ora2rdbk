@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project name="ora2rdb" default="compile">
+<project name="ora2rdb" default="compileProgram">
 
     <property name="build.dir" value="bin"/>
     <property name="src.dir"   value="src"/>
@@ -28,21 +28,34 @@
         </java>
     </target>
 
-    <target name="compile" depends="generate_parser">
+    <target name="compileParser" depends="generate_parser">
         <mkdir dir="${build.dir}"/>
 
         <javac destdir="${build.dir}" includeantruntime="false">
+
             <src path="${gen.dir}"/>
             <classpath refid="classpath"/>
         </javac>
     </target>
+    <target name="compileProgram" depends="compileParser">
+        <mkdir dir="${build.dir}"/>
+
+        <javac destdir="${build.dir}" includeantruntime="false">
+            <src path="${src.dir}"/>
+
+            <classpath refid="classpath"/>
+        </javac>
+    </target>
+
+
+
 
     <target name="run_testrig">
         <java classname="org.antlr.v4.gui.TestRig" fork="true" failonerror="true">
             <arg value="biz.redsoft.ora2rdb.PlSql"/>
             <arg value="sql_script"/>
             <arg value="-gui"/>
-            <arg value="tests/hr_ora.sql"/>
+            <arg value="tests/full.sql"/>
             <classpath refid="classpath"/>
         </java>
     </target>
@@ -50,7 +63,7 @@
     <!--next target was created by Eclipse Runnable JAR Export Wizard-->
     <property name="dir.buildfile" value="."/>
     <property name="dir.jarfile" value="${dir.buildfile}/jar"/>
-    <target name="create_run_jar" depends="compile">
+    <target name="create_run_jar" depends="compileProgram">
         <jar destfile="${dir.jarfile}/ora2rdb.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="biz.redsoft.ora2rdb.Ora2rdb"/>

@@ -135,12 +135,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     void sisoutRewriter(){
-        /*
-        System.out.println("\n==========================================");
-        System.out.println(rewriter.getText());
-        System.out.println("==========================================\n");
-        */
+
+//        System.out.println("\n==========================================");
+//        System.out.println(rewriter.getText());
+//        System.out.println("==========================================\n");
+
     }
+
 
     void commentBlock(int start_tok_idx, int stop_tok_idx) {
         rewriter.insertBefore(start_tok_idx, "/*");
@@ -200,18 +201,18 @@ public class RewritingListener extends PlSqlParserBaseListener {
             delete(ctx.tableview_name().identifier());
 
             if(ctx.xmltype_table() != null) {
-                //delete(ctx.xmltype_table().physical_properties());
             } else if (ctx.object_table() != null) {
                 delete(ctx.object_table().physical_properties());
             } else if (ctx.relational_table() != null) {
                 delete(ctx.relational_table().physical_properties());
             }
         }
-        if(ctx.object_table() != null) {
-            if (ctx.object_table().column_properties() != null)
-                delete(ctx.object_table().column_properties().lob_storage_clause());
-        }
+        if(ctx.relational_table() != null) {
+            if (ctx.relational_table().column_properties().size() >= 1)
+                for(Column_propertiesContext column_properties : ctx.relational_table().column_properties())
+                    delete(column_properties.lob_storage_clause());
 
+        }
 
         String table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().id_expression()));
 
@@ -375,6 +376,18 @@ public class RewritingListener extends PlSqlParserBaseListener {
         alter_tables.add(ctx);
     }
 
+
+    @Override
+    public  void exitString_function(String_functionContext ctx){
+        if(ctx.SUBSTR() != null){
+            replace(ctx.SUBSTR(), "SUBSTRING");
+            replace(ctx.COMMA(0), " FROM ");
+            if(ctx.COMMA(1) != null)
+                replace(ctx.COMMA(1), " FOR ");
+
+        }
+    }
+
     @Override
     public void exitGeneral_element_part(General_element_partContext ctx) {
         if (ctx.id_expression().size() > 1) {
@@ -440,6 +453,17 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 }
             }
         }
+    }
+
+    @Override public void exitVariable_name(Variable_nameContext ctx) {
+            if (ctx.id_expression().size() > 1) {
+                for (Id_expressionContext id_expr_ctx : ctx.id_expression()) {
+                    String id = getRewriterText(id_expr_ctx);
+
+                    if (id.startsWith(":"))
+                        replace(id_expr_ctx, id.substring(1));
+                }
+            }
     }
 
     @Override
@@ -648,8 +672,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitId_expression(Id_expressionContext ctx) {
-        if (current_plsql_block != null && current_plsql_block.containsInScope(Ora2rdb.getRealName(getRuleText(ctx))))
+        if (current_plsql_block != null && current_plsql_block.containsInScope(Ora2rdb.getRealName(getRuleText(ctx)))) {
             replace(ctx, ":" + getRuleText(ctx));
+        }
     }
 
     @Override
@@ -673,11 +698,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
 
     }
-
-     @Override public void exitSql_script(PlSqlParser.Sql_scriptContext ctx) {
-
-    }
-
     @Override
     public void exitSql_plus_command_wrapper(PlSqlParser.Sql_plus_command_wrapperContext ctx) {
         delete(ctx);

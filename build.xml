@@ -6,6 +6,7 @@
     <property name="gen.dir"   value="gen"/>
     <property name="grammarLexer"   value="grammars-v4/plsql/PlSqlLexer.g4"/>
     <property name="grammarParser"   value="grammars-v4/plsql/PlSqlParser.g4"/>
+    <property name="grammar" value="grammars-v4/plsql"/>
 
     <path id="classpath">
         <pathelement location="${build.dir}"/>
@@ -17,7 +18,11 @@
 
     <target name="generate_parser">
         <echo>generating parser source files...</echo>
-        
+
+        <copy todir="${gen.dir}/biz/redsoft/ora2rdb">
+            <fileset dir="${grammar}/Java" includes="*.java"/>
+        </copy>
+
         <java classname="org.antlr.v4.Tool" fork="true" failonerror="true">
             <arg line="-package biz.redsoft.ora2rdb"/>
             <arg value="-visitor"/>

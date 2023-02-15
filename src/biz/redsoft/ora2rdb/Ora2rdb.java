@@ -1,6 +1,7 @@
 package biz.redsoft.ora2rdb;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.TreeMap;
@@ -41,6 +42,34 @@ public class Ora2rdb {
                 "                        contain DB metadata.\n" +
                 "Notes:\n" +
                 "    \"stdin\" may be used as a value of <input_file>.");
+    }
+
+    static RewritingListener convert(InputStream is) throws IOException {
+        CharStream input = CharStreams.fromStream(is);
+        PlSqlLexer lexer = new PlSqlLexer(input);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        PlSqlParser parser = new PlSqlParser(tokens);
+        parser.setErrorHandler(new BailErrorStrategy());
+        ParserRuleContext tree;
+        tree = parser.sql_script();
+
+
+        ParseTreeWalker walker = new ParseTreeWalker();
+
+        InitialListener init_listener = new InitialListener();
+        walker.walk(init_listener, tree);
+        //System.out.println(init_listener.table_map.toString());
+
+        RewritingListener converter = new RewritingListener(tokens);
+        walker.walk(converter, tree);
+
+        //RewritingVisitor rv = new RewritingVisitor(parser);
+        Ora2rdb.table_not_null_cols.clear();
+        Ora2rdb.index_names.clear();
+        Ora2rdb.procedures_names.clear();
+        Ora2rdb.views.clear();
+        Ora2rdb.reorder = false;
+        return converter;
     }
 
     public static void main(String[] args) throws Exception {
@@ -89,30 +118,13 @@ public class Ora2rdb {
             return;
         }
 
-        CharStream input = CharStreams.fromStream(is);
-        PlSqlLexer lexer = new PlSqlLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        PlSqlParser parser = new PlSqlParser(tokens);
-        parser.setErrorHandler(new BailErrorStrategy());
-        ParserRuleContext tree;
-
+        RewritingListener converter;
         try {
-            tree = parser.sql_script();
+            converter = convert(is);
         } catch (Exception e) {
             System.err.println("Output will not be generated");
             return;
         }
-
-        ParseTreeWalker walker = new ParseTreeWalker();
-
-        InitialListener init_listener = new InitialListener();
-        walker.walk(init_listener, tree);
-        //System.out.println(init_listener.table_map.toString());
-
-        RewritingListener converter = new RewritingListener(tokens);
-        walker.walk(converter, tree);
-
-
 
         //RewritingVisitor rv = new RewritingVisitor(parser);
 

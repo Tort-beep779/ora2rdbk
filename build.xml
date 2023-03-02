@@ -4,9 +4,9 @@
     <property name="build.dir" value="bin"/>
     <property name="src.dir"   value="src"/>
     <property name="gen.dir"   value="gen"/>
-    <property name="grammarLexer"   value="grammars-v4/plsql/PlSqlLexer.g4"/>
-    <property name="grammarParser"   value="grammars-v4/plsql/PlSqlParser.g4"/>
-    <property name="grammar" value="grammars-v4/plsql"/>
+    <property name="grammarLexer"   value="grammars-v4/sql/plsql/PlSqlLexer.g4"/>
+    <property name="grammarParser"   value="grammars-v4/sql/plsql/PlSqlParser.g4"/>
+    <property name="grammar" value="grammars-v4/sql/plsql"/>
 
     <path id="classpath">
         <pathelement location="${build.dir}"/>

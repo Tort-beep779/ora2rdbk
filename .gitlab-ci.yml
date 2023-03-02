@@ -59,7 +59,7 @@ build-job:       # This job runs in the build stage, which runs first.
     - cp -r ./apache-ant-1.10.13 /opt
     - export JAVA_HOME="/opt/jdk-18"
     - export ANT_HOME="/opt/apache-ant-1.10.13-bin.tar.gz"
-    - /opt/apache-ant-1.10.13/bin/ant compileProgram
+    - /opt/apache-ant-1.10.13/bin/ant create_run_jar
   artifacts:
     paths:
       - ./jar

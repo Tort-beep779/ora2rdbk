@@ -64,7 +64,7 @@ build-job:       # This job runs in the build stage, which runs first.
     paths:
       - ./jar
       - ./jdk-18
-  needs: ["prepare"]
+#  needs: ["prepare"]
 
 unit-test-job:   # This job runs in the test stage.
   image: ubuntu:18.04

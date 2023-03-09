@@ -4,8 +4,8 @@
     <property name="build.dir" value="bin"/>
     <property name="src.dir"   value="src"/>
     <property name="gen.dir"   value="gen"/>
-    <property name="grammarLexer"   value="grammars-v4/sql/plsql/PlSqlLexer.g4"/>
-    <property name="grammarParser"   value="grammars-v4/sql/plsql/PlSqlParser.g4"/>
+    <property name="grammarLexer"   value="PlSqlLexer.g4"/>
+    <property name="grammarParser"   value="PlSqlParser.g4"/>
     <property name="grammar" value="grammars-v4/sql/plsql"/>
 
     <path id="classpath">
@@ -22,6 +22,9 @@
         <copy todir="${gen.dir}/biz/redsoft/ora2rdb">
             <fileset dir="${grammar}/Java" includes="*.java"/>
         </copy>
+
+        <copy file="grammars-v4/sql/plsql/PlSqlParser.g4" tofile="${grammarParser}"/>
+        <copy file="grammars-v4/sql/plsql/PlSqlLexer.g4" tofile="${grammarLexer}"/>
 
         <java classname="org.antlr.v4.Tool" fork="true" failonerror="true">
             <arg line="-package biz.redsoft.ora2rdb"/>

@@ -1,4 +1,4 @@
 [submodule "grammars-v4"]
 	path = grammars-v4
-	url = git@git.red-soft.biz:red-database/utils/grammars-v4.git
+	url = http://git.red-soft.biz/red-database/utils/grammars-v4.git
 	branch = PlSql_rules

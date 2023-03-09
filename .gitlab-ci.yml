@@ -47,6 +47,8 @@ variables:
 build-job:       # This job runs in the build stage, which runs first.
   image: ubuntu:18.04
   stage: build
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
   script:
     - mkdir build
     - apt update

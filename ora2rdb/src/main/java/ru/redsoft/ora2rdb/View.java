@@ -1,8 +1,8 @@
-package biz.redsoft.ora2rdb;
+package ru.redsoft.ora2rdb;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import biz.redsoft.ora2rdb.PlSqlParser.*;
+import ru.redsoft.ora2rdb.PlSqlParser.*;
 
 public class View {
 	Create_viewContext ctx;

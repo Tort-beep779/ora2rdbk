@@ -2,3 +2,7 @@
 	path = grammars-v4
 	url = http://git.red-soft.biz/red-database/utils/grammars-v4.git
 	branch = PlSql_rules
+[submodule "antlr4"]
+	path = antlr4
+	url = http://git.red-soft.biz/3rdparty/antlr4.git
+	branch = rewriter_performance

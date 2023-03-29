@@ -2190,7 +2190,7 @@
 	"AUTHOR" VARCHAR(50 ), 
 	"UPDATE_DATE" DATE, 
 	"DESCRIPTION" VARCHAR(255 ), 
-	"VERSIONS" BLOB  
+	"VERSIONS" BLOB 
    ) ;
 --------------------------------------------------------
 --  DDL for Table DECREASON

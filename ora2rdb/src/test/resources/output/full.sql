@@ -2371,10 +2371,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"PENALTY_DOCDATE" DATE, 
 	"PENALTY_RETURN_AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
    )  
-  
-  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table CLAIMPAYFACT
@@ -2815,14 +2811,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"SUBJECT" BLOB SUB_TYPE TEXT, 
 	"ENERGYSERVICEECONOMY" BLOB SUB_TYPE TEXT
    )  
-  
-  
-  
-  
-  
-  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table CMPOOSMODIFICATION
@@ -2846,7 +2834,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"CHANGE_DOCNAME" BLOB SUB_TYPE TEXT, 
 	"CHANGE_ADDITIONALINFO" BLOB SUB_TYPE TEXT
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table CMPPAYSHEDULE
@@ -3092,8 +3079,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"COMPLAINT_DECISION" NUMERIC(2,0), 
 	"DECISION_DIRECTIONS" BLOB SUB_TYPE TEXT
    )  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table CONAGREEMENTSDOCS
@@ -3954,7 +3939,7 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"AUTHOR" VARCHAR(50 ), 
 	"UPDATE_DATE" DATE, 
 	"DESCRIPTION" VARCHAR(255 ), 
-	"VERSIONS" BLOB  
+	"VERSIONS" BLOB 
    )  ;
 --------------------------------------------------------
 --  DDL for Table DECREASON
@@ -4060,7 +4045,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"ISIMPORTED" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"IMPORTUSER_ID" NUMERIC(15,0)
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table DISPSTATUS
@@ -4340,7 +4324,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"PARDISPSTATUS_ID" NUMERIC(15,0), 
 	"OLD_PARDISPSTATUS_ID" NUMERIC(15,0)
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table DOCREQ
@@ -4372,7 +4355,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"ISACTIVE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0 NOT NULL
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table DOCRETENTIONSTATITEMS
@@ -4498,7 +4480,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"PRINTPARAMS" BLOB SUB_TYPE TEXT, 
 	"PRINTCLIENTOBJECT_ID" NUMERIC(15,0)
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table DOCUMENTREPORTS
@@ -5406,7 +5387,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"SOURCE" BLOB SUB_TYPE TEXT, 
 	"DATA" BLOB
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table KBKLINEFIT
@@ -5848,8 +5828,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"OOSKEY" VARCHAR(100 ), 
 	"SEND_DATE" DATE
    )  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table NOTICEEMAILORG
@@ -6063,9 +6041,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"VENDORFIRSTNAME" VARCHAR(250 ), 
 	"VENDORPATRONYMIC" VARCHAR(250 )
    )  
-  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table OFRCRITERIONLINEVAL
@@ -6901,48 +6876,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"RECIPIENTNAME" BLOB SUB_TYPE TEXT, 
 	"PARENTLOTNUMBER" NUMERIC(15,0)
    )  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table ORDERSUMMARY
@@ -7076,23 +7009,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"KLARD_STREETSOCR" VARCHAR(10 ), 
 	"OKVED_ID" NUMERIC(15,0)
    )  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table ORGACCOUNT
@@ -8710,7 +8626,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"DEF_VALUE" BLOB SUB_TYPE TEXT, 
 	"PARAMS" BLOB SUB_TYPE TEXT
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table REPFORM
@@ -8914,11 +8829,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"ETPKEY" VARCHAR(100 ), 
 	"DECLINECOUNTER" NUMERIC(15,0) DEFAULT 0
    )  
-  
-  
-  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table REQUESTORDER
@@ -9023,7 +8933,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"CONTRACT_EXCLUDEDATE" DATE, 
 	"REGISTRY_FLAG" NUMERIC(1,0) DEFAULT 0 NOT NULL
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table ROLEAPPOBJ
@@ -9527,11 +9436,6 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 	"GUARANTEEAPPPERCENT" NUMERIC(5,2), 
 	"GUARANTEECONTRACTPERCENT" NUMERIC(5,2)
    )  
-  
-  
-  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table RQOPTIMIZEDPRICE
@@ -33604,7 +33508,7 @@ SET TERM ; ^
 
 CREATE OR ALTER PROCEDURE "LEFT" (p_Str varchar(250), p_Size integer) RETURNS (RET_VAL VARCHAR(250)) AS
 begin
-  RET_VAL = SUBSTRING (:p_Str FROM  1 FOR  :p_Size);
+  RET_VAL = SUBSTRING (:p_Str FROM 1 FOR :p_Size);
   SUSPEND;
   EXIT;
 end^

@@ -68,4 +68,14 @@ class ParserTest {
         test("views.sql");
     }
 
+    @Test
+    void constraintsTest() throws IOException {
+        test("constraints.sql");
+    }
+
+    @Test
+    void hrOraTest() throws IOException {
+        test("hr_ora.sql");
+    }
+
 }

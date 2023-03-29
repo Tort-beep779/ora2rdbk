@@ -307,7 +307,7 @@ SET TERM ; ^
 
 CREATE OR ALTER PROCEDURE "LEFT" (p_Str varchar(250), p_Size integer) RETURNS (RET_VAL VARCHAR(250)) AS
 begin
-  RET_VAL = SUBSTRING (:p_Str FROM  1 FOR  :p_Size);
+  RET_VAL = SUBSTRING (:p_Str FROM 1 FOR :p_Size);
   SUSPEND;
   EXIT;
 end^

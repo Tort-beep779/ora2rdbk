@@ -637,10 +637,6 @@
 	"PENALTY_DOCDATE" DATE, 
 	"PENALTY_RETURN_AMOUNT" NUMERIC(15,2) DEFAULT 0
    )  
-  
-  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table CLAIMPAYFACT
@@ -1081,14 +1077,6 @@
 	"SUBJECT" BLOB SUB_TYPE TEXT, 
 	"ENERGYSERVICEECONOMY" BLOB SUB_TYPE TEXT
    )  
-  
-  
-  
-  
-  
-  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table CMPOOSMODIFICATION
@@ -1112,7 +1100,6 @@
 	"CHANGE_DOCNAME" BLOB SUB_TYPE TEXT, 
 	"CHANGE_ADDITIONALINFO" BLOB SUB_TYPE TEXT
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table CMPPAYSHEDULE
@@ -1358,8 +1345,6 @@
 	"COMPLAINT_DECISION" NUMERIC(2,0), 
 	"DECISION_DIRECTIONS" BLOB SUB_TYPE TEXT
    )  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table CONAGREEMENTSDOCS
@@ -2220,7 +2205,7 @@
 	"AUTHOR" VARCHAR(50 ), 
 	"UPDATE_DATE" DATE, 
 	"DESCRIPTION" VARCHAR(255 ), 
-	"VERSIONS" BLOB  
+	"VERSIONS" BLOB 
    )  ;
 --------------------------------------------------------
 --  DDL for Table DECREASON
@@ -2326,7 +2311,6 @@
 	"ISIMPORTED" NUMERIC(1,0) DEFAULT 0, 
 	"IMPORTUSER_ID" NUMERIC(15,0)
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table DISPSTATUS
@@ -2606,7 +2590,6 @@
 	"PARDISPSTATUS_ID" NUMERIC(15,0), 
 	"OLD_PARDISPSTATUS_ID" NUMERIC(15,0)
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table DOCREQ
@@ -2638,7 +2621,6 @@
 	"ISACTIVE" NUMERIC(1,0) DEFAULT 0, 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table DOCRETENTIONSTATITEMS
@@ -2764,7 +2746,6 @@
 	"PRINTPARAMS" BLOB SUB_TYPE TEXT, 
 	"PRINTCLIENTOBJECT_ID" NUMERIC(15,0)
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table DOCUMENTREPORTS
@@ -3672,7 +3653,6 @@
 	"SOURCE" BLOB SUB_TYPE TEXT, 
 	"DATA" BLOB
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table KBKLINEFIT
@@ -4114,8 +4094,6 @@
 	"OOSKEY" VARCHAR(100 ), 
 	"SEND_DATE" DATE
    )  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table NOTICEEMAILORG
@@ -4329,9 +4307,6 @@
 	"VENDORFIRSTNAME" VARCHAR(250 ), 
 	"VENDORPATRONYMIC" VARCHAR(250 )
    )  
-  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table OFRCRITERIONLINEVAL
@@ -5167,48 +5142,6 @@
 	"RECIPIENTNAME" BLOB SUB_TYPE TEXT, 
 	"PARENTLOTNUMBER" NUMERIC(15,0)
    )  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table ORDERSUMMARY
@@ -5342,23 +5275,6 @@
 	"KLARD_STREETSOCR" VARCHAR(10 ), 
 	"OKVED_ID" NUMERIC(15,0)
    )  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table ORGACCOUNT
@@ -6976,7 +6892,6 @@
 	"DEF_VALUE" BLOB SUB_TYPE TEXT, 
 	"PARAMS" BLOB SUB_TYPE TEXT
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table REPFORM
@@ -7180,11 +7095,6 @@
 	"ETPKEY" VARCHAR(100 ), 
 	"DECLINECOUNTER" NUMERIC(15,0) DEFAULT 0
    )  
-  
-  
-  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table REQUESTORDER
@@ -7289,7 +7199,6 @@
 	"CONTRACT_EXCLUDEDATE" DATE, 
 	"REGISTRY_FLAG" NUMERIC(1,0) DEFAULT 0
    )  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table ROLEAPPOBJ
@@ -7793,11 +7702,6 @@
 	"GUARANTEEAPPPERCENT" NUMERIC(5,2), 
 	"GUARANTEECONTRACTPERCENT" NUMERIC(5,2)
    )  
-  
-  
-  
-  
-  
   ;
 --------------------------------------------------------
 --  DDL for Table RQOPTIMIZEDPRICE

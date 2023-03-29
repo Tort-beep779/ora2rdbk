@@ -1,4 +1,4 @@
-package biz.redsoft.ora2rdb;
+package ru.redsoft.ora2rdb;
 
 import org.antlr.v4.runtime.*;
 

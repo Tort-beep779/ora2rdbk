@@ -1,7 +1,7 @@
-package biz.redsoft.ora2rdb;
+package ru.redsoft.ora2rdb;
 
 import java.util.TreeSet;
-import biz.redsoft.ora2rdb.PlSqlParser.*;
+import ru.redsoft.ora2rdb.PlSqlParser.*;
 
 public class InitialListener extends PlSqlParserBaseListener {
 	@Override

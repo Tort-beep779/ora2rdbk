@@ -669,6 +669,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
                     getRewriterText(ctx.table_type_def().table_indexed_by_part().type_spec()));
         }
     }
+    @Override
+    public void exitCursor_declaration(Cursor_declarationContext ctx) {
+        replace(ctx.CURSOR(), "DECLARE");
+        replace(ctx.IS(), "CURSOR FOR");
+        insertBefore(ctx.select_statement(),"(");
+        insertAfter(ctx.select_statement(), ")");
+    }
 
     @Override
     public void exitId_expression(Id_expressionContext ctx) {

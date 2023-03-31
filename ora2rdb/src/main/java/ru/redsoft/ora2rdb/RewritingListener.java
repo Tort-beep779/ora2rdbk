@@ -637,6 +637,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
+    public void exitExecute_immediate(Execute_immediateContext ctx) {
+        replace(ctx.IMMEDIATE(), "STATEMENT");
+    }
+
+    @Override
     public void exitPragma_declaration(Pragma_declarationContext ctx) {
         delete(ctx);
     }

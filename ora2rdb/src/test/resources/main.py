@@ -10,6 +10,7 @@
 
 import sys, os, difflib, argparse
 from datetime import datetime, timezone
+import re
 
 def file_mtime(path):
     t = datetime.fromtimestamp(os.stat(path).st_mtime,
@@ -51,6 +52,7 @@ def main():
         diff = difflib.unified_diff(fromlines, tolines, fromfile, tofile, fromdate, todate, n=n)
     elif options.n:
         diff = difflib.ndiff(fromlines, tolines)
+        diff = list(filter(lambda line: not line.startswith(' '), diff))
     elif options.m:
         diff = difflib.HtmlDiff().make_file(fromlines, tolines, fromfile, tofile, context=options.c, numlines=n)
     else:

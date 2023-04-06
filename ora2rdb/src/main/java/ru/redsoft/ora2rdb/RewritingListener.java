@@ -194,24 +194,17 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
+    public void exitRelational_table(PlSqlParser.Relational_tableContext ctx) {
+            delete(ctx.column_properties());
+            delete(ctx.physical_properties());
+    }
+
+    @Override
     public void exitCreate_table(Create_tableContext ctx) {
 
-        if (ctx.tableview_name().PERIOD().size() >= 1) {
+        if (ctx.tableview_name().PERIOD().size() > 0) {
             delete(ctx.tableview_name().PERIOD(0));
             delete(ctx.tableview_name().identifier());
-
-            if(ctx.xmltype_table() != null) {
-            } else if (ctx.object_table() != null) {
-                delete(ctx.object_table().physical_properties());
-            } else if (ctx.relational_table() != null) {
-                delete(ctx.relational_table().physical_properties());
-            }
-        }
-        if(ctx.relational_table() != null) {
-            if (ctx.relational_table().column_properties().size() >= 1)
-                for(Column_propertiesContext column_properties : ctx.relational_table().column_properties())
-                    delete(column_properties.lob_storage_clause());
-
         }
 
         String table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().id_expression()));

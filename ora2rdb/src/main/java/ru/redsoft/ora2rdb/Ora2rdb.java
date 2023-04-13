@@ -122,6 +122,7 @@ public class Ora2rdb {
         try {
             converter = convert(is);
         } catch (Exception e) {
+            System.err.println(e.fillInStackTrace());
             System.err.println("Output will not be generated");
             return;
         }

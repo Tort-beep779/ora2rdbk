@@ -194,24 +194,17 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
+    public void exitRelational_table(PlSqlParser.Relational_tableContext ctx) {
+            delete(ctx.column_properties());
+            delete(ctx.physical_properties());
+    }
+
+    @Override
     public void exitCreate_table(Create_tableContext ctx) {
 
-        if (ctx.tableview_name().PERIOD().size() >= 1) {
+        if (ctx.tableview_name().PERIOD().size() > 0) {
             delete(ctx.tableview_name().PERIOD(0));
             delete(ctx.tableview_name().identifier());
-
-            if(ctx.xmltype_table() != null) {
-            } else if (ctx.object_table() != null) {
-                delete(ctx.object_table().physical_properties());
-            } else if (ctx.relational_table() != null) {
-                delete(ctx.relational_table().physical_properties());
-            }
-        }
-        if(ctx.relational_table() != null) {
-            if (ctx.relational_table().column_properties().size() >= 1)
-                for(Column_propertiesContext column_properties : ctx.relational_table().column_properties())
-                    delete(column_properties.lob_storage_clause());
-
         }
 
         String table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().id_expression()));
@@ -593,8 +586,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitFunction_name(Function_nameContext ctx) {
-        delete(ctx.identifier());
-        delete(ctx.PERIOD());
+        if(ctx.id_expression() != null) {
+            delete(ctx.identifier());
+            delete(ctx.PERIOD());
+        }
     }
 
     @Override
@@ -625,6 +620,32 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         popScope();
         create_functions.add(ctx);
+    }
+
+    @Override
+    public void exitPackage_obj_body(Package_obj_bodyContext ctx) {
+        if(ctx.function_body() != null){
+            Function_bodyContext function_body = ctx.function_body();
+            replace(function_body.FUNCTION(), "PROCEDURE");
+
+            replace(function_body.RETURN(), "RETURNS (RET_VAL");
+            insertAfter(function_body.type_spec(), ")");
+
+            replace(function_body.IS(), "AS");
+            replace(function_body.SEMICOLON(), "^");
+
+        }
+    }
+
+    @Override
+    public void exitPackage_obj_spec(PlSqlParser.Package_obj_specContext ctx) {
+        if(ctx.function_spec() != null){
+            Function_specContext function_spec = ctx.function_spec();
+            replace(function_spec.FUNCTION(), "PROCEDURE");
+
+            replace(function_spec.RETURN(), "RETURNS (RET_VAL");
+            insertAfter(function_spec.type_spec(), ")");
+        }
     }
 
     @Override
@@ -717,8 +738,59 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitProcedure_name(Procedure_nameContext ctx) {
-        delete(ctx.identifier());
-        delete(ctx.PERIOD());
+        if(ctx.id_expression() != null) {
+            delete(ctx.identifier());
+            delete(ctx.PERIOD());
+        }
+    }
+
+    @Override
+    public void exitCreate_package(PlSqlParser.Create_packageContext ctx) {
+        if(ctx.REPLACE() != null){
+            replace(ctx.REPLACE(), "ALTER");
+        }
+        if(ctx.schema_object_name() != null){
+            delete(ctx.schema_object_name());
+            delete(ctx.PERIOD());
+        }
+        if(ctx.AS() != null){
+            insertAfter(ctx.AS(), " BEGIN");
+        }
+        if(ctx.IS() != null){
+            replace(ctx.IS(), "AS");
+            insertAfter(ctx.IS(), " BEGIN");
+        }
+        if(!ctx.package_name().isEmpty()){
+            if(ctx.package_name(ctx.package_name().size()-1) != null){
+                delete(ctx.package_name(ctx.package_name().size()-1));
+            }
+        }
+    }
+    @Override
+    public void exitCreate_package_body(Create_package_bodyContext ctx) {
+        if(ctx.OR() != null){
+            if(ctx.REPLACE() != null){
+                delete(ctx.OR());
+                delete(ctx.REPLACE());
+                replace(ctx.CREATE(), "RECREATE");
+            }
+        }
+        if(ctx.schema_object_name() != null){
+            delete(ctx.schema_object_name());
+            delete(ctx.PERIOD());
+        }
+        if(ctx.AS() != null){
+            insertAfter(ctx.AS(), " BEGIN");
+        }
+        if(ctx.IS() != null){
+            replace(ctx.IS(), "AS");
+            insertAfter(ctx.IS(), " BEGIN");
+        }
+        if(!ctx.package_name().isEmpty()){
+            if(ctx.package_name(ctx.package_name().size()-1) != null){
+                delete(ctx.package_name(ctx.package_name().size()-1));
+            }
+        }
     }
 
     @Override

@@ -586,8 +586,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitFunction_name(Function_nameContext ctx) {
-        delete(ctx.identifier());
-        delete(ctx.PERIOD());
+        if(ctx.id_expression() != null) {
+            delete(ctx.identifier());
+            delete(ctx.PERIOD());
+        }
     }
 
     @Override

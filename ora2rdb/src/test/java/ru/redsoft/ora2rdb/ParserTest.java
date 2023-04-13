@@ -2,8 +2,11 @@ package ru.redsoft.ora2rdb;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,19 +25,50 @@ class ParserTest {
     }
 
     void test(String file) throws IOException {
-        List<String> expected = readFile("output/" + file);
-
-        try (FileInputStream fs = new FileInputStream("src/test/resources/input/" + file)) {
+        final String outFile = System.getProperty("java.io.tmpdir") + "/" + file;
+        List<String> actual;
+        try (FileInputStream fs = new FileInputStream("src/test/resources/input/" + file);
+             FileWriter fileWriter = new FileWriter(outFile)) {
             RewritingListener rewritingListener =
                     Ora2rdb.convert(fs);
-            List<String> actual = Arrays.asList(rewritingListener.rewriter.getText()
+            actual = Arrays.asList(rewritingListener.rewriter.getText()
                     .replace("\r", "").split("\n"));
+            for (String line : actual) {
+                fileWriter.write(line + System.lineSeparator());
+            }
+        }
 
-            Patch<String> diff = DiffUtils.diff(expected, actual);
-            List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff("expected",
-                    "actual", expected, diff, 0);
-            String result = String.join("\n", unifiedDiff);
-            assertEquals("", result);
+        List<String> expected = readFile("output/" + file);
+        Patch<String> diff = DiffUtils.diff(expected, actual);
+        List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff("expected",
+                "actual", expected, diff, 0);
+        String result = String.join("\n", unifiedDiff);
+        if (!result.isEmpty()) {
+            ProcessBuilder processBuilder = new ProcessBuilder("python3",
+                    "src/test/resources/main.py",
+                    "-n",
+                    "src/test/resources/output/" + file,
+                    outFile);
+            processBuilder.redirectErrorStream(true);
+
+            Process process;
+            try {
+                process = processBuilder.start();
+
+                BufferedReader subProcessInputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+                final StringBuilder difference = new StringBuilder();
+                String line;
+                while ((line = subProcessInputReader.readLine()) != null) {
+                    difference.append(line);
+                    difference.append(System.lineSeparator());
+                }
+
+                process.waitFor();
+                assertEquals("", difference.toString());
+            } catch (IOException | InterruptedException e) {
+                throw new IOException(e);
+            }
         }
     }
 

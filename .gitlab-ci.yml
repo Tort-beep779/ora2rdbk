@@ -82,6 +82,7 @@ build_and_test:
     - export VERSION=`cat .ci/version`
     - ln -s `update-alternatives --display jre_11_openjdk | sed -n '2p;3q' | awk -F\" '{split($1, v, " ");printf("%s", v[5])}'` /usr/java11
   script:
+    - git submodule sync
     - git submodule update --init
     - mvn $MAVEN_CLI_OPTS -f "${CI_PROJECT_DIR}"/pom.xml test -Pdeploy-internal -DreleaseHubBuildVersion=$VERSION  -DfailIfNoTests=false
 

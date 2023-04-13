@@ -710,8 +710,59 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitProcedure_name(Procedure_nameContext ctx) {
-        delete(ctx.identifier());
-        delete(ctx.PERIOD());
+        if(ctx.id_expression() != null) {
+            delete(ctx.identifier());
+            delete(ctx.PERIOD());
+        }
+    }
+
+    @Override
+    public void exitCreate_package(PlSqlParser.Create_packageContext ctx) {
+        if(ctx.REPLACE() != null){
+            replace(ctx.REPLACE(), "ALTER");
+        }
+        if(ctx.schema_object_name() != null){
+            delete(ctx.schema_object_name());
+            delete(ctx.PERIOD());
+        }
+        if(ctx.AS() != null){
+            insertAfter(ctx.AS(), " BEGIN");
+        }
+        if(ctx.IS() != null){
+            replace(ctx.IS(), "AS");
+            insertAfter(ctx.IS(), " BEGIN");
+        }
+        if(!ctx.package_name().isEmpty()){
+            if(ctx.package_name(ctx.package_name().size()-1) != null){
+                delete(ctx.package_name(ctx.package_name().size()-1));
+            }
+        }
+    }
+    @Override
+    public void exitCreate_package_body(Create_package_bodyContext ctx) {
+        if(ctx.OR() != null){
+            if(ctx.REPLACE() != null){
+                delete(ctx.OR());
+                delete(ctx.REPLACE());
+                replace(ctx.CREATE(), "RECREATE");
+            }
+        }
+        if(ctx.schema_object_name() != null){
+            delete(ctx.schema_object_name());
+            delete(ctx.PERIOD());
+        }
+        if(ctx.AS() != null){
+            insertAfter(ctx.AS(), " BEGIN");
+        }
+        if(ctx.IS() != null){
+            replace(ctx.IS(), "AS");
+            insertAfter(ctx.IS(), " BEGIN");
+        }
+        if(!ctx.package_name().isEmpty()){
+            if(ctx.package_name(ctx.package_name().size()-1) != null){
+                delete(ctx.package_name(ctx.package_name().size()-1));
+            }
+        }
     }
 
     @Override

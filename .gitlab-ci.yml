@@ -11,6 +11,7 @@ cache:
     - target/
 
 variables:
+  GIT_SUBMODULE_STRATEGY: recursive
   RELEASE_HUB_PROJECT: ora2rdb
   CI_URL: ${CI_PROJECT_URL}/pipelines/${CI_PIPELINE_ID}
   TAG_BRANCH: master

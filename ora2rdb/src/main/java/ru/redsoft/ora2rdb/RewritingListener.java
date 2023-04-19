@@ -621,29 +621,23 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitPackage_obj_body(Package_obj_bodyContext ctx) {
-        if(ctx.function_body() != null){
-            Function_bodyContext function_body = ctx.function_body();
-            replace(function_body.FUNCTION(), "PROCEDURE");
+    public void exitFunction_body(Function_bodyContext ctx) {
+        replace(ctx.FUNCTION(), "PROCEDURE");
 
-            replace(function_body.RETURN(), "RETURNS (RET_VAL");
-            insertAfter(function_body.type_spec(), ")");
+        replace(ctx.RETURN(), "RETURNS (RET_VAL");
+        insertAfter(ctx.type_spec(), ")");
 
-            replace(function_body.IS(), "AS");
-            replace(function_body.SEMICOLON(), "^");
-
-        }
+        replace(ctx.IS(), "AS");
+        replace(ctx.SEMICOLON(), "^");
     }
 
-    @Override
-    public void exitPackage_obj_spec(PlSqlParser.Package_obj_specContext ctx) {
-        if(ctx.function_spec() != null){
-            Function_specContext function_spec = ctx.function_spec();
-            replace(function_spec.FUNCTION(), "PROCEDURE");
 
-            replace(function_spec.RETURN(), "RETURNS (RET_VAL");
-            insertAfter(function_spec.type_spec(), ")");
-        }
+    @Override
+    public void exitFunction_spec(Function_specContext ctx) {
+        replace(ctx.FUNCTION(), "PROCEDURE");
+
+        replace(ctx.RETURN(), "RETURNS (RET_VAL");
+        insertAfter(ctx.type_spec(), ")");
     }
 
     @Override

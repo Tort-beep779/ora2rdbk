@@ -810,6 +810,26 @@ public class RewritingListener extends PlSqlParserBaseListener {
         create_procedures.add(ctx);
     }
 
+
+    @Override
+    public void exitProcedure_body(Procedure_bodyContext ctx) {
+        if(ctx.seq_of_declare_specs() != null) {
+            if (ctx.seq_of_declare_specs().declare_spec().size() > 0) {
+                for (Declare_specContext declare_spec : ctx.seq_of_declare_specs().declare_spec()) {
+                    if (declare_spec.pragma_declaration() != null &&
+                            declare_spec.pragma_declaration().AUTONOMOUS_TRANSACTION() != null) {
+                        delete(declare_spec);
+                        insertBefore(ctx.body().seq_of_statements(), "IN AUTONOMOUS TRANSACTION DO BEGIN\n");
+                        insertAfter(ctx.body().seq_of_statements(), "\nEND");
+                    }
+                }
+            }
+        }
+
+
+    }
+
+
     @Override
     public void exitType_spec(Type_specContext ctx) {
         if (ctx.PERCENT_TYPE() != null)

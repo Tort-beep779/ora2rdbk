@@ -250,9 +250,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             if (ctx.datatype() != null)
                 if (ctx.datatype().native_datatype_element() != null)
                     if (ctx.datatype().native_datatype_element().RAW() != null) {
-                        replace(ctx.datatype(), "BLOB");
-                        delete(ctx.DEFAULT());
-                        delete(ctx.expression());
+                        replace(ctx, ctx.column_name().getText() + " BLOB ");
                     }
         }
     }

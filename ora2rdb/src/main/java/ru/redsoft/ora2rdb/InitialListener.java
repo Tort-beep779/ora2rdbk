@@ -91,9 +91,21 @@ public class InitialListener extends PlSqlParserBaseListener {
 
 	@Override
 	public void enterCreate_procedure_body(Create_procedure_bodyContext ctx) {
-		Ora2rdb.procedures_names.add(Ora2rdb.getRealName(ctx.procedure_name().id_expression().getText()));
+		if(ctx.procedure_name().id_expression() != null)
+			Ora2rdb.procedures_names.add(Ora2rdb.getRealName(ctx.procedure_name().id_expression().getText()));
+		else
+			Ora2rdb.procedures_names.add(Ora2rdb.getRealName(ctx.procedure_name().identifier().id_expression().getText()));
 	}
 
+	@Override
+	public void enterPackage_obj_body(Package_obj_bodyContext ctx) {
+		if(ctx.function_body() != null){
+			Ora2rdb.procedures_names.add(Ora2rdb.getRealName(ctx.function_body().identifier().id_expression().getText()));
+		}
+		if(ctx.procedure_body() != null){
+			Ora2rdb.procedures_names.add(Ora2rdb.getRealName(ctx.procedure_body().identifier().id_expression().getText()));
+		}
+	}
 	@Override
 	public void enterCreate_view(Create_viewContext ctx) {
 		Ora2rdb.views.put(Ora2rdb.getRealName(ctx.tableview_name().getText()), new View(ctx));

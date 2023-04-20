@@ -134,7 +134,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         sisoutRewriter();
     }
 
-    void sisoutRewriter(){
+    void sisoutRewriter() {
 
 //        System.out.println("\n==========================================");
 //        System.out.println(rewriter.getText());
@@ -195,8 +195,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitRelational_table(PlSqlParser.Relational_tableContext ctx) {
-            delete(ctx.column_properties());
-            delete(ctx.physical_properties());
+        delete(ctx.column_properties());
+        delete(ctx.physical_properties());
     }
 
     @Override
@@ -303,7 +303,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitComment_on_column(Comment_on_columnContext ctx) {
-        if(ctx.column_name() != null) {
+        if (ctx.column_name() != null) {
             Column_nameContext column_nameContext = ctx.column_name();
             if (column_nameContext.identifier() != null) {
                 delete(column_nameContext.identifier());
@@ -317,7 +317,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (ctx.id_expression() != null) {
             delete(ctx.identifier());
 
-            if(ctx.PERIOD().size() > 0)
+            if (ctx.PERIOD().size() > 0)
                 delete(ctx.PERIOD(0));
 
         }
@@ -333,7 +333,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
 
 
-        if(ctx.tableview_name().PERIOD() != null) {
+        if (ctx.tableview_name().PERIOD() != null) {
             delete(ctx.tableview_name().PERIOD(0));
             delete(ctx.tableview_name().identifier());
         }
@@ -369,11 +369,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
 
     @Override
-    public  void exitString_function(String_functionContext ctx){
-        if(ctx.SUBSTR() != null){
+    public void exitString_function(String_functionContext ctx) {
+        if (ctx.SUBSTR() != null) {
             replace(ctx.SUBSTR(), "SUBSTRING");
             replace(ctx.COMMA(0), " FROM ");
-            if(ctx.COMMA(1) != null)
+            if (ctx.COMMA(1) != null)
                 replace(ctx.COMMA(1), " FOR ");
 
         }
@@ -446,20 +446,21 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
     }
 
-    @Override public void exitVariable_name(Variable_nameContext ctx) {
-            if (ctx.id_expression().size() > 1) {
-                for (Id_expressionContext id_expr_ctx : ctx.id_expression()) {
-                    String id = getRewriterText(id_expr_ctx);
+    @Override
+    public void exitVariable_name(Variable_nameContext ctx) {
+        if (ctx.id_expression().size() > 1) {
+            for (Id_expressionContext id_expr_ctx : ctx.id_expression()) {
+                String id = getRewriterText(id_expr_ctx);
 
-                    if (id.startsWith(":"))
-                        replace(id_expr_ctx, id.substring(1));
-                }
+                if (id.startsWith(":"))
+                    replace(id_expr_ctx, id.substring(1));
             }
+        }
     }
 
     @Override
     public void exitReferences_clause(References_clauseContext ctx) {
-        if(ctx.tableview_name().PERIOD() != null) {
+        if (ctx.tableview_name().PERIOD() != null) {
             delete(ctx.tableview_name().identifier());
             delete(ctx.tableview_name().PERIOD(0));
         }
@@ -488,7 +489,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         delete(ctx.index_name().PERIOD());
 
 
-        if(table_index_clause_ctx.tableview_name().PERIOD()!=null) {
+        if (table_index_clause_ctx.tableview_name().PERIOD() != null) {
             delete(table_index_clause_ctx.tableview_name().identifier());
             delete(table_index_clause_ctx.tableview_name().PERIOD(0));
         }
@@ -501,7 +502,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitCreate_sequence(Create_sequenceContext ctx) {
         Sequence_nameContext sequence_name_ctx = ctx.sequence_name();
 
-        if(sequence_name_ctx.PERIOD()!= null) {
+        if (sequence_name_ctx.PERIOD() != null) {
             delete(sequence_name_ctx.id_expression(0));
             delete(sequence_name_ctx.PERIOD(0));
         }
@@ -532,10 +533,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitCreate_view(Create_viewContext ctx) {
         replace(ctx.REPLACE(), "ALTER");
         delete(ctx.FORCE());
-        if(ctx.OR().size()>=2) {
+        if (ctx.OR().size() >= 2) {
             delete(ctx.OR(1));
         }
-        if(ctx.tableview_name().PERIOD() != null) {
+        if (ctx.tableview_name().PERIOD() != null) {
             delete(ctx.tableview_name().identifier());
             delete(ctx.tableview_name().PERIOD(0));
         }
@@ -584,7 +585,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitFunction_name(Function_nameContext ctx) {
-        if(ctx.id_expression() != null) {
+        if (ctx.id_expression() != null) {
             delete(ctx.identifier());
             delete(ctx.PERIOD());
         }
@@ -687,11 +688,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
                     getRewriterText(ctx.table_type_def().table_indexed_by_part().type_spec()));
         }
     }
+
     @Override
     public void exitCursor_declaration(Cursor_declarationContext ctx) {
         replace(ctx.CURSOR(), "DECLARE");
         replace(ctx.IS(), "CURSOR FOR");
-        insertBefore(ctx.select_statement(),"(");
+        insertBefore(ctx.select_statement(), "(");
         insertAfter(ctx.select_statement(), ")");
     }
 
@@ -718,11 +720,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
             if (name.startsWith(":"))
                 replace(ctx, name.substring(1));
-        }catch (Exception e){
-            System.err.println(e.fillInStackTrace()+rewriter.getText());
+        } catch (Exception e) {
+            System.err.println(e.fillInStackTrace() + rewriter.getText());
         }
 
     }
+
     @Override
     public void exitSql_plus_command_wrapper(PlSqlParser.Sql_plus_command_wrapperContext ctx) {
         delete(ctx);
@@ -730,7 +733,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitProcedure_name(Procedure_nameContext ctx) {
-        if(ctx.id_expression() != null) {
+        if (ctx.id_expression() != null) {
             delete(ctx.identifier());
             delete(ctx.PERIOD());
         }
@@ -738,49 +741,50 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitCreate_package(PlSqlParser.Create_packageContext ctx) {
-        if(ctx.REPLACE() != null){
+        if (ctx.REPLACE() != null) {
             replace(ctx.REPLACE(), "ALTER");
         }
-        if(ctx.schema_object_name() != null){
+        if (ctx.schema_object_name() != null) {
             delete(ctx.schema_object_name());
             delete(ctx.PERIOD());
         }
-        if(ctx.AS() != null){
+        if (ctx.AS() != null) {
             insertAfter(ctx.AS(), " BEGIN");
         }
-        if(ctx.IS() != null){
+        if (ctx.IS() != null) {
             replace(ctx.IS(), "AS");
             insertAfter(ctx.IS(), " BEGIN");
         }
-        if(!ctx.package_name().isEmpty()){
-            if(ctx.package_name(ctx.package_name().size()-1) != null){
-                delete(ctx.package_name(ctx.package_name().size()-1));
+        if (!ctx.package_name().isEmpty()) {
+            if (ctx.package_name(ctx.package_name().size() - 1) != null) {
+                delete(ctx.package_name(ctx.package_name().size() - 1));
             }
         }
     }
+
     @Override
     public void exitCreate_package_body(Create_package_bodyContext ctx) {
-        if(ctx.OR() != null){
-            if(ctx.REPLACE() != null){
+        if (ctx.OR() != null) {
+            if (ctx.REPLACE() != null) {
                 delete(ctx.OR());
                 delete(ctx.REPLACE());
                 replace(ctx.CREATE(), "RECREATE");
             }
         }
-        if(ctx.schema_object_name() != null){
+        if (ctx.schema_object_name() != null) {
             delete(ctx.schema_object_name());
             delete(ctx.PERIOD());
         }
-        if(ctx.AS() != null){
+        if (ctx.AS() != null) {
             insertAfter(ctx.AS(), " BEGIN");
         }
-        if(ctx.IS() != null){
+        if (ctx.IS() != null) {
             replace(ctx.IS(), "AS");
             insertAfter(ctx.IS(), " BEGIN");
         }
-        if(!ctx.package_name().isEmpty()){
-            if(ctx.package_name(ctx.package_name().size()-1) != null){
-                delete(ctx.package_name(ctx.package_name().size()-1));
+        if (!ctx.package_name().isEmpty()) {
+            if (ctx.package_name(ctx.package_name().size() - 1) != null) {
+                delete(ctx.package_name(ctx.package_name().size() - 1));
             }
         }
     }
@@ -813,7 +817,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitProcedure_body(Procedure_bodyContext ctx) {
-        if(ctx.seq_of_declare_specs() != null) {
+        if (ctx.seq_of_declare_specs() != null) {
             if (ctx.seq_of_declare_specs().declare_spec().size() > 0) {
                 for (Declare_specContext declare_spec : ctx.seq_of_declare_specs().declare_spec()) {
                     if (declare_spec.pragma_declaration() != null &&
@@ -895,7 +899,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
 
         delete(ctx.OF());
-        if(ctx.column_list() != null) {
+        if (ctx.column_list() != null) {
             delete(ctx.column_list().column_name());
         }
     }
@@ -997,11 +1001,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
                         Function_argumentContext func_arg_ctx = gen_elem_part_ctx.function_argument();
 
-                            if (func_arg_ctx.argument().size() == 1)
-                                insert_stmt += getRewriterText(func_arg_ctx.argument(0)) + ", ";
-                            else {
-                                abort = true;
-                            }
+                        if (func_arg_ctx.argument().size() == 1)
+                            insert_stmt += getRewriterText(func_arg_ctx.argument(0)) + ", ";
+                        else {
+                            abort = true;
+                        }
 
 
                         if (!abort) {

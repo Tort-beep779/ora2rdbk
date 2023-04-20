@@ -969,6 +969,16 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         if (Ora2rdb.procedures_names.contains(Ora2rdb.getRealName(getRuleText(ctx.routine_name().identifier()))))
             replace(ctx, "EXECUTE PROCEDURE " + getRewriterText(ctx));
+
+        if (Ora2rdb.getRealName(getRuleText(ctx.routine_name())).equals("NVL"))
+            replace(ctx.routine_name(), "COALESCE");
+    }
+
+    @Override
+    public void exitStandard_function(Standard_functionContext ctx) {
+        if (ctx.string_function() != null)
+            if (ctx.string_function().NVL() != null)
+                replace(ctx.string_function().NVL(), "COALESCE");
     }
 
     @Override

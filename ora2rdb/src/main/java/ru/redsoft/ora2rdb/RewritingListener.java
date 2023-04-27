@@ -424,22 +424,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                                 if (function_argument_ctx.argument().size() == 2)
                                     insertAfter(function_argument_ctx.argument(1), ", ''");
                         }
-                    } else if (Ora2rdb.getRealName(getRuleText(regular_id_ctx)).equals("SUBSTR")) {
-                        if (ctx.function_argument() != null) {
-                            replace(regular_id_ctx, "SUBSTRING");
-                            Function_argumentContext function_argument_ctx = ctx.function_argument();
-
-                            if (function_argument_ctx.argument().size() == 2) {
-                                replace(function_argument_ctx, "(" + getRewriterText(function_argument_ctx.argument(0)) +
-                                        " FROM " + getRewriterText(function_argument_ctx.argument(1)) + ")");
-                            } else if (function_argument_ctx.argument().size() == 3) {
-                                replace(function_argument_ctx, "(" + getRewriterText(function_argument_ctx.argument(0)) +
-                                        " FROM " + getRewriterText(function_argument_ctx.argument(1)) +
-                                        " FOR " + getRewriterText(function_argument_ctx.argument(2)) + ")");
-                            }
-                        }
                     }
-
                     replace(regular_id_ctx.non_reserved_keywords_pre12c().LENGTH(), "CHAR_LENGTH");
                 }
             }

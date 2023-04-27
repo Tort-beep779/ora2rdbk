@@ -4122,7 +4122,7 @@ CREATE OR ALTER TRIGGER "UPD_CASC_GOODSPROP_SEQORDER"
    AS
 begin
 IF (new.seqorder<>old.seqorder or new.group_id<>old.group_id) THEN
-  execute immediate 'update goodsprop set group_id=' || new.group_id 
+  execute STATEMENT 'update goodsprop set group_id=' || new.group_id 
     || ', seqorder=' || new.seqorder
     || ' where group_id=' || old.group_id 
     || ' and seqorder=' || old.seqorder;

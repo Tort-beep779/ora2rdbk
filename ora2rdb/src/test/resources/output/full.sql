@@ -33258,11 +33258,13 @@ CREATE OR ALTER PROCEDURE "GETDOCIDFORATTACHID" (DocAttachId NUMERIC(18, 4)) RET
   
   DECLARE DocId NUMERIC(18,0);
 BEGIN
-  select da.Document_id  from DocAttachEx da where da.Id = :DocAttachId into :DocId;
+  IN AUTONOMOUS TRANSACTION DO BEGIN
+select da.Document_id  from DocAttachEx da where da.Id = :DocAttachId into :DocId;
   COMMIT;
   RET_VAL = :DocId;
   SUSPEND;
   EXIT;
+	END
 END^
 
 SET TERM ; ^
@@ -33508,7 +33510,7 @@ SET TERM ; ^
 
 CREATE OR ALTER PROCEDURE "LEFT" (p_Str varchar(250), p_Size integer) RETURNS (RET_VAL VARCHAR(250)) AS
 begin
-  RET_VAL = SUBSTRING (:p_Str FROM 1 FOR :p_Size);
+  RET_VAL = SUBSTRING (:p_Str FROM  1 FOR  :p_Size);
   SUSPEND;
   EXIT;
 end^
@@ -33560,7 +33562,7 @@ begin
             Group by i.index_name) 
             Order by table_name, constraint_name, colum) t ) 
   DO
-    execute immediate 'create index j_' || SUBSTRING(cur.constraint_name FROM 1 FOR 28) || ' on ' || cur.table_name || ' (' || cur.colum || ')';
+    execute STATEMENT 'create index j_' || SUBSTRING(cur.constraint_name FROM 1 FOR 28) || ' on ' || cur.table_name || ' (' || cur.colum || ')';
    
 end^
 
@@ -33641,13 +33643,13 @@ SET TERM ; ^
 CREATE OR ALTER PROCEDURE "RPL$ACTIVATE_RPL" 
 AS
   DECLARE stmt varchar(2000);
-  cursor s is SELECT TRIGGER_NAME from USER_TRIGGERS where (TRIGGER_NAME like 'RPL$%');
-  cursor r is SELECT id, name FROM rpltable ;
+  DECLARE s CURSOR FOR (SELECT TRIGGER_NAME from USER_TRIGGERS where (TRIGGER_NAME like 'RPL$%'));
+  DECLARE r CURSOR FOR (SELECT id, name FROM rpltable) ;
 BEGIN
   FOR s_rec in s DO
   BEGIN
     stmt = 'DROP TRIGGER ' || s_rec.trigger_name;
-    execute immediate :stmt;
+    execute STATEMENT :stmt;
   END
    
   FOR r_rec in r DO
@@ -33762,8 +33764,8 @@ AS
   DECLARE FCOUNT INTEGER;
   DECLARE BODY VARCHAR(4000);
   DECLARE rc rpl$constraints%ROWTYPE;
-  cursor getFields(constr_id TYPE OF COLUMN rpl$constraintfields.rpl$constraints_id) is
-    select fieldname, target_fieldname from rpl$constraintfields where rpl$constraints_id = constr_id;
+  DECLARE getFields(constr_id TYPE OF COLUMN rpl$constraintfields.rpl$constraints_id) CURSOR FOR
+    (select fieldname, target_fieldname from rpl$constraintfields where rpl$constraints_id = constr_id);
 BEGIN
   select *  from rpl$constraints where name = :constr_name into :rc;
   child_where = ''; child_condition = ''; child_if = 'numrows = 0 and ';
@@ -33805,7 +33807,7 @@ BEGIN
   body = :body || 'if (inserting) then ' || :child_statement || ' ';
   body = :body || 'elsif (' || :child_condition || ') then ' || :child_statement || ' end if;';
   body = :body || ' end if; END;';
-  execute immediate :body;
+  execute STATEMENT :body;
   body =
     'CREATE or REPLACE TRIGGER RPL$TRIGT_' || rc.triggername ||
     ' BEFORE UPDATE OR DELETE ON ' || rc.target_tablename || ' FOR EACH ROW' ||
@@ -33836,7 +33838,7 @@ BEGIN
    
   body = :body || ' end if;';
   body = :body || '  end if; END;';
-  execute immediate :body;
+  execute STATEMENT :body;
 END^
 
 SET TERM ; ^
@@ -33851,8 +33853,8 @@ SET TERM ; ^
 
 CREATE OR ALTER PROCEDURE "RPL$CREATE_TRIGGERS" 
 AS
-  cursor getConstraints is
-    select name from rpl$constraints;
+  DECLARE getConstraints CURSOR FOR
+    (select name from rpl$constraints);
 BEGIN
   FOR getConstraints_Rec in getConstraints DO
     EXECUTE PROCEDURE RPL$CREATE_TRIGGER(getConstraints_Rec.name);
@@ -33872,12 +33874,12 @@ SET TERM ; ^
 CREATE OR ALTER PROCEDURE "RPL$DEACTIVATE_RPL" 
 AS
   DECLARE stmt varchar(2000);
-  cursor s is SELECT TRIGGER_NAME from USER_TRIGGERS where (TRIGGER_NAME like 'RPL$%');
+  DECLARE s CURSOR FOR (SELECT TRIGGER_NAME from USER_TRIGGERS where (TRIGGER_NAME like 'RPL$%'));
 BEGIN
   FOR s_rec in s DO
   BEGIN
     stmt = 'DROP TRIGGER ' || s_rec.trigger_name;
-    execute immediate :stmt;
+    execute STATEMENT :stmt;
   END
    
 END^
@@ -33894,14 +33896,14 @@ SET TERM ; ^
 
 CREATE OR ALTER PROCEDURE "RPL$DISABLE_RPL_TABLE" (tablename varchar(250))
 AS
-   CURSOR s is select trigger_name name from user_triggers where (trigger_name like 'RPL$'||:tablename) ;
+   DECLARE s CURSOR FOR (select trigger_name name from user_triggers where (trigger_name like 'RPL$'||:tablename)) ;
    DECLARE stmt VARCHAR(2000);
 BEGIN
   FOR s_rec in s DO
   BEGIN
     stmt =
       'drop trigger '||s_rec.NAME;
-    EXECUTE IMMEDIATE :stmt;
+    EXECUTE STATEMENT :stmt;
   END
    
 END^
@@ -33928,18 +33930,18 @@ AS
    DECLARE mut_condition       VARCHAR (500);
    DECLARE table_id        NUMERIC (15);
    DECLARE plugin_count    NUMERIC (15);
-   CURSOR s
-   IS
-      SELECT ID, rplfield1, rplfield2, rplfield3, rplfield4, rplfield5
+   DECLARE s
+   CURSOR FOR
+      (SELECT ID, rplfield1, rplfield2, rplfield3, rplfield4, rplfield5
         FROM rpltable
-       WHERE UPPER (NAME) = UPPER (:tablename) AND isplugin = 0;
-   CURSOR c_plugin
-   IS
-      SELECT plugin_rpltable_id, join_fragment
+       WHERE UPPER (NAME) = UPPER (:tablename) AND isplugin = 0);
+   DECLARE c_plugin
+   CURSOR FOR
+      (SELECT plugin_rpltable_id, join_fragment
         FROM rpltableplugin rtp JOIN rpltable rt
              ON rt.ID = rtp.rpltable_id
            AND UPPER (rt.NAME) = UPPER (:tablename)
-           AND rt.isplugin = 0
+           AND rt.isplugin = 0)
              ;
 BEGIN
    select count(rtp.ID)  
@@ -34193,7 +34195,7 @@ BEGIN
        || '  end; ' 
        || ' end if;' 
        || 'end;';
-     EXECUTE IMMEDIATE :stmt;
+     EXECUTE STATEMENT :stmt;
      if ((:plugin_count > 0)) then
      BEGIN
        -- create statement trigger
@@ -34261,7 +34263,7 @@ BEGIN
           || '  mutating.new_slave_rpls.delete;' 
           || '  mutating.old_slave_rpls.delete;' 
           || 'end;';--end of trigger
-       EXECUTE IMMEDIATE :stmt;
+       EXECUTE STATEMENT :stmt;
      END
       
    END
@@ -34305,7 +34307,7 @@ BEGIN
    SELECT MAX (site_id * 1000000000)
      
      FROM systemsite INTO :sitemult;
-   EXECUTE IMMEDIATE    'select coalesce(max(id),'
+   EXECUTE STATEMENT    'select coalesce(max(id),'
                      || :sitemult
                      || '+1)-'
                      || :sitemult
@@ -34315,12 +34317,12 @@ BEGIN
                      || :sitemult
                      || '<999999999'
                 INTO :maxval;
-   EXECUTE IMMEDIATE 'select ' || :tablename || '_seq.nextval from dual'
+   EXECUTE STATEMENT 'select ' || :tablename || '_seq.nextval from dual'
                 INTO :curval;
    -- ������� ������, � �� �������������. ��� ��������
    FOR :i IN :curval .. :maxval - 1
    DO
-      EXECUTE IMMEDIATE 'select ' || :tablename || '_seq.nextval from dual'
+      EXECUTE STATEMENT 'select ' || :tablename || '_seq.nextval from dual'
                    INTO :sitemult;
     
 END^
@@ -39348,7 +39350,7 @@ CREATE OR ALTER TRIGGER "UPD_CASC_GOODSPROP_SEQORDER"
    AS
 begin
 IF (new.seqorder<>old.seqorder or new.group_id<>old.group_id) THEN
-  execute immediate 'update goodsprop set group_id=' || new.group_id 
+  execute STATEMENT 'update goodsprop set group_id=' || new.group_id 
     || ', seqorder=' || new.seqorder
     || ' where group_id=' || old.group_id 
     || ' and seqorder=' || old.seqorder;

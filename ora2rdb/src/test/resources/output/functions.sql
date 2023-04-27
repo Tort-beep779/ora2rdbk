@@ -57,11 +57,13 @@ CREATE OR ALTER PROCEDURE "GETDOCIDFORATTACHID" (DocAttachId NUMERIC(18, 4)) RET
   
   DECLARE DocId NUMERIC(18,0);
 BEGIN
-  select da.Document_id  from DocAttachEx da where da.Id = :DocAttachId into :DocId;
+  IN AUTONOMOUS TRANSACTION DO BEGIN
+select da.Document_id  from DocAttachEx da where da.Id = :DocAttachId into :DocId;
   COMMIT;
   RET_VAL = :DocId;
   SUSPEND;
   EXIT;
+	END
 END^
 
 SET TERM ; ^
@@ -307,7 +309,7 @@ SET TERM ; ^
 
 CREATE OR ALTER PROCEDURE "LEFT" (p_Str varchar(250), p_Size integer) RETURNS (RET_VAL VARCHAR(250)) AS
 begin
-  RET_VAL = SUBSTRING (:p_Str FROM 1 FOR :p_Size);
+  RET_VAL = SUBSTRING (:p_Str FROM  1 FOR  :p_Size);
   SUSPEND;
   EXIT;
 end^

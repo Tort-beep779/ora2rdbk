@@ -592,6 +592,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.IS(), "AS");
         replace(ctx.SEMICOLON(), "^");
 
+        autonomousTransactionBlockConvert(ctx);
+
         StringBuilder temp_tables_ddl = new StringBuilder();
 
         for (String table_ddl : current_plsql_block.temporary_tables_ddl)
@@ -615,6 +617,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         replace(ctx.IS(), "AS");
         replace(ctx.SEMICOLON(), "^");
+
+        autonomousTransactionBlockConvert(ctx);
     }
 
 
@@ -785,6 +789,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.IS(), "AS");
         replace(ctx.SEMICOLON(), "^");
 
+        autonomousTransactionBlockConvert(ctx);
+
         StringBuilder temp_tables_ddl = new StringBuilder();
 
         for (String table_ddl : current_plsql_block.temporary_tables_ddl)
@@ -799,23 +805,53 @@ public class RewritingListener extends PlSqlParserBaseListener {
         create_procedures.add(ctx);
     }
 
-
     @Override
     public void exitProcedure_body(Procedure_bodyContext ctx) {
-        if (ctx.seq_of_declare_specs() != null) {
-            if (ctx.seq_of_declare_specs().declare_spec().size() > 0) {
-                for (Declare_specContext declare_spec : ctx.seq_of_declare_specs().declare_spec()) {
+        replace(ctx.IS(), "AS");
+        autonomousTransactionBlockConvert(ctx);
+    }
+
+    private void autonomousTransactionBlockConvert(Procedure_bodyContext ctx) {
+        if (checAndDeleteAutonomousTransaction(ctx.seq_of_declare_specs())) {
+            insertBefore(ctx.body().seq_of_statements(), "IN AUTONOMOUS TRANSACTION DO BEGIN\n");
+            insertAfter(ctx.body().seq_of_statements(), "\n\tEND");
+        }
+    }
+
+    private void autonomousTransactionBlockConvert(Function_bodyContext ctx) {
+        if (checAndDeleteAutonomousTransaction(ctx.seq_of_declare_specs())) {
+            insertBefore(ctx.body().seq_of_statements(), "IN AUTONOMOUS TRANSACTION DO BEGIN\n");
+            insertAfter(ctx.body().seq_of_statements(), "\n\tEND");
+        }
+    }
+
+    private void autonomousTransactionBlockConvert(Create_procedure_bodyContext ctx) {
+        if (checAndDeleteAutonomousTransaction(ctx.seq_of_declare_specs())) {
+            insertBefore(ctx.body().seq_of_statements(), "IN AUTONOMOUS TRANSACTION DO BEGIN\n");
+            insertAfter(ctx.body().seq_of_statements(), "\n\tEND");
+        }
+    }
+
+    private void autonomousTransactionBlockConvert(Create_function_bodyContext ctx) {
+        if (checAndDeleteAutonomousTransaction(ctx.seq_of_declare_specs())) {
+            insertBefore(ctx.body().seq_of_statements(), "IN AUTONOMOUS TRANSACTION DO BEGIN\n");
+            insertAfter(ctx.body().seq_of_statements(), "\n\tEND");
+        }
+    }
+
+    private boolean checAndDeleteAutonomousTransaction(Seq_of_declare_specsContext ctx) {
+        if (ctx != null) {
+            if (ctx.declare_spec().size() > 0) {
+                for (Declare_specContext declare_spec : ctx.declare_spec()) {
                     if (declare_spec.pragma_declaration() != null &&
                             declare_spec.pragma_declaration().AUTONOMOUS_TRANSACTION() != null) {
                         delete(declare_spec);
-                        insertBefore(ctx.body().seq_of_statements(), "IN AUTONOMOUS TRANSACTION DO BEGIN\n");
-                        insertAfter(ctx.body().seq_of_statements(), "\nEND");
+                        return true;
                     }
                 }
             }
         }
-
-
+        return false;
     }
 
 

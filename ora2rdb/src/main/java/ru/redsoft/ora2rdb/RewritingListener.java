@@ -299,6 +299,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
             replace(ctx, "DOUBLE PRECISION");
         else if (ctx.NCHAR() != null)
             replace(ctx, "CHAR");
+        else if (ctx.BINARY_INTEGER() != null)
+            replace(ctx, "INTEGER");
     }
 
     @Override
@@ -673,7 +675,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         if (current_plsql_block != null && ctx.table_type_def().TABLE() != null && ctx.table_type_def().table_indexed_by_part() != null) {
             current_plsql_block.declareTypeOfArray(Ora2rdb.getRealName(getRuleText(ctx.identifier())),
-                    Ora2rdb.getRealName(getRewriterText(ctx.identifier())),
+                    getRewriterText(ctx.table_type_def().type_spec()),
                     getRewriterText(ctx.table_type_def().table_indexed_by_part().type_spec()));
         }
     }

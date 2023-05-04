@@ -1002,6 +1002,19 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
+    public void exitFunction_argument(PlSqlParser.Function_argumentContext ctx) {
+        for(ArgumentContext argument : ctx.argument()){
+            System.out.println(Ora2rdb.getRealName(getRuleText(argument)));
+            System.out.println(argument.getText());
+            String str= Ora2rdb.getRealName(getRuleText(argument));
+            String[] str2 = str.split("\\(");
+            if(Ora2rdb.procedures_names.contains(str2[0])){
+                insertBefore(argument, "SELECT RET_VAL FROM ");
+            }
+        }
+    }
+
+    @Override
     public void exitStandard_function(Standard_functionContext ctx) {
         if (ctx.string_function() != null)
             if (ctx.string_function().NVL() != null)

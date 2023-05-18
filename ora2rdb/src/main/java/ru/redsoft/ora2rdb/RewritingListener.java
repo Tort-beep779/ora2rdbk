@@ -27,6 +27,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
     ArrayList<Alter_triggerContext> alter_triggers = new ArrayList<Alter_triggerContext>();
 
     ArrayList<String> create_temporary_tables = new ArrayList<String>();
+    boolean containsException = false;
+    boolean exceptionExist = false;
+
 
     public RewritingListener(CommonTokenStream tokens) {
         rewriter = new TokenStreamRewriter(tokens);
@@ -561,12 +564,14 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitRegular_id(Regular_idContext ctx) {
-        switch (getRuleText(ctx).toUpperCase()) {
-            case "SYSTIMESTAMP":
-                replace(ctx, "CURRENT_TIMESTAMP");
-                break;
-            case "SYSDATE":
-                replace(ctx, "CURRENT_DATE");
+        if(ctx.non_reserved_keywords_pre12c() != null) {
+            switch (getRuleText(ctx.non_reserved_keywords_pre12c()).toUpperCase()) {
+                case "SYSTIMESTAMP":
+                    replace(ctx, "CURRENT_TIMESTAMP");
+                    break;
+                case "SYSDATE":
+                    replace(ctx, "CURRENT_TIMESTAMP");
+            }
         }
     }
 
@@ -805,6 +810,17 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         popScope();
         create_procedures.add(ctx);
+        if (containsException & !exceptionExist) {
+            String exception = "CREATE EXCEPTION RAISE_APPLICATION_EXCEPTION 'error';";
+            insertBefore(ctx, exception + "\n\n");
+        }
+        containsException = false;
+    }
+
+    private void createException(Create_procedure_bodyContext ctx){
+        //StringBuilder exception = new StringBuilder("CREATE EXCEPTION " + ctx.procedure_name().id_expression() + "_EXCEPTION");
+        //String exception = "CREATE EXCEPTION " + ctx.procedure_name().id_expression() + "_EXCEPTION 'error'";
+
     }
 
     @Override
@@ -997,8 +1013,17 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (Ora2rdb.procedures_names.contains(Ora2rdb.getRealName(getRuleText(ctx.routine_name().identifier()))))
             replace(ctx, "EXECUTE PROCEDURE " + getRewriterText(ctx));
 
-        if (Ora2rdb.getRealName(getRuleText(ctx.routine_name())).equals("NVL"))
-            replace(ctx.routine_name(), "COALESCE");
+//        if (Ora2rdb.getRealName(getRuleText(ctx.routine_name())).equals("NVL"))
+//            replace(ctx.routine_name(), "COALESCE");
+
+        if(Ora2rdb.getRealName(getRuleText(ctx.routine_name())).equals("RAISE_APPLICATION_ERROR")){
+            containsException = true;
+            containsException = true;
+            replace(ctx.routine_name(), "EXCEPTION RAISE_APPLICATION_EXCEPTION");
+            delete(ctx.function_argument().argument(0));
+            delete(ctx.function_argument().COMMA(0));
+        }
+
     }
 
     @Override
@@ -1016,9 +1041,15 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitStandard_function(Standard_functionContext ctx) {
-        if (ctx.string_function() != null)
+        if (ctx.string_function() != null) {
             if (ctx.string_function().NVL() != null)
                 replace(ctx.string_function().NVL(), "COALESCE");
+            if(ctx.string_function().TO_CHAR() != null) {
+                replace(ctx.string_function().TO_CHAR(), "CAST");
+                replace(ctx.string_function().COMMA(0),  " AS VARCHAR(10) FORMAT");
+                //delete(ctx.string_function().COMMA(0));
+            }
+        }
     }
 
     @Override

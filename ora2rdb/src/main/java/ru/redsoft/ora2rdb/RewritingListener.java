@@ -336,8 +336,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitAlter_table(Alter_tableContext ctx) {
 
-
-
         if (ctx.tableview_name().PERIOD() != null) {
             delete(ctx.tableview_name().PERIOD(0));
             delete(ctx.tableview_name().identifier());
@@ -829,18 +827,17 @@ public class RewritingListener extends PlSqlParserBaseListener {
         popScope();
         create_procedures.add(ctx);
         if (containsException & !exceptionExist) {
-            String exception = "CREATE EXCEPTION RAISE_APPLICATION_EXCEPTION 'error';";
+            String exception = "CREATE EXCEPTION CUSTOM_EXCEPTION 'error';";
             insertBefore(ctx, exception + "\n\n");
         }
         containsException = false;
     }
 
-    private void createException(Create_procedure_bodyContext ctx){
-        //StringBuilder exception = new StringBuilder("CREATE EXCEPTION " + ctx.procedure_name().id_expression() + "_EXCEPTION");
-        //String exception = "CREATE EXCEPTION " + ctx.procedure_name().id_expression() + "_EXCEPTION 'error'";
 
     @Override
-    public void enterProcedure_body(PlSqlParser.Procedure_bodyContext ctx) {pushScope(); }
+    public void enterProcedure_body(PlSqlParser.Procedure_bodyContext ctx) {
+        pushScope();
+    }
 
     @Override
     public void exitProcedure_body(Procedure_bodyContext ctx) {
@@ -850,34 +847,34 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     private void autonomousTransactionBlockConvert(Procedure_bodyContext ctx) {
-        if (checAndDeleteAutonomousTransaction(ctx.seq_of_declare_specs())) {
+        if (checkAndDeleteAutonomousTransaction(ctx.seq_of_declare_specs())) {
             insertBefore(ctx.body().seq_of_statements(), "IN AUTONOMOUS TRANSACTION DO BEGIN\n");
             insertAfter(ctx.body().seq_of_statements(), "\n\tEND");
         }
     }
 
     private void autonomousTransactionBlockConvert(Function_bodyContext ctx) {
-        if (checAndDeleteAutonomousTransaction(ctx.seq_of_declare_specs())) {
+        if (checkAndDeleteAutonomousTransaction(ctx.seq_of_declare_specs())) {
             insertBefore(ctx.body().seq_of_statements(), "IN AUTONOMOUS TRANSACTION DO BEGIN\n");
             insertAfter(ctx.body().seq_of_statements(), "\n\tEND");
         }
     }
 
     private void autonomousTransactionBlockConvert(Create_procedure_bodyContext ctx) {
-        if (checAndDeleteAutonomousTransaction(ctx.seq_of_declare_specs())) {
+        if (checkAndDeleteAutonomousTransaction(ctx.seq_of_declare_specs())) {
             insertBefore(ctx.body().seq_of_statements(), "IN AUTONOMOUS TRANSACTION DO BEGIN\n");
             insertAfter(ctx.body().seq_of_statements(), "\n\tEND");
         }
     }
 
     private void autonomousTransactionBlockConvert(Create_function_bodyContext ctx) {
-        if (checAndDeleteAutonomousTransaction(ctx.seq_of_declare_specs())) {
+        if (checkAndDeleteAutonomousTransaction(ctx.seq_of_declare_specs())) {
             insertBefore(ctx.body().seq_of_statements(), "IN AUTONOMOUS TRANSACTION DO BEGIN\n");
             insertAfter(ctx.body().seq_of_statements(), "\n\tEND");
         }
     }
 
-    private boolean checAndDeleteAutonomousTransaction(Seq_of_declare_specsContext ctx) {
+    private boolean checkAndDeleteAutonomousTransaction(Seq_of_declare_specsContext ctx) {
         if (ctx != null) {
             if (ctx.declare_spec().size() > 0) {
                 for (Declare_specContext declare_spec : ctx.declare_spec()) {
@@ -1033,13 +1030,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (Ora2rdb.procedures_names.contains(Ora2rdb.getRealName(getRuleText(ctx.routine_name().identifier()))))
             replace(ctx, "EXECUTE PROCEDURE " + getRewriterText(ctx));
 
-//        if (Ora2rdb.getRealName(getRuleText(ctx.routine_name())).equals("NVL"))
-//            replace(ctx.routine_name(), "COALESCE");
-
-        if(Ora2rdb.getRealName(getRuleText(ctx.routine_name())).equals("RAISE_APPLICATION_ERROR")){
+        if (Ora2rdb.getRealName(getRuleText(ctx.routine_name())).equals("RAISE_APPLICATION_ERROR")) {
             containsException = true;
-            containsException = true;
-            replace(ctx.routine_name(), "EXCEPTION RAISE_APPLICATION_EXCEPTION");
+            replace(ctx.routine_name(), "EXCEPTION CUSTOM_EXCEPTION");
             delete(ctx.function_argument().argument(0));
             delete(ctx.function_argument().COMMA(0));
         }
@@ -1048,10 +1041,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitFunction_argument(PlSqlParser.Function_argumentContext ctx) {
-        for(ArgumentContext argument : ctx.argument()){
-            System.out.println(Ora2rdb.getRealName(getRuleText(argument)));
-            System.out.println(argument.getText());
-            String str= Ora2rdb.getRealName(getRuleText(argument));
+        for (ArgumentContext argument : ctx.argument()) {
+            String str = Ora2rdb.getRealName(getRuleText(argument));
             String[] str2 = str.split("\\(");
             if(Ora2rdb.procedures_names.contains(str2[0])){
                 insertBefore(argument, "SELECT RET_VAL FROM ");

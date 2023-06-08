@@ -616,6 +616,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
+    public void enterFunction_body(PlSqlParser.Function_bodyContext ctx) {
+        pushScope();
+    }
+
+    @Override
     public void exitFunction_body(Function_bodyContext ctx) {
         replace(ctx.FUNCTION(), "PROCEDURE");
 
@@ -626,6 +631,19 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.SEMICOLON(), "^");
 
         autonomousTransactionBlockConvert(ctx);
+
+        StringBuilder temp_tables_ddl = new StringBuilder();
+
+        for (String table_ddl : current_plsql_block.temporary_tables_ddl)
+            temp_tables_ddl.append(table_ddl).append("\n\n");
+
+        if (!Ora2rdb.reorder)
+            replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
+        else
+            create_temporary_tables.add(temp_tables_ddl.toString());
+
+        popScope();
+
     }
 
 
@@ -821,12 +839,14 @@ public class RewritingListener extends PlSqlParserBaseListener {
         //StringBuilder exception = new StringBuilder("CREATE EXCEPTION " + ctx.procedure_name().id_expression() + "_EXCEPTION");
         //String exception = "CREATE EXCEPTION " + ctx.procedure_name().id_expression() + "_EXCEPTION 'error'";
 
-    }
+    @Override
+    public void enterProcedure_body(PlSqlParser.Procedure_bodyContext ctx) {pushScope(); }
 
     @Override
     public void exitProcedure_body(Procedure_bodyContext ctx) {
         replace(ctx.IS(), "AS");
         autonomousTransactionBlockConvert(ctx);
+        popScope();
     }
 
     private void autonomousTransactionBlockConvert(Procedure_bodyContext ctx) {

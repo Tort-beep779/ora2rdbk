@@ -27,6 +27,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     ArrayList<Alter_triggerContext> alter_triggers = new ArrayList<Alter_triggerContext>();
 
     ArrayList<String> create_temporary_tables = new ArrayList<String>();
+    ArrayList<String> loop_index_names = new ArrayList<String>();
     boolean containsException = false;
     boolean exceptionExist = false;
 
@@ -628,6 +629,15 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.IS(), "AS");
         replace(ctx.SEMICOLON(), "^");
 
+        StringBuilder declare_loop_index_names = new StringBuilder();
+        if(!loop_index_names.isEmpty()) {
+            for (String index_name : loop_index_names) {
+                declare_loop_index_names.append("\n DECLARE VARIABLE ").append(index_name).append(" INTEGER;");
+            }
+            insertAfter(ctx.seq_of_declare_specs(), declare_loop_index_names.toString());
+        }
+        loop_index_names.clear();
+
         autonomousTransactionBlockConvert(ctx);
 
         StringBuilder temp_tables_ddl = new StringBuilder();
@@ -1142,19 +1152,70 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitLoop_statement(Loop_statementContext ctx) {
-        insertBefore(ctx.condition(), "(");
-        insertAfter(ctx.condition(), ")");
-        replace(ctx.LOOP(0), "DO");
+    public void enterLoop_statement(Loop_statementContext ctx) {
 
-        if (ctx.seq_of_statements().statement().size() > 1) {
+        if (ctx.FOR() != null) {
+            if (ctx.cursor_loop_param().DOUBLE_PERIOD() != null) {
+                String index_name = Ora2rdb.getRealName((getRuleText(ctx.cursor_loop_param().index_name())));
+
+                if (current_plsql_block != null)
+                    if (!current_plsql_block.containsInScope(Ora2rdb.getRealName(getRuleText(ctx))))
+                        current_plsql_block.declareVar(index_name);
+
+            }
+        }
+    }
+    @Override
+    public void exitLoop_statement(Loop_statementContext ctx) {
+
+        if (ctx.FOR() != null) {
+            if (ctx.cursor_loop_param().REVERSE() != null && ctx.cursor_loop_param().DOUBLE_PERIOD() != null) {
+                String index_name = ctx.cursor_loop_param().index_name().getText();
+
+                if (!loop_index_names.contains(index_name))
+                    loop_index_names.add(index_name);
+
+                String target = getRewriterText(ctx.cursor_loop_param().index_name());
+                if (target.startsWith(":"))
+                    replace(ctx.cursor_loop_param().index_name(), target.substring(1));
+
+                insertBefore(ctx, index_name + " = " + ctx.cursor_loop_param().upper_bound().getText() + ";\n");
+                replace(ctx.FOR(), "WHILE (");
+                replace(ctx.cursor_loop_param().IN(), " > ");
+                delete(ctx.cursor_loop_param().REVERSE());
+                delete(ctx.cursor_loop_param().upper_bound());
+                delete(ctx.cursor_loop_param().DOUBLE_PERIOD());
+                insertBefore(ctx.LOOP(0), ")");
+                insertBefore(ctx.END(), index_name + " = " + index_name + " - 1;\n");
+            } else if (ctx.cursor_loop_param().DOUBLE_PERIOD() != null) {
+                String index_name = ctx.cursor_loop_param().index_name().getText();
+
+                if (!loop_index_names.contains(index_name))
+                    loop_index_names.add(index_name);
+
+                String target = getRewriterText(ctx.cursor_loop_param().index_name());
+                if (target.startsWith(":"))
+                    replace(ctx.cursor_loop_param().index_name(), target.substring(1));
+
+                insertBefore(ctx, index_name + " = " + ctx.cursor_loop_param().lower_bound().getText() + ";\n");
+                replace(ctx.FOR(), "WHILE (");
+                replace(ctx.cursor_loop_param().IN(), " < ");
+                delete(ctx.cursor_loop_param().lower_bound());
+                delete(ctx.cursor_loop_param().DOUBLE_PERIOD());
+                insertBefore(ctx.LOOP(0), ")");
+                insertBefore(ctx.END(), index_name + " = " + index_name + " + 1;\n");
+            }
+            insertBefore(ctx.condition(), "(");
+            insertAfter(ctx.condition(), ")");
+            replace(ctx.LOOP(0), "DO");
+
             String indentation = getIndentation(ctx);
             insertAfter(ctx.LOOP(0), "\n" + indentation + "BEGIN");
             insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
-        }
 
-        delete(ctx.END());
-        delete(ctx.LOOP(1));
+            delete(ctx.END());
+            delete(ctx.LOOP(1));
+        }
     }
 
     @Override

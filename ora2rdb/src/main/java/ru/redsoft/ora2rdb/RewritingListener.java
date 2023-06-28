@@ -515,19 +515,16 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void enterCreate_view(Create_viewContext ctx) {
-        current_view = Ora2rdb.views.get(Ora2rdb.getRealName(getRuleText(ctx.tableview_name())));
+        current_view = Ora2rdb.views.get(Ora2rdb.getRealName(getRuleText(ctx.id_expression(0))));
     }
 
     @Override
     public void exitCreate_view(Create_viewContext ctx) {
         replace(ctx.REPLACE(), "ALTER");
         delete(ctx.FORCE());
-        if (ctx.OR().size() >= 2) {
-            delete(ctx.OR(1));
-        }
-        if (ctx.tableview_name().PERIOD() != null) {
-            delete(ctx.tableview_name().identifier());
-            delete(ctx.tableview_name().PERIOD(0));
+        if (ctx.PERIOD() != null) {
+            delete(ctx.schema_name());
+            delete(ctx.PERIOD());
         }
         current_view = null;
     }

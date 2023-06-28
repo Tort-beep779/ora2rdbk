@@ -116,6 +116,6 @@ public class InitialListener extends PlSqlParserBaseListener {
 	}
 	@Override
 	public void enterCreate_view(Create_viewContext ctx) {
-		Ora2rdb.views.put(Ora2rdb.getRealName(ctx.tableview_name().getText()), new View(ctx));
+		Ora2rdb.views.put(Ora2rdb.getRealName(ctx.id_expression(0).getText()), new View(ctx));
 	}
 }

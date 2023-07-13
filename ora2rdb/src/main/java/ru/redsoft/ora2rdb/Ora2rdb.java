@@ -56,9 +56,9 @@ public class Ora2rdb {
 
         ParseTreeWalker walker = new ParseTreeWalker();
 
-        InitialListener init_listener = new InitialListener();
-        walker.walk(init_listener, tree);
-        //System.out.println(init_listener.table_map.toString());
+        ScanListener scan_listener = new ScanListener();
+        walker.walk(scan_listener, tree);
+        //System.out.println(scan_listener.table_map.toString());
 
         RewritingListener converter = new RewritingListener(tokens);
         walker.walk(converter, tree);

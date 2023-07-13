@@ -3,7 +3,7 @@ package ru.redsoft.ora2rdb;
 import java.util.TreeSet;
 import ru.redsoft.ora2rdb.PlSqlParser.*;
 
-public class InitialListener extends PlSqlParserBaseListener {
+public class ScanListener extends PlSqlParserBaseListener {
 	@Override
 	public void enterAlter_table(Alter_tableContext ctx) {
 		Column_clausesContext columns_ctx = ctx.column_clauses();

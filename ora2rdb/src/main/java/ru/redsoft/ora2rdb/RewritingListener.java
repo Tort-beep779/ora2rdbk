@@ -624,7 +624,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         insertAfter(ctx.type_spec(), ")");
 
         replace(ctx.IS(), "AS");
-        replace(ctx.SEMICOLON(), "^");
+        delete(ctx.SEMICOLON());
 
         StringBuilder declare_loop_index_names = new StringBuilder();
         if(!loop_index_names.isEmpty()) {
@@ -637,15 +637,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         autonomousTransactionBlockConvert(ctx);
 
-        StringBuilder temp_tables_ddl = new StringBuilder();
 
-        for (String table_ddl : current_plsql_block.temporary_tables_ddl)
-            temp_tables_ddl.append(table_ddl).append("\n\n");
-
-        if (!Ora2rdb.reorder)
-            replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
-        else
-            create_temporary_tables.add(temp_tables_ddl.toString());
 
         popScope();
 
@@ -782,6 +774,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
+    public void enterCreate_package_body(PlSqlParser.Create_package_bodyContext ctx) {
+        pushScope();
+    }
+
+    @Override
     public void exitCreate_package_body(Create_package_bodyContext ctx) {
         if (ctx.OR() != null) {
             if (ctx.REPLACE() != null) {
@@ -806,6 +803,16 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 delete(ctx.package_name(ctx.package_name().size() - 1));
             }
         }
+
+        StringBuilder temp_tables_ddl = new StringBuilder();
+        for (String table_ddl : current_plsql_block.temporary_tables_ddl)
+            temp_tables_ddl.append(table_ddl).append("\n\n");
+
+        if (!Ora2rdb.reorder)
+            replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
+        else
+            create_temporary_tables.add(temp_tables_ddl.toString());
+        popScope();
     }
 
     @Override
@@ -849,6 +856,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitProcedure_body(Procedure_bodyContext ctx) {
         replace(ctx.IS(), "AS");
+        delete(ctx.SEMICOLON());
         autonomousTransactionBlockConvert(ctx);
         popScope();
     }
@@ -919,16 +927,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.REPLACE(), "ALTER");
         insertBefore(ctx.trigger_body(), "AS\n");
         replace(ctx.SEMICOLON(), "^");
-
-        StringBuilder temp_tables_ddl = new StringBuilder();
-
-        for (String table_ddl : current_plsql_block.temporary_tables_ddl)
-            temp_tables_ddl.append(table_ddl).append("\n\n");
-
-        if (!Ora2rdb.reorder)
-            replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
-        else
-            create_temporary_tables.add(temp_tables_ddl.toString());
 
         popScope();
         create_triggers.add(ctx);

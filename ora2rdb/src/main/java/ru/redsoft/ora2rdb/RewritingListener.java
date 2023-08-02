@@ -1193,7 +1193,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 delete(ctx.cursor_loop_param().upper_bound());
                 delete(ctx.cursor_loop_param().DOUBLE_PERIOD());
                 insertBefore(ctx.LOOP(0), ")");
-                insertBefore(ctx.END(), index_name + " = " + index_name + " - 1;\n");
+                insertAfter(ctx.seq_of_statements(),'\n'+index_name + " = " + index_name + " + 1;");
             } else if (ctx.cursor_loop_param().DOUBLE_PERIOD() != null) {
                 String index_name = ctx.cursor_loop_param().index_name().getText();
 
@@ -1210,7 +1210,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 delete(ctx.cursor_loop_param().lower_bound());
                 delete(ctx.cursor_loop_param().DOUBLE_PERIOD());
                 insertBefore(ctx.LOOP(0), ")");
-                insertBefore(ctx.END(), index_name + " = " + index_name + " + 1;\n");
+                insertAfter(ctx.seq_of_statements(),'\n'+index_name + " = " + index_name + " + 1;");
             }
             insertBefore(ctx.condition(), "(");
             insertAfter(ctx.condition(), ")");

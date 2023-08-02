@@ -206,12 +206,16 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitCreate_table(Create_tableContext ctx) {
 
-        if (ctx.tableview_name().PERIOD().size() > 0) {
+        String table_name = null;
+        if (ctx.tableview_name().id_expression() != null) {
             delete(ctx.tableview_name().PERIOD(0));
             delete(ctx.tableview_name().identifier());
+            table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().id_expression()));
         }
+        else
+            table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().identifier()));
 
-        String table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().id_expression()));
+
 
         if (Ora2rdb.table_not_null_cols.containsKey(table_name)) {
             TreeSet<String> columns_set = Ora2rdb.table_not_null_cols.get(table_name);

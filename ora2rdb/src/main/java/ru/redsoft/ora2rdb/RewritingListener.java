@@ -668,6 +668,14 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitExecute_immediate(Execute_immediateContext ctx) {
         replace(ctx.IMMEDIATE(), "STATEMENT");
+        insertBefore(ctx.expression(), "(");
+        insertAfter(ctx.expression(), ")");
+        if(ctx.into_clause() != null) {
+            String into_clause = getRewriterText(ctx.into_clause());
+            delete(ctx.into_clause());
+            replace(ctx, getRewriterText(ctx) + " " + into_clause);
+
+        }
     }
 
     @Override

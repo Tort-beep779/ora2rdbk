@@ -1076,7 +1076,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 insertBefore(ctx, "UPPER( ");
                 replace(ctx.string_function().TO_CHAR(), "CAST");
                 replace(ctx.string_function().COMMA(0), " AS VARCHAR(10) FORMAT");
-                insertAfter(ctx, ")");
+                replace(ctx, ctx +")");
             }
         }
     }

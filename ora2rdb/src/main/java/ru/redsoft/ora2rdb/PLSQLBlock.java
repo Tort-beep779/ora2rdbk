@@ -10,6 +10,7 @@ public class PLSQLBlock {
 
     ArrayList<String> trigger_fields = new ArrayList<String>();
     String trigger_when_condition;
+    String procedure_name = new String();
 
     TreeMap<String, ArrayType> array_types = new TreeMap<String, ArrayType>();
     TreeMap<String, String> array_to_table = new TreeMap<String, String>();

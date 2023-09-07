@@ -15,6 +15,7 @@ public class Ora2rdb {
     public static TreeSet<String> index_names = new TreeSet<String>();
     public static TreeSet<String> procedures_names = new TreeSet<String>();
     public static TreeMap<String, View> views = new TreeMap<String, View>();
+    public static TreeMap<String, TreeSet<String>> procedure_in_out_parameters = new TreeMap<String, TreeSet<String>>();
 
     public static boolean reorder = false;
 

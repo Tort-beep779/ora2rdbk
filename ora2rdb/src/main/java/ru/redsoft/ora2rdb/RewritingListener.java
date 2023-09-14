@@ -1197,11 +1197,15 @@ public class RewritingListener extends PlSqlParserBaseListener {
             if (ctx.string_function().NVL() != null)
                 replace(ctx.string_function().NVL(), "COALESCE");
             if (ctx.string_function().TO_CHAR() != null) {
-                if (ctx.string_function().COMMA(0) != null)
-                    insertBefore(ctx, "UPPER( ");
                 replace(ctx.string_function().TO_CHAR(), "CAST");
-                replace(ctx.string_function().COMMA(0), " AS VARCHAR(10) FORMAT");
-                replace(ctx, ctx + ")");
+                if (ctx.string_function().COMMA(0) != null) {
+                    insertBefore(ctx, "UPPER( ");
+                    replace(ctx.string_function().COMMA(0), " AS VARCHAR(250) FORMAT");
+                    replace(ctx, getRewriterText(ctx) + ")");
+                }
+                else{
+                    insertAfter(ctx.string_function().expression(0), " AS VARCHAR(250)");
+                }
             }
             if (ctx.string_function().TO_DATE() != null) {
                 replace(ctx.string_function().TO_DATE(), "CAST");

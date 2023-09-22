@@ -1,5 +1,6 @@
 package ru.redsoft.ora2rdb;
 
+import java.util.TreeMap;
 import java.util.TreeSet;
 import ru.redsoft.ora2rdb.PlSqlParser.*;
 
@@ -88,16 +89,16 @@ public class ScanListener extends PlSqlParserBaseListener {
             Ora2rdb.procedures_names.add(procedureName);
         }
         if (ctx.parameter() != null) {
-            for (ParameterContext parameter : ctx.parameter()) {
-                if (parameter.OUT().size() > 0) {
+            for (int i = 0; i < ctx.parameter().size(); i++) {
+                if (ctx.parameter(i).OUT().size() > 0) {
 
-                    String parameter_name = Ora2rdb.getRealName(parameter.parameter_name().getText());
-                    if (Ora2rdb.procedure_in_out_parameters.containsKey(procedureName)) {
-                        Ora2rdb.procedure_in_out_parameters.get(procedureName).add(parameter_name);
+                    String parameter_name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
+                    if (Ora2rdb.out_parameters_in_procedure.containsKey(procedureName)) {
+                        Ora2rdb.out_parameters_in_procedure.get(procedureName).put(parameter_name, i);
                     } else {
-                        TreeSet<String> parameter_set = new TreeSet<String>();
-                        parameter_set.add(parameter_name);
-                        Ora2rdb.procedure_in_out_parameters.put(procedureName, parameter_set);
+                        TreeMap<String, Integer> parameter_set = new TreeMap<>();
+                        parameter_set.put(parameter_name, i);
+                        Ora2rdb.out_parameters_in_procedure.put(procedureName, parameter_set);
                     }
                 }
 
@@ -110,8 +111,9 @@ public class ScanListener extends PlSqlParserBaseListener {
     public void enterCreate_function_body(Create_function_bodyContext ctx) {
 
         if (ctx.parameter() != null) {
-            for (ParameterContext parameter : ctx.parameter()) {
-                if (parameter.OUT().size() > 0) {
+            for (int i = 0; i < ctx.parameter().size(); i++) {
+                if (ctx.parameter(i).OUT().size() > 0) {
+
 
                     String procedureName;
                     if (ctx.function_name().id_expression() != null) {
@@ -122,13 +124,15 @@ public class ScanListener extends PlSqlParserBaseListener {
                         Ora2rdb.procedures_names.add(procedureName);
                     }
 
-                    String parameter_name = Ora2rdb.getRealName(parameter.parameter_name().getText());
-                    if (Ora2rdb.procedure_in_out_parameters.containsKey(procedureName)) {
-                        Ora2rdb.procedure_in_out_parameters.get(procedureName).add(parameter_name);
+                    String parameter_name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
+                    if (Ora2rdb.out_parameters_in_procedure.containsKey(procedureName)) {
+                        Ora2rdb.out_parameters_in_procedure.get(procedureName).put(parameter_name, i);
+
                     } else {
-                        TreeSet<String> parameter_set = new TreeSet<String>();
-                        parameter_set.add(parameter_name);
-                        Ora2rdb.procedure_in_out_parameters.put(procedureName, parameter_set);
+                        TreeMap<String, Integer> parameter_set = new TreeMap<>();
+                        parameter_set.put(parameter_name, i);
+                        Ora2rdb.out_parameters_in_procedure.put(procedureName, parameter_set);
+
                     }
                 }
 
@@ -139,17 +143,18 @@ public class ScanListener extends PlSqlParserBaseListener {
     @Override
     public  void enterFunction_body(Function_bodyContext ctx){
         if (ctx.parameter() != null) {
-            for (ParameterContext parameter : ctx.parameter()) {
-                if (parameter.OUT().size() > 0) {
+            for (int i = 0; i < ctx.parameter().size(); i++) { //for (ParameterContext parameter : ctx.parameter()) {
+                if (ctx.parameter(i).OUT().size() > 0) {
+
                     String procedureName = Ora2rdb.getRealName(ctx.identifier().id_expression().getText());
                     Ora2rdb.procedures_names.add(procedureName);
-                    String parameter_name = Ora2rdb.getRealName(parameter.parameter_name().getText());
-                    if (Ora2rdb.procedure_in_out_parameters.containsKey(procedureName)) {
-                        Ora2rdb.procedure_in_out_parameters.get(procedureName).add(parameter_name);
+                    String parameter_name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
+                    if (Ora2rdb.out_parameters_in_procedure.containsKey(procedureName)) {
+                        Ora2rdb.out_parameters_in_procedure.get(procedureName).put(parameter_name, i);
                     } else {
-                        TreeSet<String> parameter_set = new TreeSet<String>();
-                        parameter_set.add(parameter_name);
-                        Ora2rdb.procedure_in_out_parameters.put(procedureName, parameter_set);
+                        TreeMap<String, Integer> parameter_set = new TreeMap<>();
+                        parameter_set.put(parameter_name, i);
+                        Ora2rdb.out_parameters_in_procedure.put(procedureName, parameter_set);
                     }
                 }
             }
@@ -161,20 +166,21 @@ public class ScanListener extends PlSqlParserBaseListener {
         String procedureName = Ora2rdb.getRealName(ctx.identifier().id_expression().getText());
         Ora2rdb.procedures_names.add(procedureName);
         if (ctx.parameter() != null) {
-            for (ParameterContext parameter : ctx.parameter()) {
-                if (parameter.OUT().size() > 0) {
-                    String parameter_name = Ora2rdb.getRealName(parameter.parameter_name().getText());
-                    if (Ora2rdb.procedure_in_out_parameters.containsKey(procedureName)) {
-                        Ora2rdb.procedure_in_out_parameters.get(procedureName).add(parameter_name);
+            for (int i = 0; i < ctx.parameter().size(); i++) {
+                if (ctx.parameter(i).OUT().size() > 0) {
+                    String parameter_name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
+                    if (Ora2rdb.out_parameters_in_procedure.containsKey(procedureName)) {
+                        Ora2rdb.out_parameters_in_procedure.get(procedureName).put(parameter_name, i);
                     } else {
-                        TreeSet<String> parameter_set = new TreeSet<String>();
-                        parameter_set.add(parameter_name);
-                        Ora2rdb.procedure_in_out_parameters.put(procedureName, parameter_set);
+                        TreeMap<String, Integer> parameter_set = new TreeMap<>();
+                        parameter_set.put(parameter_name, i);
+                        Ora2rdb.out_parameters_in_procedure.put(procedureName, parameter_set);
                     }
                 }
             }
         }
     }
+
     @Override
     public void enterCreate_view(Create_viewContext ctx) {
         Ora2rdb.views.put(Ora2rdb.getRealName(ctx.id_expression(0).getText()), new View(ctx));

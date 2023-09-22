@@ -11,7 +11,7 @@ public class PLSQLBlock {
     ArrayList<String> trigger_fields = new ArrayList<String>();
     String trigger_when_condition;
     String procedure_name = new String();
-
+    ArrayList<String> procedure_names_with_out_parameters = new ArrayList<>();
     TreeMap<String, ArrayType> array_types = new TreeMap<String, ArrayType>();
     TreeMap<String, String> array_to_table = new TreeMap<String, String>();
     ArrayList<String> temporary_tables_ddl = new ArrayList<String>();

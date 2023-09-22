@@ -15,7 +15,8 @@ public class Ora2rdb {
     public static TreeSet<String> index_names = new TreeSet<String>();
     public static TreeSet<String> procedures_names = new TreeSet<String>();
     public static TreeMap<String, View> views = new TreeMap<String, View>();
-    public static TreeMap<String, TreeSet<String>> procedure_in_out_parameters = new TreeMap<String, TreeSet<String>>();
+    public static TreeMap<String, TreeMap<String, Integer>> out_parameters_in_procedure = new TreeMap<>();
+    public static TreeMap<String, String> function_returns_type = new TreeMap<>();
 
     public static boolean reorder = false;
 
@@ -70,6 +71,7 @@ public class Ora2rdb {
         Ora2rdb.procedures_names.clear();
         Ora2rdb.views.clear();
         Ora2rdb.reorder = false;
+        Ora2rdb.out_parameters_in_procedure.clear();
         return converter;
     }
 

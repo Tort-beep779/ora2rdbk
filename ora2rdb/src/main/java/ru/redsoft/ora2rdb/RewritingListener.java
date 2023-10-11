@@ -1174,6 +1174,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void enterCreate_procedure_body(Create_procedure_bodyContext ctx) {
         pushScope();
+        String procedureName;
+        if (ctx.procedure_name().id_expression() != null)
+            procedureName = Ora2rdb.getRealName(ctx.procedure_name().id_expression().getText());
+        else
+            procedureName = Ora2rdb.getRealName(ctx.procedure_name().identifier().id_expression().getText());
+        parent_procedure_name = procedureName;
     }
 
     @Override
@@ -1211,6 +1217,19 @@ public class RewritingListener extends PlSqlParserBaseListener {
                     return_parameters.append(parameter_name).append("_OUT ").append(type_spec).append(", \n");
             }
             insertBefore(ctx.IS(),  return_parameters.toString() + '\n');
+        }
+
+        if (current_plsql_block.procedure_names_with_out_parameters.size() > 0) {
+            StringBuilder declare_ret_val = new StringBuilder();
+            for (String procedureName : current_plsql_block.procedure_names_with_out_parameters) {
+                declare_ret_val.append("\nDECLARE ").
+                        append(procedureName).
+                        append("_RET_VAL ").
+                        append(Ora2rdb.function_returns_type.get(procedureName)).
+                        append(";");
+            }
+
+            insertAfter(ctx.seq_of_declare_specs(), declare_ret_val);
         }
 
         autonomousTransactionBlockConvert(ctx);

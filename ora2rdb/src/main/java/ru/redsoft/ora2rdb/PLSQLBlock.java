@@ -7,15 +7,25 @@ import java.util.TreeSet;
 
 public class PLSQLBlock {
     Stack<TreeSet<String>> scopes = new Stack<TreeSet<String>>();
-
+    private PlSqlParser.StatementContext statement;
     ArrayList<String> trigger_fields = new ArrayList<String>();
     String trigger_when_condition;
-    String procedure_name = new String();
+    String procedure_name;
     ArrayList<String> procedure_names_with_out_parameters = new ArrayList<>();
+    String qwery_call_function_with_out_parameters;
     TreeMap<String, ArrayType> array_types = new TreeMap<String, ArrayType>();
     TreeMap<String, String> array_to_table = new TreeMap<String, String>();
     ArrayList<String> temporary_tables_ddl = new ArrayList<String>();
 
+    public void setStatement (PlSqlParser.StatementContext ctx){
+        this.statement = ctx;
+    }
+    public PlSqlParser.StatementContext getStatement(){
+        return statement;
+    }
+    public void clearStatement(){
+        statement = null;
+    }
     private static TreeSet<String> used_temporary_table_names = new TreeSet<String>();
 
     class ArrayType {

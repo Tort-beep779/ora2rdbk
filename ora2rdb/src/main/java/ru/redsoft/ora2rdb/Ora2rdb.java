@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -15,9 +17,13 @@ public class Ora2rdb {
     public static TreeSet<String> index_names = new TreeSet<String>();
     public static TreeSet<String> procedures_names = new TreeSet<String>();
     public static TreeMap<String, View> views = new TreeMap<String, View>();
+    public static TreeMap<String, TreeMap<String, TreeMap<String, Integer>>> procedures_with_out_parameters = new TreeMap<>();
+    public static TreeMap<String, TreeMap<String, TreeMap<String, Integer>>> functions_with_out_parameters = new TreeMap<>();
     public static TreeMap<String, TreeMap<String, Integer>> out_parameters_in_procedure = new TreeMap<>();
+    public static TreeMap<String, TreeMap<String, Integer>> out_parameters_in_function = new TreeMap<>();
+    public static TreeMap<String, TreeMap<String, String>> function_returns_type_with_parent = new TreeMap<>();
     public static TreeMap<String, String> function_returns_type = new TreeMap<>();
-
+    public static List<StoredProcedureWithOutParameters> stored_procedures_with_out_parameters = new ArrayList<>();
     public static boolean reorder = false;
 
     static String stripQuotes(String str) {
@@ -72,6 +78,12 @@ public class Ora2rdb {
         Ora2rdb.views.clear();
         Ora2rdb.reorder = false;
         Ora2rdb.out_parameters_in_procedure.clear();
+        Ora2rdb.out_parameters_in_function.clear();
+        Ora2rdb.procedures_with_out_parameters.clear();
+        Ora2rdb.functions_with_out_parameters.clear();
+        Ora2rdb.function_returns_type_with_parent.clear();
+        Ora2rdb.function_returns_type.clear();
+        Ora2rdb.stored_procedures_with_out_parameters.clear();
         return converter;
     }
 

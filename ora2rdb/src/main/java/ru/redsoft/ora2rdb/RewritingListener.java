@@ -1383,6 +1383,16 @@ public class RewritingListener extends PlSqlParserBaseListener {
         insertBefore(ctx.trigger_body(), "AS\n");
         replace(ctx.SEMICOLON(), "^");
 
+        StringBuilder temp_tables_ddl = new StringBuilder();
+
+        for (String table_ddl : current_plsql_block.temporary_tables_ddl)
+            temp_tables_ddl.append(table_ddl).append("\n\n");
+
+        if (!Ora2rdb.reorder)
+            replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
+        else
+            create_temporary_tables.add(temp_tables_ddl.toString());
+
         popScope();
         create_triggers.add(ctx);
     }

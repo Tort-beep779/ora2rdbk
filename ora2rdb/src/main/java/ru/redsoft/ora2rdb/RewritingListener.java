@@ -1735,6 +1735,22 @@ public class RewritingListener extends PlSqlParserBaseListener {
                             indentation + "EXIT");
                 } else
                     replace(ctx, "EXIT");
+            }else if (Ora2rdb.out_parameters_in_function.containsKey(current_plsql_block.procedure_name)) {
+                TreeSet<String> parameter_set = new TreeSet<>(Ora2rdb.out_parameters_in_function.
+                        get(current_plsql_block.procedure_name).keySet());
+                StringBuilder return_parameters = new StringBuilder();
+                for (String parameter_name : parameter_set) {
+
+                    return_parameters.append(parameter_name).append("_OUT = ").append(parameter_name).append(";\n");
+
+                }
+                if (ctx.expression() != null) {
+                    String indentation = getIndentation(ctx);
+                    replace(ctx, "RET_VAL = " + getRewriterText(ctx.expression()) + ";\n" +return_parameters.toString()+
+                            indentation + "SUSPEND;\n" +
+                            indentation + "EXIT");
+                } else
+                    replace(ctx, "EXIT");
             }
         }
     }

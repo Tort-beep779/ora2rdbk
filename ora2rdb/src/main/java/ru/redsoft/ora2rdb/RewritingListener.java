@@ -136,7 +136,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     void delete(List<? extends ParserRuleContext> ctx_list) {
-        if (ctx_list.size() != 0)
+        if (!ctx_list.isEmpty())
             rewriter.delete(ctx_list.get(0).start, ctx_list.get(ctx_list.size() - 1).stop);
         sisoutRewriter();
     }
@@ -214,10 +214,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
             delete(ctx.tableview_name().PERIOD(0));
             delete(ctx.tableview_name().identifier());
             table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().id_expression()));
-        }
-        else
+        } else
             table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().identifier()));
-
 
 
         if (Ora2rdb.table_not_null_cols.containsKey(table_name)) {
@@ -285,7 +283,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                     replace(ctx, getRewriterText(ctx) + "(250)");
             } else if (ctx.native_datatype_element().NUMERIC() != null) {
                 if (ctx.precision_part() == null)
-                    replace(ctx,getRewriterText(ctx) + "(18, 4)");
+                    replace(ctx, getRewriterText(ctx) + "(18, 4)");
             }
         }
     }
@@ -330,7 +328,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (ctx.id_expression() != null) {
             delete(ctx.identifier());
 
-            if (ctx.PERIOD().size() > 0)
+            if (!ctx.PERIOD().isEmpty())
                 delete(ctx.PERIOD(0));
 
         }
@@ -352,7 +350,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         Column_clausesContext column_clauses_ctx = ctx.column_clauses();
 
         if (constraint_clauses_ctx != null) {
-            if (constraint_clauses_ctx.out_of_line_constraint().size() != 0) {
+            if (!constraint_clauses_ctx.out_of_line_constraint().isEmpty()) {
                 Constraint_stateContext constraint_state_ctx = constraint_clauses_ctx.out_of_line_constraint(0).constraint_state();
                 delete(constraint_state_ctx);
             }
@@ -362,10 +360,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
             if (add_modify_drop_column_clausesContext != null) {
                 Modify_column_clausesContext modify_column_clauses_ctx = add_modify_drop_column_clausesContext.modify_column_clauses(0);
 
-                if (modify_column_clauses_ctx.modify_col_properties().size() != 0) {
+                if (!modify_column_clauses_ctx.modify_col_properties().isEmpty()) {
                     Modify_col_propertiesContext modify_col_properties_ctx = modify_column_clauses_ctx.modify_col_properties(0);
 
-                    if (modify_col_properties_ctx.inline_constraint().size() != 0) {
+                    if (!modify_col_properties_ctx.inline_constraint().isEmpty()) {
                         if (modify_col_properties_ctx.inline_constraint(0).NULL_() != null) {
                             delete(ctx);
                             return;
@@ -476,20 +474,20 @@ public class RewritingListener extends PlSqlParserBaseListener {
         convertFunctionCall(ctx);
     }
 
-    private  void convertProcedureWithOutParameters(Function_callContext ctx){
+    private void convertProcedureWithOutParameters(Function_callContext ctx) {
         String functionCallName;
-        if (ctx.routine_name().id_expression().size() >= 1)
+        if (!ctx.routine_name().id_expression().isEmpty())
             functionCallName = Ora2rdb.getRealName(getRuleText(ctx.routine_name().id_expression(0)));
         else
             functionCallName = Ora2rdb.getRealName(getRuleText(ctx.routine_name().identifier()));
 
         TreeSet<String> parameter_set = null;
-        if(Ora2rdb.procedures_with_out_parameters.containsKey(parent_procedure_name)&&
+        if (Ora2rdb.procedures_with_out_parameters.containsKey(parent_procedure_name) &&
                 Ora2rdb.procedures_with_out_parameters.get(parent_procedure_name).containsKey(functionCallName)) {
             parameter_set = new TreeSet<>(
                     Ora2rdb.procedures_with_out_parameters.get(parent_procedure_name).get(functionCallName).keySet());
             StringBuilder return_parameters = new StringBuilder();
-        }else if(Ora2rdb.out_parameters_in_procedure.containsKey(functionCallName)) {
+        } else if (Ora2rdb.out_parameters_in_procedure.containsKey(functionCallName)) {
             parameter_set = new TreeSet<>(
                     Ora2rdb.out_parameters_in_procedure.get(functionCallName).keySet());
         }
@@ -497,16 +495,16 @@ public class RewritingListener extends PlSqlParserBaseListener {
         StringBuilder selectQuery = new StringBuilder();
 
         selectQuery.append("SELECT ");
-        for (String parameter: parameter_set){
+        for (String parameter : parameter_set) {
             if (parameter.equals(parameter_set.last()))
                 selectQuery.append(parameter).append("_OUT ");
             else
                 selectQuery.append(parameter).append("_OUT, ");
         }
         selectQuery.append(" FROM ");
-        insertBefore(ctx.routine_name(),selectQuery);
+        insertBefore(ctx.routine_name(), selectQuery);
         selectQuery = new StringBuilder(" INTO ");
-        for (String parameter: parameter_set){
+        for (String parameter : parameter_set) {
             if (parameter.equals(parameter_set.last()))
                 selectQuery.append(parameter);
             else
@@ -514,9 +512,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         insertAfter(ctx.function_argument(), selectQuery);
     }
-    private  void convertFunctionWithOutParameters(Function_callContext ctx){
+
+    private void convertFunctionWithOutParameters(Function_callContext ctx) {
         String functionCallName;
-        if (ctx.routine_name().id_expression().size() >= 1)
+        if (!ctx.routine_name().id_expression().isEmpty())
             functionCallName = Ora2rdb.getRealName(getRuleText(ctx.routine_name().id_expression(0)));
         else
             functionCallName = Ora2rdb.getRealName(getRuleText(ctx.routine_name().identifier()));
@@ -524,12 +523,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
         current_plsql_block.procedure_names_with_out_parameters.add(functionCallName);
         TreeMap<String, Integer> parameter_numbers = Ora2rdb.out_parameters_in_function.get(functionCallName);
         TreeSet<String> parameter_set = null;
-        if(Ora2rdb.functions_with_out_parameters.containsKey(parent_procedure_name)&&
+        if (Ora2rdb.functions_with_out_parameters.containsKey(parent_procedure_name) &&
                 Ora2rdb.functions_with_out_parameters.get(parent_procedure_name).containsKey(functionCallName)) {
             parameter_set = new TreeSet<>(
                     Ora2rdb.functions_with_out_parameters.get(parent_procedure_name).get(functionCallName).keySet());
             StringBuilder return_parameters = new StringBuilder();
-        }else if(Ora2rdb.out_parameters_in_function.containsKey(functionCallName)) {
+        } else if (Ora2rdb.out_parameters_in_function.containsKey(functionCallName)) {
             parameter_set = new TreeSet<>(
                     Ora2rdb.out_parameters_in_function.get(functionCallName).keySet());
         }
@@ -557,40 +556,41 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx, functionRetValName);
         if (current_plsql_block.getStatement().loop_statement() != null)
             return;
-        if(current_plsql_block.getStatement() != null) {
+        if (current_plsql_block.getStatement() != null) {
             insertBefore(current_plsql_block.getStatement(), current_plsql_block.qwery_call_function_with_out_parameters);
             current_plsql_block.clearStatement();
         }
     }
-    public boolean containsOutParametersInProcedure(String functinName){
+
+    public boolean containsOutParametersInProcedure(String functionName) {
         if (parent_procedure_name != null && Ora2rdb.procedures_with_out_parameters.containsKey(parent_procedure_name)
-                && Ora2rdb.procedures_with_out_parameters.get(parent_procedure_name).containsKey(functinName)
-                || Ora2rdb.out_parameters_in_procedure.containsKey(functinName))
+                && Ora2rdb.procedures_with_out_parameters.get(parent_procedure_name).containsKey(functionName)
+                || Ora2rdb.out_parameters_in_procedure.containsKey(functionName))
             return true;
         return false;
     }
-    public boolean containsOutParametersInFunction(String functinName){
+
+    public boolean containsOutParametersInFunction(String functionName) {
         if (parent_procedure_name != null && Ora2rdb.functions_with_out_parameters.containsKey(parent_procedure_name)
-                && Ora2rdb.functions_with_out_parameters.get(parent_procedure_name).containsKey(functinName)
-                || Ora2rdb.out_parameters_in_function.containsKey(functinName))
+                && Ora2rdb.functions_with_out_parameters.get(parent_procedure_name).containsKey(functionName)
+                || Ora2rdb.out_parameters_in_function.containsKey(functionName))
             return true;
         return false;
     }
+
     private void convertFunctionCall(Function_callContext ctx) {
         String functionCallName;
-        if (ctx.routine_name().id_expression().size() >= 1)
+        if (!ctx.routine_name().id_expression().isEmpty())
             functionCallName = Ora2rdb.getRealName(getRuleText(ctx.routine_name().id_expression(0)));
         else
             functionCallName = Ora2rdb.getRealName(getRuleText(ctx.routine_name().identifier()));
 
 //        boolean procedurWithOutParameters = containsOutParametersInProcedure(functionCallName);
-        if(containsOutParametersInProcedure(functionCallName)){
+        if (containsOutParametersInProcedure(functionCallName)) {
             convertProcedureWithOutParameters(ctx);
-        }
-        else if (Ora2rdb.out_parameters_in_function.containsKey(functionCallName)) {
+        } else if (Ora2rdb.out_parameters_in_function.containsKey(functionCallName)) {
             convertFunctionWithOutParameters(ctx);
-        }
-        else {
+        } else {
             if (Ora2rdb.procedures_names.contains(functionCallName))
                 replace(ctx, "EXECUTE PROCEDURE " + getRewriterText(ctx));
         }
@@ -632,7 +632,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             current_plsql_block.qwery_call_function_with_out_parameters = selectQuery.toString();
             replace(ctx, functionRetValName);
 
-            if(current_plsql_block.getStatement() != null) {
+            if (current_plsql_block.getStatement() != null) {
                 if (current_plsql_block.getStatement().loop_statement() != null) {
                     Loop_statementContext loop = current_plsql_block.getStatement().loop_statement();
                     StringBuilder stringBuilder = new StringBuilder();
@@ -643,8 +643,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
                     replace(loop.condition(), "TRUE");
                     insertBefore(loop.seq_of_statements(), stringBuilder.toString());
-                }
-                else {
+                } else {
                     insertBefore(current_plsql_block.getStatement(), current_plsql_block.qwery_call_function_with_out_parameters);
                     current_plsql_block.clearStatement();
 
@@ -779,7 +778,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitRegular_id(Regular_idContext ctx) {
-        if(ctx.non_reserved_keywords_pre12c() != null) {
+        if (ctx.non_reserved_keywords_pre12c() != null) {
             switch (getRuleText(ctx.non_reserved_keywords_pre12c()).toUpperCase()) {
                 case "SYSTIMESTAMP":
                     replace(ctx, "CURRENT_TIMESTAMP");
@@ -823,7 +822,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         String functionName;
         if (ctx.function_name().id_expression() != null)
             functionName = Ora2rdb.getRealName(ctx.function_name().id_expression().getText());
-         else
+        else
             functionName = Ora2rdb.getRealName(ctx.function_name().identifier().id_expression().getText());
 
         if (Ora2rdb.out_parameters_in_function.containsKey(functionName)) {
@@ -834,7 +833,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             replace(ctx.RETURN(), "RETURNS (RET_VAL");
             StringBuilder return_parameters = new StringBuilder();
             return_parameters.append(", ");
-            for(String parameter_name : parameter_set ) {
+            for (String parameter_name : parameter_set) {
                 String type_spec = "";
                 for (ParameterContext parameter : ctx.parameter()) {
                     String parameter_ = Ora2rdb.getRealName(parameter.parameter_name().getText());
@@ -854,7 +853,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             replace(ctx.RETURN(), "RETURNS");
         }
 
-        if (current_plsql_block.procedure_names_with_out_parameters.size() > 0) {
+        if (!current_plsql_block.procedure_names_with_out_parameters.isEmpty()) {
             StringBuilder declare_ret_val = new StringBuilder();
             for (String procedureName : current_plsql_block.procedure_names_with_out_parameters) {
                 declare_ret_val.append("\nDECLARE ").
@@ -889,7 +888,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void enterFunction_body(PlSqlParser.Function_bodyContext ctx) {
         pushScope();
         current_plsql_block.procedure_name = Ora2rdb.getRealName(ctx.identifier().getText());
-        if(parent_procedure_name == null){
+        if (parent_procedure_name == null) {
             parent_procedure_name = Ora2rdb.getRealName(ctx.identifier().getText());
         }
     }
@@ -898,21 +897,21 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitFunction_body(Function_bodyContext ctx) { //todo declare variable не добавлена в процедуру (цикл for n in 1..value не будет работать в процедуре)
         replace(ctx.IS(), "AS");
         replace(ctx.SEMICOLON(), "^");
-        for(ParameterContext parameter : ctx.parameter())
-            if(getRewriterText(parameter).startsWith(":"))
+        for (ParameterContext parameter : ctx.parameter())
+            if (getRewriterText(parameter).startsWith(":"))
                 replace(parameter, getRewriterText(parameter).substring(1));
 
 
         String functionName = Ora2rdb.getRealName(ctx.identifier().getText());
 
         TreeSet<String> parameter_set = null;
-        if(Ora2rdb.functions_with_out_parameters.containsKey(parent_procedure_name)&&
+        if (Ora2rdb.functions_with_out_parameters.containsKey(parent_procedure_name) &&
                 Ora2rdb.functions_with_out_parameters.get(parent_procedure_name).containsKey(functionName)) {
             parameter_set = new TreeSet<>(
                     Ora2rdb.functions_with_out_parameters.get(parent_procedure_name).get(functionName).keySet());
             StringBuilder return_parameters = new StringBuilder();
 
-            if (current_plsql_block.procedure_names_with_out_parameters.size() > 0) {
+            if (!current_plsql_block.procedure_names_with_out_parameters.isEmpty()) {
                 StringBuilder declare_ret_val = new StringBuilder();
                 TreeMap<String, String> func = new TreeMap<>();
                 func = Ora2rdb.function_returns_type_with_parent.get(parent_procedure_name);
@@ -927,9 +926,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 insertAfter(ctx.seq_of_declare_specs(), declare_ret_val);
             }
 
-        }else if(Ora2rdb.out_parameters_in_function.containsKey(functionName)) {
+        } else if (Ora2rdb.out_parameters_in_function.containsKey(functionName)) {
             parameter_set = new TreeSet<>(Ora2rdb.out_parameters_in_function.get(functionName).keySet());
-            if (current_plsql_block.procedure_names_with_out_parameters.size() > 0) {
+            if (!current_plsql_block.procedure_names_with_out_parameters.isEmpty()) {
                 StringBuilder declare_ret_val = new StringBuilder();
                 for (String procedureName : current_plsql_block.procedure_names_with_out_parameters) {
                     declare_ret_val.append("\nDECLARE ").
@@ -942,27 +941,27 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 insertAfter(ctx.seq_of_declare_specs(), declare_ret_val);
             }
         }
-        if(parameter_set != null){
+        if (parameter_set != null) {
 //            Ora2rdb.function_returns_type.put(functionName, getRewriterText(ctx.type_spec()));
             replace(ctx.FUNCTION(), "PROCEDURE");
             replace(ctx.RETURN(), "RETURNS (RET_VAL");
 
-                StringBuilder return_parameters = new StringBuilder();
-                return_parameters.append(", ");
-                for(String parameter_name : parameter_set ) {
-                    String type_spec = "";
-                    for (ParameterContext parameter : ctx.parameter()) {
-                        String parameter_ = Ora2rdb.getRealName(parameter.parameter_name().getText());
-                        if (parameter_.equals(parameter_name)) {
-                            type_spec = getRewriterText(parameter.type_spec());
-                            break;
-                        }
+            StringBuilder return_parameters = new StringBuilder();
+            return_parameters.append(", ");
+            for (String parameter_name : parameter_set) {
+                String type_spec = "";
+                for (ParameterContext parameter : ctx.parameter()) {
+                    String parameter_ = Ora2rdb.getRealName(parameter.parameter_name().getText());
+                    if (parameter_.equals(parameter_name)) {
+                        type_spec = getRewriterText(parameter.type_spec());
+                        break;
                     }
-                    if (parameter_name.equals(parameter_set.last()))
-                        return_parameters.append(parameter_name).append("_OUT ").append(type_spec).append(")\n");
-                    else
-                        return_parameters.append(parameter_name).append("_OUT ").append(type_spec).append(", \n");
                 }
+                if (parameter_name.equals(parameter_set.last()))
+                    return_parameters.append(parameter_name).append("_OUT ").append(type_spec).append(")\n");
+                else
+                    return_parameters.append(parameter_name).append("_OUT ").append(type_spec).append(", \n");
+            }
             insertAfter(ctx.type_spec(), return_parameters + " )");
         } else {
             replace(ctx.RETURN(), "RETURNS");
@@ -970,7 +969,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         delete(ctx.SEMICOLON());
 
         StringBuilder declare_loop_index_names = new StringBuilder();
-        if(!loop_index_names.isEmpty()) {
+        if (!loop_index_names.isEmpty()) {
             for (String index_name : loop_index_names) {
                 declare_loop_index_names.append("\n DECLARE VARIABLE ").append(index_name).append(" INTEGER;");
             }
@@ -982,7 +981,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
 
         popScope();
-        if(parent_procedure_name.equals(functionName))
+        if (parent_procedure_name.equals(functionName))
             parent_procedure_name = null;
 
     }
@@ -1013,7 +1012,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.IMMEDIATE(), "STATEMENT");
         insertBefore(ctx.expression(), "(");
         insertAfter(ctx.expression(), ")");
-        if(ctx.into_clause() != null) {
+        if (ctx.into_clause() != null) {
             String into_clause = getRewriterText(ctx.into_clause());
             delete(ctx.into_clause());
             replace(ctx, getRewriterText(ctx) + " " + into_clause);
@@ -1188,10 +1187,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.IS(), "AS");
         replace(ctx.SEMICOLON(), "^");
 
-
-
-
-       String procedure_name = Ora2rdb.getRealName(ctx.procedure_name().identifier().id_expression().getText());
+        String procedure_name = Ora2rdb.getRealName(ctx.procedure_name().identifier().id_expression().getText());
 
         if (Ora2rdb.out_parameters_in_procedure.containsKey(procedure_name)) {
             TreeSet<String> parameter_set = new TreeSet<>(Ora2rdb.out_parameters_in_procedure.
@@ -1199,27 +1195,27 @@ public class RewritingListener extends PlSqlParserBaseListener {
             StringBuilder return_parameters = new StringBuilder();
             return_parameters.append("RETURNS( ");
 
-            insertBefore(ctx.body().END(), "SUSPEND\n");
-            for(String parameter_name : parameter_set ) {
+            insertBefore(ctx.body().END(), "SUSPEND;\n");
+            for (String parameter_name : parameter_set) {
                 String type_spec = "";
-                    for (ParameterContext parameter : ctx.parameter()) {
-                        String parameter_ = Ora2rdb.getRealName(parameter.parameter_name().getText());
-                        if (parameter_.equals(parameter_name)) {
+                for (ParameterContext parameter : ctx.parameter()) {
+                    String parameter_ = Ora2rdb.getRealName(parameter.parameter_name().getText());
+                    if (parameter_.equals(parameter_name)) {
 //                            type_spec = Ora2rdb.getRealName(parameter.type_spec().getText());
-                           type_spec = getRewriterText(parameter.type_spec());
-                            break;
-                        }
+                        type_spec = getRewriterText(parameter.type_spec());
+                        break;
                     }
+                }
                 insertBefore(ctx.body().END(), parameter_name + "_OUT = " + parameter_name + ";\n");
                 if (parameter_name.equals(parameter_set.last()))
                     return_parameters.append(parameter_name).append("_OUT ").append(type_spec).append(")\n");
                 else
                     return_parameters.append(parameter_name).append("_OUT ").append(type_spec).append(", \n");
             }
-            insertBefore(ctx.IS(),  return_parameters.toString() + '\n');
+            insertBefore(ctx.IS(), return_parameters.toString() + '\n');
         }
 
-        if (current_plsql_block.procedure_names_with_out_parameters.size() > 0) {
+        if (!current_plsql_block.procedure_names_with_out_parameters.isEmpty()) {
             StringBuilder declare_ret_val = new StringBuilder();
             for (String procedureName : current_plsql_block.procedure_names_with_out_parameters) {
                 declare_ret_val.append("\nDECLARE ").
@@ -1258,7 +1254,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void enterProcedure_body(Procedure_bodyContext ctx) {
         pushScope();
-        if(parent_procedure_name == null){
+        if (parent_procedure_name == null) {
             parent_procedure_name = Ora2rdb.getRealName(ctx.identifier().getText());
         }
 
@@ -1269,28 +1265,28 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.IS(), "AS");
         delete(ctx.SEMICOLON());
 
-        for(ParameterContext parameter : ctx.parameter())
-            if(getRewriterText(parameter).startsWith(":"))
+        for (ParameterContext parameter : ctx.parameter())
+            if (getRewriterText(parameter).startsWith(":"))
                 replace(parameter, getRewriterText(parameter).substring(1));
 
 
         String procedure_name = Ora2rdb.getRealName(ctx.identifier().id_expression().getText());
         TreeSet<String> parameter_set = null;
-           if(Ora2rdb.procedures_with_out_parameters.containsKey(parent_procedure_name)&&
-              Ora2rdb.procedures_with_out_parameters.get(parent_procedure_name).containsKey(procedure_name)) {
-               parameter_set = new TreeSet<>(
-                       Ora2rdb.procedures_with_out_parameters.get(parent_procedure_name).get(procedure_name).keySet());
-               StringBuilder return_parameters = new StringBuilder();
-           }else if(Ora2rdb.out_parameters_in_procedure.containsKey(procedure_name)) {
-               parameter_set = new TreeSet<>(
-                       Ora2rdb.out_parameters_in_procedure.get(procedure_name).keySet());
-           }
-           if(parameter_set != null){
+        if (Ora2rdb.procedures_with_out_parameters.containsKey(parent_procedure_name) &&
+                Ora2rdb.procedures_with_out_parameters.get(parent_procedure_name).containsKey(procedure_name)) {
+            parameter_set = new TreeSet<>(
+                    Ora2rdb.procedures_with_out_parameters.get(parent_procedure_name).get(procedure_name).keySet());
+            StringBuilder return_parameters = new StringBuilder();
+        } else if (Ora2rdb.out_parameters_in_procedure.containsKey(procedure_name)) {
+            parameter_set = new TreeSet<>(
+                    Ora2rdb.out_parameters_in_procedure.get(procedure_name).keySet());
+        }
+        if (parameter_set != null) {
             StringBuilder return_parameters = new StringBuilder();
             return_parameters.append("RETURNS( ");
 
-            insertBefore(ctx.body().END(), "SUSPEND\n");
-            for(String parameter_name : parameter_set ) {
+            insertBefore(ctx.body().END(), "SUSPEND;\n");
+            for (String parameter_name : parameter_set) {
                 String type_spec = "";
                 for (ParameterContext parameter : ctx.parameter()) {
                     String parameter_ = Ora2rdb.getRealName(parameter.parameter_name().getText());
@@ -1307,11 +1303,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 else
                     return_parameters.append(parameter_name).append("_OUT ").append(type_spec).append(", \n");
             }
-            insertBefore(ctx.IS(),  return_parameters.toString() + '\n');
+            insertBefore(ctx.IS(), return_parameters.toString() + '\n');
         }
         autonomousTransactionBlockConvert(ctx);
         popScope();
-        if(parent_procedure_name.equals(procedure_name))
+        if (parent_procedure_name.equals(procedure_name))
             parent_procedure_name = null;
     }
 
@@ -1346,7 +1342,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     private boolean checkAndDeleteAutonomousTransaction(Seq_of_declare_specsContext ctx) {
         if (ctx != null) {
-            if (ctx.declare_spec().size() > 0) {
+            if (!ctx.declare_spec().isEmpty()) {
                 for (Declare_specContext declare_spec : ctx.declare_spec()) {
                     if (declare_spec.pragma_declaration() != null &&
                             declare_spec.pragma_declaration().AUTONOMOUS_TRANSACTION() != null) {
@@ -1443,7 +1439,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitBody(BodyContext ctx) {
         if (current_plsql_block != null &&
-                (current_plsql_block.trigger_fields.size() > 0 || current_plsql_block.trigger_when_condition != null)) {
+                (!current_plsql_block.trigger_fields.isEmpty() || current_plsql_block.trigger_when_condition != null)) {
             String execute_condition = "\nIF (";
             String update_condition = "";
 
@@ -1454,9 +1450,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 update_condition += "NEW." + current_plsql_block.trigger_fields.get(i) + " <> OLD." + current_plsql_block.trigger_fields.get(i);
             }
 
-            if (current_plsql_block.trigger_fields.size() > 0 && current_plsql_block.trigger_when_condition != null)
+            if (!current_plsql_block.trigger_fields.isEmpty() && current_plsql_block.trigger_when_condition != null)
                 execute_condition += "(" + update_condition + ") AND (" + current_plsql_block.trigger_when_condition + ")";
-            else if (current_plsql_block.trigger_fields.size() > 0)
+            else if (!current_plsql_block.trigger_fields.isEmpty())
                 execute_condition += update_condition;
             else
                 execute_condition += current_plsql_block.trigger_when_condition;
@@ -1526,8 +1522,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                     insertBefore(ctx, "UPPER( ");
                     replace(ctx.string_function().COMMA(0), " AS VARCHAR(250) FORMAT");
                     replace(ctx, getRewriterText(ctx) + ")");
-                }
-                else{
+                } else {
                     insertAfter(ctx.string_function().expression(0), " AS VARCHAR(250)");
                 }
             }
@@ -1547,8 +1542,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void enterStatement(PlSqlParser.StatementContext ctx) {
         current_plsql_block.setStatement(ctx);
     }
-
-
 
     @Override
     public void exitAssignment_statement(Assignment_statementContext ctx) {
@@ -1642,74 +1635,77 @@ public class RewritingListener extends PlSqlParserBaseListener {
             }
         }
     }
+
     @Override
     public void exitLoop_statement(Loop_statementContext ctx) {
 
         if (ctx.FOR() != null)
             convertLoopFor(ctx);
-        if(ctx.WHILE() != null){
+        if (ctx.WHILE() != null) {
             convertLoopWhile(ctx);
 
         }
     }
 
-    private void convertLoopFor(Loop_statementContext ctx){
+    private void convertLoopFor(Loop_statementContext ctx) {
         if (ctx.cursor_loop_param().REVERSE() != null && ctx.cursor_loop_param().DOUBLE_PERIOD() != null) {
             String index_name = ctx.cursor_loop_param().index_name().getText();
 
-                if (!loop_index_names.contains(index_name))
-                    loop_index_names.add(index_name);
+            if (!loop_index_names.contains(index_name))
+                loop_index_names.add(index_name);
 
-                String target = getRewriterText(ctx.cursor_loop_param().index_name());
-                if (target.startsWith(":"))
-                    replace(ctx.cursor_loop_param().index_name(), target.substring(1));
+            String target = getRewriterText(ctx.cursor_loop_param().index_name());
+            if (target.startsWith(":"))
+                replace(ctx.cursor_loop_param().index_name(), target.substring(1));
 
-                insertBefore(ctx, index_name + " = " + ctx.cursor_loop_param().upper_bound().getText() + ";\n");
-                replace(ctx.FOR(), "WHILE (");
-                replace(ctx.cursor_loop_param().IN(), " > ");
-                delete(ctx.cursor_loop_param().REVERSE());
-                delete(ctx.cursor_loop_param().upper_bound());
-                delete(ctx.cursor_loop_param().DOUBLE_PERIOD());
-                insertBefore(ctx.LOOP(0), ")");
-                insertAfter(ctx.seq_of_statements(),'\n'+index_name + " = " + index_name + " + 1;");
-            } else if (ctx.cursor_loop_param().DOUBLE_PERIOD() != null) {
-                String index_name = ctx.cursor_loop_param().index_name().getText();
+            insertBefore(ctx, index_name + " = " + ctx.cursor_loop_param().upper_bound().getText() + ";\n");
+            replace(ctx.FOR(), "WHILE (");
+            replace(ctx.cursor_loop_param().IN(), " > ");
+            delete(ctx.cursor_loop_param().REVERSE());
+            delete(ctx.cursor_loop_param().upper_bound());
+            delete(ctx.cursor_loop_param().DOUBLE_PERIOD());
+            insertBefore(ctx.LOOP(0), ")");
+            insertAfter(ctx.seq_of_statements(), '\n' + index_name + " = " + index_name + " + 1;");
+        } else if (ctx.cursor_loop_param().DOUBLE_PERIOD() != null) {
+            String index_name = ctx.cursor_loop_param().index_name().getText();
 
-                if (!loop_index_names.contains(index_name))
-                    loop_index_names.add(index_name);
+            if (!loop_index_names.contains(index_name))
+                loop_index_names.add(index_name);
 
-                String target = getRewriterText(ctx.cursor_loop_param().index_name());
-                if (target.startsWith(":"))
-                    replace(ctx.cursor_loop_param().index_name(), target.substring(1));
+            String target = getRewriterText(ctx.cursor_loop_param().index_name());
+            if (target.startsWith(":"))
+                replace(ctx.cursor_loop_param().index_name(), target.substring(1));
 
-                insertBefore(ctx, index_name + " = " + ctx.cursor_loop_param().lower_bound().getText() + ";\n");
-                replace(ctx.FOR(), "WHILE (");
-                replace(ctx.cursor_loop_param().IN(), " < ");
-                delete(ctx.cursor_loop_param().lower_bound());
-                delete(ctx.cursor_loop_param().DOUBLE_PERIOD());
-                insertBefore(ctx.LOOP(0), ")");
-                insertAfter(ctx.seq_of_statements(),'\n'+index_name + " = " + index_name + " + 1;");
-            }
-            insertBefore(ctx.condition(), "(");
-            insertAfter(ctx.condition(), ")");
-            replace(ctx.LOOP(0), "DO");
+            insertBefore(ctx, index_name + " = " + ctx.cursor_loop_param().lower_bound().getText() + ";\n");
+            replace(ctx.FOR(), "WHILE (");
+            replace(ctx.cursor_loop_param().IN(), " < ");
+            delete(ctx.cursor_loop_param().lower_bound());
+            delete(ctx.cursor_loop_param().DOUBLE_PERIOD());
+            insertBefore(ctx.LOOP(0), ")");
+            insertAfter(ctx.seq_of_statements(), '\n' + index_name + " = " + index_name + " + 1;");
+        }
+        insertBefore(ctx.condition(), "(");
+        insertAfter(ctx.condition(), ")");
+        replace(ctx.LOOP(0), "DO");
 
-            String indentation = getIndentation(ctx);
-            insertAfter(ctx.LOOP(0), "\n" + indentation + "BEGIN");
-            insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
+        String indentation = getIndentation(ctx);
+        insertAfter(ctx.LOOP(0), "\n" + indentation + "BEGIN");
+        insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
 
         delete(ctx.END());
         delete(ctx.LOOP(1));
     }
-    public void convertLoopWhile(Loop_statementContext ctx){
+
+    public void convertLoopWhile(Loop_statementContext ctx) {
         insertBefore(ctx.condition(), "(");
         insertAfter(ctx.condition(), ")");
-        insertAfter(ctx.condition(),  " DO\n");
+        insertAfter(ctx.condition(), " DO\n");
         insertBefore(ctx.seq_of_statements(), "BEGIN\n");
         delete(ctx.LOOP(0));
         delete(ctx.LOOP(1));
 
-          }
+    }
+
     @Override
     public void exitReturn_statement(Return_statementContext ctx) {
         String returnVal = getRewriterText(ctx.expression());
@@ -1730,12 +1726,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 }
                 if (ctx.expression() != null) {
                     String indentation = getIndentation(ctx);
-                    replace(ctx, "RET_VAL = " + getRewriterText(ctx.expression()) + ";\n" +return_parameters.toString()+
+                    replace(ctx, "RET_VAL = " + getRewriterText(ctx.expression()) + ";\n" + return_parameters.toString() +
                             indentation + "SUSPEND;\n" +
                             indentation + "EXIT");
                 } else
                     replace(ctx, "EXIT");
-            }else if (Ora2rdb.out_parameters_in_function.containsKey(current_plsql_block.procedure_name)) {
+            } else if (Ora2rdb.out_parameters_in_function.containsKey(current_plsql_block.procedure_name)) {
                 TreeSet<String> parameter_set = new TreeSet<>(Ora2rdb.out_parameters_in_function.
                         get(current_plsql_block.procedure_name).keySet());
                 StringBuilder return_parameters = new StringBuilder();
@@ -1746,7 +1742,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 }
                 if (ctx.expression() != null) {
                     String indentation = getIndentation(ctx);
-                    replace(ctx, "RET_VAL = " + getRewriterText(ctx.expression()) + ";\n" +return_parameters.toString()+
+                    replace(ctx, "RET_VAL = " + getRewriterText(ctx.expression()) + ";\n" + return_parameters.toString() +
                             indentation + "SUSPEND;\n" +
                             indentation + "EXIT");
                 } else
@@ -1754,6 +1750,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             }
         }
     }
+
     @Override
     public void enterSeq_of_statements(Seq_of_statementsContext ctx) {
         pushScope();

@@ -65,12 +65,10 @@ public class Ora2rdb {
 
         ScanListener scan_listener = new ScanListener();
         walker.walk(scan_listener, tree);
-        //System.out.println(scan_listener.table_map.toString());
 
         RewritingListener converter = new RewritingListener(tokens);
         walker.walk(converter, tree);
 
-        //RewritingVisitor rv = new RewritingVisitor(parser);
         Ora2rdb.table_not_null_cols.clear();
         Ora2rdb.index_names.clear();
         Ora2rdb.procedures_names.clear();
@@ -156,7 +154,7 @@ public class Ora2rdb {
         else
             ps.print(converter.rewriter.getText());
 
-        //ps.print(rv.visit(tree));
+
         ps.close();
     }
 }

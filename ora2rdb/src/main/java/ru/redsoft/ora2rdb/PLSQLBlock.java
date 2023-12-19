@@ -16,6 +16,7 @@ public class PLSQLBlock {
     TreeMap<String, ArrayType> array_types = new TreeMap<String, ArrayType>();
     TreeMap<String, String> array_to_table = new TreeMap<String, String>();
     ArrayList<String> temporary_tables_ddl = new ArrayList<String>();
+    TreeMap<String, String> fields_custom_type_array = new TreeMap<>();
 
     public void setStatement(PlSqlParser.StatementContext ctx) {
         this.statement = ctx;
@@ -107,4 +108,20 @@ public class PLSQLBlock {
             temporary_tables_ddl.add(table_ddl.toString());
         }
     }
+
+
+    void declareCustomTypeArray(String name) {
+        TreeSet<String> field_name_set = new TreeSet<>(fields_custom_type_array.keySet());
+        StringBuilder table_ddl = new StringBuilder("CREATE GLOBAL TEMPORARY TABLE " + name + " (\n");
+        for (String field_name : field_name_set) {
+            if (!field_name.equals(field_name_set.last()))
+                table_ddl.append(field_name).append('\t').append(fields_custom_type_array.get(field_name)).append(",\n");
+            else
+                table_ddl.append(field_name).append('\t').append(fields_custom_type_array.get(field_name)).append("\n);\n");
+        }
+        temporary_tables_ddl.add(table_ddl.toString());
+        System.out.println(table_ddl.toString());
+    }
+
+
 }

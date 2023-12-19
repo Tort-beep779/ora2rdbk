@@ -23,6 +23,7 @@ public class Ora2rdb {
     public static TreeMap<String, TreeMap<String, Integer>> out_parameters_in_function = new TreeMap<>();
     public static TreeMap<String, TreeMap<String, String>> function_returns_type_with_parent = new TreeMap<>();
     public static TreeMap<String, String> function_returns_type = new TreeMap<>();
+    public static TreeMap<String, TreeMap<String, String>> types_of_column = new TreeMap<>();
     public static boolean reorder = false;
 
     static String stripQuotes(String str) {
@@ -80,6 +81,7 @@ public class Ora2rdb {
         Ora2rdb.functions_with_out_parameters.clear();
         Ora2rdb.function_returns_type_with_parent.clear();
         Ora2rdb.function_returns_type.clear();
+        Ora2rdb.types_of_column.clear();
         return converter;
     }
 

@@ -251,6 +251,23 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
 
         tables.add(ctx);
+        if (Ora2rdb.types_of_column.containsKey(table_name)) {
+            if (ctx.relational_table() != null) {
+                Relational_tableContext relational_table = ctx.relational_table();
+                for (Relational_propertyContext property : relational_table.relational_property()) {
+                    if (property.column_definition() != null) {
+                        Column_definitionContext columnDefinition = property.column_definition();
+                        String column_name = Ora2rdb.getRealName(columnDefinition.column_name().getText());
+                        String column_type = getRewriterText(columnDefinition.datatype());
+                        if (Ora2rdb.types_of_column.get(table_name).containsKey(column_name)) {
+                            Ora2rdb.types_of_column.get(table_name).put(column_name, column_type);
+                        }
+
+                    }
+                }
+            }
+        }
+
     }
 
     @Override
@@ -675,7 +692,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitCreate_index(Create_indexContext ctx) {
-        String index_name = Ora2rdb.getRealName(getRuleText(ctx.index_name().id_expression()));
+        String index_name;
+        if (ctx.index_name().PERIOD() != null)
+            index_name = Ora2rdb.getRealName(getRuleText(ctx.index_name().id_expression()));
+        else
+            index_name = Ora2rdb.getRealName(getRuleText(ctx.index_name().identifier()));
 
         if (Ora2rdb.index_names.contains(index_name)) {
             delete(ctx);
@@ -708,11 +729,14 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitCreate_sequence(Create_sequenceContext ctx) {
         Sequence_nameContext sequence_name_ctx = ctx.sequence_name();
+        String sequence_name;
 
-        if (sequence_name_ctx.PERIOD() != null) {
+        if (sequence_name_ctx.PERIOD(0) != null) {
             delete(sequence_name_ctx.id_expression(0));
             delete(sequence_name_ctx.PERIOD(0));
-        }
+            sequence_name = getRuleText(sequence_name_ctx.id_expression(1));
+        } else
+            sequence_name = getRuleText(sequence_name_ctx.id_expression(0));
 
         for (Sequence_specContext sequence_spec_ctx : ctx.sequence_spec())
             delete(sequence_spec_ctx);
@@ -720,7 +744,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         String set_generator_statements = "";
 
         for (Sequence_start_clauseContext sequence_start_clause_ctx : ctx.sequence_start_clause()) {
-            set_generator_statements += "\nALTER SEQUENCE " + getRuleText(sequence_name_ctx.id_expression(1)) +
+            set_generator_statements += "\nALTER SEQUENCE " + sequence_name +
                     " RESTART WITH " + sequence_start_clause_ctx.UNSIGNED_INTEGER().getText() + ";";
 
             delete(sequence_start_clause_ctx);
@@ -1040,17 +1064,57 @@ public class RewritingListener extends PlSqlParserBaseListener {
             current_plsql_block.declareVar(name);
         }
 
+        if (ctx.type_spec().PERCENT_ROWTYPE() != null) {
+            insertBefore(ctx, "VARIABLE ");
+        }
+
         insertBefore(ctx, "DECLARE ");
+    }
+
+
+    private boolean existTypeInList(String tableName, String columnName) {
+        return Ora2rdb.types_of_column.containsKey(tableName)
+                && Ora2rdb.types_of_column.get(tableName).containsKey(columnName)
+                && Ora2rdb.types_of_column.get(tableName).get(columnName) != null;
     }
 
     @Override
     public void exitType_declaration(Type_declarationContext ctx) {
         commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
         if (ctx.table_type_def() != null) {
-            if (current_plsql_block != null && ctx.table_type_def().TABLE() != null && ctx.table_type_def().table_indexed_by_part() != null) {
+            if (current_plsql_block != null && ctx.table_type_def().TABLE() != null
+                    && ctx.table_type_def().table_indexed_by_part() != null) {
                 current_plsql_block.declareTypeOfArray(Ora2rdb.getRealName(getRuleText(ctx.identifier())),
                         getRewriterText(ctx.table_type_def().type_spec()),
                         getRewriterText(ctx.table_type_def().table_indexed_by_part().type_spec()));
+            }
+        }
+        if (ctx.record_type_def() != null) {
+            if (current_plsql_block != null) {
+                if (ctx.record_type_def().field_spec() != null) {
+                    for (Field_specContext fieldSpec : ctx.record_type_def().field_spec()) {
+                        boolean type_of_column_exist = false;
+                        if (fieldSpec.type_spec().PERCENT_TYPE() != null) {
+                            Type_specContext type_spec = fieldSpec.type_spec();
+                            if (type_spec.datatype() == null) {
+                                String table_name = Ora2rdb.getRealName(type_spec.type_name().id_expression(0).getText());
+                                String column_name = Ora2rdb.getRealName(type_spec.type_name().id_expression(1).getText());
+                                if (existTypeInList(table_name, column_name)) {
+                                    current_plsql_block.fields_custom_type_array.put(
+                                            getRewriterText(fieldSpec.column_name()),
+                                            Ora2rdb.types_of_column.get(table_name).get(column_name));
+                                    type_of_column_exist = true;
+                                }
+                            }
+                        }
+                        if(!type_of_column_exist) {
+                            current_plsql_block.fields_custom_type_array.put(
+                                    getRewriterText(fieldSpec.column_name()),
+                                    getRewriterText(fieldSpec.type_spec()));
+                        }
+                    }
+                    current_plsql_block.declareCustomTypeArray(getRewriterText(ctx.identifier()));
+                }
             }
         }
     }
@@ -1061,6 +1125,19 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.IS(), "CURSOR FOR");
         insertBefore(ctx.select_statement(), "(");
         insertAfter(ctx.select_statement(), ")");
+    }
+
+
+    @Override
+    public void exitOther_function(Other_functionContext ctx) {
+        if(ctx.cursor_name() != null){
+            if(ctx.PERCENT_FOUND() != null){
+                replace(ctx, "ROW_COUNT != 0");
+            }
+            if(ctx.PERCENT_NOTFOUND() != null){
+                replace(ctx, "ROW_COUNT != 1");
+            }
+        }
     }
 
     @Override
@@ -1360,6 +1437,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitType_spec(Type_specContext ctx) {
         if (ctx.PERCENT_TYPE() != null)
             replace(ctx, "TYPE OF COLUMN " + getRuleText(ctx.type_name()));
+        if (ctx.PERCENT_ROWTYPE() != null) {
+            delete(ctx.PERCENT_ROWTYPE());
+            replace(ctx, "TYPE OF TABLE " + getRuleText(ctx.type_name()));
+        }
+        if (ctx.type_name() != null && ctx.PERCENT_TYPE() == null && ctx.PERCENT_ROWTYPE() == null) {
+            replace(ctx, "TYPE OF TABLE " + getRuleText(ctx.type_name()));
+        }
     }
 
     @Override

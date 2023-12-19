@@ -8,6 +8,33 @@ public class ScanListener extends PlSqlParserBaseListener {
     String currentProcedureName;
 
     @Override
+    public void enterCreate_package_body(Create_package_bodyContext ctx) {
+        for (Package_obj_bodyContext obj_body : ctx.package_obj_body()) {
+            if (obj_body.type_declaration() != null) {
+                Type_declarationContext type = obj_body.type_declaration();
+                if (type.record_type_def() != null) {
+                    for (Field_specContext field_spec : type.record_type_def().field_spec()) {
+                        if (field_spec.type_spec() != null) {
+                            Type_specContext typeSpec = field_spec.type_spec();
+                            if (typeSpec.type_name() != null) {
+                                String tableName = Ora2rdb.getRealName(typeSpec.type_name().id_expression(0).getText());
+                                String columnName = Ora2rdb.getRealName(typeSpec.type_name().id_expression(1).getText());
+                                if (Ora2rdb.types_of_column.containsKey(tableName)) {
+                                    Ora2rdb.types_of_column.get(tableName).put(columnName, null);
+                                } else {
+                                    TreeMap<String, String> unknown_column_type = new TreeMap<>();
+                                    unknown_column_type.put(columnName, null);
+                                    Ora2rdb.types_of_column.put(tableName, unknown_column_type);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
     public void enterAlter_table(Alter_tableContext ctx) {
         Column_clausesContext columns_ctx = ctx.column_clauses();
         Constraint_clausesContext constraint_clauses_ctx = ctx.constraint_clauses();
@@ -223,7 +250,6 @@ public class ScanListener extends PlSqlParserBaseListener {
     public void enterCreate_view(Create_viewContext ctx) {
         Ora2rdb.views.put(Ora2rdb.getRealName(ctx.id_expression(0).getText()), new View(ctx));
     }
-
 
     private String getConvertType(Type_specContext ctx) { //todo переделать стандартные значения
         String type = Ora2rdb.getRealName(ctx.getText());

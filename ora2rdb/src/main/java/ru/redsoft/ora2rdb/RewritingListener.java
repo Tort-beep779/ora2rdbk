@@ -938,7 +938,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitFunction_body(Function_bodyContext ctx) { //todo declare variable не добавлена в процедуру (цикл for n in 1..value не будет работать в процедуре)
+    public void exitFunction_body(Function_bodyContext ctx) {
         replace(ctx.IS(), "AS");
         replace(ctx.SEMICOLON(), "^");
         for (ParameterContext parameter : ctx.parameter())
@@ -1319,7 +1319,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 else
                     return_parameters.append(parameter_name).append("_OUT ").append(type_spec).append(", \n");
             }
-            insertBefore(ctx.IS(), return_parameters.toString() + '\n');
+            if (ctx.IS() != null) {
+                insertBefore(ctx.IS(), return_parameters.toString() + '\n');
+            } else {
+                insertBefore(ctx.AS(), return_parameters.toString() + '\n');
+            }
         }
 
         if (!current_plsql_block.procedure_names_with_out_parameters.isEmpty()) {
@@ -1429,7 +1433,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 else
                     return_parameters.append(parameter_name).append("_OUT ").append(type_spec).append(", \n");
             }
-            insertBefore(ctx.IS(), return_parameters.toString() + '\n');
+            if(ctx.IS() != null) {
+                insertBefore(ctx.IS(), return_parameters.toString() + '\n');
+            }
+            else{
+                insertBefore(ctx.AS(), return_parameters.toString() + '\n');
+            }
         }
 
         StringBuilder declare_loop_index_names = new StringBuilder();

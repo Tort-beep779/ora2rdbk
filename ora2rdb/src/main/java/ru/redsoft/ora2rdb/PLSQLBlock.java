@@ -11,6 +11,7 @@ public class PLSQLBlock {
     ArrayList<String> trigger_fields = new ArrayList<String>();
     String trigger_when_condition;
     String procedure_name;
+    Stack<ReplaceRecordName> record_name_cursor_loop = new Stack<>();
     ArrayList<String> procedure_names_with_out_parameters = new ArrayList<>();
     String qwery_call_function_with_out_parameters;
     TreeMap<String, ArrayType> array_types = new TreeMap<String, ArrayType>();
@@ -35,6 +36,23 @@ public class PLSQLBlock {
     class ArrayType {
         String data_type;
         ArrayList<String> index_types = new ArrayList<String>();
+    }
+     class ReplaceRecordName {
+        String old_record_name;
+        String new_record_name;
+
+    }
+    void pushReplaceRecordName(String old_record_name, String new_record_name){
+        ReplaceRecordName replaceRecordName = new ReplaceRecordName();
+        replaceRecordName.old_record_name = old_record_name;
+        replaceRecordName.new_record_name = new_record_name;
+        record_name_cursor_loop.push(replaceRecordName);
+    }
+    void popReplaceRecordName(){
+       record_name_cursor_loop.pop();
+    }
+    ReplaceRecordName peekReplaceRecordName(){
+        return record_name_cursor_loop.peek();
     }
 
     PLSQLBlock() {
@@ -110,7 +128,7 @@ public class PLSQLBlock {
     }
 
 
-    void declareCustomTypeArray(String name) {
+    void declareCustomType(String name) {
         TreeSet<String> field_name_set = new TreeSet<>(fields_custom_type_array.keySet());
         StringBuilder table_ddl = new StringBuilder("CREATE GLOBAL TEMPORARY TABLE " + name + " (\n");
         for (String field_name : field_name_set) {

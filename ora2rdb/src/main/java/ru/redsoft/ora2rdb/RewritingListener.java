@@ -901,8 +901,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         loop_index_names.clear();
 
         StringBuilder declare_loop_rowtype_names = new StringBuilder();
-        if(!loop_rec_name_and_cursor_name.isEmpty()){
-            for(String rec : loop_rec_name_and_cursor_name.keySet()){
+        if (!loop_rec_name_and_cursor_name.isEmpty()) {
+            for (String rec : loop_rec_name_and_cursor_name.keySet()) {
                 declare_loop_rowtype_names.append("\n DECLARE VARIABLE ").append(rec).
                         append(" TYPE OF TABLE ").append(loop_rec_name_and_cursor_name.get(rec)).append(";");
             }
@@ -1022,8 +1022,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         loop_index_names.clear();
 
         StringBuilder declare_loop_rowtype_names = new StringBuilder();
-        if(!loop_rec_name_and_cursor_name.isEmpty()){
-            for(String rec : loop_rec_name_and_cursor_name.keySet()){
+        if (!loop_rec_name_and_cursor_name.isEmpty()) {
+            for (String rec : loop_rec_name_and_cursor_name.keySet()) {
                 declare_loop_rowtype_names.append("\n DECLARE VARIABLE ").append(rec).
                         append(" TYPE OF TABLE ").append(loop_rec_name_and_cursor_name.get(rec)).append(";");
             }
@@ -1137,13 +1137,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
                                 }
                             }
                         }
-                        if(!type_of_column_exist) {
+                        if (!type_of_column_exist) {
                             current_plsql_block.fields_custom_type_array.put(
                                     getRewriterText(fieldSpec.column_name()),
                                     getRewriterText(fieldSpec.type_spec()));
                         }
                     }
-                    current_plsql_block.declareCustomTypeArray(getRewriterText(ctx.identifier()));
+                    current_plsql_block.declareCustomType(getRewriterText(ctx.identifier()));
                 }
             }
         }
@@ -1160,11 +1160,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitOther_function(Other_functionContext ctx) {
-        if(ctx.cursor_name() != null){
-            if(ctx.PERCENT_FOUND() != null){
+        if (ctx.cursor_name() != null) {
+            if (ctx.PERCENT_FOUND() != null) {
                 replace(ctx, "ROW_COUNT != 0");
             }
-            if(ctx.PERCENT_NOTFOUND() != null){
+            if (ctx.PERCENT_NOTFOUND() != null) {
                 replace(ctx, "ROW_COUNT != 1");
             }
         }
@@ -1172,8 +1172,15 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitId_expression(Id_expressionContext ctx) {
-        if (current_plsql_block != null && current_plsql_block.containsInScope(Ora2rdb.getRealName(getRuleText(ctx)))) {
+        String id_expression = Ora2rdb.getRealName(getRuleText(ctx));
+        if (current_plsql_block != null && current_plsql_block.containsInScope(id_expression)) {
             replace(ctx, ":" + getRuleText(ctx));
+        }
+        if(current_plsql_block != null && !current_plsql_block.record_name_cursor_loop.isEmpty()){
+            PLSQLBlock.ReplaceRecordName replaceRecordName = current_plsql_block.peekReplaceRecordName();
+            if(id_expression.equals(replaceRecordName.old_record_name)){
+                replace(ctx, replaceRecordName.new_record_name);
+            }
         }
     }
 
@@ -1349,8 +1356,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         loop_index_names.clear();
 
         StringBuilder declare_loop_rowtype_names = new StringBuilder();
-        if(!loop_rec_name_and_cursor_name.isEmpty()){
-            for(String rec : loop_rec_name_and_cursor_name.keySet()){
+        if (!loop_rec_name_and_cursor_name.isEmpty()) {
+            for (String rec : loop_rec_name_and_cursor_name.keySet()) {
                 declare_loop_rowtype_names.append("\n DECLARE VARIABLE ").append(rec).
                         append(" TYPE OF TABLE ").append(loop_rec_name_and_cursor_name.get(rec)).append(";");
             }
@@ -1433,10 +1440,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 else
                     return_parameters.append(parameter_name).append("_OUT ").append(type_spec).append(", \n");
             }
-            if(ctx.IS() != null) {
+            if (ctx.IS() != null) {
                 insertBefore(ctx.IS(), return_parameters.toString() + '\n');
-            }
-            else{
+            } else {
                 insertBefore(ctx.AS(), return_parameters.toString() + '\n');
             }
         }
@@ -1451,8 +1457,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         loop_index_names.clear();
 
         StringBuilder declare_loop_rowtype_names = new StringBuilder();
-        if(!loop_rec_name_and_cursor_name.isEmpty()){
-            for(String rec : loop_rec_name_and_cursor_name.keySet()){
+        if (!loop_rec_name_and_cursor_name.isEmpty()) {
+            for (String rec : loop_rec_name_and_cursor_name.keySet()) {
                 declare_loop_rowtype_names.append("\n DECLARE VARIABLE ").append(rec).
                         append(" TYPE OF TABLE ").append(loop_rec_name_and_cursor_name.get(rec)).append(";");
             }
@@ -1795,6 +1801,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
                         current_plsql_block.declareVar(index_name);
 
             }
+            if (ctx.cursor_loop_param().cursor_name() != null){
+                String recName = Ora2rdb.getRealName(ctx.cursor_loop_param().record_name().getText());
+                String cursorName = Ora2rdb.getRealName(ctx.cursor_loop_param().cursor_name().getText());
+                current_plsql_block.pushScope();
+                current_plsql_block.pushReplaceRecordName(recName, cursorName+"_"+recName);
+            }
         }
     }
 
@@ -1805,21 +1817,22 @@ public class RewritingListener extends PlSqlParserBaseListener {
             convertLoopFor(ctx);
         if (ctx.WHILE() != null) {
             convertLoopWhile(ctx);
-
         }
     }
 
-    private void convertLoopForRecordInCursor(Loop_statementContext ctx){
-        String recName = Ora2rdb.getRealName(ctx.cursor_loop_param().record_name().getText());
-        String cursorName = Ora2rdb.getRealName(ctx.cursor_loop_param().cursor_name().getText());
-        loop_rec_name_and_cursor_name.put(recName, cursorName);
-        String name = "OPEN " + cursorName + ";\n\t"+
-                      "FETCH " + cursorName + " INTO " + recName + ";\n\t";
+    private void convertLoopForRecordInCursor(Loop_statementContext ctx) {
 
-        insertBefore(ctx, name);
+        String cursorName = Ora2rdb.getRealName(ctx.cursor_loop_param().cursor_name().getText());
+        String recName = cursorName + "_" + Ora2rdb.getRealName(ctx.cursor_loop_param().record_name().getText())  ;
+        loop_rec_name_and_cursor_name.put(recName, cursorName);
+        String openCursor = "OPEN " + cursorName + ";\n\t";
+        String fetchCursor = "FETCH " + cursorName + " INTO " + recName + ";\n\t";
+
+        insertBefore(ctx, openCursor + fetchCursor);
         replace(ctx.FOR(), "WHILE ( ROW_COUNT != 0 )");
         delete(ctx.cursor_loop_param());
-        insertAfter(ctx.seq_of_statements(), "\n\tFETCH " + cursorName + " INTO " + recName + ";" +'\n');
+        insertAfter(ctx.seq_of_statements(), "\n\tFETCH " + cursorName + " INTO " + recName + ";" + '\n');
+        insertAfter(ctx, "CLOSE " + cursorName + ";\n\t");
     }
 
     private void convertLoopFor(Loop_statementContext ctx) {
@@ -1859,8 +1872,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
             insertBefore(ctx.LOOP(0), ")");
             insertAfter(ctx.seq_of_statements(), '\n' + index_name + " = " + index_name + " + 1;");
         }
-        if(ctx.cursor_loop_param().record_name()!= null && ctx.cursor_loop_param().cursor_name() != null){
+        if (ctx.cursor_loop_param().record_name() != null && ctx.cursor_loop_param().cursor_name() != null) {
             convertLoopForRecordInCursor(ctx);
+            current_plsql_block.popReplaceRecordName();
+            current_plsql_block.popScope();
+
         }
         insertBefore(ctx.condition(), "(");
         insertAfter(ctx.condition(), ")");

@@ -201,6 +201,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
             current_plsql_block.popScope();
     }
 
+    @Override public void exitUnit_statement(PlSqlParser.Unit_statementContext ctx) {
+        if (!exceptionExist & containsException ) {
+            String exception = "CREATE EXCEPTION CUSTOM_EXCEPTION 'error';";
+            insertBefore(ctx, exception + "\n\n");
+            exceptionExist = true;
+        }
+    }
     @Override
     public void exitRelational_table(PlSqlParser.Relational_tableContext ctx) {
         delete(ctx.column_properties());
@@ -1379,11 +1386,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         popScope();
         create_procedures.add(ctx);
-        if (containsException & !exceptionExist) {
-            String exception = "CREATE EXCEPTION CUSTOM_EXCEPTION 'error';";
-            insertBefore(ctx, exception + "\n\n");
-        }
-        containsException = false;
         parent_procedure_name = null;
     }
 

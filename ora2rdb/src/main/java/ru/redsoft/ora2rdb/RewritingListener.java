@@ -1991,9 +1991,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (!loop_index_names.contains(index_name))
             loop_index_names.add(index_name);
 
-            String target = getRewriterText(ctx.cursor_loop_param().index_name());
-            if (target.startsWith(":"))
-                replace(ctx.cursor_loop_param().index_name(), target.substring(1));
         String target = getRewriterText(ctx.cursor_loop_param().index_name());
         if (target.startsWith(":"))
             replace(ctx.cursor_loop_param().index_name(), target.substring(1));

@@ -11,6 +11,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import ru.redsoft.ora2rdb.PlSqlParser.*;
 
 public class RewritingListener extends PlSqlParserBaseListener {
+
+    static final int SPACES_TYPE = 2282;
     TokenStreamRewriter rewriter;
     CommonTokenStream tokens;
     String parent_procedure_name;
@@ -142,6 +144,72 @@ public class RewritingListener extends PlSqlParserBaseListener {
         sisoutRewriter();
     }
 
+
+
+    Token getPreviousToken(Token token){
+        if (token != null) {
+            int tokenIndex = token.getTokenIndex();
+            if (tokens.size() <= tokenIndex && tokenIndex != 0) return null;
+            return tokens.get(tokenIndex - 1);
+        }return null;
+    }
+    void deleteSpacesLeft(Token token){
+        if(token != null) {
+            if (token.getType() == SPACES_TYPE) {
+                rewriter.delete(token);
+                deleteSpacesLeft(getPreviousToken(token));
+            }
+        }
+    }
+    void deleteSpacesLeft(ParserRuleContext ctx) {
+        if (ctx != null)
+            deleteSpacesLeft(getPreviousToken(ctx.start));
+    }
+    void deleteSpacesLeft(TerminalNode term) {
+        if(term != null)
+            deleteSpacesLeft(getPreviousToken(term.getSymbol()));
+    }
+
+
+    Token getNextToken(Token token){
+        if (token != null) {
+            int tokenIndex = token.getTokenIndex();
+            if (tokens.size() <= tokenIndex && tokenIndex != 0) return null;
+            return tokens.get(tokenIndex + 1);
+        }return null;
+    }
+    void deleteSpacesRight(Token token){
+        if(token != null) {
+            if (token.getType() == SPACES_TYPE) {
+                rewriter.delete(token);
+                deleteSpacesRight(getNextToken(token));
+            }
+        }
+    }
+    void deleteSpacesRight(ParserRuleContext ctx) {
+        if (ctx != null) {
+            deleteSpacesRight(getNextToken(ctx.stop));
+        }
+    }
+    void deleteSpacesRight(TerminalNode term) {
+        if (term != null) {
+            deleteSpacesRight(getNextToken(term.getSymbol()));
+        }
+    }
+
+    void deleteSpacesAbut(ParserRuleContext ctx){
+        if (ctx != null) {
+            deleteSpacesLeft(getPreviousToken(ctx.start));
+            deleteSpacesRight(getNextToken(ctx.stop));
+        }
+    }
+    void deleteSpacesAbut(TerminalNode term){
+        if (term != null) {
+            deleteSpacesLeft(getPreviousToken(term.getSymbol()));
+            deleteSpacesRight(getNextToken(term.getSymbol()));
+        }
+    }
+
     void sisoutRewriter() {
 
 //        System.out.println("\n==========================================");
@@ -201,13 +269,15 @@ public class RewritingListener extends PlSqlParserBaseListener {
             current_plsql_block.popScope();
     }
 
-    @Override public void exitUnit_statement(PlSqlParser.Unit_statementContext ctx) {
-        if (!exceptionExist & containsException ) {
+    @Override
+    public void exitUnit_statement(PlSqlParser.Unit_statementContext ctx) {
+        if (!exceptionExist & containsException) {
             String exception = "CREATE EXCEPTION CUSTOM_EXCEPTION 'error';";
             insertBefore(ctx, exception + "\n\n");
             exceptionExist = true;
         }
     }
+
     @Override
     public void exitRelational_table(PlSqlParser.Relational_tableContext ctx) {
         delete(ctx.column_properties());
@@ -802,9 +872,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitQuery_block(Query_blockContext ctx) {
         if (ctx.into_clause() != null) {
+            String indentation = getIndentation(ctx);
             String into_clause = getRewriterText(ctx.into_clause());
+            deleteSpacesAbut(ctx.into_clause());
             delete(ctx.into_clause());
-            replace(ctx, getRewriterText(ctx) + " " + into_clause);
+            insertAfter(ctx.selected_list(), '\n' + indentation);
+            replace(ctx, getRewriterText(ctx) + '\n' + indentation + into_clause);
         }
     }
 
@@ -901,7 +974,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         StringBuilder declare_loop_index_names = new StringBuilder();
         if (!loop_index_names.isEmpty()) {
             for (String index_name : loop_index_names) {
-                declare_loop_index_names.append("\n DECLARE VARIABLE ").append(index_name).append(" INTEGER;");
+                declare_loop_index_names.append("\n  DECLARE VARIABLE ").append(index_name).append(" INTEGER;");
             }
             insertAfter(ctx.seq_of_declare_specs(), declare_loop_index_names.toString());
         }
@@ -910,7 +983,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         StringBuilder declare_loop_rowtype_names = new StringBuilder();
         if (!loop_rec_name_and_cursor_name.isEmpty()) {
             for (String rec : loop_rec_name_and_cursor_name.keySet()) {
-                declare_loop_rowtype_names.append("\n DECLARE VARIABLE ").append(rec).
+                declare_loop_rowtype_names.append("\n  DECLARE VARIABLE ").append(rec).
                         append(" TYPE OF TABLE ").append(loop_rec_name_and_cursor_name.get(rec)).append(";");
             }
             insertAfter(ctx.seq_of_declare_specs(), declare_loop_rowtype_names.toString());
@@ -1022,7 +1095,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         StringBuilder declare_loop_index_names = new StringBuilder();
         if (!loop_index_names.isEmpty()) {
             for (String index_name : loop_index_names) {
-                declare_loop_index_names.append("\n DECLARE VARIABLE ").append(index_name).append(" INTEGER;");
+                declare_loop_index_names.append("\n  DECLARE VARIABLE ").append(index_name).append(" INTEGER;");
             }
             insertAfter(ctx.seq_of_declare_specs(), declare_loop_index_names.toString());
         }
@@ -1031,7 +1104,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         StringBuilder declare_loop_rowtype_names = new StringBuilder();
         if (!loop_rec_name_and_cursor_name.isEmpty()) {
             for (String rec : loop_rec_name_and_cursor_name.keySet()) {
-                declare_loop_rowtype_names.append("\n DECLARE VARIABLE ").append(rec).
+                declare_loop_rowtype_names.append("\n  DECLARE VARIABLE ").append(rec).
                         append(" TYPE OF TABLE ").append(loop_rec_name_and_cursor_name.get(rec)).append(";");
             }
             insertAfter(ctx.seq_of_declare_specs(), declare_loop_rowtype_names.toString());
@@ -1183,9 +1256,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (current_plsql_block != null && current_plsql_block.containsInScope(id_expression)) {
             replace(ctx, ":" + getRuleText(ctx));
         }
-        if(current_plsql_block != null && !current_plsql_block.record_name_cursor_loop.isEmpty()){
+        if (current_plsql_block != null && !current_plsql_block.record_name_cursor_loop.isEmpty()) {
             PLSQLBlock.ReplaceRecordName replaceRecordName = current_plsql_block.peekReplaceRecordName();
-            if(id_expression.equals(replaceRecordName.old_record_name)){
+            if (id_expression.equals(replaceRecordName.old_record_name)) {
                 replace(ctx, replaceRecordName.new_record_name);
             }
         }
@@ -1356,7 +1429,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         StringBuilder declare_loop_index_names = new StringBuilder();
         if (!loop_index_names.isEmpty()) {
             for (String index_name : loop_index_names) {
-                declare_loop_index_names.append("\n DECLARE VARIABLE ").append(index_name).append(" INTEGER;");
+                declare_loop_index_names.append("\n  DECLARE VARIABLE ").append(index_name).append(" INTEGER;");
             }
             insertAfter(ctx.seq_of_declare_specs(), declare_loop_index_names.toString());
         }
@@ -1365,7 +1438,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         StringBuilder declare_loop_rowtype_names = new StringBuilder();
         if (!loop_rec_name_and_cursor_name.isEmpty()) {
             for (String rec : loop_rec_name_and_cursor_name.keySet()) {
-                declare_loop_rowtype_names.append("\n DECLARE VARIABLE ").append(rec).
+                declare_loop_rowtype_names.append("\n  DECLARE VARIABLE ").append(rec).
                         append(" TYPE OF TABLE ").append(loop_rec_name_and_cursor_name.get(rec)).append(";");
             }
             insertAfter(ctx.seq_of_declare_specs(), declare_loop_rowtype_names.toString());
@@ -1452,7 +1525,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         StringBuilder declare_loop_index_names = new StringBuilder();
         if (!loop_index_names.isEmpty()) {
             for (String index_name : loop_index_names) {
-                declare_loop_index_names.append("\n DECLARE VARIABLE ").append(index_name).append(" INTEGER;");
+                declare_loop_index_names.append("\n  DECLARE VARIABLE ").append(index_name).append(" INTEGER;");
             }
             insertAfter(ctx.seq_of_declare_specs(), declare_loop_index_names.toString());
         }
@@ -1461,7 +1534,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         StringBuilder declare_loop_rowtype_names = new StringBuilder();
         if (!loop_rec_name_and_cursor_name.isEmpty()) {
             for (String rec : loop_rec_name_and_cursor_name.keySet()) {
-                declare_loop_rowtype_names.append("\n DECLARE VARIABLE ").append(rec).
+                declare_loop_rowtype_names.append("\n  DECLARE VARIABLE ").append(rec).
                         append(" TYPE OF TABLE ").append(loop_rec_name_and_cursor_name.get(rec)).append(";");
             }
             insertAfter(ctx.seq_of_declare_specs(), declare_loop_rowtype_names.toString());
@@ -1545,8 +1618,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitCreate_trigger(Create_triggerContext ctx) {
+        String indentation = getIndentation(ctx);
         replace(ctx.REPLACE(), "ALTER");
-        insertBefore(ctx.trigger_body(), "AS\n");
+        deleteSpacesLeft(ctx.trigger_body());
+        insertBefore(ctx.trigger_body(), indentation + "\nAS\n");
         replace(ctx.SEMICOLON(), "^");
 
         StringBuilder temp_tables_ddl = new StringBuilder();
@@ -1571,6 +1646,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitFor_each_row(For_each_rowContext ctx) {
         delete(ctx);
+        deleteSpacesLeft(ctx);
     }
 
     @Override
@@ -1579,6 +1655,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             current_plsql_block.trigger_when_condition = getRewriterText(ctx.condition());
 
         delete(ctx);
+        deleteSpacesLeft(ctx);
     }
 
     @Override
@@ -1642,6 +1719,14 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitTrigger_block(Trigger_blockContext ctx) {
         delete(ctx.DECLARE());
+        deleteSpacesLeft(ctx.DECLARE());
+        if(ctx.body() != null){
+            String indentation = getIndentation(ctx);
+            deleteSpacesLeft(ctx.body().BEGIN());
+            replace(ctx.body().BEGIN(), "\n " + indentation + "BEGIN");
+            deleteSpacesLeft(ctx.body().END());
+            replace(ctx.body().END(), "\n " + indentation + "END");
+        }
     }
 
     @Override
@@ -1765,8 +1850,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
             insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
         }
 
-        delete(ctx.IF(1));
         delete(ctx.END());
+        deleteSpacesAbut(ctx.END());
+        delete(ctx.IF(1));
     }
 
     @Override
@@ -1803,11 +1889,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
                         current_plsql_block.declareVar(index_name);
 
             }
-            if (ctx.cursor_loop_param().cursor_name() != null){
+            if (ctx.cursor_loop_param().cursor_name() != null && !cursorNameIsFunction(ctx)) {
                 String recName = Ora2rdb.getRealName(ctx.cursor_loop_param().record_name().getText());
                 String cursorName = Ora2rdb.getRealName(ctx.cursor_loop_param().cursor_name().getText());
                 current_plsql_block.pushScope();
-                current_plsql_block.pushReplaceRecordName(recName, cursorName+"_"+recName);
+                current_plsql_block.pushReplaceRecordName(recName, cursorName + "_" + recName);
             }
         }
     }
@@ -1821,84 +1907,159 @@ public class RewritingListener extends PlSqlParserBaseListener {
             convertLoopWhile(ctx);
         }
     }
+    private boolean cursorNameIsFunction (Loop_statementContext ctx) {
+        if (ctx.cursor_loop_param() != null) {
+            Cursor_loop_paramContext cursorLoopParam = ctx.cursor_loop_param();
+            if (cursorLoopParam.cursor_name().general_element() != null) {
+                General_elementContext generalElement = ctx.cursor_loop_param().cursor_name().general_element();
+                if (generalElement.general_element_part() != null) {
+                    General_element_partContext generalElementPart = generalElement.general_element_part(0);
+                    if (generalElementPart.function_argument() != null)
+                        return true;
+                }
+            }
+            
+        }
+        return false;
+    }
 
     private void convertLoopForRecordInCursor(Loop_statementContext ctx) {
-
         String cursorName = Ora2rdb.getRealName(ctx.cursor_loop_param().cursor_name().getText());
-        String recName = cursorName + "_" + Ora2rdb.getRealName(ctx.cursor_loop_param().record_name().getText())  ;
+        String recName = cursorName + "_" + Ora2rdb.getRealName(ctx.cursor_loop_param().record_name().getText());
         loop_rec_name_and_cursor_name.put(recName, cursorName);
-        String openCursor = "OPEN " + cursorName + ";\n\t";
-        String fetchCursor = "FETCH " + cursorName + " INTO " + recName + ";\n\t";
+        String indentation = getIndentation(ctx);
+        String openCursor = '\n' + indentation + "OPEN " + cursorName + ";";
+        String fetchCursor = '\n' + indentation + "FETCH " + cursorName + " INTO " + recName + ";\n";
 
         insertBefore(ctx, openCursor + fetchCursor);
-        replace(ctx.FOR(), "WHILE ( ROW_COUNT != 0 )");
+        deleteSpacesLeft(ctx.FOR());
+        replace(ctx.FOR(), indentation + "WHILE ( ROW_COUNT != 0 ) DO");
         delete(ctx.cursor_loop_param());
-        insertAfter(ctx.seq_of_statements(), "\n\tFETCH " + cursorName + " INTO " + recName + ";" + '\n');
-        insertAfter(ctx, "CLOSE " + cursorName + ";\n\t");
+        deleteSpacesAbut(ctx.cursor_loop_param());
+        insertAfter(ctx.seq_of_statements(), "\n" + indentation + "\tFETCH " + cursorName + " INTO " + recName + ";\n"
+                                                  + indentation + "END");
+        insertAfter(ctx, "\n" + indentation + "CLOSE " + cursorName + ";\n");
+
+
+        insertAfter(ctx.LOOP(0), "\n" + indentation + "BEGIN");
+
+
+        delete(ctx.END());
+        deleteSpacesLeft(ctx.END());
+        delete(ctx.LOOP(0));
+        deleteSpacesLeft(ctx.LOOP(0));
+        delete(ctx.LOOP(1));
+        deleteSpacesAbut(ctx.LOOP(1));
+
+    }
+
+    private void convertLoopForInRange(Loop_statementContext ctx) {
+        String index_name = ctx.cursor_loop_param().index_name().getText();
+
+        if (!loop_index_names.contains(index_name))
+            loop_index_names.add(index_name);
+
+        String indentation = getIndentation(ctx);
+        String target = getRewriterText(ctx.cursor_loop_param().index_name());
+        if (target.startsWith(":"))
+            replace(ctx.cursor_loop_param().index_name(), target.substring(1));
+
+        insertBefore(ctx, index_name + " = " + ctx.cursor_loop_param().lower_bound().getText() + ";\n");
+
+        replace(ctx.FOR(), indentation + "WHILE (");
+        insertAfter(ctx.cursor_loop_param(), ") DO" + '\n' + indentation + "BEGIN");
+//        insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
+
+        replace(ctx.cursor_loop_param().IN(), " < ");
+        deleteSpacesAbut(ctx.cursor_loop_param().IN());
+        delete(ctx.cursor_loop_param().lower_bound());
+        deleteSpacesAbut(ctx.cursor_loop_param().lower_bound());
+        delete(ctx.cursor_loop_param().DOUBLE_PERIOD());
+        deleteSpacesAbut(ctx.cursor_loop_param().DOUBLE_PERIOD());
+        insertAfter(ctx.seq_of_statements(), '\n' + indentation + index_name + " = " + index_name + " + 1;\n" + indentation + "END");
+
+        delete(ctx.LOOP(0));
+        deleteSpacesLeft(ctx.LOOP(0));
+        delete(ctx.LOOP(1));
+        deleteSpacesLeft(ctx.LOOP(1));
+        delete(ctx.END());
+        deleteSpacesLeft(ctx.END());
+    }
+    private void convertLoopForInRangeReverse(Loop_statementContext ctx) {
+        String index_name = ctx.cursor_loop_param().index_name().getText();
+
+        if (!loop_index_names.contains(index_name))
+            loop_index_names.add(index_name);
+
+            String target = getRewriterText(ctx.cursor_loop_param().index_name());
+            if (target.startsWith(":"))
+                replace(ctx.cursor_loop_param().index_name(), target.substring(1));
+        String target = getRewriterText(ctx.cursor_loop_param().index_name());
+        if (target.startsWith(":"))
+            replace(ctx.cursor_loop_param().index_name(), target.substring(1));
+
+        insertBefore(ctx, index_name + " = " + ctx.cursor_loop_param().upper_bound().getText() + ";\n");
+
+        String indentation = getIndentation(ctx);
+        replace(ctx.FOR(), indentation + "WHILE (");
+        insertAfter(ctx.cursor_loop_param(), ") DO" + '\n' + indentation + "BEGIN");
+        insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
+        replace(ctx.cursor_loop_param().IN(), " > ");
+        delete(ctx.cursor_loop_param().REVERSE());
+        delete(ctx.cursor_loop_param().upper_bound());
+        delete(ctx.cursor_loop_param().DOUBLE_PERIOD());
+
+        insertAfter(ctx.seq_of_statements(), '\n' + index_name + " = " + index_name + " + 1;"); //todo + 1, может -1?
+
+
+        delete(ctx.LOOP(0));
+        deleteSpacesLeft(ctx.LOOP(0));
+        delete(ctx.LOOP(1));
+        delete(ctx.END());
+        deleteSpacesLeft(ctx.END());
     }
 
     private void convertLoopFor(Loop_statementContext ctx) {
         if (ctx.cursor_loop_param().REVERSE() != null && ctx.cursor_loop_param().DOUBLE_PERIOD() != null) {
-            String index_name = ctx.cursor_loop_param().index_name().getText();
-
-            if (!loop_index_names.contains(index_name))
-                loop_index_names.add(index_name);
-
-            String target = getRewriterText(ctx.cursor_loop_param().index_name());
-            if (target.startsWith(":"))
-                replace(ctx.cursor_loop_param().index_name(), target.substring(1));
-
-            insertBefore(ctx, index_name + " = " + ctx.cursor_loop_param().upper_bound().getText() + ";\n");
-            replace(ctx.FOR(), "WHILE (");
-            replace(ctx.cursor_loop_param().IN(), " > ");
-            delete(ctx.cursor_loop_param().REVERSE());
-            delete(ctx.cursor_loop_param().upper_bound());
-            delete(ctx.cursor_loop_param().DOUBLE_PERIOD());
-            insertBefore(ctx.LOOP(0), ")");
-            insertAfter(ctx.seq_of_statements(), '\n' + index_name + " = " + index_name + " + 1;");
+            convertLoopForInRangeReverse(ctx);
         } else if (ctx.cursor_loop_param().DOUBLE_PERIOD() != null) {
-            String index_name = ctx.cursor_loop_param().index_name().getText();
-
-            if (!loop_index_names.contains(index_name))
-                loop_index_names.add(index_name);
-
-            String target = getRewriterText(ctx.cursor_loop_param().index_name());
-            if (target.startsWith(":"))
-                replace(ctx.cursor_loop_param().index_name(), target.substring(1));
-
-            insertBefore(ctx, index_name + " = " + ctx.cursor_loop_param().lower_bound().getText() + ";\n");
-            replace(ctx.FOR(), "WHILE (");
-            replace(ctx.cursor_loop_param().IN(), " < ");
-            delete(ctx.cursor_loop_param().lower_bound());
-            delete(ctx.cursor_loop_param().DOUBLE_PERIOD());
-            insertBefore(ctx.LOOP(0), ")");
-            insertAfter(ctx.seq_of_statements(), '\n' + index_name + " = " + index_name + " + 1;");
-        }
-        if (ctx.cursor_loop_param().record_name() != null && ctx.cursor_loop_param().cursor_name() != null) {
+            convertLoopForInRange(ctx);
+        } else if (ctx.cursor_loop_param().record_name() != null && ctx.cursor_loop_param().cursor_name() != null && !cursorNameIsFunction(ctx)) {
             convertLoopForRecordInCursor(ctx);
             current_plsql_block.popReplaceRecordName();
             current_plsql_block.popScope();
-
         }
-        insertBefore(ctx.condition(), "(");
-        insertAfter(ctx.condition(), ")");
-        replace(ctx.LOOP(0), "DO");
+        else{
 
         String indentation = getIndentation(ctx);
-        insertAfter(ctx.LOOP(0), "\n" + indentation + "BEGIN");
+
+        insertAfter(ctx.cursor_loop_param(), "\n" + indentation + "DO" + '\n' + indentation + "BEGIN");
         insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
 
+
+
+        delete(ctx.LOOP(0));
+        deleteSpacesLeft(ctx.LOOP(0));
         delete(ctx.END());
+        deleteSpacesLeft(ctx.END());
         delete(ctx.LOOP(1));
+        deleteSpacesLeft(ctx.LOOP(1));
+        }
     }
 
     public void convertLoopWhile(Loop_statementContext ctx) {
         insertBefore(ctx.condition(), "(");
-        insertAfter(ctx.condition(), ")");
-        insertAfter(ctx.condition(), " DO\n");
-        insertBefore(ctx.seq_of_statements(), "BEGIN\n");
+        insertAfter(ctx.condition(), ") DO");
+        deleteSpacesRight(ctx.condition());
+        String indentation = getIndentation(ctx);
+        insertAfter(ctx.LOOP(0), "\n" + indentation + "BEGIN");
+        insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
         delete(ctx.LOOP(0));
         delete(ctx.LOOP(1));
+        deleteSpacesAbut(ctx.LOOP(1));
+        delete(ctx.END());
+        deleteSpacesAbut(ctx.END());
+
 
     }
 

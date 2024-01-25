@@ -809,7 +809,7 @@ cast(null as date)datebegin, cast(null as date)dateend
 where p.grantdate = (select max (grantdate) from roleregister r
   where r.user_id = p.user_id and r.grantedrole_id=p.grantedrole_id
   and r.grantdate<=CURRENT_TIMESTAMP+0.000015) and
-  CURRENT_DATE between p.fromdate and p.todate
+  CURRENT_TIMESTAMP between p.fromdate and p.todate
   and p.grantdate<=CURRENT_TIMESTAMP+0.000015  and p.dispstatus_id = 10 and p.operation = 1;
 --------------------------------------------------------
 --  DDL for View USERACTIONVIEW

@@ -429,16 +429,17 @@ SET TERM ; ^
 --------------------------------------------------------
 
 
-  SET TERM ^ ;
+  CREATE EXCEPTION CUSTOM_EXCEPTION 'error';
+
+SET TERM ^ ;
 
 CREATE OR ALTER PROCEDURE "SECURE_DML" 
 AS
 BEGIN
-  IF (TO_CHAR (CURRENT_DATE, 'HH24:MI') NOT BETWEEN '08:00' AND '18:00'
-        OR TO_CHAR (CURRENT_DATE, 'DY') IN ('SAT', 'SUN')) THEN
-	RAISE_APPLICATION_ERROR (-20205,
+  IF (UPPER( CAST (CURRENT_TIMESTAMP AS VARCHAR(250) FORMAT 'HH24:MI')) NOT BETWEEN '08:00' AND '18:00'
+        OR UPPER( CAST (CURRENT_TIMESTAMP AS VARCHAR(250) FORMAT 'DY')) IN ('SAT', 'SUN')) THEN
+	EXCEPTION CUSTOM_EXCEPTION (
 		'You may only make changes during normal office hours');
-   
 END ^
 
 SET TERM ; ^
@@ -451,11 +452,12 @@ SET TERM ; ^
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "SECURE_EMPLOYEES" 
-  BEFORE INSERT OR UPDATE OR DELETE ON employees
+  BEFORE INSERT OR UPDATE OR DELETE ON employees  
 AS
-BEGIN
+
+ BEGIN
   EXECUTE PROCEDURE secure_dml;
-END ^
+ END ^
 
 SET TERM ; ^
 
@@ -467,14 +469,14 @@ ALTER TRIGGER "SECURE_EMPLOYEES" INACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "UPDATE_JOB_HISTORY" 
-  AFTER UPDATE   ON employees
-  
+  AFTER UPDATE   ON employees  
 AS
-BEGIN
+
+ BEGIN
 IF (NEW.job_id <> OLD.job_id OR NEW.department_id <> OLD.department_id) THEN
-  EXECUTE PROCEDURE add_job_history(old.employee_id, old.hire_date, CURRENT_DATE,
+  EXECUTE PROCEDURE add_job_history(old.employee_id, old.hire_date, CURRENT_TIMESTAMP,
                   old.job_id, old.department_id);
-END^
+ END^
 
 SET TERM ; ^
 

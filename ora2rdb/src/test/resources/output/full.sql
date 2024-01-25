@@ -33205,12 +33205,10 @@ ALTER SEQUENCE "WEBSTATCACHEVAL_SEQ" RESTART WITH 1;
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "CURRENT_TRANSACTION_ID" 
-RETURNS (RET_VAL VARCHAR(250)) as
+CREATE OR ALTER FUNCTION "CURRENT_TRANSACTION_ID"
+RETURNS VARCHAR(250) as
 begin
-  RET_VAL = dbms_transaction.local_transaction_id(TRUE);
-  SUSPEND;
-  EXIT;
+  return dbms_transaction.local_transaction_id(TRUE);
 end^
 
 SET TERM ; ^
@@ -33222,27 +33220,25 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "GETBASEGROUP" ( IDIN   numeric(18, 4),
+CREATE OR ALTER FUNCTION "GETBASEGROUP" ( IDIN   numeric(18, 4),
     PURCHASEMODE  numeric(18, 4))
-  RETURNS (RET_VAL  numeric(18, 4)) AS
+  RETURNS  numeric(18, 4) AS
   DECLARE p numeric(18, 4);
   DECLARE q numeric(18, 4);
 BEGIN 
   p = :idin;
   while ((not :p is null)) DO
   BEGIN
-    select count(*)  from goodsgrouppurchasemode gpm where (gpm.purchasemode_id = :purchasemode) and (gpm.goodsgroup_id = :p) and (gpm.goodsgroup_id <> :idin) into :q;
+    select count(*)
+    from goodsgrouppurchasemode gpm where (gpm.purchasemode_id = :purchasemode) and (gpm.goodsgroup_id = :p) and (gpm.goodsgroup_id <> :idin)
+    into :q;
     if (:q > 0) then
-      RET_VAL = (:p);
-      SUSPEND;
-      EXIT;
-     
-    select parent_id     from goodsgroup where goodsgroup.id=:p into :p;
+      return (:p);
+    select parent_id
+    from goodsgroup where goodsgroup.id=:p
+    into :p;
   END
-   
-  RET_VAL = (null);
-  SUSPEND;
-  EXIT;
+  return (null);
 END^
 
 SET TERM ; ^
@@ -33254,16 +33250,16 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "GETDOCIDFORATTACHID" (DocAttachId NUMERIC(18, 4)) RETURNS (RET_VAL NUMERIC(18, 4)) AS
+CREATE OR ALTER FUNCTION "GETDOCIDFORATTACHID" (DocAttachId NUMERIC(18, 4)) RETURNS NUMERIC(18, 4) AS
   
   DECLARE DocId NUMERIC(18,0);
 BEGIN
   IN AUTONOMOUS TRANSACTION DO BEGIN
-select da.Document_id  from DocAttachEx da where da.Id = :DocAttachId into :DocId;
+select da.Document_id
+  from DocAttachEx da where da.Id = :DocAttachId
+  into :DocId;
   COMMIT;
-  RET_VAL = :DocId;
-  SUSPEND;
-  EXIT;
+  return DocId;
 	END
 END^
 
@@ -33276,16 +33272,16 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "GETFIRSTGROUPBYCRIT" (
+CREATE OR ALTER FUNCTION "GETFIRSTGROUPBYCRIT" (
  grpcode  VARCHAR(250)
 )
-RETURNS (RET_VAL varchar(250)) AS
+RETURNS varchar(250) AS
 DECLARE ret varchar(500);
 begin
- select gg.caption  from goodsgroup gg  where gg.code like :grpcode||'%' and ROWNUM=1 into :ret;
- RET_VAL = :ret;
- SUSPEND;
- EXIT;
+ select gg.caption
+ from goodsgroup gg  where gg.code like :grpcode||'%' and ROWNUM=1
+ into :ret;
+ return ret;
 end^
 
 SET TERM ; ^
@@ -33297,9 +33293,9 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "GET_ORDERID_OF_CONTRACT" (
+CREATE OR ALTER FUNCTION "GET_ORDERID_OF_CONTRACT" (
   id  numeric(18, 4))
-RETURNS (RET_VAL  numeric(18, 4)) AS
+RETURNS  numeric(18, 4) AS
   DECLARE docid numeric(18, 4);
   DECLARE parent_id1 numeric(18, 4);
   DECLARE documentclass_id numeric(18, 4);
@@ -33307,23 +33303,20 @@ begin
   parent_id1 = :id;
   documentclass_id = -1;
   while (((not :documentclass_id in (4,5,28,30,25)) and not :parent_id1 is null)) DO
+  BEGIN
   begin
-    select d.id, d.documentclass_id, d.parent_id  
+    select d.id, d.documentclass_id, d.parent_id
     from document d 
-    where d.id = :parent_id1 into :docid, :documentclass_id, :parent_id1;    
+    where d.id = :parent_id1
+    into :docid, :documentclass_id, :parent_id1;    
   exception
     when no_data_found then
-      RET_VAL = :parent_id1;
-      SUSPEND;
-      EXIT;
-  end 
-   
+      return parent_id1;
+  end
+  END
   if (:parent_id1 is null and not :documentclass_id in (4,5,28,30,25)) then
     docid = null;
-   
-  RET_VAL = :docid;
-  SUSPEND;
-  EXIT;
+  return docid;
 end^
 
 SET TERM ; ^
@@ -33335,9 +33328,9 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "GET_ORGPARENT_WITH_ROLE" (
+CREATE OR ALTER FUNCTION "GET_ORGPARENT_WITH_ROLE" (
   child_org_id  numeric(18, 4), org_role_id  numeric(18, 4), parent_first  numeric(18, 4))
-  RETURNS (RET_VAL numeric(18, 4))
+  RETURNS numeric(18, 4)
 AS
   DECLARE org_id numeric(18, 4);
   DECLARE parent_org_id numeric(18, 4);
@@ -33348,31 +33341,28 @@ begin
   org_id = null;
   cur_org_id = :child_org_id;
   if ((:parent_first = 1)) then
-    select o.parent_id, r.orgrole_id  from org o
+    select o.parent_id, r.orgrole_id
+    from org o
       left join orgroles r on (o.id = r.org_id and r.orgrole_id = :org_role_id)
-      where o.id = :cur_org_id into :cur_org_id, :child_role_id;
-   
+      where o.id = :cur_org_id
+    into :cur_org_id, :child_role_id;
   while (((not :cur_org_id is null) and (:org_id is null))) DO
   BEGIN
-    select o.parent_id, r.orgrole_id  from org o
+    select o.parent_id, r.orgrole_id
+    from org o
       left join orgroles r on (o.id = r.org_id and r.orgrole_id = :org_role_id)
-      where o.id = :cur_org_id into :parent_org_id, :role_id;
+      where o.id = :cur_org_id
+    into :parent_org_id, :role_id;
     if ((not :role_id is null)) then
       org_id = :cur_org_id;
-     
     if ((:parent_org_id = :cur_org_id)) then
       cur_org_id = null;
     else
       cur_org_id = :parent_org_id;
-     
   END
-   
   if (((:parent_first = 1) and (:org_id is null) and (not :child_role_id is null))) then
     org_id = :child_org_id;
-   
-  RET_VAL = :org_id;
-  SUSPEND;
-  EXIT;
+  return org_id;
 end^
 
 SET TERM ; ^
@@ -33384,9 +33374,9 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "GET_PARENT_BY_DISPSTATUS" (
+CREATE OR ALTER FUNCTION "GET_PARENT_BY_DISPSTATUS" (
   current_doc_id  numeric(18, 4), dispstatus_id  numeric(18, 4))
-RETURNS (RET_VAL  numeric(18, 4)) AS
+RETURNS  numeric(18, 4) AS
   DECLARE docid numeric(18, 4);
   DECLARE current_class_id numeric(18, 4);
   DECLARE class_id numeric(18, 4);
@@ -33395,26 +33385,24 @@ RETURNS (RET_VAL  numeric(18, 4)) AS
   DECLARE next_dispstatus_id numeric(18, 4);
 begin
   select documentclass_id, documentclass_id, parent_id
-     from document
-    where id = :current_doc_id into :current_class_id, :class_id, :parent_doc_id;
+  from document
+    where id = :current_doc_id
+  into :current_class_id, :class_id, :parent_doc_id;
   while ((:class_id = :current_class_id and not :parent_doc_id is null and (:next_dispstatus_id is null or :next_dispstatus_id <> :dispstatus_id))) DO
+  BEGIN
   begin
     select id, documentclass_id, parent_id, :dispstatus_id
-      from document
-     where id = :parent_doc_id into :next_docid, :class_id, :parent_doc_id, :next_dispstatus_id;
+    from document
+     where id = :parent_doc_id
+    into :next_docid, :class_id, :parent_doc_id, :next_dispstatus_id;
   exception
     when no_data_found then
-      RET_VAL = null;
-      SUSPEND;
-      EXIT;
+      return null;
   end
-   
+  END
   if (:next_dispstatus_id = :dispstatus_id) then
     docid = :next_docid;
-   
-  RET_VAL = :docid;
-  SUSPEND;
-  EXIT;
+  return docid;
 end^
 
 SET TERM ; ^
@@ -33426,35 +33414,33 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "GET_PARENT_NO_CLASS" (
+CREATE OR ALTER FUNCTION "GET_PARENT_NO_CLASS" (
   current_doc_id  numeric(18, 4))
-RETURNS (RET_VAL  numeric(18, 4)) AS
+RETURNS  numeric(18, 4) AS
   DECLARE docid numeric(18, 4);
   DECLARE current_class_id numeric(18, 4);
   DECLARE class_id numeric(18, 4);
   DECLARE parent_doc_id numeric(18, 4);
 begin
   select documentclass_id, documentclass_id, parent_id
-     from document
-    where id = :current_doc_id into :current_class_id, :class_id, :parent_doc_id;
+  from document
+    where id = :current_doc_id
+  into :current_class_id, :class_id, :parent_doc_id;
   while ((:class_id = :current_class_id and not :parent_doc_id is null)) DO
+  BEGIN
   begin
     select id, documentclass_id, parent_id
-      from document
-     where id = :parent_doc_id into :docid, :class_id, :parent_doc_id;
+    from document
+     where id = :parent_doc_id
+    into :docid, :class_id, :parent_doc_id;
   exception
     when no_data_found then
-      RET_VAL = null;
-      SUSPEND;
-      EXIT;
-  end 
-   
+      return null;
+  end
+  END
   if (:class_id = :current_class_id) then
     docid = null;
-   
-  RET_VAL = :docid;
-  SUSPEND;
-  EXIT;
+  return docid;
 end^
 
 SET TERM ; ^
@@ -33466,9 +33452,9 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "GET_TOP_PARENT_BY_CLASS" (
+CREATE OR ALTER FUNCTION "GET_TOP_PARENT_BY_CLASS" (
   current_doc_id  numeric(18, 4))
-RETURNS (RET_VAL  numeric(18, 4)) AS
+RETURNS  numeric(18, 4) AS
   DECLARE docid numeric(18, 4);
   DECLARE current_class_id numeric(18, 4);
   DECLARE class_id numeric(18, 4);
@@ -33476,27 +33462,25 @@ RETURNS (RET_VAL  numeric(18, 4)) AS
   DECLARE next_docid numeric(18, 4);
 begin
   select documentclass_id, documentclass_id, parent_id
-     from document
-    where id = :current_doc_id into :current_class_id, :class_id, :parent_doc_id;
+  from document
+    where id = :current_doc_id
+  into :current_class_id, :class_id, :parent_doc_id;
   while ((:class_id = :current_class_id and not :parent_doc_id is null)) DO
+  BEGIN
   begin
     docid = :next_docid;
     select id, documentclass_id, parent_id
-      from document
-     where id = :parent_doc_id into :next_docid, :class_id, :parent_doc_id;
+    from document
+     where id = :parent_doc_id
+    into :next_docid, :class_id, :parent_doc_id;
   exception
     when no_data_found then
-      RET_VAL = null;
-      SUSPEND;
-      EXIT;
+      return null;
   end
-   
+  END
   if (:class_id = :current_class_id) then
     docid = :next_docid;
-   
-  RET_VAL = :docid;
-  SUSPEND;
-  EXIT;
+  return docid;
 end^
 
 SET TERM ; ^
@@ -33508,11 +33492,9 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "LEFT" (p_Str varchar(250), p_Size integer) RETURNS (RET_VAL VARCHAR(250)) AS
+CREATE OR ALTER FUNCTION "LEFT" (p_Str varchar(250), p_Size integer) RETURNS VARCHAR(250) AS
 begin
-  RET_VAL = SUBSTRING (:p_Str FROM  1 FOR  :p_Size);
-  SUSPEND;
-  EXIT;
+  return SUBSTRING (:p_Str FROM  1 FOR  :p_Size);
 end^
 
 SET TERM ; ^
@@ -33560,10 +33542,11 @@ begin
                                     cname5, cname6, cname7, cname8)
               and i.column_position <= cons.col_cnt
             Group by i.index_name) 
-            Order by table_name, constraint_name, colum) t ) 
+            Order by table_name, constraint_name, colum) t )
   DO
-    execute STATEMENT 'create index j_' || SUBSTRING(cur.constraint_name FROM 1 FOR 28) || ' on ' || cur.table_name || ' (' || cur.colum || ')';
-   
+  BEGIN
+    execute STATEMENT ('create index j_' || SUBSTRING(cur.constraint_name FROM 1 FOR 28) || ' on ' || cur.table_name || ' (' || cur.colum || ')');
+  END
 end^
 
 SET TERM ; ^
@@ -33627,7 +33610,6 @@ BEGIN
       SELECT org_id, id FROM orgchild, org
         WHERE child_id = parent_id AND child_id = cur.id;
   END
-   
 END^
 
 SET TERM ; ^
@@ -33645,16 +33627,28 @@ AS
   DECLARE stmt varchar(2000);
   DECLARE s CURSOR FOR (SELECT TRIGGER_NAME from USER_TRIGGERS where (TRIGGER_NAME like 'RPL$%'));
   DECLARE r CURSOR FOR (SELECT id, name FROM rpltable) ;
+  DECLARE VARIABLE R_R_REC TYPE OF TABLE R;
+  DECLARE VARIABLE S_S_REC TYPE OF TABLE S;
 BEGIN
-  FOR s_rec in s DO
+  OPEN S;
+  FETCH S INTO S_S_REC;
+  WHILE ( ROW_COUNT != 0 ) DO
   BEGIN
-    stmt = 'DROP TRIGGER ' || s_rec.trigger_name;
-    execute STATEMENT :stmt;
+    stmt = 'DROP TRIGGER ' || S_S_REC.trigger_name;
+    execute STATEMENT (:stmt);
+  	FETCH S INTO S_S_REC;
   END
-   
-  FOR r_rec in r DO
-    EXECUTE PROCEDURE RPL$REENABLE_RPL_TABLE(r_rec.name);
-   
+  CLOSE S;
+
+  OPEN R;
+  FETCH R INTO R_R_REC;
+  WHILE ( ROW_COUNT != 0 ) DO
+  BEGIN
+    EXECUTE PROCEDURE RPL$REENABLE_RPL_TABLE(R_R_REC.name);
+  	FETCH R INTO R_R_REC;
+  END
+  CLOSE R;
+
 END^
 
 SET TERM ; ^
@@ -33678,66 +33672,67 @@ begin
   -- THIS PROCEDURE MUST BE EXECUTED AT SNAPSHOT ISOLATION LEVEL
   -- lock some table for a singleton execution of this procedure
   lock table rpltable in exclusive mode;
-  select generation_seq.nextval  from dual into :gnrtn;
-  select max(day_date)  from dayversion into :ldaydate;
+  select generation_seq.nextval
+  from dual
+  into :gnrtn;
+  select max(day_date)
+  from dayversion
+  into :ldaydate;
   update rpllog set generation = :GNRTN, transaction_id = current_transaction_id where
     generation=999999999999999;
   old_gen = null;
-  if (((CURRENT_DATE - :ldaydate) * 24 > 1)) then
+  if (((CURRENT_TIMESTAMP - :ldaydate) * 24 > 1)) then
   BEGIN
-    insert into dayversion(day_date, day_version) values (CURRENT_DATE, :GNRTN);
-    select min(sent_version)  from rpl where master_id = (select site_id from systemsite) and sent_version > 0 into :old_gen;
+    insert into dayversion(day_date, day_version) values (CURRENT_TIMESTAMP, :GNRTN);
+    select min(sent_version)
+    from rpl where master_id = (select site_id from systemsite) and sent_version > 0
+    into :old_gen;
     if ((:old_gen is null)) then
       old_gen = 999999999999999;
-     
   -- We have three differen ranges of 'living time' for records in log, depending on rpltable generation_group
   -- 10 days
-    select max(day_version)  from dayversion where day_date < cast(CURRENT_DATE as date) - 10 into :old_gen1;
+    select max(day_version)
+    from dayversion where day_date < cast(CURRENT_TIMESTAMP as date) - 10
+    into :old_gen1;
     if ((:old_gen1 is null)) then
       old_gen1 = 0;
-     
     if ((:old_gen1 < :old_gen)) then
       old_gen2 = :old_gen1;
     else
       old_gen2 = :old_gen;
-     
     if ((:old_gen2 > 0)) then
       begin
         update systemsite set clean_generation_1 = :old_gen2 ;
       end
-     
   -- 1 day
-    select max(day_version)  from dayversion where day_date < cast(CURRENT_DATE as date) - 1 into :old_gen1;
+    select max(day_version)
+    from dayversion where day_date < cast(CURRENT_TIMESTAMP as date) - 1
+    into :old_gen1;
     if ((:old_gen1 is null)) then
       old_gen1 = 0;
-     
     if ((:old_gen1 < :old_gen)) then
       old_gen2 = :old_gen1;
     else
       old_gen2 = :old_gen;
-     
     if ((:old_gen2 > 0)) then
       begin
         update systemsite set clean_generation_2 = :old_gen2 ;
       end
-     
   -- 1 hour
-    select max(day_version)  from dayversion where day_date < cast(CURRENT_DATE as date) - 1/24 into :old_gen1;
+    select max(day_version)
+    from dayversion where day_date < cast(CURRENT_TIMESTAMP as date) - 1/24
+    into :old_gen1;
     if ((:old_gen1 is null)) then
       old_gen1 = 0;
-     
     if ((:old_gen1 < :old_gen)) then
       old_gen2 = :old_gen1;
     else
       old_gen2 = :old_gen;
-     
     if ((:old_gen2 > 0)) then
       begin
         update systemsite set clean_generation_3 = :old_gen2 ;
       end
-     
   END
-   
   update systemsite set last_generation = :gnrtn;
   commit;
 end^
@@ -33763,15 +33758,20 @@ AS
   DECLARE PARENT_SET VARCHAR(250);
   DECLARE FCOUNT INTEGER;
   DECLARE BODY VARCHAR(4000);
-  DECLARE rc rpl$constraints%ROWTYPE;
+  DECLARE VARIABLE rc TYPE OF TABLE rpl$constraints;
   DECLARE getFields(constr_id TYPE OF COLUMN rpl$constraintfields.rpl$constraints_id) CURSOR FOR
     (select fieldname, target_fieldname from rpl$constraintfields where rpl$constraints_id = constr_id);
 BEGIN
-  select *  from rpl$constraints where name = :constr_name into :rc;
+  select *
+  from rpl$constraints where name = :constr_name
+  into :rc;
   child_where = ''; child_condition = ''; child_if = 'numrows = 0 and ';
   parent_where = ''; parent_condition = ''; parent_set = '';
-  select count(*)  from rpl$constraintfields where rpl$constraints_id = rc.id into :fcount;
-  for getFields_Rec in getFields(rc.id) DO
+  select count(*)
+  from rpl$constraintfields where rpl$constraints_id = rc.id
+  into :fcount;
+  for getFields_Rec in getFields(rc.id)
+  DO
   BEGIN
     child_where = :child_where || ':NEW.'||getFields_Rec.fieldname||' = '||rc.target_tablename||'.'||getFields_Rec.target_fieldname;
     child_if = :child_if || ':NEW.'||getFields_Rec.fieldname||' is not null';
@@ -33789,9 +33789,7 @@ BEGIN
       parent_condition = :parent_condition || ' or ';
       parent_set = :parent_set || ', ';
     END
-     
   END
-   
   body =
     'CREATE or REPLACE TRIGGER RPL$TRIG_' || rc.triggername ||
     ' BEFORE INSERT OR UPDATE ON ' || rc.tablename || ' FOR EACH ROW' ||
@@ -33807,7 +33805,7 @@ BEGIN
   body = :body || 'if (inserting) then ' || :child_statement || ' ';
   body = :body || 'elsif (' || :child_condition || ') then ' || :child_statement || ' end if;';
   body = :body || ' end if; END;';
-  execute STATEMENT :body;
+  execute STATEMENT (:body);
   body =
     'CREATE or REPLACE TRIGGER RPL$TRIGT_' || rc.triggername ||
     ' BEFORE UPDATE OR DELETE ON ' || rc.target_tablename || ' FOR EACH ROW' ||
@@ -33826,7 +33824,6 @@ BEGIN
         ||'if(numrows > 0) then '
         ||'raise_application_error(-20001, ''violation of FOREIGN KEY constraint "'||rc.name
         ||'" on table "'||rc.target_tablename||'". Foreign key references are present for the record.''); end if;';
-   
   body = :body || ' elsif(' || :parent_condition || ') then '; /* update_rule ��������� ��������: RESTRICT, SET NULL */
   if ((rc.update_rule = 'SET NULL')) then /* UPDATE SET NULL */
     body = :body ||' update '||rc.tablename||' set '||:parent_set||' where '||:parent_where||';';
@@ -33835,10 +33832,9 @@ BEGIN
         ||'if(numrows > 0) then '
         ||'raise_application_error(-20001, ''violation of FOREIGN KEY constraint "'||rc.name
         ||'" on table "'||rc.target_tablename||'". Foreign key references are present for the record.''); end if;';
-   
   body = :body || ' end if;';
   body = :body || '  end if; END;';
-  execute STATEMENT :body;
+  execute STATEMENT (:body);
 END^
 
 SET TERM ; ^
@@ -33855,10 +33851,17 @@ CREATE OR ALTER PROCEDURE "RPL$CREATE_TRIGGERS"
 AS
   DECLARE getConstraints CURSOR FOR
     (select name from rpl$constraints);
+  DECLARE VARIABLE GETCONSTRAINTS_GETCONSTRAINTS_REC TYPE OF TABLE GETCONSTRAINTS;
 BEGIN
-  FOR getConstraints_Rec in getConstraints DO
-    EXECUTE PROCEDURE RPL$CREATE_TRIGGER(getConstraints_Rec.name);
-   
+  OPEN GETCONSTRAINTS;
+  FETCH GETCONSTRAINTS INTO GETCONSTRAINTS_GETCONSTRAINTS_REC;
+  WHILE ( ROW_COUNT != 0 ) DO
+  BEGIN
+    EXECUTE PROCEDURE RPL$CREATE_TRIGGER(GETCONSTRAINTS_GETCONSTRAINTS_REC.name);
+  	FETCH GETCONSTRAINTS INTO GETCONSTRAINTS_GETCONSTRAINTS_REC;
+  END
+  CLOSE GETCONSTRAINTS;
+
 END^
 
 SET TERM ; ^
@@ -33875,13 +33878,18 @@ CREATE OR ALTER PROCEDURE "RPL$DEACTIVATE_RPL"
 AS
   DECLARE stmt varchar(2000);
   DECLARE s CURSOR FOR (SELECT TRIGGER_NAME from USER_TRIGGERS where (TRIGGER_NAME like 'RPL$%'));
+  DECLARE VARIABLE S_S_REC TYPE OF TABLE S;
 BEGIN
-  FOR s_rec in s DO
+  OPEN S;
+  FETCH S INTO S_S_REC;
+  WHILE ( ROW_COUNT != 0 ) DO
   BEGIN
-    stmt = 'DROP TRIGGER ' || s_rec.trigger_name;
-    execute STATEMENT :stmt;
+    stmt = 'DROP TRIGGER ' || S_S_REC.trigger_name;
+    execute STATEMENT (:stmt);
+  	FETCH S INTO S_S_REC;
   END
-   
+  CLOSE S;
+
 END^
 
 SET TERM ; ^
@@ -33898,14 +33906,19 @@ CREATE OR ALTER PROCEDURE "RPL$DISABLE_RPL_TABLE" (tablename varchar(250))
 AS
    DECLARE s CURSOR FOR (select trigger_name name from user_triggers where (trigger_name like 'RPL$'||:tablename)) ;
    DECLARE stmt VARCHAR(2000);
+  DECLARE VARIABLE S_S_REC TYPE OF TABLE S;
 BEGIN
-  FOR s_rec in s DO
+  OPEN S;
+  FETCH S INTO S_S_REC;
+  WHILE ( ROW_COUNT != 0 ) DO
   BEGIN
     stmt =
-      'drop trigger '||s_rec.NAME;
-    EXECUTE STATEMENT :stmt;
+      'drop trigger '||S_S_REC.NAME;
+    EXECUTE STATEMENT (:stmt);
+  	FETCH S INTO S_S_REC;
   END
-   
+  CLOSE S;
+
 END^
 
 SET TERM ; ^
@@ -33943,14 +33956,18 @@ AS
            AND UPPER (rt.NAME) = UPPER (:tablename)
            AND rt.isplugin = 0)
              ;
+  DECLARE VARIABLE C_PLUGIN_PLUGIN_REC TYPE OF TABLE C_PLUGIN;
+  DECLARE VARIABLE S_S_REC TYPE OF TABLE S;
 BEGIN
-   select count(rtp.ID)  
-       from rpltableplugin rtp 
+   select count(rtp.ID)
+   from rpltableplugin rtp 
             JOIN rpltable rt ON rt.ID = rtp.rpltable_id
                              AND UPPER (rt.NAME) = UPPER (:tablename)
-                             AND rt.isplugin = 0 into :plugin_count;
-   FOR s_rec IN s
-   DO
+                             AND rt.isplugin = 0
+   into :plugin_count;
+   OPEN S;
+   FETCH S INTO S_S_REC;
+   WHILE ( ROW_COUNT != 0 ) DO
    BEGIN
       fieldlist = 'generation';
       fieldvalue = '999999999999999';
@@ -33960,18 +33977,18 @@ BEGIN
       condition = '(updating and not(1=1 ';
       mut_condition = '1=1 ';      
       fieldlist = :fieldlist || ', FIELD1_VALUE';
-      table_id = s_rec.ID;
-      IF ((s_rec.rplfield1 IS NOT NULL))
+      table_id = S_S_REC.ID;
+      IF ((S_S_REC.rplfield1 IS NOT NULL))
       THEN
          BEGIN
-           fieldvalue = :fieldvalue || ', :new.' || s_rec.rplfield1;
-           oldfieldvalue = :oldfieldvalue || ', :old.' || s_rec.rplfield1;
+           fieldvalue = :fieldvalue || ', :new.' || S_S_REC.rplfield1;
+           oldfieldvalue = :oldfieldvalue || ', :old.' || S_S_REC.rplfield1;
            condition = :condition
             || 'and (:new.'
-            || s_rec.rplfield1
+            || S_S_REC.rplfield1
             || '='
             || ':old.'
-            || s_rec.rplfield1
+            || S_S_REC.rplfield1
             || ')';
            if ((:plugin_count > 0)) then
            BEGIN   
@@ -33979,7 +33996,6 @@ BEGIN
                 mut_oldfieldvalue = :mut_oldfieldvalue || ', mutating.old_slave_rpls(i).field_value1';
                 mut_condition = :mut_condition || 'and (mutating.new_slave_rpls(i).field_value1 = mutating.old_slave_rpls(i).field_value1';
            END
-            
          END
       ELSE
          BEGIN
@@ -33988,20 +34004,19 @@ BEGIN
             mut_fieldvalue = :mut_fieldvalue || ', 0';
             mut_oldfieldvalue = :mut_oldfieldvalue || ', 0';
          END
-       
       fieldlist = :fieldlist || ', FIELD2_VALUE';
-      IF ((s_rec.rplfield2 IS NOT NULL))
+      IF ((S_S_REC.rplfield2 IS NOT NULL))
       THEN
          BEGIN
-            fieldvalue = :fieldvalue || ', :new.' || s_rec.rplfield2;
-            oldfieldvalue = :oldfieldvalue || ', :old.' || s_rec.rplfield2;
+            fieldvalue = :fieldvalue || ', :new.' || S_S_REC.rplfield2;
+            oldfieldvalue = :oldfieldvalue || ', :old.' || S_S_REC.rplfield2;
             condition =
                   :condition
                || 'and (:new.'
-               || s_rec.rplfield2
+               || S_S_REC.rplfield2
                || '='
                || ':old.'
-               || s_rec.rplfield2
+               || S_S_REC.rplfield2
                || ')';
            if ((:plugin_count > 0)) then
            BEGIN   
@@ -34009,7 +34024,6 @@ BEGIN
                 mut_oldfieldvalue = :mut_oldfieldvalue || ', mutating.old_slave_rpls(i).field_value2';
                 mut_condition = :mut_condition || 'and (mutating.new_slave_rpls(i).field_value2 = mutating.old_slave_rpls(i).field_value2';
            END
-            
          END
       ELSE
          BEGIN
@@ -34018,20 +34032,19 @@ BEGIN
             mut_fieldvalue = :mut_fieldvalue || ', 0';
             mut_oldfieldvalue = :mut_oldfieldvalue || ', 0';
          END
-       
       fieldlist = :fieldlist || ', FIELD3_VALUE';
-      IF ((s_rec.rplfield3 IS NOT NULL))
+      IF ((S_S_REC.rplfield3 IS NOT NULL))
       THEN
          BEGIN
-            fieldvalue = :fieldvalue || ', :new.' || s_rec.rplfield3;
-            oldfieldvalue = :oldfieldvalue || ', :old.' || s_rec.rplfield3;
+            fieldvalue = :fieldvalue || ', :new.' || S_S_REC.rplfield3;
+            oldfieldvalue = :oldfieldvalue || ', :old.' || S_S_REC.rplfield3;
             condition =
                   :condition
                || 'and (:new.'
-               || s_rec.rplfield3
+               || S_S_REC.rplfield3
                || '='
                || ':old.'
-               || s_rec.rplfield3
+               || S_S_REC.rplfield3
                || ')';
            if ((:plugin_count > 0)) then
            BEGIN   
@@ -34039,7 +34052,6 @@ BEGIN
                 mut_oldfieldvalue = :mut_oldfieldvalue || ', mutating.old_slave_rpls(i).field_value3';
                 mut_condition = :mut_condition || 'and (mutating.new_slave_rpls(i).field_value3 = mutating.old_slave_rpls(i).field_value3';
            END
-            
          END
       ELSE
          BEGIN
@@ -34048,20 +34060,19 @@ BEGIN
             mut_fieldvalue = :mut_fieldvalue || ', 0';
             mut_oldfieldvalue = :mut_oldfieldvalue || ', 0';
          END
-       
       fieldlist = :fieldlist || ', FIELD4_VALUE';
-      IF ((s_rec.rplfield4 IS NOT NULL))
+      IF ((S_S_REC.rplfield4 IS NOT NULL))
       THEN
          BEGIN
-            fieldvalue = :fieldvalue || ', :new.' || s_rec.rplfield4;
-            oldfieldvalue = :oldfieldvalue || ', :old.' || s_rec.rplfield4;
+            fieldvalue = :fieldvalue || ', :new.' || S_S_REC.rplfield4;
+            oldfieldvalue = :oldfieldvalue || ', :old.' || S_S_REC.rplfield4;
             condition =
                   :condition
                || 'and (:new.'
-               || s_rec.rplfield4
+               || S_S_REC.rplfield4
                || '='
                || ':old.'
-               || s_rec.rplfield4
+               || S_S_REC.rplfield4
                || ')';
            if ((:plugin_count > 0)) then
            BEGIN   
@@ -34069,7 +34080,6 @@ BEGIN
                 mut_oldfieldvalue = :mut_oldfieldvalue || ', mutating.old_slave_rpls(i).field_value4';
                 mut_condition = :mut_condition || 'and (mutating.new_slave_rpls(i).field_value4 = mutating.old_slave_rpls(i).field_value4';
            END
-            
          END
       ELSE
          BEGIN
@@ -34078,20 +34088,19 @@ BEGIN
             mut_fieldvalue = :mut_fieldvalue || ', 0';
             mut_oldfieldvalue = :mut_oldfieldvalue || ', 0';
          END
-       
       fieldlist = :fieldlist || ', FIELD5_VALUE';
-      IF ((s_rec.rplfield5 IS NOT NULL))
+      IF ((S_S_REC.rplfield5 IS NOT NULL))
       THEN
          BEGIN
-            fieldvalue = :fieldvalue || ', :new.' || s_rec.rplfield5;
-            oldfieldvalue = :oldfieldvalue || ', :old.' || s_rec.rplfield5;
+            fieldvalue = :fieldvalue || ', :new.' || S_S_REC.rplfield5;
+            oldfieldvalue = :oldfieldvalue || ', :old.' || S_S_REC.rplfield5;
             condition =
                   :condition
                || 'and (:new.'
-               || s_rec.rplfield5
+               || S_S_REC.rplfield5
                || '='
                || ':old.'
-               || s_rec.rplfield5
+               || S_S_REC.rplfield5
                || ')';
            if ((:plugin_count > 0)) then
            BEGIN   
@@ -34099,7 +34108,6 @@ BEGIN
                 mut_oldfieldvalue = :mut_oldfieldvalue || ', mutating.old_slave_rpls(i).field_value5';
                 mut_condition = :mut_condition || 'and (mutating.new_slave_rpls(i).field_value5 = mutating.old_slave_rpls(i).field_value5';
            END
-            
          END
       ELSE
          BEGIN
@@ -34108,7 +34116,6 @@ BEGIN
             mut_fieldvalue = :mut_fieldvalue || ', 0';
             mut_oldfieldvalue = :mut_oldfieldvalue || ', 0';
          END
-       
       -- create trigger for each row
       stmt =
              'CREATE or REPLACE TRIGGER RPL$'
@@ -34130,38 +34137,32 @@ BEGIN
           || '  mutating.new_slave_rpls(mutation_index).id := :new.id;' 
           || '  mutating.old_slave_rpls(mutation_index).id := :old.id;' 
           ;
-       if ((s_rec.rplfield1 IS NOT NULL)) then
+       if ((S_S_REC.rplfield1 IS NOT NULL)) then
        stmt = :stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value1 := :new.' || s_rec.rplfield1 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value1 := :old.' || s_rec.rplfield1 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value1 := :new.' || S_S_REC.rplfield1 || ';'
+          || '  mutating.old_slave_rpls(mutation_index).field_value1 := :old.' || S_S_REC.rplfield1 || ';'
           ;
-        
-       if ((s_rec.rplfield2 IS NOT NULL)) then
+       if ((S_S_REC.rplfield2 IS NOT NULL)) then
        stmt = :stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value2 := :new.' || s_rec.rplfield2 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value2 := :old.' || s_rec.rplfield2 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value2 := :new.' || S_S_REC.rplfield2 || ';'
+          || '  mutating.old_slave_rpls(mutation_index).field_value2 := :old.' || S_S_REC.rplfield2 || ';'
           ;
-        
-       if ((s_rec.rplfield3 IS NOT NULL)) then
+       if ((S_S_REC.rplfield3 IS NOT NULL)) then
        stmt = :stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value3 := :new.' || s_rec.rplfield3 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value3 := :old.' || s_rec.rplfield3 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value3 := :new.' || S_S_REC.rplfield3 || ';'
+          || '  mutating.old_slave_rpls(mutation_index).field_value3 := :old.' || S_S_REC.rplfield3 || ';'
           ;
-        
-       if ((s_rec.rplfield4 IS NOT NULL)) then
+       if ((S_S_REC.rplfield4 IS NOT NULL)) then
        stmt = :stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value4 := :new.' || s_rec.rplfield4 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value4 := :old.' || s_rec.rplfield4 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value4 := :new.' || S_S_REC.rplfield4 || ';'
+          || '  mutating.old_slave_rpls(mutation_index).field_value4 := :old.' || S_S_REC.rplfield4 || ';'
           ;
-        
-       if ((s_rec.rplfield5 IS NOT NULL)) then
+       if ((S_S_REC.rplfield5 IS NOT NULL)) then
        stmt = :stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value5 := :new.' || s_rec.rplfield5 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value5 := :old.' || s_rec.rplfield5 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value5 := :new.' || S_S_REC.rplfield5 || ';'
+          || '  mutating.old_slave_rpls(mutation_index).field_value5 := :old.' || S_S_REC.rplfield5 || ';'
           ;
-        
      END
-      
      stmt = :stmt 
           || '  if (deleting) then ' 
           || '    insert into RPLLOG (rpltable_id, record_id, transaction_id,'
@@ -34195,7 +34196,7 @@ BEGIN
        || '  end; ' 
        || ' end if;' 
        || 'end;';
-     EXECUTE STATEMENT :stmt;
+     EXECUTE STATEMENT (:stmt);
      if ((:plugin_count > 0)) then
      BEGIN
        -- create statement trigger
@@ -34208,15 +34209,20 @@ BEGIN
           || '     if mutating.old_slave_rpls.FIRST is not null then'
           || '       for i in mutating.old_slave_rpls.FIRST..mutating.old_slave_rpls.LAST'
           || '         loop';
-       FOR plugin_rec IN c_plugin
-       DO
+       OPEN C_PLUGIN;
+       FETCH C_PLUGIN INTO C_PLUGIN_PLUGIN_REC;
+       WHILE ( ROW_COUNT != 0 ) DO
+       BEGIN
          stmt = :stmt
-          || '           lplugin_table_id := ' || plugin_rec.plugin_rpltable_id || ';'
+          || '           lplugin_table_id := ' || C_PLUGIN_PLUGIN_REC.plugin_rpltable_id || ';'
           || '           insert into RPLLOG (rpltable_id, record_id, transaction_id,' || :fieldlist || ') '
           || '             select lplugin_table_id, master.id, current_transaction_id,' || :mut_oldfieldvalue
-          || '               from ' || plugin_rec.join_fragment 
+          || '               from ' || C_PLUGIN_PLUGIN_REC.join_fragment
           || '               where slave.id=mutating.old_slave_rpls(i).id;';
-        
+       	FETCH C_PLUGIN INTO C_PLUGIN_PLUGIN_REC;
+       END
+       CLOSE C_PLUGIN;
+
        stmt = :stmt 
           || '         end loop;' 
           || '     end if;';-- end if mutation
@@ -34226,15 +34232,20 @@ BEGIN
           || '       if mutating.new_slave_rpls.FIRST is not null then'
           || '         for i in mutating.new_slave_rpls.FIRST..mutating.new_slave_rpls.LAST'
           || '           loop';
-       FOR plugin_rec IN c_plugin
-       DO
+       OPEN C_PLUGIN;
+       FETCH C_PLUGIN INTO C_PLUGIN_PLUGIN_REC;
+       WHILE ( ROW_COUNT != 0 ) DO
+       BEGIN
          stmt = :stmt
-          || '             lplugin_table_id := ' || plugin_rec.plugin_rpltable_id || ';'
+          || '             lplugin_table_id := ' || C_PLUGIN_PLUGIN_REC.plugin_rpltable_id || ';'
           || '             insert into RPLLOG (rpltable_id, record_id, transaction_id,' || :fieldlist || ') '
           || '               select lplugin_table_id, master.id, current_transaction_id,' || :mut_fieldvalue 
-          || '                 from ' || plugin_rec.join_fragment
+          || '                 from ' || C_PLUGIN_PLUGIN_REC.join_fragment
           || '                 where slave.id = mutating.new_slave_rpls(i).id;';
-        
+       	FETCH C_PLUGIN INTO C_PLUGIN_PLUGIN_REC;
+       END
+       CLOSE C_PLUGIN;
+
        stmt = :stmt 
           || '           end loop;' 
           || '       end if;';-- end if mutation
@@ -34243,17 +34254,22 @@ BEGIN
           || '         if mutating.old_slave_rpls.FIRST is not null then'
           || '           for i in mutating.old_slave_rpls.FIRST..mutating.old_slave_rpls.LAST'
           || '             loop';
-       FOR plugin_rec IN c_plugin
-       DO
+       OPEN C_PLUGIN;
+       FETCH C_PLUGIN INTO C_PLUGIN_PLUGIN_REC;
+       WHILE ( ROW_COUNT != 0 ) DO
+       BEGIN
            stmt = :stmt
           || '               if (' || :mut_condition ||')) then '
-          || '                 lplugin_table_id := ' || plugin_rec.plugin_rpltable_id || ';'
+          || '                 lplugin_table_id := ' || C_PLUGIN_PLUGIN_REC.plugin_rpltable_id || ';'
           || '                 insert into RPLLOG (rpltable_id, record_id, transaction_id,' || :fieldlist || ') '
           || '                   select lplugin_table_id, master.id, current_transaction_id,' || :mut_oldfieldvalue 
-          || '                     from ' || plugin_rec.join_fragment
+          || '                     from ' || C_PLUGIN_PLUGIN_REC.join_fragment
           || '                     where slave.id = mutating.old_slave_rpls(i).id;'
-          || '               end if;';          
-        
+          || '               end if;';
+       	FETCH C_PLUGIN INTO C_PLUGIN_PLUGIN_REC;
+       END
+       CLOSE C_PLUGIN;
+
        stmt = :stmt 
           || '             end loop;' 
           || '         end if;'-- end if mutation
@@ -34263,11 +34279,12 @@ BEGIN
           || '  mutating.new_slave_rpls.delete;' 
           || '  mutating.old_slave_rpls.delete;' 
           || 'end;';--end of trigger
-       EXECUTE STATEMENT :stmt;
+       EXECUTE STATEMENT (:stmt);
      END
-      
+   	FETCH S INTO S_S_REC;
    END
-    
+   CLOSE S;
+
 END^
 
 SET TERM ; ^
@@ -34303,11 +34320,12 @@ AS
    DECLARE sitemult   NUMERIC (15);
    DECLARE curval     NUMERIC (15);
    DECLARE i          NUMERIC (15);
+  DECLARE VARIABLE i INTEGER;
 BEGIN
    SELECT MAX (site_id * 1000000000)
-     
-     FROM systemsite INTO :sitemult;
-   EXECUTE STATEMENT    'select coalesce(max(id),'
+   FROM systemsite
+   INTO :sitemult;
+   EXECUTE STATEMENT    ('select coalesce(max(id),'
                      || :sitemult
                      || '+1)-'
                      || :sitemult
@@ -34315,16 +34333,18 @@ BEGIN
                      || :tablename
                      || ' where id-'
                      || :sitemult
-                     || '<999999999'
-                INTO :maxval;
-   EXECUTE STATEMENT 'select ' || :tablename || '_seq.nextval from dual'
-                INTO :curval;
+                     || '<999999999')
+                 INTO :maxval;
+   EXECUTE STATEMENT ('select ' || :tablename || '_seq.nextval from dual')
+                 INTO :curval;
    -- ������� ������, � �� �������������. ��� ��������
-   FOR :i IN :curval .. :maxval - 1
-   DO
-      EXECUTE STATEMENT 'select ' || :tablename || '_seq.nextval from dual'
-                   INTO :sitemult;
-    
+   i = curval;
+   WHILE ( i < :maxval - 1) DO
+   BEGIN
+      EXECUTE STATEMENT ('select ' || :tablename || '_seq.nextval from dual')
+                    INTO :sitemult;
+   i = i + 1;
+   END
 END^
 
 SET TERM ; ^
@@ -35176,7 +35196,7 @@ cast(null as date)datebegin, cast(null as date)dateend
 where p.grantdate = (select max (grantdate) from roleregister r
   where r.user_id = p.user_id and r.grantedrole_id=p.grantedrole_id
   and r.grantdate<=CURRENT_TIMESTAMP+0.000015) and
-  CURRENT_DATE between p.fromdate and p.todate
+  CURRENT_TIMESTAMP between p.fromdate and p.todate
   and p.grantdate<=CURRENT_TIMESTAMP+0.000015  and p.dispstatus_id = 10 and p.operation = 1;
 --------------------------------------------------------
 --  DDL for View USERACTIONVIEW
@@ -35230,27 +35250,31 @@ from
 --  DDL for Trigger CHK_UQ_DOCREQ
 --------------------------------------------------------
 
-  SET TERM ^ ;
+  CREATE EXCEPTION CUSTOM_EXCEPTION 'error';
+
+SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "CHK_UQ_DOCREQ" AFTER INSERT OR UPDATE
- ON DocReq 
+ ON DocReq  
 AS
 
   DECLARE NumRows INTEGER;
   DECLARE idList NUMERIC(15);
 
-BEGIN
-  SELECT COUNT(*)  FROM DocReq WHERE Name = NEW.Name and PurchaseMode_Id = NEW.PurchaseMode_Id INTO :NumRows;
+ BEGIN
+  SELECT COUNT(*)
+  FROM DocReq WHERE Name = NEW.Name and PurchaseMode_Id = NEW.PurchaseMode_Id
+  INTO :NumRows;
   IF ((:NumRows > 0)) THEN
   BEGIN
-    SELECT Id  FROM DocReq WHERE Name = NEW.Name and PurchaseMode_Id = NEW.PurchaseMode_Id INTO :idList;
+    SELECT Id
+    FROM DocReq WHERE Name = NEW.Name and PurchaseMode_Id = NEW.PurchaseMode_Id
+    INTO :idList;
     IF ((NEW.Id NOT IN (:idList))) THEN
-      raise_application_error(-20001, 'violation of PRIMARY or UNIQUE KEY constraint "UQ_DOCREQ"');
-     
+      EXCEPTION CUSTOM_EXCEPTION( 'violation of PRIMARY or UNIQUE KEY constraint "UQ_DOCREQ"');
   END
-   
 COMMIT;
-END^
+ END^
 
 SET TERM ; ^
 
@@ -35263,23 +35287,25 @@ ALTER TRIGGER "CHK_UQ_DOCREQ" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "CHK_UQ_ESTIMATE" after insert or update
- on ESTIMATE 
+ on ESTIMATE  
 AS
  DECLARE numrows INTEGER;
  DECLARE idList numeric(15);
- 
-begin
-  SELECT count(*)  from ESTIMATE where CAPTION = NEW.CAPTION and FINYEAR = NEW.FINYEAR and BUDGET_ID = NEW.BUDGET_ID into :numrows;
+
+ BEGIN
+  SELECT count(*)
+  from ESTIMATE where CAPTION = NEW.CAPTION and FINYEAR = NEW.FINYEAR and BUDGET_ID = NEW.BUDGET_ID
+  into :numrows;
   if ((:numrows > 0)) then
   BEGIN
-    SELECT ID  from ESTIMATE where CAPTION = NEW.CAPTION and FINYEAR = NEW.FINYEAR and BUDGET_ID = NEW.BUDGET_ID into :idList;
+    SELECT ID
+    from ESTIMATE where CAPTION = NEW.CAPTION and FINYEAR = NEW.FINYEAR and BUDGET_ID = NEW.BUDGET_ID
+    into :idList;
     if ((NEW.ID not in (:idList))) then
-      raise_application_error(-20001, 'violation of PRIMARY or UNIQUE KEY constraint "UQ_ESTIMATE"'); 
-     
+      EXCEPTION CUSTOM_EXCEPTION( 'violation of PRIMARY or UNIQUE KEY constraint "UQ_ESTIMATE"');
   END
-   
 COMMIT;
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35292,23 +35318,25 @@ ALTER TRIGGER "CHK_UQ_ESTIMATE" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "CHK_UQ_FINSRC" after insert or update
- on FINSRC 
+ on FINSRC  
 AS
  DECLARE numrows INTEGER;
  DECLARE idList numeric(15);
- 
-begin
-  SELECT count(*)  from FINSRC where NAME = NEW.NAME and FINYEAR = NEW.FINYEAR into :numrows;
+
+ BEGIN
+  SELECT count(*)
+  from FINSRC where NAME = NEW.NAME and FINYEAR = NEW.FINYEAR
+  into :numrows;
   if ((:numrows > 0)) then
   BEGIN
-    SELECT ID  from FINSRC where NAME = NEW.NAME and FINYEAR = NEW.FINYEAR into :idList;
+    SELECT ID
+    from FINSRC where NAME = NEW.NAME and FINYEAR = NEW.FINYEAR
+    into :idList;
     if ((NEW.ID not in (:idList))) then
-      raise_application_error(-20001, 'violation of PRIMARY or UNIQUE KEY constraint "UQ_FINSRC"'); 
-     
+      EXCEPTION CUSTOM_EXCEPTION( 'violation of PRIMARY or UNIQUE KEY constraint "UQ_FINSRC"');
   END
-   
 COMMIT;
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35321,23 +35349,25 @@ ALTER TRIGGER "CHK_UQ_FINSRC" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "CHK_UQ_GROUPPROP_CAPTION" after insert or update
- on GROUPPROP 
+ on GROUPPROP  
 AS
  DECLARE numrows INTEGER;
  DECLARE idList numeric(15);
- 
-begin
-  SELECT count(*)  from GROUPPROP where CAPTION = NEW.CAPTION and GROUP_ID = NEW.GROUP_ID into :numrows;
+
+ BEGIN
+  SELECT count(*)
+  from GROUPPROP where CAPTION = NEW.CAPTION and GROUP_ID = NEW.GROUP_ID
+  into :numrows;
   if ((:numrows > 0)) then
   BEGIN
-    SELECT ID  from GROUPPROP where CAPTION = NEW.CAPTION and GROUP_ID = NEW.GROUP_ID into :idList;
+    SELECT ID
+    from GROUPPROP where CAPTION = NEW.CAPTION and GROUP_ID = NEW.GROUP_ID
+    into :idList;
     if ((NEW.ID not in (:idList))) then
-      raise_application_error(-20001, 'violation of PRIMARY or UNIQUE KEY constraint "UQ_GROUPPROP_CAPTION"'); 
-     
+      EXCEPTION CUSTOM_EXCEPTION( 'violation of PRIMARY or UNIQUE KEY constraint "UQ_GROUPPROP_CAPTION"');
   END
-   
 COMMIT;
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35350,16 +35380,18 @@ ALTER TRIGGER "CHK_UQ_GROUPPROP_CAPTION" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "CHK_UQ_OFRGROUPPROP_CAPTION" after insert or update
- on OFRGROUPPROP 
+ on OFRGROUPPROP  
 AS
  DECLARE numrows INTEGER;
- 
-begin
-  SELECT count(*)  from OFRGROUPPROP where CAPTION = NEW.CAPTION and OFFER_ID = NEW.OFFER_ID and GROUPCODE = NEW.GROUPCODE into :numrows;
+
+ BEGIN
+  SELECT count(*)
+  from OFRGROUPPROP where CAPTION = NEW.CAPTION and OFFER_ID = NEW.OFFER_ID and GROUPCODE = NEW.GROUPCODE
+  into :numrows;
   if ((:numrows > 0)) then
-  raise_application_error(-20001, 'violation of PRIMARY or UNIQUE KEY constraint "UQ_OFRGROUPPROP_CAPTION"');  
+  EXCEPTION CUSTOM_EXCEPTION( 'violation of PRIMARY or UNIQUE KEY constraint "UQ_OFRGROUPPROP_CAPTION"');
 COMMIT;
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35372,23 +35404,25 @@ ALTER TRIGGER "CHK_UQ_OFRGROUPPROP_CAPTION" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "CHK_UQ_PAYCONDITION_NAME" after insert or update
- on PAYCONDITION 
+ on PAYCONDITION  
 AS
  DECLARE numrows INTEGER;
  DECLARE idList numeric(15);
- 
-begin
-  SELECT count(*)  from PAYCONDITION where NAME = NEW.NAME into :numrows;
+
+ BEGIN
+  SELECT count(*)
+  from PAYCONDITION where NAME = NEW.NAME
+  into :numrows;
   if ((:numrows > 0)) then
   BEGIN
-    SELECT ID  from PAYCONDITION where NAME = NEW.NAME into :idList;
+    SELECT ID
+    from PAYCONDITION where NAME = NEW.NAME
+    into :idList;
     if ((NEW.ID not in (:idList))) then
-      raise_application_error(-20001, 'violation of PRIMARY or UNIQUE KEY constraint "UQ_PAYCONDITION_NAME"'); 
-     
+      EXCEPTION CUSTOM_EXCEPTION( 'violation of PRIMARY or UNIQUE KEY constraint "UQ_PAYCONDITION_NAME"');
   END
-   
 COMMIT;
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35401,23 +35435,25 @@ ALTER TRIGGER "CHK_UQ_PAYCONDITION_NAME" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "CHK_UQ_PLGOODS" after insert or update
- on PLGOODS 
+ on PLGOODS  
 AS
  DECLARE numrows INTEGER;
  DECLARE idList numeric(15);
- 
-begin
-  SELECT count(*)  from PLGOODS where NAME = NEW.NAME and UNIT = NEW.UNIT and PRICE = NEW.PRICE and GROUPCODE = NEW.GROUPCODE and ORGID = NEW.ORGID into :numrows;
+
+ BEGIN
+  SELECT count(*)
+  from PLGOODS where NAME = NEW.NAME and UNIT = NEW.UNIT and PRICE = NEW.PRICE and GROUPCODE = NEW.GROUPCODE and ORGID = NEW.ORGID
+  into :numrows;
   if ((:numrows > 0)) then
   BEGIN
-    SELECT ID  from PLGOODS where NAME = NEW.NAME and UNIT = NEW.UNIT and PRICE = NEW.PRICE and GROUPCODE = NEW.GROUPCODE and ORGID = NEW.ORGID into :idList;
+    SELECT ID
+    from PLGOODS where NAME = NEW.NAME and UNIT = NEW.UNIT and PRICE = NEW.PRICE and GROUPCODE = NEW.GROUPCODE and ORGID = NEW.ORGID
+    into :idList;
     if ((NEW.ID not in (:idList))) then
-      raise_application_error(-20001, 'violation of PRIMARY or UNIQUE KEY constraint "UQ_PLGOODS"'); 
-     
+      EXCEPTION CUSTOM_EXCEPTION( 'violation of PRIMARY or UNIQUE KEY constraint "UQ_PLGOODS"');
   END
-   
 COMMIT;
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35430,23 +35466,25 @@ ALTER TRIGGER "CHK_UQ_PLGOODS" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "CHK_UQ_PROPTYPE_CAPTION" after insert or update
- on PROPTYPE 
+ on PROPTYPE  
 AS
  DECLARE numrows INTEGER;
  DECLARE idList numeric(15);
- 
-begin
-  SELECT count(*)  from PROPTYPE where CAPTION = NEW.CAPTION into :numrows;
+
+ BEGIN
+  SELECT count(*)
+  from PROPTYPE where CAPTION = NEW.CAPTION
+  into :numrows;
   if ((:numrows > 0)) then
   BEGIN
-    SELECT ID  from PROPTYPE where CAPTION = NEW.CAPTION into :idList;
+    SELECT ID
+    from PROPTYPE where CAPTION = NEW.CAPTION
+    into :idList;
     if ((NEW.ID not in (:idList))) then
-      raise_application_error(-20001, 'violation of PRIMARY or UNIQUE KEY constraint "UQ_PROPTYPE_CAPTION"'); 
-     
+      EXCEPTION CUSTOM_EXCEPTION( 'violation of PRIMARY or UNIQUE KEY constraint "UQ_PROPTYPE_CAPTION"');
   END
-   
 COMMIT;
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35459,24 +35497,26 @@ ALTER TRIGGER "CHK_UQ_PROPTYPE_CAPTION" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "CHK_UQ_QUALREQ" AFTER INSERT OR UPDATE
- ON QualReq 
+ ON QualReq  
 AS
 
   DECLARE NumRows INTEGER;
   DECLARE idList NUMERIC(15);
 
-BEGIN
-  SELECT COUNT(*)  FROM QualReq WHERE Name = NEW.Name and PurchaseMode_Id = NEW.PurchaseMode_Id INTO :NumRows;
+ BEGIN
+  SELECT COUNT(*)
+  FROM QualReq WHERE Name = NEW.Name and PurchaseMode_Id = NEW.PurchaseMode_Id
+  INTO :NumRows;
   IF ((:NumRows > 0)) THEN
   BEGIN
-    SELECT Id  FROM QualReq WHERE Name = NEW.Name and PurchaseMode_Id = NEW.PurchaseMode_Id INTO :idList;
+    SELECT Id
+    FROM QualReq WHERE Name = NEW.Name and PurchaseMode_Id = NEW.PurchaseMode_Id
+    INTO :idList;
     IF ((NEW.Id NOT IN (:idList))) THEN
-      raise_application_error(-20001, 'violation of PRIMARY or UNIQUE KEY constraint "UQ_QUALREQ"');
-     
+      EXCEPTION CUSTOM_EXCEPTION( 'violation of PRIMARY or UNIQUE KEY constraint "UQ_QUALREQ"');
   END
-   
 COMMIT;
-END^
+ END^
 
 SET TERM ; ^
 
@@ -35489,23 +35529,25 @@ ALTER TRIGGER "CHK_UQ_QUALREQ" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "CHK_UQ_TYPEREQCRIT_NAME" after insert or update
- on TYPEREQCRIT 
+ on TYPEREQCRIT  
 AS
  DECLARE numrows INTEGER;
  DECLARE idList numeric(15);
- 
-begin
-  SELECT count(*)  from TYPEREQCRIT where NAME = NEW.NAME and PurchaseMode_Id = NEW.PurchaseMode_Id into :numrows;
+
+ BEGIN
+  SELECT count(*)
+  from TYPEREQCRIT where NAME = NEW.NAME and PurchaseMode_Id = NEW.PurchaseMode_Id
+  into :numrows;
   if ((:numrows > 0)) then
   BEGIN
-    SELECT ID  from TYPEREQCRIT where NAME = NEW.NAME and PurchaseMode_Id = NEW.PurchaseMode_Id into :idList;
+    SELECT ID
+    from TYPEREQCRIT where NAME = NEW.NAME and PurchaseMode_Id = NEW.PurchaseMode_Id
+    into :idList;
     if ((NEW.ID not in (:idList))) then
-      raise_application_error(-20001, 'violation of PRIMARY or UNIQUE KEY constraint "UQ_TYPEREQCRIT_NAME"'); 
-     
+      EXCEPTION CUSTOM_EXCEPTION( 'violation of PRIMARY or UNIQUE KEY constraint "UQ_TYPEREQCRIT_NAME"');
   END
-   
 COMMIT;
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35518,26 +35560,28 @@ ALTER TRIGGER "CHK_UQ_TYPEREQCRIT_NAME" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "COUNT_SIGN" 
-after insert or update or delete on DigestSign 
+after insert or update or delete on DigestSign  
 AS
 
   DECLARE DocId NUMERIC(18,0);
   DECLARE OldDocId NUMERIC(18,0);
-begin
+ BEGIN
   if ((inserting or updating)) then
     if ((new.SignType = 0)) then
-      select dg.Document_id  from Digest dg where dg.Id = new.Digest_id into :DocId;
+      select dg.Document_id
+      from Digest dg where dg.Id = new.Digest_id
+      into :DocId;
     else
-      select da.Document_id  from DocAttachEx da where da.Id = new.DocAttachEx_id into :DocId;
-     
-   
+      select da.Document_id
+      from DocAttachEx da where da.Id = new.DocAttachEx_id
+      into :DocId;
   if ((updating or deleting)) then
     if ((old.SignType = 0)) then
-      select dg.Document_id  from Digest dg where dg.Id = old.Digest_id into :OldDocId;
+      select dg.Document_id
+      from Digest dg where dg.Id = old.Digest_id
+      into :OldDocId;
     else
       OldDocId = GetDocIDForAttachID(old.DocAttachEx_id);
-     
-   
   if (inserting) then
     update Document d set d.Sign_cnt = d.Sign_cnt + 1 where d.Id = :DocId;
   ELSE IF (updating) then
@@ -35546,11 +35590,9 @@ begin
       update Document d set d.Sign_cnt = d.Sign_cnt + 1 where d.Id = :DocId;
       update Document d set d.Sign_cnt = d.Sign_cnt - 1 where d.Id = :OldDocId;
     END
-     
   else
     update Document d set d.Sign_cnt = d.Sign_cnt - 1 where d.Id = :OldDocId;
-   
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35562,12 +35604,13 @@ ALTER TRIGGER "COUNT_SIGN" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "DEL_DOCATTACHEX" AFTER DELETE ON DOCATTACHEX 
+CREATE OR ALTER TRIGGER "DEL_DOCATTACHEX" AFTER DELETE ON DOCATTACHEX  
 AS
-BEGIN
+
+ BEGIN
   update document d set d.attach_cnt = d.attach_cnt - 1 
     where d.id=old.document_id;
-END^
+ END^
 
 SET TERM ; ^
 
@@ -35579,20 +35622,18 @@ ALTER TRIGGER "DEL_DOCATTACHEX" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "DELETE_DOCATTACH" before delete on DOCATTACH
-
+CREATE OR ALTER TRIGGER "DELETE_DOCATTACH" before delete on DOCATTACH  
 AS
 
   DECLARE result numeric(18, 4);
   DECLARE TaskJournalId numeric(15,0);
-begin
+ BEGIN
     result = old.version + 1;
   TaskJournalId = RPLTRANSACTION.get_task_journal_id; 
   if ((:TaskJournalId is not null)) then
     insert into RplVersionLog (Ver, Num_Transaction, RplTable_Id, TaskJournal_Id, Record_Id, Record_Action)
     values (:result, dbms_transaction.local_transaction_id, 49, :TaskJournalId, old.id, 2);
-   
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35603,20 +35644,18 @@ ALTER TRIGGER "DELETE_DOCATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "DELETE_DOCATTACHEX" before delete on DOCATTACHEX
-
+CREATE OR ALTER TRIGGER "DELETE_DOCATTACHEX" before delete on DOCATTACHEX  
 AS
 
   DECLARE result numeric(18, 4);
   DECLARE TaskJournalId numeric(15,0);
-begin
+ BEGIN
     result = old.version + 1;
   TaskJournalId = RPLTRANSACTION.get_task_journal_id; 
   if ((:TaskJournalId is not null)) then
     insert into RplVersionLog (Ver, Num_Transaction, RplTable_Id, TaskJournal_Id, Record_Id, Record_Action)
     values (:result, dbms_transaction.local_transaction_id, 2, :TaskJournalId, old.id, 2);
-   
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35627,20 +35666,18 @@ ALTER TRIGGER "DELETE_DOCATTACHEX" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "DELETE_MAILATTACH" before delete on MAILATTACH
-
+CREATE OR ALTER TRIGGER "DELETE_MAILATTACH" before delete on MAILATTACH  
 AS
 
   DECLARE result numeric(18, 4);
   DECLARE TaskJournalId numeric(15,0);
-begin
+ BEGIN
     result = old.version + 1;
   TaskJournalId = RPLTRANSACTION.get_task_journal_id; 
   if ((:TaskJournalId is not null)) then
     insert into RplVersionLog (Ver, Num_Transaction, RplTable_Id, TaskJournal_Id, Record_Id, Record_Action)
     values (:result, dbms_transaction.local_transaction_id, 66, :TaskJournalId, old.id, 2);
-   
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35651,20 +35688,18 @@ ALTER TRIGGER "DELETE_MAILATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "DELETE_REFATTACH" before delete on REFATTACH
-
+CREATE OR ALTER TRIGGER "DELETE_REFATTACH" before delete on REFATTACH  
 AS
 
   DECLARE result numeric(18, 4);
   DECLARE TaskJournalId numeric(15,0);
-begin
+ BEGIN
     result = old.version + 1;
   TaskJournalId = RPLTRANSACTION.get_task_journal_id; 
   if ((:TaskJournalId is not null)) then
     insert into RplVersionLog (Ver, Num_Transaction, RplTable_Id, TaskJournal_Id, Record_Id, Record_Action)
     values (:result, dbms_transaction.local_transaction_id, 253, :TaskJournalId, old.id, 2);
-   
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35676,12 +35711,13 @@ ALTER TRIGGER "DELETE_REFATTACH" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "DLT_PLAN3PURCHASELINE" before delete
- on PLAN3PURCHASELINE 
+ on PLAN3PURCHASELINE  
 AS
-begin
+
+ BEGIN
   update plan3purchasegoods g set g.plan3purchaselinepos=null
     where g.plan3purchasedoc_id=old.plan3purchasedoc_id and g.plan3purchaselinepos=old.pos;
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35693,12 +35729,13 @@ ALTER TRIGGER "DLT_PLAN3PURCHASELINE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "INS_DOCATTACHEX" AFTER INSERT ON DOCATTACHEX 
+CREATE OR ALTER TRIGGER "INS_DOCATTACHEX" AFTER INSERT ON DOCATTACHEX  
 AS
-BEGIN
+
+ BEGIN
   update document d set d.attach_cnt = d.attach_cnt + 1 
     where d.id=new.document_id;
-END^
+ END^
 
 SET TERM ; ^
 
@@ -35711,22 +35748,22 @@ ALTER TRIGGER "INS_DOCATTACHEX" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "INS_GOODSGROUP_TREE" after insert
- on goodsgroup /*referencing old as old new as new*/
- 
+ on goodsgroup /*referencing old as old new as new*/  
 AS
 
  DECLARE vtree varchar(255);
-begin
+ BEGIN
   begin
-    select tree 
-      from goodsgroup_tree where group_id=new.parent_id into :vtree;
+    select tree
+    from goodsgroup_tree where group_id=new.parent_id
+    into :vtree;
   exception
     when no_data_found then
       vtree = '/';
   end
   insert into goodsgroup_tree (group_id, tree)
     values(new.id, :vtree||new.code||'/');
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35739,13 +35776,15 @@ ALTER TRIGGER "INS_GOODSGROUP_TREE" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "INS_ISCONTRACTOR_ORGACCOUNT" 
- before insert or update on OrgAccount 
+ before insert or update on OrgAccount  
 AS
-begin
+
+ BEGIN
   if ((old.ORG_ID is null) or (old.ORG_ID<>new.ORG_ID)) then
-    select o.IsContractor  from Org o where o.ID=new.ORG_ID into new.IsContractor;
-   
-end^
+    select o.IsContractor
+    from Org o where o.ID=new.ORG_ID
+    into new.IsContractor;
+ END^
 
 SET TERM ; ^
 
@@ -35760,7 +35799,8 @@ ALTER TRIGGER "INS_ISCONTRACTOR_ORGACCOUNT" ACTIVE;
 CREATE OR ALTER TRIGGER "INS_ORGCHILD" AFTER INSERT
  ON org  
 AS
-BEGIN
+
+ BEGIN
   IF ((NEW.parent_id IS NOT NULL AND NEW.parent_id <> NEW.id)) THEN
   BEGIN
     INSERT INTO orgchild(org_id, child_id)
@@ -35768,12 +35808,12 @@ BEGIN
     FOR cur IN (SELECT org_id FROM orgchild
                 WHERE child_id = NEW.parent_id)
     DO
+    BEGIN
       INSERT INTO orgchild(org_id, child_id)
          VALUES (cur.org_id, NEW.id);
-     
+    END
   END
-   
-END^
+ END^
 
 SET TERM ; ^
 
@@ -35786,16 +35826,16 @@ ALTER TRIGGER "INS_ORGCHILD" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "INS_TER_TREE" after insert
- on territory /*referencing old as old new as new*/
- 
+ on territory /*referencing old as old new as new*/  
 AS
 
  DECLARE vtree varchar(255);
  DECLARE vpath varchar(512);
-begin
+ BEGIN
   begin
-    select tree, path 
-      from ter_tree where ter_id=new.parent_id into :vtree, :vpath;
+    select tree, path
+    from ter_tree where ter_id=new.parent_id
+    into :vtree, :vpath;
     vpath = :vpath||', '||new.caption;
   exception
     when no_data_found then
@@ -35804,7 +35844,7 @@ begin
   end
   insert into ter_tree (ter_id, tree, path)
     values (new.id, :vtree||new.code||'/', :vpath);
-end^
+ END^
 
 SET TERM ; ^
 
@@ -35816,8 +35856,11 @@ ALTER TRIGGER "INS_TER_TREE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ABANDONEDREASON" AFTER INSERT OR UPDATE OR DELETE ON ABANDONEDREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 174;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ABANDONEDREASON" AFTER INSERT OR UPDATE OR DELETE ON ABANDONEDREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 174;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35828,8 +35871,11 @@ ALTER TRIGGER "RPL$ABANDONEDREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ALTGOODSGROUP" AFTER INSERT OR UPDATE OR DELETE ON ALTGOODSGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 142;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ALTGOODSGROUP" AFTER INSERT OR UPDATE OR DELETE ON ALTGOODSGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 142;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35840,8 +35886,11 @@ ALTER TRIGGER "RPL$ALTGOODSGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ALTGOODSGROUPTYPE" AFTER INSERT OR UPDATE OR DELETE ON ALTGOODSGROUPTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 141;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ALTGOODSGROUPTYPE" AFTER INSERT OR UPDATE OR DELETE ON ALTGOODSGROUPTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 141;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35852,8 +35901,11 @@ ALTER TRIGGER "RPL$ALTGOODSGROUPTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ANYDATA" AFTER INSERT OR UPDATE OR DELETE ON ANYDATA /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 43;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ANYDATA" AFTER INSERT OR UPDATE OR DELETE ON ANYDATA /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 43;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35864,8 +35916,11 @@ ALTER TRIGGER "RPL$ANYDATA" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$APPMODULE" AFTER INSERT OR UPDATE OR DELETE ON APPMODULE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 98;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$APPMODULE" AFTER INSERT OR UPDATE OR DELETE ON APPMODULE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 98;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35876,8 +35931,11 @@ ALTER TRIGGER "RPL$APPMODULE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$APPOBJ" AFTER INSERT OR UPDATE OR DELETE ON APPOBJ /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 99;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$APPOBJ" AFTER INSERT OR UPDATE OR DELETE ON APPOBJ /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 99;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35888,8 +35946,11 @@ ALTER TRIGGER "RPL$APPOBJ" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$APPOBJPROP" AFTER INSERT OR UPDATE OR DELETE ON APPOBJPROP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 100;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$APPOBJPROP" AFTER INSERT OR UPDATE OR DELETE ON APPOBJPROP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 100;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35900,8 +35961,11 @@ ALTER TRIGGER "RPL$APPOBJPROP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$APPOINTMENT" AFTER INSERT OR UPDATE OR DELETE ON APPOINTMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 256;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$APPOINTMENT" AFTER INSERT OR UPDATE OR DELETE ON APPOINTMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 256;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35912,8 +35976,11 @@ ALTER TRIGGER "RPL$APPOINTMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$AUCTIONBID" AFTER INSERT OR UPDATE OR DELETE ON AUCTIONBID /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 255;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$AUCTIONBID" AFTER INSERT OR UPDATE OR DELETE ON AUCTIONBID /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 255;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35924,8 +35991,11 @@ ALTER TRIGGER "RPL$AUCTIONBID" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$AUCTIONLOG" AFTER INSERT OR UPDATE OR DELETE ON AUCTIONLOG /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 254;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$AUCTIONLOG" AFTER INSERT OR UPDATE OR DELETE ON AUCTIONLOG /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 254;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35936,8 +36006,11 @@ ALTER TRIGGER "RPL$AUCTIONLOG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$BANK" AFTER INSERT OR UPDATE OR DELETE ON BANK /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 36;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$BANK" AFTER INSERT OR UPDATE OR DELETE ON BANK /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 36;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35948,8 +36021,11 @@ ALTER TRIGGER "RPL$BANK" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$BANKGUARANTEEDOC" AFTER INSERT OR UPDATE OR DELETE ON BANKGUARANTEEDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 221;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$BANKGUARANTEEDOC" AFTER INSERT OR UPDATE OR DELETE ON BANKGUARANTEEDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 221;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35960,8 +36036,11 @@ ALTER TRIGGER "RPL$BANKGUARANTEEDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$BANKGUARANTEEREFDOC" AFTER INSERT OR UPDATE OR DELETE ON BANKGUARANTEEREFDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 222;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$BANKGUARANTEEREFDOC" AFTER INSERT OR UPDATE OR DELETE ON BANKGUARANTEEREFDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 222;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35972,8 +36051,11 @@ ALTER TRIGGER "RPL$BANKGUARANTEEREFDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$BANKGUARANTEEREFREASON" AFTER INSERT OR UPDATE OR DELETE ON BANKGUARANTEEREFREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 220;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$BANKGUARANTEEREFREASON" AFTER INSERT OR UPDATE OR DELETE ON BANKGUARANTEEREFREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 220;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35984,8 +36066,11 @@ ALTER TRIGGER "RPL$BANKGUARANTEEREFREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$BUDGCODE" AFTER INSERT OR UPDATE OR DELETE ON BUDGCODE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 114;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$BUDGCODE" AFTER INSERT OR UPDATE OR DELETE ON BUDGCODE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 114;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -35996,8 +36081,11 @@ ALTER TRIGGER "RPL$BUDGCODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$BUDGET" AFTER INSERT OR UPDATE OR DELETE ON BUDGET /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 80;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$BUDGET" AFTER INSERT OR UPDATE OR DELETE ON BUDGET /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 80;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36008,8 +36096,11 @@ ALTER TRIGGER "RPL$BUDGET" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$BUDGETLINE" AFTER INSERT OR UPDATE OR DELETE ON BUDGETLINE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 116;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$BUDGETLINE" AFTER INSERT OR UPDATE OR DELETE ON BUDGETLINE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 116;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36020,8 +36111,11 @@ ALTER TRIGGER "RPL$BUDGETLINE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$BUDGETSTAGE" AFTER INSERT OR UPDATE OR DELETE ON BUDGETSTAGE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 121;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$BUDGETSTAGE" AFTER INSERT OR UPDATE OR DELETE ON BUDGETSTAGE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 121;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36032,8 +36126,11 @@ ALTER TRIGGER "RPL$BUDGETSTAGE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CACHELIST" AFTER INSERT OR UPDATE OR DELETE ON CACHELIST /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 94;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CACHELIST" AFTER INSERT OR UPDATE OR DELETE ON CACHELIST /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 94;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36044,8 +36141,11 @@ ALTER TRIGGER "RPL$CACHELIST" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CAVILDOC" AFTER INSERT OR UPDATE OR DELETE ON CAVILDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 305;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CAVILDOC" AFTER INSERT OR UPDATE OR DELETE ON CAVILDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 305;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36056,8 +36156,11 @@ ALTER TRIGGER "RPL$CAVILDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CAVILTYPE" AFTER INSERT OR UPDATE OR DELETE ON CAVILTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 304;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CAVILTYPE" AFTER INSERT OR UPDATE OR DELETE ON CAVILTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 304;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36068,8 +36171,11 @@ ALTER TRIGGER "RPL$CAVILTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CERTINTERCHANGEREQUEST" AFTER INSERT OR UPDATE OR DELETE ON CERTINTERCHANGEREQUEST /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 258;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CERTINTERCHANGEREQUEST" AFTER INSERT OR UPDATE OR DELETE ON CERTINTERCHANGEREQUEST /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 258;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36080,8 +36186,11 @@ ALTER TRIGGER "RPL$CERTINTERCHANGEREQUEST" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CERTREQUEST" AFTER INSERT OR UPDATE OR DELETE ON CERTREQUEST /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 257;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CERTREQUEST" AFTER INSERT OR UPDATE OR DELETE ON CERTREQUEST /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 257;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36092,8 +36201,11 @@ ALTER TRIGGER "RPL$CERTREQUEST" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CERTREVOKEREQUEST" AFTER INSERT OR UPDATE OR DELETE ON CERTREVOKEREQUEST /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 259;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CERTREVOKEREQUEST" AFTER INSERT OR UPDATE OR DELETE ON CERTREVOKEREQUEST /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 259;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36104,8 +36216,11 @@ ALTER TRIGGER "RPL$CERTREVOKEREQUEST" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CLAIMDOC" AFTER INSERT OR UPDATE OR DELETE ON CLAIMDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 213;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CLAIMDOC" AFTER INSERT OR UPDATE OR DELETE ON CLAIMDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 213;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36116,8 +36231,11 @@ ALTER TRIGGER "RPL$CLAIMDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CLAIMPAYFACT" AFTER INSERT OR UPDATE OR DELETE ON CLAIMPAYFACT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 214;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CLAIMPAYFACT" AFTER INSERT OR UPDATE OR DELETE ON CLAIMPAYFACT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 214;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36128,8 +36246,11 @@ ALTER TRIGGER "RPL$CLAIMPAYFACT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CLAIMPENALTYCHANGEDOCINFO" AFTER INSERT OR UPDATE OR DELETE ON CLAIMPENALTYCHANGEDOCINFO /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 215;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CLAIMPENALTYCHANGEDOCINFO" AFTER INSERT OR UPDATE OR DELETE ON CLAIMPENALTYCHANGEDOCINFO /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 215;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36140,8 +36261,11 @@ ALTER TRIGGER "RPL$CLAIMPENALTYCHANGEDOCINFO" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CLASSOPER" AFTER INSERT OR UPDATE OR DELETE ON CLASSOPER /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 21;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CLASSOPER" AFTER INSERT OR UPDATE OR DELETE ON CLASSOPER /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 21;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36152,8 +36276,11 @@ ALTER TRIGGER "RPL$CLASSOPER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CLIENTOBJECT" AFTER INSERT OR UPDATE OR DELETE ON CLIENTOBJECT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 39;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CLIENTOBJECT" AFTER INSERT OR UPDATE OR DELETE ON CLIENTOBJECT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 39;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36164,8 +36291,11 @@ ALTER TRIGGER "RPL$CLIENTOBJECT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CLIENTOBJECTCOMMENTS" AFTER INSERT OR UPDATE OR DELETE ON CLIENTOBJECTCOMMENTS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 83;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CLIENTOBJECTCOMMENTS" AFTER INSERT OR UPDATE OR DELETE ON CLIENTOBJECTCOMMENTS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 83;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36176,8 +36306,11 @@ ALTER TRIGGER "RPL$CLIENTOBJECTCOMMENTS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CLNDDAY" AFTER INSERT OR UPDATE OR DELETE ON CLNDDAY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 97;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CLNDDAY" AFTER INSERT OR UPDATE OR DELETE ON CLNDDAY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 97;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36188,8 +36321,11 @@ ALTER TRIGGER "RPL$CLNDDAY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CLNDDAYTYPE" AFTER INSERT OR UPDATE OR DELETE ON CLNDDAYTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 95;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CLNDDAYTYPE" AFTER INSERT OR UPDATE OR DELETE ON CLNDDAYTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 95;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36200,8 +36336,11 @@ ALTER TRIGGER "RPL$CLNDDAYTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CLNDTYPE" AFTER INSERT OR UPDATE OR DELETE ON CLNDTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 96;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CLNDTYPE" AFTER INSERT OR UPDATE OR DELETE ON CLNDTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 96;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36212,8 +36351,11 @@ ALTER TRIGGER "RPL$CLNDTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CODETYPE" AFTER INSERT OR UPDATE OR DELETE ON CODETYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 113;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CODETYPE" AFTER INSERT OR UPDATE OR DELETE ON CODETYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 113;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36224,8 +36366,11 @@ ALTER TRIGGER "RPL$CODETYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$COMMEMBER" AFTER INSERT OR UPDATE OR DELETE ON COMMEMBER /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 244;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$COMMEMBER" AFTER INSERT OR UPDATE OR DELETE ON COMMEMBER /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 244;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36236,8 +36381,11 @@ ALTER TRIGGER "RPL$COMMEMBER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$COMMISSION" AFTER INSERT OR UPDATE OR DELETE ON COMMISSION /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 243;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$COMMISSION" AFTER INSERT OR UPDATE OR DELETE ON COMMISSION /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 243;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36248,8 +36396,11 @@ ALTER TRIGGER "RPL$COMMISSION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$COMPLAINTDOC" AFTER INSERT OR UPDATE OR DELETE ON COMPLAINTDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 241;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$COMPLAINTDOC" AFTER INSERT OR UPDATE OR DELETE ON COMPLAINTDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 241;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36260,8 +36411,11 @@ ALTER TRIGGER "RPL$COMPLAINTDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CONFCONCLUSIONCONTRACT" AFTER INSERT OR UPDATE OR DELETE ON CONFCONCLUSIONCONTRACT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 281;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CONFCONCLUSIONCONTRACT" AFTER INSERT OR UPDATE OR DELETE ON CONFCONCLUSIONCONTRACT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 281;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36272,8 +36426,11 @@ ALTER TRIGGER "RPL$CONFCONCLUSIONCONTRACT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CONPAYFACT" AFTER INSERT OR UPDATE OR DELETE ON CONPAYFACT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 179;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CONPAYFACT" AFTER INSERT OR UPDATE OR DELETE ON CONPAYFACT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 179;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36284,8 +36441,11 @@ ALTER TRIGGER "RPL$CONPAYFACT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CONSOLIDDOC" AFTER INSERT OR UPDATE OR DELETE ON CONSOLIDDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 250;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CONSOLIDDOC" AFTER INSERT OR UPDATE OR DELETE ON CONSOLIDDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 250;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36296,8 +36456,11 @@ ALTER TRIGGER "RPL$CONSOLIDDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CONSTRUCTION" AFTER INSERT OR UPDATE OR DELETE ON CONSTRUCTION /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 177;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CONSTRUCTION" AFTER INSERT OR UPDATE OR DELETE ON CONSTRUCTION /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 177;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36308,8 +36471,11 @@ ALTER TRIGGER "RPL$CONSTRUCTION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CONTRACTCARDDOC" AFTER INSERT OR UPDATE OR DELETE ON CONTRACTCARDDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 198;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CONTRACTCARDDOC" AFTER INSERT OR UPDATE OR DELETE ON CONTRACTCARDDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 198;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36320,8 +36486,11 @@ ALTER TRIGGER "RPL$CONTRACTCARDDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CONTRACTDOC" AFTER INSERT OR UPDATE OR DELETE ON CONTRACTDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 178;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CONTRACTDOC" AFTER INSERT OR UPDATE OR DELETE ON CONTRACTDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 178;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36332,8 +36501,11 @@ ALTER TRIGGER "RPL$CONTRACTDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CONTRACTEXECDOC" AFTER INSERT OR UPDATE OR DELETE ON CONTRACTEXECDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 180;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CONTRACTEXECDOC" AFTER INSERT OR UPDATE OR DELETE ON CONTRACTEXECDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 180;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36344,8 +36516,11 @@ ALTER TRIGGER "RPL$CONTRACTEXECDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CONTRACTREASON" AFTER INSERT OR UPDATE OR DELETE ON CONTRACTREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 155;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CONTRACTREASON" AFTER INSERT OR UPDATE OR DELETE ON CONTRACTREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 155;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36356,8 +36531,11 @@ ALTER TRIGGER "RPL$CONTRACTREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CONTRACTREASON_DOCLINES" AFTER INSERT OR UPDATE OR DELETE ON CONTRACTREASON_DOCLINES /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 156;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CONTRACTREASON_DOCLINES" AFTER INSERT OR UPDATE OR DELETE ON CONTRACTREASON_DOCLINES /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 156;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36368,8 +36546,11 @@ ALTER TRIGGER "RPL$CONTRACTREASON_DOCLINES" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CONTRACTTEMPLATEDOC" AFTER INSERT OR UPDATE OR DELETE ON CONTRACTTEMPLATEDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 203;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CONTRACTTEMPLATEDOC" AFTER INSERT OR UPDATE OR DELETE ON CONTRACTTEMPLATEDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 203;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36380,8 +36561,11 @@ ALTER TRIGGER "RPL$CONTRACTTEMPLATEDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CONTYPE" AFTER INSERT OR UPDATE OR DELETE ON CONTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 175;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CONTYPE" AFTER INSERT OR UPDATE OR DELETE ON CONTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 175;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36392,8 +36576,11 @@ ALTER TRIGGER "RPL$CONTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CONTYPEATTACH" AFTER INSERT OR UPDATE OR DELETE ON CONTYPEATTACH /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 176;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CONTYPEATTACH" AFTER INSERT OR UPDATE OR DELETE ON CONTYPEATTACH /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 176;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36404,8 +36591,11 @@ ALTER TRIGGER "RPL$CONTYPEATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$COUNTRY" AFTER INSERT OR UPDATE OR DELETE ON COUNTRY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 145;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$COUNTRY" AFTER INSERT OR UPDATE OR DELETE ON COUNTRY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 145;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36416,8 +36606,11 @@ ALTER TRIGGER "RPL$COUNTRY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CRLFILE" AFTER INSERT OR UPDATE OR DELETE ON CRLFILE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 268;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CRLFILE" AFTER INSERT OR UPDATE OR DELETE ON CRLFILE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 268;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36428,8 +36621,11 @@ ALTER TRIGGER "RPL$CRLFILE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CRLPOINT" AFTER INSERT OR UPDATE OR DELETE ON CRLPOINT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 267;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CRLPOINT" AFTER INSERT OR UPDATE OR DELETE ON CRLPOINT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 267;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36440,8 +36636,11 @@ ALTER TRIGGER "RPL$CRLPOINT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CURHISTORY" AFTER INSERT OR UPDATE OR DELETE ON CURHISTORY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 149;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CURHISTORY" AFTER INSERT OR UPDATE OR DELETE ON CURHISTORY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 149;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36452,8 +36651,11 @@ ALTER TRIGGER "RPL$CURHISTORY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$CURRENCY" AFTER INSERT OR UPDATE OR DELETE ON CURRENCY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 148;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$CURRENCY" AFTER INSERT OR UPDATE OR DELETE ON CURRENCY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 148;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36464,8 +36666,11 @@ ALTER TRIGGER "RPL$CURRENCY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DATAOBJECTCHANGELOG" AFTER INSERT OR UPDATE OR DELETE ON DATAOBJECTCHANGELOG /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 381;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DATAOBJECTCHANGELOG" AFTER INSERT OR UPDATE OR DELETE ON DATAOBJECTCHANGELOG /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 381;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36476,8 +36681,11 @@ ALTER TRIGGER "RPL$DATAOBJECTCHANGELOG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DATASOURCE" AFTER INSERT OR UPDATE OR DELETE ON DATASOURCE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 87;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DATASOURCE" AFTER INSERT OR UPDATE OR DELETE ON DATASOURCE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 87;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36488,8 +36696,11 @@ ALTER TRIGGER "RPL$DATASOURCE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DBCONNECT" AFTER INSERT OR UPDATE OR DELETE ON DBCONNECT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 52;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DBCONNECT" AFTER INSERT OR UPDATE OR DELETE ON DBCONNECT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 52;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36500,8 +36711,11 @@ ALTER TRIGGER "RPL$DBCONNECT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DBCONSTRAINT" AFTER INSERT OR UPDATE OR DELETE ON DBCONSTRAINT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 13;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DBCONSTRAINT" AFTER INSERT OR UPDATE OR DELETE ON DBCONSTRAINT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 13;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36512,8 +36726,11 @@ ALTER TRIGGER "RPL$DBCONSTRAINT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DECREASON" AFTER INSERT OR UPDATE OR DELETE ON DECREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 82;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DECREASON" AFTER INSERT OR UPDATE OR DELETE ON DECREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 82;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36524,8 +36741,11 @@ ALTER TRIGGER "RPL$DECREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DELIVERYBASIS" AFTER INSERT OR UPDATE OR DELETE ON DELIVERYBASIS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 158;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DELIVERYBASIS" AFTER INSERT OR UPDATE OR DELETE ON DELIVERYBASIS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 158;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36536,8 +36756,11 @@ ALTER TRIGGER "RPL$DELIVERYBASIS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DESCGROUP" AFTER INSERT OR UPDATE OR DELETE ON DESCGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 59;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DESCGROUP" AFTER INSERT OR UPDATE OR DELETE ON DESCGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 59;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36548,8 +36771,11 @@ ALTER TRIGGER "RPL$DESCGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DESCRIPTION" AFTER INSERT OR UPDATE OR DELETE ON DESCRIPTION /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 60;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DESCRIPTION" AFTER INSERT OR UPDATE OR DELETE ON DESCRIPTION /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 60;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36560,8 +36786,11 @@ ALTER TRIGGER "RPL$DESCRIPTION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DESCRIPTIONCACHE" AFTER INSERT OR UPDATE OR DELETE ON DESCRIPTIONCACHE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 154;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DESCRIPTIONCACHE" AFTER INSERT OR UPDATE OR DELETE ON DESCRIPTIONCACHE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 154;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36572,8 +36801,11 @@ ALTER TRIGGER "RPL$DESCRIPTIONCACHE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DEVIATIONFACTFOUNDATION" AFTER INSERT OR UPDATE OR DELETE ON DEVIATIONFACTFOUNDATION /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 342;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DEVIATIONFACTFOUNDATION" AFTER INSERT OR UPDATE OR DELETE ON DEVIATIONFACTFOUNDATION /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 342;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36584,8 +36816,11 @@ ALTER TRIGGER "RPL$DEVIATIONFACTFOUNDATION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DIGEST" AFTER INSERT OR UPDATE OR DELETE ON DIGEST /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 72;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DIGEST" AFTER INSERT OR UPDATE OR DELETE ON DIGEST /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 72;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36596,8 +36831,11 @@ ALTER TRIGGER "RPL$DIGEST" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DIGESTSIGN" AFTER INSERT OR UPDATE OR DELETE ON DIGESTSIGN /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 73;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DIGESTSIGN" AFTER INSERT OR UPDATE OR DELETE ON DIGESTSIGN /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 73;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36608,8 +36846,11 @@ ALTER TRIGGER "RPL$DIGESTSIGN" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DISPSTATUS" AFTER INSERT OR UPDATE OR DELETE ON DISPSTATUS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 17;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DISPSTATUS" AFTER INSERT OR UPDATE OR DELETE ON DISPSTATUS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 17;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36620,8 +36861,11 @@ ALTER TRIGGER "RPL$DISPSTATUS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCACTION" AFTER INSERT OR UPDATE OR DELETE ON DOCACTION /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 22;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCACTION" AFTER INSERT OR UPDATE OR DELETE ON DOCACTION /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 22;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36632,8 +36876,11 @@ ALTER TRIGGER "RPL$DOCACTION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCATTACH" AFTER INSERT OR UPDATE OR DELETE ON DOCATTACH /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 49;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCATTACH" AFTER INSERT OR UPDATE OR DELETE ON DOCATTACH /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 49;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36644,8 +36891,11 @@ ALTER TRIGGER "RPL$DOCATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCATTACHEX" AFTER INSERT OR UPDATE OR DELETE ON DOCATTACHEX /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 2;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCATTACHEX" AFTER INSERT OR UPDATE OR DELETE ON DOCATTACHEX /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 2;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36656,8 +36906,11 @@ ALTER TRIGGER "RPL$DOCATTACHEX" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCCATEGORY" AFTER INSERT OR UPDATE OR DELETE ON DOCCATEGORY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 67;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCCATEGORY" AFTER INSERT OR UPDATE OR DELETE ON DOCCATEGORY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 67;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36668,8 +36921,11 @@ ALTER TRIGGER "RPL$DOCCATEGORY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCCLASS_DISPSTATUS" AFTER INSERT OR UPDATE OR DELETE ON DOCCLASS_DISPSTATUS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 55;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCCLASS_DISPSTATUS" AFTER INSERT OR UPDATE OR DELETE ON DOCCLASS_DISPSTATUS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 55;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36680,8 +36936,11 @@ ALTER TRIGGER "RPL$DOCCLASS_DISPSTATUS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCCOMMENT" AFTER INSERT OR UPDATE OR DELETE ON DOCCOMMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 53;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCCOMMENT" AFTER INSERT OR UPDATE OR DELETE ON DOCCOMMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 53;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36692,8 +36951,11 @@ ALTER TRIGGER "RPL$DOCCOMMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCCUSTOMFIELDS" AFTER INSERT OR UPDATE OR DELETE ON DOCCUSTOMFIELDS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 54;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCCUSTOMFIELDS" AFTER INSERT OR UPDATE OR DELETE ON DOCCUSTOMFIELDS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 54;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36704,8 +36966,11 @@ ALTER TRIGGER "RPL$DOCCUSTOMFIELDS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCDIGESTRULE" AFTER INSERT OR UPDATE OR DELETE ON DOCDIGESTRULE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 78;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCDIGESTRULE" AFTER INSERT OR UPDATE OR DELETE ON DOCDIGESTRULE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 78;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36716,8 +36981,11 @@ ALTER TRIGGER "RPL$DOCDIGESTRULE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCEVENT" AFTER INSERT OR UPDATE OR DELETE ON DOCEVENT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 20;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCEVENT" AFTER INSERT OR UPDATE OR DELETE ON DOCEVENT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 20;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36728,8 +36996,11 @@ ALTER TRIGGER "RPL$DOCEVENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCEVERRLOG" AFTER INSERT OR UPDATE OR DELETE ON DOCEVERRLOG /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 101;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCEVERRLOG" AFTER INSERT OR UPDATE OR DELETE ON DOCEVERRLOG /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 101;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36740,8 +37011,11 @@ ALTER TRIGGER "RPL$DOCEVERRLOG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCEXCHANGESCHEME" AFTER INSERT OR UPDATE OR DELETE ON DOCEXCHANGESCHEME /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 63;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCEXCHANGESCHEME" AFTER INSERT OR UPDATE OR DELETE ON DOCEXCHANGESCHEME /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 63;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36752,8 +37026,11 @@ ALTER TRIGGER "RPL$DOCEXCHANGESCHEME" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCFLAGCATEGORY" AFTER INSERT OR UPDATE OR DELETE ON DOCFLAGCATEGORY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 119;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCFLAGCATEGORY" AFTER INSERT OR UPDATE OR DELETE ON DOCFLAGCATEGORY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 119;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36764,8 +37041,11 @@ ALTER TRIGGER "RPL$DOCFLAGCATEGORY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCFLAGTYPE" AFTER INSERT OR UPDATE OR DELETE ON DOCFLAGTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 120;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCFLAGTYPE" AFTER INSERT OR UPDATE OR DELETE ON DOCFLAGTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 120;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36776,8 +37056,11 @@ ALTER TRIGGER "RPL$DOCFLAGTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCGROUP" AFTER INSERT OR UPDATE OR DELETE ON DOCGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 24;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCGROUP" AFTER INSERT OR UPDATE OR DELETE ON DOCGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 24;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36788,8 +37071,11 @@ ALTER TRIGGER "RPL$DOCGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCREQ" AFTER INSERT OR UPDATE OR DELETE ON DOCREQ /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 247;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCREQ" AFTER INSERT OR UPDATE OR DELETE ON DOCREQ /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 247;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36800,8 +37086,11 @@ ALTER TRIGGER "RPL$DOCREQ" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCRETENTION" AFTER INSERT OR UPDATE OR DELETE ON DOCRETENTION /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 68;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCRETENTION" AFTER INSERT OR UPDATE OR DELETE ON DOCRETENTION /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 68;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36812,8 +37101,11 @@ ALTER TRIGGER "RPL$DOCRETENTION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCRETENTIONSTATITEMS" AFTER INSERT OR UPDATE OR DELETE ON DOCRETENTIONSTATITEMS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 91;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCRETENTIONSTATITEMS" AFTER INSERT OR UPDATE OR DELETE ON DOCRETENTIONSTATITEMS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 91;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36824,8 +37116,11 @@ ALTER TRIGGER "RPL$DOCRETENTIONSTATITEMS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCRETENTIONSTATUS" AFTER INSERT OR UPDATE OR DELETE ON DOCRETENTIONSTATUS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 90;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCRETENTIONSTATUS" AFTER INSERT OR UPDATE OR DELETE ON DOCRETENTIONSTATUS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 90;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36836,8 +37131,11 @@ ALTER TRIGGER "RPL$DOCRETENTIONSTATUS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCSTATUS" AFTER INSERT OR UPDATE OR DELETE ON DOCSTATUS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 19;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCSTATUS" AFTER INSERT OR UPDATE OR DELETE ON DOCSTATUS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 19;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36848,8 +37146,11 @@ ALTER TRIGGER "RPL$DOCSTATUS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCUMENT" AFTER INSERT OR UPDATE OR DELETE ON DOCUMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 23;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, old.DOCUMENTCLASS_ID, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, new.DOCUMENTCLASS_ID, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)and (new.DOCUMENTCLASS_ID=old.DOCUMENTCLASS_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, old.DOCUMENTCLASS_ID, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCUMENT" AFTER INSERT OR UPDATE OR DELETE ON DOCUMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 23;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, old.DOCUMENTCLASS_ID, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, new.DOCUMENTCLASS_ID, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)and (new.DOCUMENTCLASS_ID=old.DOCUMENTCLASS_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, old.DOCUMENTCLASS_ID, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36860,8 +37161,11 @@ ALTER TRIGGER "RPL$DOCUMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCUMENTCLASS" AFTER INSERT OR UPDATE OR DELETE ON DOCUMENTCLASS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 18;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCUMENTCLASS" AFTER INSERT OR UPDATE OR DELETE ON DOCUMENTCLASS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 18;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36872,8 +37176,11 @@ ALTER TRIGGER "RPL$DOCUMENTCLASS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOCUMENTREPORTS" AFTER INSERT OR UPDATE OR DELETE ON DOCUMENTREPORTS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 58;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOCUMENTREPORTS" AFTER INSERT OR UPDATE OR DELETE ON DOCUMENTREPORTS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 58;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36884,8 +37191,11 @@ ALTER TRIGGER "RPL$DOCUMENTREPORTS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$DOMEN" AFTER INSERT OR UPDATE OR DELETE ON DOMEN /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 108;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$DOMEN" AFTER INSERT OR UPDATE OR DELETE ON DOMEN /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 108;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36896,8 +37206,11 @@ ALTER TRIGGER "RPL$DOMEN" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$EQUALITY" AFTER INSERT OR UPDATE OR DELETE ON EQUALITY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 218;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$EQUALITY" AFTER INSERT OR UPDATE OR DELETE ON EQUALITY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 218;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36908,8 +37221,11 @@ ALTER TRIGGER "RPL$EQUALITY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$EQUALITYCODES" AFTER INSERT OR UPDATE OR DELETE ON EQUALITYCODES /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 219;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$EQUALITYCODES" AFTER INSERT OR UPDATE OR DELETE ON EQUALITYCODES /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 219;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36920,8 +37236,11 @@ ALTER TRIGGER "RPL$EQUALITYCODES" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ESCHECKRULE" AFTER INSERT OR UPDATE OR DELETE ON ESCHECKRULE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 79;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ESCHECKRULE" AFTER INSERT OR UPDATE OR DELETE ON ESCHECKRULE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 79;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36932,8 +37251,11 @@ ALTER TRIGGER "RPL$ESCHECKRULE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ESTIMATE" AFTER INSERT OR UPDATE OR DELETE ON ESTIMATE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 115;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ESTIMATE" AFTER INSERT OR UPDATE OR DELETE ON ESTIMATE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 115;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36944,8 +37266,11 @@ ALTER TRIGGER "RPL$ESTIMATE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ETP" AFTER INSERT OR UPDATE OR DELETE ON ETP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 194;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ETP" AFTER INSERT OR UPDATE OR DELETE ON ETP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 194;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36956,8 +37281,11 @@ ALTER TRIGGER "RPL$ETP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ETPATTACH" AFTER INSERT OR UPDATE OR DELETE ON ETPATTACH /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 197;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ETPATTACH" AFTER INSERT OR UPDATE OR DELETE ON ETPATTACH /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 197;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36968,8 +37296,11 @@ ALTER TRIGGER "RPL$ETPATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ETPTYPE" AFTER INSERT OR UPDATE OR DELETE ON ETPTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 193;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ETPTYPE" AFTER INSERT OR UPDATE OR DELETE ON ETPTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 193;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36980,8 +37311,11 @@ ALTER TRIGGER "RPL$ETPTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$FACTDOC" AFTER INSERT OR UPDATE OR DELETE ON FACTDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 226;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$FACTDOC" AFTER INSERT OR UPDATE OR DELETE ON FACTDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 226;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -36992,8 +37326,11 @@ ALTER TRIGGER "RPL$FACTDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$FACTDOCTYPE" AFTER INSERT OR UPDATE OR DELETE ON FACTDOCTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 225;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$FACTDOCTYPE" AFTER INSERT OR UPDATE OR DELETE ON FACTDOCTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 225;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37004,8 +37341,11 @@ ALTER TRIGGER "RPL$FACTDOCTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$FETCHMODE" AFTER INSERT OR UPDATE OR DELETE ON FETCHMODE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 303;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$FETCHMODE" AFTER INSERT OR UPDATE OR DELETE ON FETCHMODE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 303;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37016,8 +37356,11 @@ ALTER TRIGGER "RPL$FETCHMODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$FGROUP" AFTER INSERT OR UPDATE OR DELETE ON FGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 70;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$FGROUP" AFTER INSERT OR UPDATE OR DELETE ON FGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 70;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37028,8 +37371,11 @@ ALTER TRIGGER "RPL$FGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$FGROUPATTACH" AFTER INSERT OR UPDATE OR DELETE ON FGROUPATTACH /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 71;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$FGROUPATTACH" AFTER INSERT OR UPDATE OR DELETE ON FGROUPATTACH /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 71;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37040,8 +37386,11 @@ ALTER TRIGGER "RPL$FGROUPATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$FGROUPHEADER" AFTER INSERT OR UPDATE OR DELETE ON FGROUPHEADER /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 69;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$FGROUPHEADER" AFTER INSERT OR UPDATE OR DELETE ON FGROUPHEADER /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 69;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37052,8 +37401,11 @@ ALTER TRIGGER "RPL$FGROUPHEADER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$FINSRC" AFTER INSERT OR UPDATE OR DELETE ON FINSRC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 117;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$FINSRC" AFTER INSERT OR UPDATE OR DELETE ON FINSRC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 117;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37064,8 +37416,11 @@ ALTER TRIGGER "RPL$FINSRC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$FINSRCSATISFY" AFTER INSERT OR UPDATE OR DELETE ON FINSRCSATISFY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 341;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$FINSRCSATISFY" AFTER INSERT OR UPDATE OR DELETE ON FINSRCSATISFY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 341;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37076,8 +37431,11 @@ ALTER TRIGGER "RPL$FINSRCSATISFY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$FORMATCONVERTER" AFTER INSERT OR UPDATE OR DELETE ON FORMATCONVERTER /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 382;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$FORMATCONVERTER" AFTER INSERT OR UPDATE OR DELETE ON FORMATCONVERTER /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 382;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37088,8 +37446,11 @@ ALTER TRIGGER "RPL$FORMATCONVERTER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$FUNCAT" AFTER INSERT OR UPDATE OR DELETE ON FUNCAT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 47;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$FUNCAT" AFTER INSERT OR UPDATE OR DELETE ON FUNCAT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 47;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37100,8 +37461,11 @@ ALTER TRIGGER "RPL$FUNCAT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$FUNUNIT" AFTER INSERT OR UPDATE OR DELETE ON FUNUNIT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 5;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$FUNUNIT" AFTER INSERT OR UPDATE OR DELETE ON FUNUNIT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 5;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37112,8 +37476,11 @@ ALTER TRIGGER "RPL$FUNUNIT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GCREGISTER" AFTER INSERT OR UPDATE OR DELETE ON GCREGISTER /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 118;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GCREGISTER" AFTER INSERT OR UPDATE OR DELETE ON GCREGISTER /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 118;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37124,8 +37491,11 @@ ALTER TRIGGER "RPL$GCREGISTER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODS" AFTER INSERT OR UPDATE OR DELETE ON GOODS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 137;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODS" AFTER INSERT OR UPDATE OR DELETE ON GOODS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 137;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37136,8 +37506,11 @@ ALTER TRIGGER "RPL$GOODS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSBAN" AFTER INSERT OR UPDATE OR DELETE ON GOODSBAN /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 384;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSBAN" AFTER INSERT OR UPDATE OR DELETE ON GOODSBAN /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 384;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37148,8 +37521,11 @@ ALTER TRIGGER "RPL$GOODSBAN" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSBANGOODSOKPD" AFTER INSERT OR UPDATE OR DELETE ON GOODSBANGOODSOKPD /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 386;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSBANGOODSOKPD" AFTER INSERT OR UPDATE OR DELETE ON GOODSBANGOODSOKPD /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 386;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37160,8 +37536,11 @@ ALTER TRIGGER "RPL$GOODSBANGOODSOKPD" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSBANPURCHASEMODE" AFTER INSERT OR UPDATE OR DELETE ON GOODSBANPURCHASEMODE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 385;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSBANPURCHASEMODE" AFTER INSERT OR UPDATE OR DELETE ON GOODSBANPURCHASEMODE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 385;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37172,8 +37551,11 @@ ALTER TRIGGER "RPL$GOODSBANPURCHASEMODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSBRANCH" AFTER INSERT OR UPDATE OR DELETE ON GOODSBRANCH /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 195;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSBRANCH" AFTER INSERT OR UPDATE OR DELETE ON GOODSBRANCH /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 195;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37184,8 +37566,11 @@ ALTER TRIGGER "RPL$GOODSBRANCH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSGROUP" AFTER INSERT OR UPDATE OR DELETE ON GOODSGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 135;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSGROUP" AFTER INSERT OR UPDATE OR DELETE ON GOODSGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 135;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37196,8 +37581,11 @@ ALTER TRIGGER "RPL$GOODSGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSGROUPDOCDETAIL" AFTER INSERT OR UPDATE OR DELETE ON GOODSGROUPDOCDETAIL /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 140;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSGROUPDOCDETAIL" AFTER INSERT OR UPDATE OR DELETE ON GOODSGROUPDOCDETAIL /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 140;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37208,8 +37596,11 @@ ALTER TRIGGER "RPL$GOODSGROUPDOCDETAIL" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSGROUPPURCHASEMODE" AFTER INSERT OR UPDATE OR DELETE ON GOODSGROUPPURCHASEMODE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 162;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSGROUPPURCHASEMODE" AFTER INSERT OR UPDATE OR DELETE ON GOODSGROUPPURCHASEMODE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 162;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37220,8 +37611,11 @@ ALTER TRIGGER "RPL$GOODSGROUPPURCHASEMODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSOKDP" AFTER INSERT OR UPDATE OR DELETE ON GOODSOKDP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 133;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSOKDP" AFTER INSERT OR UPDATE OR DELETE ON GOODSOKDP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 133;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37232,8 +37626,11 @@ ALTER TRIGGER "RPL$GOODSOKDP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSOKDPCOUNTRYPREF" AFTER INSERT OR UPDATE OR DELETE ON GOODSOKDPCOUNTRYPREF /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 168;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSOKDPCOUNTRYPREF" AFTER INSERT OR UPDATE OR DELETE ON GOODSOKDPCOUNTRYPREF /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 168;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37244,8 +37641,11 @@ ALTER TRIGGER "RPL$GOODSOKDPCOUNTRYPREF" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSOKDPPURCHASEMODE" AFTER INSERT OR UPDATE OR DELETE ON GOODSOKDPPURCHASEMODE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 167;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSOKDPPURCHASEMODE" AFTER INSERT OR UPDATE OR DELETE ON GOODSOKDPPURCHASEMODE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 167;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37256,8 +37656,11 @@ ALTER TRIGGER "RPL$GOODSOKDPPURCHASEMODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSOKPD" AFTER INSERT OR UPDATE OR DELETE ON GOODSOKPD /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 134;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSOKPD" AFTER INSERT OR UPDATE OR DELETE ON GOODSOKPD /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 134;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37268,8 +37671,11 @@ ALTER TRIGGER "RPL$GOODSOKPD" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSOKPDCOUNTRYPREF" AFTER INSERT OR UPDATE OR DELETE ON GOODSOKPDCOUNTRYPREF /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 170;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSOKPDCOUNTRYPREF" AFTER INSERT OR UPDATE OR DELETE ON GOODSOKPDCOUNTRYPREF /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 170;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37280,8 +37686,11 @@ ALTER TRIGGER "RPL$GOODSOKPDCOUNTRYPREF" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSOKPDPURCHASEMODE" AFTER INSERT OR UPDATE OR DELETE ON GOODSOKPDPURCHASEMODE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 169;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSOKPDPURCHASEMODE" AFTER INSERT OR UPDATE OR DELETE ON GOODSOKPDPURCHASEMODE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 169;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37292,8 +37701,11 @@ ALTER TRIGGER "RPL$GOODSOKPDPURCHASEMODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSOKVED" AFTER INSERT OR UPDATE OR DELETE ON GOODSOKVED /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 132;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSOKVED" AFTER INSERT OR UPDATE OR DELETE ON GOODSOKVED /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 132;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37304,8 +37716,11 @@ ALTER TRIGGER "RPL$GOODSOKVED" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GOODSPRICE" AFTER INSERT OR UPDATE OR DELETE ON GOODSPRICE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 138;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GOODSPRICE" AFTER INSERT OR UPDATE OR DELETE ON GOODSPRICE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 138;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37316,8 +37731,11 @@ ALTER TRIGGER "RPL$GOODSPRICE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GRANTINVESTMENT" AFTER INSERT OR UPDATE OR DELETE ON GRANTINVESTMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 128;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GRANTINVESTMENT" AFTER INSERT OR UPDATE OR DELETE ON GRANTINVESTMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 128;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37328,8 +37746,11 @@ ALTER TRIGGER "RPL$GRANTINVESTMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$GROUPPROP" AFTER INSERT OR UPDATE OR DELETE ON GROUPPROP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 136;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$GROUPPROP" AFTER INSERT OR UPDATE OR DELETE ON GROUPPROP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 136;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37340,8 +37761,11 @@ ALTER TRIGGER "RPL$GROUPPROP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$HISTORYMODIFY" AFTER INSERT OR UPDATE OR DELETE ON HISTORYMODIFY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 102;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$HISTORYMODIFY" AFTER INSERT OR UPDATE OR DELETE ON HISTORYMODIFY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 102;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37352,8 +37776,11 @@ ALTER TRIGGER "RPL$HISTORYMODIFY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$INDUSTRYCODE" AFTER INSERT OR UPDATE OR DELETE ON INDUSTRYCODE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 127;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$INDUSTRYCODE" AFTER INSERT OR UPDATE OR DELETE ON INDUSTRYCODE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 127;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37364,8 +37791,11 @@ ALTER TRIGGER "RPL$INDUSTRYCODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$INSTITUTIONLINE" AFTER INSERT OR UPDATE OR DELETE ON INSTITUTIONLINE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 129;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$INSTITUTIONLINE" AFTER INSERT OR UPDATE OR DELETE ON INSTITUTIONLINE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 129;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37376,8 +37806,11 @@ ALTER TRIGGER "RPL$INSTITUTIONLINE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$INTERBUDGET" AFTER INSERT OR UPDATE OR DELETE ON INTERBUDGET /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 112;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$INTERBUDGET" AFTER INSERT OR UPDATE OR DELETE ON INTERBUDGET /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 112;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37388,8 +37821,11 @@ ALTER TRIGGER "RPL$INTERBUDGET" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$INVOICEDOC" AFTER INSERT OR UPDATE OR DELETE ON INVOICEDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 184;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$INVOICEDOC" AFTER INSERT OR UPDATE OR DELETE ON INVOICEDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 184;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37400,8 +37836,11 @@ ALTER TRIGGER "RPL$INVOICEDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$JAVACLASS" AFTER INSERT OR UPDATE OR DELETE ON JAVACLASS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 25;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$JAVACLASS" AFTER INSERT OR UPDATE OR DELETE ON JAVACLASS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 25;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37412,8 +37851,11 @@ ALTER TRIGGER "RPL$JAVACLASS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$KBKLINEFIT" AFTER INSERT OR UPDATE OR DELETE ON KBKLINEFIT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 126;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$KBKLINEFIT" AFTER INSERT OR UPDATE OR DELETE ON KBKLINEFIT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 126;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37424,8 +37866,11 @@ ALTER TRIGGER "RPL$KBKLINEFIT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$KLADR" AFTER INSERT OR UPDATE OR DELETE ON KLADR /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 387;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$KLADR" AFTER INSERT OR UPDATE OR DELETE ON KLADR /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 387;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37436,8 +37881,11 @@ ALTER TRIGGER "RPL$KLADR" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$KLADRSTREET" AFTER INSERT OR UPDATE OR DELETE ON KLADRSTREET /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 388;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$KLADRSTREET" AFTER INSERT OR UPDATE OR DELETE ON KLADRSTREET /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 388;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37448,8 +37896,11 @@ ALTER TRIGGER "RPL$KLADRSTREET" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$LEDGER" AFTER INSERT OR UPDATE OR DELETE ON LEDGER /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 217;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$LEDGER" AFTER INSERT OR UPDATE OR DELETE ON LEDGER /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 217;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37460,8 +37911,11 @@ ALTER TRIGGER "RPL$LEDGER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$LIABILITYCREDENTIAL" AFTER INSERT OR UPDATE OR DELETE ON LIABILITYCREDENTIAL /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 123;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$LIABILITYCREDENTIAL" AFTER INSERT OR UPDATE OR DELETE ON LIABILITYCREDENTIAL /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 123;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37472,8 +37926,11 @@ ALTER TRIGGER "RPL$LIABILITYCREDENTIAL" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$LIABILITYEXPENSE" AFTER INSERT OR UPDATE OR DELETE ON LIABILITYEXPENSE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 124;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$LIABILITYEXPENSE" AFTER INSERT OR UPDATE OR DELETE ON LIABILITYEXPENSE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 124;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37484,8 +37941,11 @@ ALTER TRIGGER "RPL$LIABILITYEXPENSE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$LIABILITYEXPENSE_DOCLINES" AFTER INSERT OR UPDATE OR DELETE ON LIABILITYEXPENSE_DOCLINES /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 125;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$LIABILITYEXPENSE_DOCLINES" AFTER INSERT OR UPDATE OR DELETE ON LIABILITYEXPENSE_DOCLINES /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 125;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37496,8 +37956,11 @@ ALTER TRIGGER "RPL$LIABILITYEXPENSE_DOCLINES" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$LIABILITYGROUP" AFTER INSERT OR UPDATE OR DELETE ON LIABILITYGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 122;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$LIABILITYGROUP" AFTER INSERT OR UPDATE OR DELETE ON LIABILITYGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 122;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37508,8 +37971,11 @@ ALTER TRIGGER "RPL$LIABILITYGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$LICTYPE" AFTER INSERT OR UPDATE OR DELETE ON LICTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 34;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$LICTYPE" AFTER INSERT OR UPDATE OR DELETE ON LICTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 34;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37520,8 +37986,11 @@ ALTER TRIGGER "RPL$LICTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$MAIL" AFTER INSERT OR UPDATE OR DELETE ON MAIL /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 65;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$MAIL" AFTER INSERT OR UPDATE OR DELETE ON MAIL /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 65;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37532,8 +38001,11 @@ ALTER TRIGGER "RPL$MAIL" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$MAILATTACH" AFTER INSERT OR UPDATE OR DELETE ON MAILATTACH /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 66;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$MAILATTACH" AFTER INSERT OR UPDATE OR DELETE ON MAILATTACH /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 66;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37544,8 +38016,11 @@ ALTER TRIGGER "RPL$MAILATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$MAILRECEIVERGROUP" AFTER INSERT OR UPDATE OR DELETE ON MAILRECEIVERGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 309;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$MAILRECEIVERGROUP" AFTER INSERT OR UPDATE OR DELETE ON MAILRECEIVERGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 309;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37556,8 +38031,11 @@ ALTER TRIGGER "RPL$MAILRECEIVERGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$MAILRECEIVERGROUP_RECEIVER" AFTER INSERT OR UPDATE OR DELETE ON MAILRECEIVERGROUP_RECEIVER /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 310;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$MAILRECEIVERGROUP_RECEIVER" AFTER INSERT OR UPDATE OR DELETE ON MAILRECEIVERGROUP_RECEIVER /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 310;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37568,8 +38046,11 @@ ALTER TRIGGER "RPL$MAILRECEIVERGROUP_RECEIVER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$MENU" AFTER INSERT OR UPDATE OR DELETE ON MENU /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 40;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$MENU" AFTER INSERT OR UPDATE OR DELETE ON MENU /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 40;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37580,8 +38061,11 @@ ALTER TRIGGER "RPL$MENU" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$MENUITEM" AFTER INSERT OR UPDATE OR DELETE ON MENUITEM /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 41;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.MENU_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.MENU_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.MENU_ID=old.MENU_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.MENU_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$MENUITEM" AFTER INSERT OR UPDATE OR DELETE ON MENUITEM /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 41;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.MENU_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.MENU_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.MENU_ID=old.MENU_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.MENU_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37592,8 +38076,11 @@ ALTER TRIGGER "RPL$MENUITEM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$MENUITEMWEB" AFTER INSERT OR UPDATE OR DELETE ON MENUITEMWEB /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 110;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.MENU_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.MENU_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.MENU_ID=old.MENU_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.MENU_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$MENUITEMWEB" AFTER INSERT OR UPDATE OR DELETE ON MENUITEMWEB /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 110;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.MENU_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.MENU_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.MENU_ID=old.MENU_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.MENU_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37604,8 +38091,11 @@ ALTER TRIGGER "RPL$MENUITEMWEB" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$METACONSTRAINT" AFTER INSERT OR UPDATE OR DELETE ON METACONSTRAINT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 92;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$METACONSTRAINT" AFTER INSERT OR UPDATE OR DELETE ON METACONSTRAINT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 92;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37616,8 +38106,11 @@ ALTER TRIGGER "RPL$METACONSTRAINT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$METAOBJECT" AFTER INSERT OR UPDATE OR DELETE ON METAOBJECT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 93;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$METAOBJECT" AFTER INSERT OR UPDATE OR DELETE ON METAOBJECT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 93;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37628,8 +38121,11 @@ ALTER TRIGGER "RPL$METAOBJECT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$MSG" AFTER INSERT OR UPDATE OR DELETE ON MSG /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 29;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$MSG" AFTER INSERT OR UPDATE OR DELETE ON MSG /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 29;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37640,8 +38136,11 @@ ALTER TRIGGER "RPL$MSG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$MSGLINKTYPE" AFTER INSERT OR UPDATE OR DELETE ON MSGLINKTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 27;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$MSGLINKTYPE" AFTER INSERT OR UPDATE OR DELETE ON MSGLINKTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 27;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37652,8 +38151,11 @@ ALTER TRIGGER "RPL$MSGLINKTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$MSGQUEUE" AFTER INSERT OR UPDATE OR DELETE ON MSGQUEUE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 30;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$MSGQUEUE" AFTER INSERT OR UPDATE OR DELETE ON MSGQUEUE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 30;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37664,8 +38166,11 @@ ALTER TRIGGER "RPL$MSGQUEUE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$MSGSITE" AFTER INSERT OR UPDATE OR DELETE ON MSGSITE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 28;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$MSGSITE" AFTER INSERT OR UPDATE OR DELETE ON MSGSITE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 28;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37676,8 +38181,11 @@ ALTER TRIGGER "RPL$MSGSITE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$NECESSITY" AFTER INSERT OR UPDATE OR DELETE ON NECESSITY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 183;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$NECESSITY" AFTER INSERT OR UPDATE OR DELETE ON NECESSITY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 183;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37688,8 +38196,11 @@ ALTER TRIGGER "RPL$NECESSITY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$NOTICEDOC" AFTER INSERT OR UPDATE OR DELETE ON NOTICEDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 239;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$NOTICEDOC" AFTER INSERT OR UPDATE OR DELETE ON NOTICEDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 239;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37700,8 +38211,11 @@ ALTER TRIGGER "RPL$NOTICEDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$NOTICEEMAILORG" AFTER INSERT OR UPDATE OR DELETE ON NOTICEEMAILORG /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 240;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$NOTICEEMAILORG" AFTER INSERT OR UPDATE OR DELETE ON NOTICEEMAILORG /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 240;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37712,8 +38226,11 @@ ALTER TRIGGER "RPL$NOTICEEMAILORG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$NOTIFYMSG" AFTER INSERT OR UPDATE OR DELETE ON NOTIFYMSG /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 106;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$NOTIFYMSG" AFTER INSERT OR UPDATE OR DELETE ON NOTIFYMSG /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 106;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37724,8 +38241,11 @@ ALTER TRIGGER "RPL$NOTIFYMSG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$NOTIFYMSGEVENT" AFTER INSERT OR UPDATE OR DELETE ON NOTIFYMSGEVENT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 105;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$NOTIFYMSGEVENT" AFTER INSERT OR UPDATE OR DELETE ON NOTIFYMSGEVENT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 105;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37736,8 +38256,11 @@ ALTER TRIGGER "RPL$NOTIFYMSGEVENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$NOTIFYMSGGROUP" AFTER INSERT OR UPDATE OR DELETE ON NOTIFYMSGGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 104;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$NOTIFYMSGGROUP" AFTER INSERT OR UPDATE OR DELETE ON NOTIFYMSGGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 104;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37748,8 +38271,11 @@ ALTER TRIGGER "RPL$NOTIFYMSGGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$NOTIFYMSGRULE" AFTER INSERT OR UPDATE OR DELETE ON NOTIFYMSGRULE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 107;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$NOTIFYMSGRULE" AFTER INSERT OR UPDATE OR DELETE ON NOTIFYMSGRULE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 107;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37760,8 +38286,11 @@ ALTER TRIGGER "RPL$NOTIFYMSGRULE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$NUMGENERATOR" AFTER INSERT OR UPDATE OR DELETE ON NUMGENERATOR /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 15;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$NUMGENERATOR" AFTER INSERT OR UPDATE OR DELETE ON NUMGENERATOR /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 15;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37772,8 +38301,11 @@ ALTER TRIGGER "RPL$NUMGENERATOR" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$NUMPREFIX" AFTER INSERT OR UPDATE OR DELETE ON NUMPREFIX /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 88;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$NUMPREFIX" AFTER INSERT OR UPDATE OR DELETE ON NUMPREFIX /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 88;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37784,8 +38316,11 @@ ALTER TRIGGER "RPL$NUMPREFIX" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$NUMSEQUENCE" AFTER INSERT OR UPDATE OR DELETE ON NUMSEQUENCE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 14;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$NUMSEQUENCE" AFTER INSERT OR UPDATE OR DELETE ON NUMSEQUENCE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 14;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37796,8 +38331,11 @@ ALTER TRIGGER "RPL$NUMSEQUENCE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$OFFERDOC" AFTER INSERT OR UPDATE OR DELETE ON OFFERDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 224;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$OFFERDOC" AFTER INSERT OR UPDATE OR DELETE ON OFFERDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 224;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37808,8 +38346,11 @@ ALTER TRIGGER "RPL$OFFERDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$OFRREQREASON" AFTER INSERT OR UPDATE OR DELETE ON OFRREQREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 157;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$OFRREQREASON" AFTER INSERT OR UPDATE OR DELETE ON OFRREQREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 157;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37820,8 +38361,11 @@ ALTER TRIGGER "RPL$OFRREQREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$OFRRETREASON" AFTER INSERT OR UPDATE OR DELETE ON OFRRETREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 223;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$OFRRETREASON" AFTER INSERT OR UPDATE OR DELETE ON OFRRETREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 223;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37832,8 +38376,11 @@ ALTER TRIGGER "RPL$OFRRETREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$OIDREF" AFTER INSERT OR UPDATE OR DELETE ON OIDREF /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 77;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$OIDREF" AFTER INSERT OR UPDATE OR DELETE ON OIDREF /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 77;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37844,8 +38391,11 @@ ALTER TRIGGER "RPL$OIDREF" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$OKTMO" AFTER INSERT OR UPDATE OR DELETE ON OKTMO /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 383;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$OKTMO" AFTER INSERT OR UPDATE OR DELETE ON OKTMO /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 383;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37856,8 +38406,11 @@ ALTER TRIGGER "RPL$OKTMO" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$OLAPQUERY" AFTER INSERT OR UPDATE OR DELETE ON OLAPQUERY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 269;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$OLAPQUERY" AFTER INSERT OR UPDATE OR DELETE ON OLAPQUERY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 269;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37868,8 +38421,11 @@ ALTER TRIGGER "RPL$OLAPQUERY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$OOSORGROLE" AFTER INSERT OR UPDATE OR DELETE ON OOSORGROLE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 151;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$OOSORGROLE" AFTER INSERT OR UPDATE OR DELETE ON OOSORGROLE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 151;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37880,8 +38436,11 @@ ALTER TRIGGER "RPL$OOSORGROLE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$OOS223PURCHASENOTICEINFO" AFTER INSERT OR UPDATE OR DELETE ON OOS223PURCHASENOTICEINFO /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 389;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$OOS223PURCHASENOTICEINFO" AFTER INSERT OR UPDATE OR DELETE ON OOS223PURCHASENOTICEINFO /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 389;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37892,8 +38451,11 @@ ALTER TRIGGER "RPL$OOS223PURCHASENOTICEINFO" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$OOS223PURCHNOTICELOTINFO" AFTER INSERT OR UPDATE OR DELETE ON OOS223PURCHNOTICELOTINFO /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 390;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$OOS223PURCHNOTICELOTINFO" AFTER INSERT OR UPDATE OR DELETE ON OOS223PURCHNOTICELOTINFO /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 390;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37904,8 +38466,11 @@ ALTER TRIGGER "RPL$OOS223PURCHNOTICELOTINFO" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$OPERTYPE" AFTER INSERT OR UPDATE OR DELETE ON OPERTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 16;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$OPERTYPE" AFTER INSERT OR UPDATE OR DELETE ON OPERTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 16;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37916,8 +38481,11 @@ ALTER TRIGGER "RPL$OPERTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ORDERDOC" AFTER INSERT OR UPDATE OR DELETE ON ORDERDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 171;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, old.DOCUMENTCLASS_ID, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, new.DOCUMENTCLASS_ID, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)and (new.DOCUMENTCLASS_ID=old.DOCUMENTCLASS_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, old.DOCUMENTCLASS_ID, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ORDERDOC" AFTER INSERT OR UPDATE OR DELETE ON ORDERDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 171;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, old.DOCUMENTCLASS_ID, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, new.DOCUMENTCLASS_ID, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)and (new.DOCUMENTCLASS_ID=old.DOCUMENTCLASS_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, old.DOCUMENTCLASS_ID, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37928,8 +38496,11 @@ ALTER TRIGGER "RPL$ORDERDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ORDERSUMMARY" AFTER INSERT OR UPDATE OR DELETE ON ORDERSUMMARY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 173;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ORDERSUMMARY" AFTER INSERT OR UPDATE OR DELETE ON ORDERSUMMARY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 173;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37940,8 +38511,11 @@ ALTER TRIGGER "RPL$ORDERSUMMARY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ORG" AFTER INSERT OR UPDATE OR DELETE ON ORG /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 33;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.ISCONTRACTOR, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.ISCONTRACTOR, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.ISCONTRACTOR=old.ISCONTRACTOR)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.ISCONTRACTOR, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ORG" AFTER INSERT OR UPDATE OR DELETE ON ORG /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 33;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.ISCONTRACTOR, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.ISCONTRACTOR, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.ISCONTRACTOR=old.ISCONTRACTOR)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.ISCONTRACTOR, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37952,8 +38526,11 @@ ALTER TRIGGER "RPL$ORG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ORGACCOUNT" AFTER INSERT OR UPDATE OR DELETE ON ORGACCOUNT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 38;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.ISCONTRACTOR, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.ISCONTRACTOR, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.ISCONTRACTOR=old.ISCONTRACTOR)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.ISCONTRACTOR, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ORGACCOUNT" AFTER INSERT OR UPDATE OR DELETE ON ORGACCOUNT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 38;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.ISCONTRACTOR, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.ISCONTRACTOR, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.ISCONTRACTOR=old.ISCONTRACTOR)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.ISCONTRACTOR, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37964,8 +38541,11 @@ ALTER TRIGGER "RPL$ORGACCOUNT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ORGACCTYPE" AFTER INSERT OR UPDATE OR DELETE ON ORGACCTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 37;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ORGACCTYPE" AFTER INSERT OR UPDATE OR DELETE ON ORGACCTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 37;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37976,8 +38556,11 @@ ALTER TRIGGER "RPL$ORGACCTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ORGADDKPP" AFTER INSERT OR UPDATE OR DELETE ON ORGADDKPP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 391;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ORGADDKPP" AFTER INSERT OR UPDATE OR DELETE ON ORGADDKPP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 391;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -37988,8 +38571,11 @@ ALTER TRIGGER "RPL$ORGADDKPP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ORGCONCCONT" AFTER INSERT OR UPDATE OR DELETE ON ORGCONCCONT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 152;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ORGCONCCONT" AFTER INSERT OR UPDATE OR DELETE ON ORGCONCCONT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 152;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38000,8 +38586,11 @@ ALTER TRIGGER "RPL$ORGCONCCONT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ORGETP" AFTER INSERT OR UPDATE OR DELETE ON ORGETP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 196;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ORGETP" AFTER INSERT OR UPDATE OR DELETE ON ORGETP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 196;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38012,8 +38601,11 @@ ALTER TRIGGER "RPL$ORGETP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ORGFORM" AFTER INSERT OR UPDATE OR DELETE ON ORGFORM /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 150;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ORGFORM" AFTER INSERT OR UPDATE OR DELETE ON ORGFORM /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 150;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38024,8 +38616,11 @@ ALTER TRIGGER "RPL$ORGFORM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ORGOOS223FZUSER" AFTER INSERT OR UPDATE OR DELETE ON ORGOOS223FZUSER /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 321;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ORGOOS223FZUSER" AFTER INSERT OR UPDATE OR DELETE ON ORGOOS223FZUSER /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 321;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38036,8 +38631,11 @@ ALTER TRIGGER "RPL$ORGOOS223FZUSER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ORGROLE" AFTER INSERT OR UPDATE OR DELETE ON ORGROLE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 35;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ORGROLE" AFTER INSERT OR UPDATE OR DELETE ON ORGROLE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 35;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38048,8 +38646,11 @@ ALTER TRIGGER "RPL$ORGROLE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ORGSTATUS" AFTER INSERT OR UPDATE OR DELETE ON ORGSTATUS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 143;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ORGSTATUS" AFTER INSERT OR UPDATE OR DELETE ON ORGSTATUS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 143;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38060,8 +38661,11 @@ ALTER TRIGGER "RPL$ORGSTATUS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ORGUNFAIR" AFTER INSERT OR UPDATE OR DELETE ON ORGUNFAIR /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 144;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ORGUNFAIR" AFTER INSERT OR UPDATE OR DELETE ON ORGUNFAIR /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 144;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38072,8 +38676,11 @@ ALTER TRIGGER "RPL$ORGUNFAIR" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PACKTYPE" AFTER INSERT OR UPDATE OR DELETE ON PACKTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 139;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PACKTYPE" AFTER INSERT OR UPDATE OR DELETE ON PACKTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 139;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38084,8 +38691,11 @@ ALTER TRIGGER "RPL$PACKTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PANEL" AFTER INSERT OR UPDATE OR DELETE ON PANEL /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 61;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PANEL" AFTER INSERT OR UPDATE OR DELETE ON PANEL /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 61;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38096,8 +38706,11 @@ ALTER TRIGGER "RPL$PANEL" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PANELITEM" AFTER INSERT OR UPDATE OR DELETE ON PANELITEM /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 62;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.PANEL_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.PANEL_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.PANEL_ID=old.PANEL_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.PANEL_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PANELITEM" AFTER INSERT OR UPDATE OR DELETE ON PANELITEM /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 62;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.PANEL_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.PANEL_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.PANEL_ID=old.PANEL_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.PANEL_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38108,8 +38721,11 @@ ALTER TRIGGER "RPL$PANELITEM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PAYCONDITION" AFTER INSERT OR UPDATE OR DELETE ON PAYCONDITION /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 182;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PAYCONDITION" AFTER INSERT OR UPDATE OR DELETE ON PAYCONDITION /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 182;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38120,8 +38736,11 @@ ALTER TRIGGER "RPL$PAYCONDITION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PERSON" AFTER INSERT OR UPDATE OR DELETE ON PERSON /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 103;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PERSON" AFTER INSERT OR UPDATE OR DELETE ON PERSON /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 103;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38132,8 +38751,11 @@ ALTER TRIGGER "RPL$PERSON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PERSONAL" AFTER INSERT OR UPDATE OR DELETE ON PERSONAL /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 242;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PERSONAL" AFTER INSERT OR UPDATE OR DELETE ON PERSONAL /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 242;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38144,8 +38766,11 @@ ALTER TRIGGER "RPL$PERSONAL" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLACEMENTFEATURE" AFTER INSERT OR UPDATE OR DELETE ON PLACEMENTFEATURE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 163;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLACEMENTFEATURE" AFTER INSERT OR UPDATE OR DELETE ON PLACEMENTFEATURE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 163;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38156,8 +38781,11 @@ ALTER TRIGGER "RPL$PLACEMENTFEATURE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLACEMENTFEATUREPM" AFTER INSERT OR UPDATE OR DELETE ON PLACEMENTFEATUREPM /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 164;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLACEMENTFEATUREPM" AFTER INSERT OR UPDATE OR DELETE ON PLACEMENTFEATUREPM /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 164;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38168,8 +38796,11 @@ ALTER TRIGGER "RPL$PLACEMENTFEATUREPM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLACINGWAY" AFTER INSERT OR UPDATE OR DELETE ON PLACINGWAY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 160;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLACINGWAY" AFTER INSERT OR UPDATE OR DELETE ON PLACINGWAY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 160;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38180,8 +38811,11 @@ ALTER TRIGGER "RPL$PLACINGWAY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLANDOC" AFTER INSERT OR UPDATE OR DELETE ON PLANDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 235;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLANDOC" AFTER INSERT OR UPDATE OR DELETE ON PLANDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 235;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38192,8 +38826,11 @@ ALTER TRIGGER "RPL$PLANDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLANPOSITIONCHANGEREASON" AFTER INSERT OR UPDATE OR DELETE ON PLANPOSITIONCHANGEREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 199;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLANPOSITIONCHANGEREASON" AFTER INSERT OR UPDATE OR DELETE ON PLANPOSITIONCHANGEREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 199;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38204,8 +38841,11 @@ ALTER TRIGGER "RPL$PLANPOSITIONCHANGEREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLAN2ARRANGEMENT" AFTER INSERT OR UPDATE OR DELETE ON PLAN2ARRANGEMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 202;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLAN2ARRANGEMENT" AFTER INSERT OR UPDATE OR DELETE ON PLAN2ARRANGEMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 202;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38216,8 +38856,11 @@ ALTER TRIGGER "RPL$PLAN2ARRANGEMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLAN2CHANGEREASON" AFTER INSERT OR UPDATE OR DELETE ON PLAN2CHANGEREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 212;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLAN2CHANGEREASON" AFTER INSERT OR UPDATE OR DELETE ON PLAN2CHANGEREASON /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 212;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38228,8 +38871,11 @@ ALTER TRIGGER "RPL$PLAN2CHANGEREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLAN2DOC" AFTER INSERT OR UPDATE OR DELETE ON PLAN2DOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 200;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLAN2DOC" AFTER INSERT OR UPDATE OR DELETE ON PLAN2DOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 200;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38240,8 +38886,11 @@ ALTER TRIGGER "RPL$PLAN2DOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLAN2GOODS" AFTER INSERT OR UPDATE OR DELETE ON PLAN2GOODS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 201;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLAN2GOODS" AFTER INSERT OR UPDATE OR DELETE ON PLAN2GOODS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 201;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38252,8 +38901,11 @@ ALTER TRIGGER "RPL$PLAN2GOODS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLAN2LEDGER" AFTER INSERT OR UPDATE OR DELETE ON PLAN2LEDGER /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 204;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLAN2LEDGER" AFTER INSERT OR UPDATE OR DELETE ON PLAN2LEDGER /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 204;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38264,8 +38916,11 @@ ALTER TRIGGER "RPL$PLAN2LEDGER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLAN2OOSEXTNUMBER" AFTER INSERT OR UPDATE OR DELETE ON PLAN2OOSEXTNUMBER /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 211;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLAN2OOSEXTNUMBER" AFTER INSERT OR UPDATE OR DELETE ON PLAN2OOSEXTNUMBER /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 211;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38276,8 +38931,11 @@ ALTER TRIGGER "RPL$PLAN2OOSEXTNUMBER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLAN2OOSFEATURE" AFTER INSERT OR UPDATE OR DELETE ON PLAN2OOSFEATURE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 210;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLAN2OOSFEATURE" AFTER INSERT OR UPDATE OR DELETE ON PLAN2OOSFEATURE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 210;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38288,8 +38946,11 @@ ALTER TRIGGER "RPL$PLAN2OOSFEATURE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLAN2OOSKBK" AFTER INSERT OR UPDATE OR DELETE ON PLAN2OOSKBK /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 207;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLAN2OOSKBK" AFTER INSERT OR UPDATE OR DELETE ON PLAN2OOSKBK /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 207;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38300,8 +38961,11 @@ ALTER TRIGGER "RPL$PLAN2OOSKBK" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLAN2OOSKBKYEAR" AFTER INSERT OR UPDATE OR DELETE ON PLAN2OOSKBKYEAR /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 208;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLAN2OOSKBKYEAR" AFTER INSERT OR UPDATE OR DELETE ON PLAN2OOSKBKYEAR /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 208;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38312,8 +38976,11 @@ ALTER TRIGGER "RPL$PLAN2OOSKBKYEAR" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLAN2OOSOKVED" AFTER INSERT OR UPDATE OR DELETE ON PLAN2OOSOKVED /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 206;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLAN2OOSOKVED" AFTER INSERT OR UPDATE OR DELETE ON PLAN2OOSOKVED /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 206;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38324,8 +38991,11 @@ ALTER TRIGGER "RPL$PLAN2OOSOKVED" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLAN2OOSPOSITION" AFTER INSERT OR UPDATE OR DELETE ON PLAN2OOSPOSITION /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 205;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLAN2OOSPOSITION" AFTER INSERT OR UPDATE OR DELETE ON PLAN2OOSPOSITION /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 205;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38336,8 +39006,11 @@ ALTER TRIGGER "RPL$PLAN2OOSPOSITION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLAN2OOSPRODUCT" AFTER INSERT OR UPDATE OR DELETE ON PLAN2OOSPRODUCT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 209;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLAN2OOSPRODUCT" AFTER INSERT OR UPDATE OR DELETE ON PLAN2OOSPRODUCT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 209;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38348,8 +39021,11 @@ ALTER TRIGGER "RPL$PLAN2OOSPRODUCT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLAN3DOC" AFTER INSERT OR UPDATE OR DELETE ON PLAN3DOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 252;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLAN3DOC" AFTER INSERT OR UPDATE OR DELETE ON PLAN3DOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 252;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38360,8 +39036,11 @@ ALTER TRIGGER "RPL$PLAN3DOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PLAN3PURCHASEDOC" AFTER INSERT OR UPDATE OR DELETE ON PLAN3PURCHASEDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 251;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PLAN3PURCHASEDOC" AFTER INSERT OR UPDATE OR DELETE ON PLAN3PURCHASEDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 251;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38372,8 +39051,11 @@ ALTER TRIGGER "RPL$PLAN3PURCHASEDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PREFERENCEGROUP" AFTER INSERT OR UPDATE OR DELETE ON PREFERENCEGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 165;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PREFERENCEGROUP" AFTER INSERT OR UPDATE OR DELETE ON PREFERENCEGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 165;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38384,8 +39066,11 @@ ALTER TRIGGER "RPL$PREFERENCEGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PREFERENCEGROUPFEATURE" AFTER INSERT OR UPDATE OR DELETE ON PREFERENCEGROUPFEATURE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 166;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PREFERENCEGROUPFEATURE" AFTER INSERT OR UPDATE OR DELETE ON PREFERENCEGROUPFEATURE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 166;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38396,8 +39081,11 @@ ALTER TRIGGER "RPL$PREFERENCEGROUPFEATURE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PROCTREE" AFTER INSERT OR UPDATE OR DELETE ON PROCTREE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 26;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PROCTREE" AFTER INSERT OR UPDATE OR DELETE ON PROCTREE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 26;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38408,8 +39096,11 @@ ALTER TRIGGER "RPL$PROCTREE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PROCUREMENT" AFTER INSERT OR UPDATE OR DELETE ON PROCUREMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 401;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PROCUREMENT" AFTER INSERT OR UPDATE OR DELETE ON PROCUREMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 401;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38420,8 +39111,11 @@ ALTER TRIGGER "RPL$PROCUREMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PROPTYPE" AFTER INSERT OR UPDATE OR DELETE ON PROPTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 131;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PROPTYPE" AFTER INSERT OR UPDATE OR DELETE ON PROPTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 131;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38432,8 +39126,11 @@ ALTER TRIGGER "RPL$PROPTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PURCHASECARRY" AFTER INSERT OR UPDATE OR DELETE ON PURCHASECARRY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 237;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PURCHASECARRY" AFTER INSERT OR UPDATE OR DELETE ON PURCHASECARRY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 237;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38444,8 +39141,11 @@ ALTER TRIGGER "RPL$PURCHASECARRY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PURCHASEMETHOD" AFTER INSERT OR UPDATE OR DELETE ON PURCHASEMETHOD /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 361;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PURCHASEMETHOD" AFTER INSERT OR UPDATE OR DELETE ON PURCHASEMETHOD /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 361;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38456,8 +39156,11 @@ ALTER TRIGGER "RPL$PURCHASEMETHOD" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PURCHASEMODE" AFTER INSERT OR UPDATE OR DELETE ON PURCHASEMODE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 159;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PURCHASEMODE" AFTER INSERT OR UPDATE OR DELETE ON PURCHASEMODE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 159;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38468,8 +39171,11 @@ ALTER TRIGGER "RPL$PURCHASEMODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PURCHASEPLAN" AFTER INSERT OR UPDATE OR DELETE ON PURCHASEPLAN /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 236;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PURCHASEPLAN" AFTER INSERT OR UPDATE OR DELETE ON PURCHASEPLAN /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 236;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38480,8 +39186,11 @@ ALTER TRIGGER "RPL$PURCHASEPLAN" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$PURCHASEPLANDOC" AFTER INSERT OR UPDATE OR DELETE ON PURCHASEPLANDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 234;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$PURCHASEPLANDOC" AFTER INSERT OR UPDATE OR DELETE ON PURCHASEPLANDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 234;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38492,8 +39201,11 @@ ALTER TRIGGER "RPL$PURCHASEPLANDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$QUALREQ" AFTER INSERT OR UPDATE OR DELETE ON QUALREQ /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 246;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$QUALREQ" AFTER INSERT OR UPDATE OR DELETE ON QUALREQ /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 246;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38504,8 +39216,11 @@ ALTER TRIGGER "RPL$QUALREQ" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$RECOILDOC" AFTER INSERT OR UPDATE OR DELETE ON RECOILDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 238;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$RECOILDOC" AFTER INSERT OR UPDATE OR DELETE ON RECOILDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 238;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38516,8 +39231,11 @@ ALTER TRIGGER "RPL$RECOILDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REFATTACH" AFTER INSERT OR UPDATE OR DELETE ON REFATTACH /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 253;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REFATTACH" AFTER INSERT OR UPDATE OR DELETE ON REFATTACH /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 253;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38528,8 +39246,11 @@ ALTER TRIGGER "RPL$REFATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REFERENCECLASS" AFTER INSERT OR UPDATE OR DELETE ON REFERENCECLASS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 48;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REFERENCECLASS" AFTER INSERT OR UPDATE OR DELETE ON REFERENCECLASS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 48;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38540,8 +39261,11 @@ ALTER TRIGGER "RPL$REFERENCECLASS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REFINANCINGRATE" AFTER INSERT OR UPDATE OR DELETE ON REFINANCINGRATE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 216;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REFINANCINGRATE" AFTER INSERT OR UPDATE OR DELETE ON REFINANCINGRATE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 216;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38552,8 +39276,11 @@ ALTER TRIGGER "RPL$REFINANCINGRATE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REFUSALFACTFOUNDATION" AFTER INSERT OR UPDATE OR DELETE ON REFUSALFACTFOUNDATION /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 181;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REFUSALFACTFOUNDATION" AFTER INSERT OR UPDATE OR DELETE ON REFUSALFACTFOUNDATION /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 181;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38564,8 +39291,11 @@ ALTER TRIGGER "RPL$REFUSALFACTFOUNDATION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REPDOCUMENT" AFTER INSERT OR UPDATE OR DELETE ON REPDOCUMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 187;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REPDOCUMENT" AFTER INSERT OR UPDATE OR DELETE ON REPDOCUMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 187;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38576,8 +39306,11 @@ ALTER TRIGGER "RPL$REPDOCUMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REPFIELD" AFTER INSERT OR UPDATE OR DELETE ON REPFIELD /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 57;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REPFIELD" AFTER INSERT OR UPDATE OR DELETE ON REPFIELD /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 57;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38588,8 +39321,11 @@ ALTER TRIGGER "RPL$REPFIELD" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REPFORM" AFTER INSERT OR UPDATE OR DELETE ON REPFORM /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 56;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REPFORM" AFTER INSERT OR UPDATE OR DELETE ON REPFORM /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 56;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38600,8 +39336,11 @@ ALTER TRIGGER "RPL$REPFORM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REPFRAGMENT" AFTER INSERT OR UPDATE OR DELETE ON REPFRAGMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 186;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REPFRAGMENT" AFTER INSERT OR UPDATE OR DELETE ON REPFRAGMENT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 186;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38612,8 +39351,11 @@ ALTER TRIGGER "RPL$REPFRAGMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REPFRAGMENTCHILD" AFTER INSERT OR UPDATE OR DELETE ON REPFRAGMENTCHILD /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 188;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REPFRAGMENTCHILD" AFTER INSERT OR UPDATE OR DELETE ON REPFRAGMENTCHILD /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 188;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38624,8 +39366,11 @@ ALTER TRIGGER "RPL$REPFRAGMENTCHILD" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REPORT" AFTER INSERT OR UPDATE OR DELETE ON REPORT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 86;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REPORT" AFTER INSERT OR UPDATE OR DELETE ON REPORT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 86;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38636,8 +39381,11 @@ ALTER TRIGGER "RPL$REPORT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REPPROFILE" AFTER INSERT OR UPDATE OR DELETE ON REPPROFILE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 64;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REPPROFILE" AFTER INSERT OR UPDATE OR DELETE ON REPPROFILE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 64;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38648,8 +39396,11 @@ ALTER TRIGGER "RPL$REPPROFILE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REPSOURCE" AFTER INSERT OR UPDATE OR DELETE ON REPSOURCE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 185;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REPSOURCE" AFTER INSERT OR UPDATE OR DELETE ON REPSOURCE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 185;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38660,8 +39411,11 @@ ALTER TRIGGER "RPL$REPSOURCE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REPTEMPLATEATTACH" AFTER INSERT OR UPDATE OR DELETE ON REPTEMPLATEATTACH /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 189;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REPTEMPLATEATTACH" AFTER INSERT OR UPDATE OR DELETE ON REPTEMPLATEATTACH /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 189;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38672,8 +39426,11 @@ ALTER TRIGGER "RPL$REPTEMPLATEATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REQUESTDOC" AFTER INSERT OR UPDATE OR DELETE ON REQUESTDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 161;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REQUESTDOC" AFTER INSERT OR UPDATE OR DELETE ON REQUESTDOC /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 161;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.BUDGET_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.BUDGET_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.BUDGET_ID=old.BUDGET_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.BUDGET_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38684,8 +39441,11 @@ ALTER TRIGGER "RPL$REQUESTDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REQUIREMENTTYPE" AFTER INSERT OR UPDATE OR DELETE ON REQUIREMENTTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 306;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REQUIREMENTTYPE" AFTER INSERT OR UPDATE OR DELETE ON REQUIREMENTTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 306;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38696,8 +39456,11 @@ ALTER TRIGGER "RPL$REQUIREMENTTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$REQUIREMENTTYPEPM" AFTER INSERT OR UPDATE OR DELETE ON REQUIREMENTTYPEPM /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 307;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$REQUIREMENTTYPEPM" AFTER INSERT OR UPDATE OR DELETE ON REQUIREMENTTYPEPM /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 307;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38708,8 +39471,11 @@ ALTER TRIGGER "RPL$REQUIREMENTTYPEPM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$RESERVEDBUDGETLINE" AFTER INSERT OR UPDATE OR DELETE ON RESERVEDBUDGETLINE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 172;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$RESERVEDBUDGETLINE" AFTER INSERT OR UPDATE OR DELETE ON RESERVEDBUDGETLINE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 172;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38720,8 +39486,11 @@ ALTER TRIGGER "RPL$RESERVEDBUDGETLINE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$RESPONSIBILITY" AFTER INSERT OR UPDATE OR DELETE ON RESPONSIBILITY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 245;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$RESPONSIBILITY" AFTER INSERT OR UPDATE OR DELETE ON RESPONSIBILITY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 245;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38732,8 +39501,11 @@ ALTER TRIGGER "RPL$RESPONSIBILITY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$RNP" AFTER INSERT OR UPDATE OR DELETE ON RNP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 153;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$RNP" AFTER INSERT OR UPDATE OR DELETE ON RNP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 153;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38744,8 +39516,11 @@ ALTER TRIGGER "RPL$RNP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$ROLEREGISTER" AFTER INSERT OR UPDATE OR DELETE ON ROLEREGISTER /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 89;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$ROLEREGISTER" AFTER INSERT OR UPDATE OR DELETE ON ROLEREGISTER /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 89;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38756,8 +39531,11 @@ ALTER TRIGGER "RPL$ROLEREGISTER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$RPL" AFTER INSERT OR UPDATE OR DELETE ON RPL /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 308;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$RPL" AFTER INSERT OR UPDATE OR DELETE ON RPL /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 308;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38768,8 +39546,11 @@ ALTER TRIGGER "RPL$RPL" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$RPLOBJECT" AFTER INSERT OR UPDATE OR DELETE ON RPLOBJECT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 32;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$RPLOBJECT" AFTER INSERT OR UPDATE OR DELETE ON RPLOBJECT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 32;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38780,8 +39561,11 @@ ALTER TRIGGER "RPL$RPLOBJECT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$RPLRULE" AFTER INSERT OR UPDATE OR DELETE ON RPLRULE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 3;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$RPLRULE" AFTER INSERT OR UPDATE OR DELETE ON RPLRULE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 3;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38792,8 +39576,11 @@ ALTER TRIGGER "RPL$RPLRULE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$RPLSITE" AFTER INSERT OR UPDATE OR DELETE ON RPLSITE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 4;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$RPLSITE" AFTER INSERT OR UPDATE OR DELETE ON RPLSITE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 4;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38804,8 +39591,11 @@ ALTER TRIGGER "RPL$RPLSITE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$RPLTABLE" AFTER INSERT OR UPDATE OR DELETE ON RPLTABLE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 31;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$RPLTABLE" AFTER INSERT OR UPDATE OR DELETE ON RPLTABLE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 31;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38816,8 +39606,11 @@ ALTER TRIGGER "RPL$RPLTABLE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$RPLTABLEPLUGIN" AFTER INSERT OR UPDATE OR DELETE ON RPLTABLEPLUGIN /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 1;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$RPLTABLEPLUGIN" AFTER INSERT OR UPDATE OR DELETE ON RPLTABLEPLUGIN /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 1;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38828,8 +39621,11 @@ ALTER TRIGGER "RPL$RPLTABLEPLUGIN" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$RULEREQUISITE" AFTER INSERT OR UPDATE OR DELETE ON RULEREQUISITE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 109;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$RULEREQUISITE" AFTER INSERT OR UPDATE OR DELETE ON RULEREQUISITE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 109;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38840,8 +39636,11 @@ ALTER TRIGGER "RPL$RULEREQUISITE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$RULESCRIPT" AFTER INSERT OR UPDATE OR DELETE ON RULESCRIPT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 111;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$RULESCRIPT" AFTER INSERT OR UPDATE OR DELETE ON RULESCRIPT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 111;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38852,8 +39651,11 @@ ALTER TRIGGER "RPL$RULESCRIPT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SCHEXPDOCS" AFTER INSERT OR UPDATE OR DELETE ON SCHEXPDOCS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 76;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SCHEXPDOCS" AFTER INSERT OR UPDATE OR DELETE ON SCHEXPDOCS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 76;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38864,8 +39666,11 @@ ALTER TRIGGER "RPL$SCHEXPDOCS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SCHPLAN" AFTER INSERT OR UPDATE OR DELETE ON SCHPLAN /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 51;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SCHPLAN" AFTER INSERT OR UPDATE OR DELETE ON SCHPLAN /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 51;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38876,8 +39681,11 @@ ALTER TRIGGER "RPL$SCHPLAN" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SCHTASK" AFTER INSERT OR UPDATE OR DELETE ON SCHTASK /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 50;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SCHTASK" AFTER INSERT OR UPDATE OR DELETE ON SCHTASK /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 50;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38888,8 +39696,11 @@ ALTER TRIGGER "RPL$SCHTASK" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SERVERACTION" AFTER INSERT OR UPDATE OR DELETE ON SERVERACTION /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 11;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SERVERACTION" AFTER INSERT OR UPDATE OR DELETE ON SERVERACTION /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 11;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38900,8 +39711,11 @@ ALTER TRIGGER "RPL$SERVERACTION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SERVERERROR" AFTER INSERT OR UPDATE OR DELETE ON SERVERERROR /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 12;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SERVERERROR" AFTER INSERT OR UPDATE OR DELETE ON SERVERERROR /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 12;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38912,8 +39726,11 @@ ALTER TRIGGER "RPL$SERVERERROR" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SERVERPROCESSOR" AFTER INSERT OR UPDATE OR DELETE ON SERVERPROCESSOR /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 10;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SERVERPROCESSOR" AFTER INSERT OR UPDATE OR DELETE ON SERVERPROCESSOR /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 10;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38924,8 +39741,11 @@ ALTER TRIGGER "RPL$SERVERPROCESSOR" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SERVERPROVIDER" AFTER INSERT OR UPDATE OR DELETE ON SERVERPROVIDER /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 9;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SERVERPROVIDER" AFTER INSERT OR UPDATE OR DELETE ON SERVERPROVIDER /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 9;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38936,8 +39756,11 @@ ALTER TRIGGER "RPL$SERVERPROVIDER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SIGNEXPORTLOG" AFTER INSERT OR UPDATE OR DELETE ON SIGNEXPORTLOG /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 75;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SIGNEXPORTLOG" AFTER INSERT OR UPDATE OR DELETE ON SIGNEXPORTLOG /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 75;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38948,8 +39771,11 @@ ALTER TRIGGER "RPL$SIGNEXPORTLOG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SIGNFORMAT" AFTER INSERT OR UPDATE OR DELETE ON SIGNFORMAT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 260;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SIGNFORMAT" AFTER INSERT OR UPDATE OR DELETE ON SIGNFORMAT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 260;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38960,8 +39786,11 @@ ALTER TRIGGER "RPL$SIGNFORMAT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SIGNTYPE" AFTER INSERT OR UPDATE OR DELETE ON SIGNTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 261;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SIGNTYPE" AFTER INSERT OR UPDATE OR DELETE ON SIGNTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 261;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38972,8 +39801,11 @@ ALTER TRIGGER "RPL$SIGNTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$STATISTICSSOURCE" AFTER INSERT OR UPDATE OR DELETE ON STATISTICSSOURCE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 190;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$STATISTICSSOURCE" AFTER INSERT OR UPDATE OR DELETE ON STATISTICSSOURCE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 190;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38984,8 +39816,11 @@ ALTER TRIGGER "RPL$STATISTICSSOURCE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$STOREDDOCUMENTS" AFTER INSERT OR UPDATE OR DELETE ON STOREDDOCUMENTS /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 227;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$STOREDDOCUMENTS" AFTER INSERT OR UPDATE OR DELETE ON STOREDDOCUMENTS /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 227;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -38996,8 +39831,11 @@ ALTER TRIGGER "RPL$STOREDDOCUMENTS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SUPPORTCRYPTOLIB" AFTER INSERT OR UPDATE OR DELETE ON SUPPORTCRYPTOLIB /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 262;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SUPPORTCRYPTOLIB" AFTER INSERT OR UPDATE OR DELETE ON SUPPORTCRYPTOLIB /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 262;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39008,8 +39846,11 @@ ALTER TRIGGER "RPL$SUPPORTCRYPTOLIB" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SUPPORTCRYPTOLIBFORMAT" AFTER INSERT OR UPDATE OR DELETE ON SUPPORTCRYPTOLIBFORMAT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 264;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SUPPORTCRYPTOLIBFORMAT" AFTER INSERT OR UPDATE OR DELETE ON SUPPORTCRYPTOLIBFORMAT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 264;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39020,8 +39861,11 @@ ALTER TRIGGER "RPL$SUPPORTCRYPTOLIBFORMAT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SUPPORTCRYPTOLIBPARAM" AFTER INSERT OR UPDATE OR DELETE ON SUPPORTCRYPTOLIBPARAM /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 263;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SUPPORTCRYPTOLIBPARAM" AFTER INSERT OR UPDATE OR DELETE ON SUPPORTCRYPTOLIBPARAM /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 263;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39032,8 +39876,11 @@ ALTER TRIGGER "RPL$SUPPORTCRYPTOLIBPARAM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SYSEVENT" AFTER INSERT OR UPDATE OR DELETE ON SYSEVENT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 84;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SYSEVENT" AFTER INSERT OR UPDATE OR DELETE ON SYSEVENT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 84;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39044,8 +39891,11 @@ ALTER TRIGGER "RPL$SYSEVENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SYSPARAM" AFTER INSERT OR UPDATE OR DELETE ON SYSPARAM /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 8;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SYSPARAM" AFTER INSERT OR UPDATE OR DELETE ON SYSPARAM /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 8;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39056,8 +39906,11 @@ ALTER TRIGGER "RPL$SYSPARAM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SYSRIGHT" AFTER INSERT OR UPDATE OR DELETE ON SYSRIGHT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 46;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SYSRIGHT" AFTER INSERT OR UPDATE OR DELETE ON SYSRIGHT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 46;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39068,8 +39921,11 @@ ALTER TRIGGER "RPL$SYSRIGHT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$SYSUSER" AFTER INSERT OR UPDATE OR DELETE ON SYSUSER /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 7;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$SYSUSER" AFTER INSERT OR UPDATE OR DELETE ON SYSUSER /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 7;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39080,8 +39936,11 @@ ALTER TRIGGER "RPL$SYSUSER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$TASKJOURNAL" AFTER INSERT OR UPDATE OR DELETE ON TASKJOURNAL /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 44;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$TASKJOURNAL" AFTER INSERT OR UPDATE OR DELETE ON TASKJOURNAL /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 44;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39092,8 +39951,11 @@ ALTER TRIGGER "RPL$TASKJOURNAL" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$TENDER" AFTER INSERT OR UPDATE OR DELETE ON TENDER /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 231;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$TENDER" AFTER INSERT OR UPDATE OR DELETE ON TENDER /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 231;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39104,8 +39966,11 @@ ALTER TRIGGER "RPL$TENDER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$TENDERCRITERION" AFTER INSERT OR UPDATE OR DELETE ON TENDERCRITERION /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 228;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$TENDERCRITERION" AFTER INSERT OR UPDATE OR DELETE ON TENDERCRITERION /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 228;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39116,8 +39981,11 @@ ALTER TRIGGER "RPL$TENDERCRITERION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$TENDERCRITERIONCHILD" AFTER INSERT OR UPDATE OR DELETE ON TENDERCRITERIONCHILD /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 230;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$TENDERCRITERIONCHILD" AFTER INSERT OR UPDATE OR DELETE ON TENDERCRITERIONCHILD /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 230;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39128,8 +39996,11 @@ ALTER TRIGGER "RPL$TENDERCRITERIONCHILD" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$TENDERCRITERIONPM" AFTER INSERT OR UPDATE OR DELETE ON TENDERCRITERIONPM /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 229;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$TENDERCRITERIONPM" AFTER INSERT OR UPDATE OR DELETE ON TENDERCRITERIONPM /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 229;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39140,8 +40011,11 @@ ALTER TRIGGER "RPL$TENDERCRITERIONPM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$TENDERLINE" AFTER INSERT OR UPDATE OR DELETE ON TENDERLINE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 232;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$TENDERLINE" AFTER INSERT OR UPDATE OR DELETE ON TENDERLINE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 232;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39152,8 +40026,11 @@ ALTER TRIGGER "RPL$TENDERLINE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$TENDERLINECOMM" AFTER INSERT OR UPDATE OR DELETE ON TENDERLINECOMM /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 233;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$TENDERLINECOMM" AFTER INSERT OR UPDATE OR DELETE ON TENDERLINECOMM /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 233;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39164,8 +40041,11 @@ ALTER TRIGGER "RPL$TENDERLINECOMM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$TERRITORY" AFTER INSERT OR UPDATE OR DELETE ON TERRITORY /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 147;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$TERRITORY" AFTER INSERT OR UPDATE OR DELETE ON TERRITORY /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 147;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39176,8 +40056,11 @@ ALTER TRIGGER "RPL$TERRITORY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$TERTYPE" AFTER INSERT OR UPDATE OR DELETE ON TERTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 146;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$TERTYPE" AFTER INSERT OR UPDATE OR DELETE ON TERTYPE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 146;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39188,8 +40071,11 @@ ALTER TRIGGER "RPL$TERTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$TYPEDOCREQGROUP" AFTER INSERT OR UPDATE OR DELETE ON TYPEDOCREQGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 248;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$TYPEDOCREQGROUP" AFTER INSERT OR UPDATE OR DELETE ON TYPEDOCREQGROUP /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 248;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39200,8 +40086,11 @@ ALTER TRIGGER "RPL$TYPEDOCREQGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$TYPEREQCRIT" AFTER INSERT OR UPDATE OR DELETE ON TYPEREQCRIT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 249;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$TYPEREQCRIT" AFTER INSERT OR UPDATE OR DELETE ON TYPEREQCRIT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 249;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39212,8 +40101,11 @@ ALTER TRIGGER "RPL$TYPEREQCRIT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$UNIT" AFTER INSERT OR UPDATE OR DELETE ON UNIT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 130;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$UNIT" AFTER INSERT OR UPDATE OR DELETE ON UNIT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 130;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39224,8 +40116,11 @@ ALTER TRIGGER "RPL$UNIT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$UPDPACKAGE" AFTER INSERT OR UPDATE OR DELETE ON UPDPACKAGE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 85;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$UPDPACKAGE" AFTER INSERT OR UPDATE OR DELETE ON UPDPACKAGE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 85;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39236,8 +40131,11 @@ ALTER TRIGGER "RPL$UPDPACKAGE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$USERBUDGET" AFTER INSERT OR UPDATE OR DELETE ON USERBUDGET /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 81;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$USERBUDGET" AFTER INSERT OR UPDATE OR DELETE ON USERBUDGET /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 81;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39248,8 +40146,11 @@ ALTER TRIGGER "RPL$USERBUDGET" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$USERCERT" AFTER INSERT OR UPDATE OR DELETE ON USERCERT /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 74;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.SYSUSER_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.SYSUSER_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.SYSUSER_ID=old.SYSUSER_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.SYSUSER_ID, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$USERCERT" AFTER INSERT OR UPDATE OR DELETE ON USERCERT /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 74;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, old.SYSUSER_ID, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, new.SYSUSER_ID, 0, 0, 0, 0);    if ((updating and not(1=1 and (new.SYSUSER_ID=old.SYSUSER_ID)))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, old.SYSUSER_ID, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39260,8 +40161,11 @@ ALTER TRIGGER "RPL$USERCERT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$USERORG" AFTER INSERT OR UPDATE OR DELETE ON USERORG /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 6;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$USERORG" AFTER INSERT OR UPDATE OR DELETE ON USERORG /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 6;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39272,8 +40176,11 @@ ALTER TRIGGER "RPL$USERORG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$USERROLE" AFTER INSERT OR UPDATE OR DELETE ON USERROLE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 45;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$USERROLE" AFTER INSERT OR UPDATE OR DELETE ON USERROLE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 45;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39284,8 +40191,11 @@ ALTER TRIGGER "RPL$USERROLE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$USERSESSION" AFTER INSERT OR UPDATE OR DELETE ON USERSESSION /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 42;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$USERSESSION" AFTER INSERT OR UPDATE OR DELETE ON USERSESSION /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 42;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39296,8 +40206,11 @@ ALTER TRIGGER "RPL$USERSESSION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$USESCRYPTOLIB" AFTER INSERT OR UPDATE OR DELETE ON USESCRYPTOLIB /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 265;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$USESCRYPTOLIB" AFTER INSERT OR UPDATE OR DELETE ON USESCRYPTOLIB /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 265;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39308,8 +40221,11 @@ ALTER TRIGGER "RPL$USESCRYPTOLIB" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$USESCRYPTOLIBPARAM" AFTER INSERT OR UPDATE OR DELETE ON USESCRYPTOLIBPARAM /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 266;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$USESCRYPTOLIBPARAM" AFTER INSERT OR UPDATE OR DELETE ON USESCRYPTOLIBPARAM /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 266;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39320,8 +40236,11 @@ ALTER TRIGGER "RPL$USESCRYPTOLIBPARAM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$WEBSTATCACHE" AFTER INSERT OR UPDATE OR DELETE ON WEBSTATCACHE /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 191;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$WEBSTATCACHE" AFTER INSERT OR UPDATE OR DELETE ON WEBSTATCACHE /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 191;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39332,8 +40251,11 @@ ALTER TRIGGER "RPL$WEBSTATCACHE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "RPL$WEBSTATCACHEVAL" AFTER INSERT OR UPDATE OR DELETE ON WEBSTATCACHEVAL /*REFERENCING NEW AS NEW OLD AS OLD*/  AS
- DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4); begin   ltable_id = 192;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);        end   end^
+CREATE OR ALTER TRIGGER "RPL$WEBSTATCACHEVAL" AFTER INSERT OR UPDATE OR DELETE ON WEBSTATCACHEVAL /*REFERENCING NEW AS NEW OLD AS OLD*/  
+AS
+ DECLARE ltable_id numeric(15); DECLARE mutation_index numeric(18, 4);
+  BEGIN   ltable_id = 192;  if ((deleting)) then     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, old.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);  else   begin     insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )       values (:ltable_id, new.ID, current_transaction_id,999999999999999, 0, 0, 0, 0, 0);    if ((updating and not(1=1 ))) then       insert into RPLLOG (rpltable_id, record_id, transaction_id,generation, FIELD1_VALUE, FIELD2_VALUE, FIELD3_VALUE, FIELD4_VALUE, FIELD5_VALUE )         values (:ltable_id, old.ID, current_transaction_id, 999999999999999, 0, 0, 0, 0, 0);   end
+  END^
 
 SET TERM ; ^
 
@@ -39345,16 +40267,16 @@ ALTER TRIGGER "RPL$WEBSTATCACHEVAL" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "UPD_CASC_GOODSPROP_SEQORDER" 
-  after update on groupprop
-  
-   AS
-begin
+  after update on groupprop  
+AS
+
+  BEGIN
 IF (new.seqorder<>old.seqorder or new.group_id<>old.group_id) THEN
-  execute STATEMENT 'update goodsprop set group_id=' || new.group_id 
+  execute STATEMENT ('update goodsprop set group_id=' || new.group_id
     || ', seqorder=' || new.seqorder
     || ' where group_id=' || old.group_id 
-    || ' and seqorder=' || old.seqorder;
-end^
+    || ' and seqorder=' || old.seqorder);
+  END^
 
 SET TERM ; ^
 
@@ -39366,14 +40288,15 @@ ALTER TRIGGER "UPD_CASC_GOODSPROP_SEQORDER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "UPD_DOCATTACHEX" AFTER UPDATE ON DOCATTACHEX 
+CREATE OR ALTER TRIGGER "UPD_DOCATTACHEX" AFTER UPDATE ON DOCATTACHEX  
 AS
-BEGIN
+
+ BEGIN
   update document d set d.attach_cnt = d.attach_cnt + 1 
     where d.id=new.document_id;
   update document d set d.attach_cnt = d.attach_cnt - 1 
     where d.id=old.document_id;
-END^
+ END^
 
 SET TERM ; ^
 
@@ -39386,17 +40309,17 @@ ALTER TRIGGER "UPD_DOCATTACHEX" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "UPD_GOODSGROUP_TREE" after update
- on goodsgroup /*referencing old as old new as new*/
- 
+ on goodsgroup /*referencing old as old new as new*/  
 AS
 
  DECLARE vtree varchar(255);
  DECLARE otree varchar(255);
-begin
+ BEGIN
   vtree = '/';
   begin
-    select tree 
-      from goodsgroup_tree where group_id=new.parent_id into :vtree;
+    select tree
+    from goodsgroup_tree where group_id=new.parent_id
+    into :vtree;
   exception
     when no_data_found then
       vtree = '/';
@@ -39404,8 +40327,9 @@ begin
   vtree = :vtree||new.code||'/';
   otree = '/';
   begin
-    select tree 
-      from goodsgroup_tree where group_id=old.parent_id into :otree;
+    select tree
+    from goodsgroup_tree where group_id=old.parent_id
+    into :otree;
   exception
     when no_data_found then
       otree = '/';
@@ -39414,9 +40338,10 @@ begin
   FOR vr IN ( select group_id, SUBSTRING(tree FROM CHAR_LENGTH(:otree)+1) as tree
    from goodsgroup_tree where tree like :otree||'%')
   DO
+  BEGIN
     update goodsgroup_tree set tree = :vtree||vr.tree where group_id = vr.group_id;
-   
-end^
+  END
+ END^
 
 SET TERM ; ^
 
@@ -39429,12 +40354,13 @@ ALTER TRIGGER "UPD_GOODSGROUP_TREE" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "UPD_ISCONTRACTOR_ORG" 
- after update on Org 
+ after update on Org  
 AS
-begin
+
+ BEGIN
   update OrgAccount oa set oa.IsContractor=new.IsContractor
     where oa.ORG_ID=new.ID and oa.IsContractor<>new.IsContractor;
-end^
+ END^
 
 SET TERM ; ^
 
@@ -39451,13 +40377,15 @@ CREATE OR ALTER TRIGGER "UPD_ORGCHILD" AFTER UPDATE
 AS
  
   DECLARE topid numeric(18, 4);
-BEGIN
+ BEGIN
   IF ((new.parent_id IS NOT NULL)) THEN
     IF ((old.parent_id IS NOT NULL)) THEN
       IF ((new.parent_id <> old.parent_id)) THEN
       BEGIN
-        SELECT DISTINCT org_id  FROM orgchild 
-          WHERE org_id NOT IN (SELECT child_id FROM orgchild) INTO :topid;  
+        SELECT DISTINCT org_id
+        FROM orgchild 
+          WHERE org_id NOT IN (SELECT child_id FROM orgchild)
+        INTO :topid;  
         DELETE FROM orgchild 
           WHERE org_id IN (SELECT org_id FROM orgchild WHERE child_id = old.parent_id AND org_id <> :topid)
             AND ((child_id = new.id) OR child_id IN (SELECT child_id FROM orgchild WHERE org_id = new.id));
@@ -39475,14 +40403,11 @@ BEGIN
             UPDATE orgchild SET org_id = new.parent_id WHERE 
               org_id = old.parent_id AND (child_id = new.id OR child_id IN
                 (SELECT child_id FROM orgchild WHERE org_id = new.id));
-           
-         
         INSERT INTO orgchild(org_id, child_id)
           SELECT par.org_id, ch.child_id FROM 
            (SELECT org_id FROM orgchild WHERE child_id = new.parent_id AND org_id <> :topid) par,
            (SELECT child_id FROM orgchild WHERE org_id = new.id UNION SELECT new.id FROM dual) ch;
       END
-       
     ELSE
       IF ((new.parent_id <> new.id)) THEN
       BEGIN
@@ -39491,9 +40416,10 @@ BEGIN
         FOR cur IN (SELECT child_id FROM orgchild
           WHERE org_id = new.id)
         DO
+        BEGIN
           INSERT INTO orgchild(org_id, child_id)
             VALUES (new.parent_id, cur.child_id);
-         
+        END
         FOR cur IN (SELECT org_id FROM orgchild
                     WHERE child_id = new.parent_id)
         DO
@@ -39503,20 +40429,16 @@ BEGIN
           FOR cur1 IN (SELECT child_id FROM orgchild
             WHERE org_id = new.id)
           DO
+          BEGIN
             INSERT INTO orgchild(org_id, child_id)
               VALUES (cur.org_id, cur1.child_id);
-           
+          END
         END
-         
       END
-       
-     
   ELSE
     IF ((old.parent_id IS NOT NULL)) THEN
       DELETE FROM orgchild WHERE org_id = new.id OR child_id = new.id;
-     
-   
-END^
+ END^
 
 SET TERM ; ^
 
@@ -39529,19 +40451,19 @@ ALTER TRIGGER "UPD_ORGCHILD" ACTIVE;
   SET TERM ^ ;
 
 CREATE OR ALTER TRIGGER "UPD_TER_TREE" after update
- on territory /*referencing old as old new as new*/
- 
+ on territory /*referencing old as old new as new*/  
 AS
 
  DECLARE vtree varchar(255);
  DECLARE vpath varchar(512);
  DECLARE otree varchar(255);
  DECLARE opath varchar(512);
-begin
+ BEGIN
   vtree = '/';
   begin
-    select tree, path 
-      from ter_tree where ter_id=new.parent_id into :vtree, :vpath;
+    select tree, path
+    from ter_tree where ter_id=new.parent_id
+    into :vtree, :vpath;
     vpath = :vpath||', '||new.caption;
   exception
     when no_data_found then
@@ -39551,8 +40473,9 @@ begin
   vtree = :vtree||new.code||'/';
   otree = '/';
   begin
-    select tree, path 
-      from ter_tree where ter_id=old.parent_id into :otree, :opath;
+    select tree, path
+    from ter_tree where ter_id=old.parent_id
+    into :otree, :opath;
     opath = :opath||', '||old.caption;
   exception
     when no_data_found then
@@ -39563,9 +40486,10 @@ begin
   FOR vr IN ( select ter_id, SUBSTRING(tree FROM CHAR_LENGTH(:otree)+1) as tree, SUBSTRING(path FROM CHAR_LENGTH(:opath)+1) as path
    from ter_tree where tree like :otree||'%')
   DO
+  BEGIN
     update ter_tree set tree = :vtree||vr.tree, path = :vpath||vr.path where ter_id = vr.ter_id;
-   
-end^
+  END
+ END^
 
 SET TERM ; ^
 
@@ -39577,12 +40501,13 @@ ALTER TRIGGER "UPD_TER_TREE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ABANDONEDREASON" before insert or update on ABANDONEDREASON
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ABANDONEDREASON" before insert or update on ABANDONEDREASON  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39593,12 +40518,13 @@ ALTER TRIGGER "VER_ABANDONEDREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ALTGOODSGROUP" before insert or update on ALTGOODSGROUP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ALTGOODSGROUP" before insert or update on ALTGOODSGROUP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39609,12 +40535,13 @@ ALTER TRIGGER "VER_ALTGOODSGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ALTGOODSGROUPTYPE" before insert or update on ALTGOODSGROUPTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ALTGOODSGROUPTYPE" before insert or update on ALTGOODSGROUPTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39625,12 +40552,13 @@ ALTER TRIGGER "VER_ALTGOODSGROUPTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ANYDATA" before insert or update on ANYDATA
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ANYDATA" before insert or update on ANYDATA  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39641,12 +40569,13 @@ ALTER TRIGGER "VER_ANYDATA" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_APPMODULE" before insert or update on APPMODULE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_APPMODULE" before insert or update on APPMODULE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39657,12 +40586,13 @@ ALTER TRIGGER "VER_APPMODULE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_APPOBJ" before insert or update on APPOBJ
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_APPOBJ" before insert or update on APPOBJ  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39673,12 +40603,13 @@ ALTER TRIGGER "VER_APPOBJ" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_APPOBJPROP" before insert or update on APPOBJPROP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_APPOBJPROP" before insert or update on APPOBJPROP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39689,12 +40620,13 @@ ALTER TRIGGER "VER_APPOBJPROP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_APPOINTMENT" before insert or update on APPOINTMENT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_APPOINTMENT" before insert or update on APPOINTMENT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39705,12 +40637,13 @@ ALTER TRIGGER "VER_APPOINTMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_AUCTIONBID" before insert or update on AUCTIONBID
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_AUCTIONBID" before insert or update on AUCTIONBID  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39721,12 +40654,13 @@ ALTER TRIGGER "VER_AUCTIONBID" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_AUCTIONLOG" before insert or update on AUCTIONLOG
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_AUCTIONLOG" before insert or update on AUCTIONLOG  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39737,12 +40671,13 @@ ALTER TRIGGER "VER_AUCTIONLOG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_BANK" before insert or update on BANK
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_BANK" before insert or update on BANK  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39753,12 +40688,13 @@ ALTER TRIGGER "VER_BANK" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_BANKGUARANTEEDOC" before insert or update on BANKGUARANTEEDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_BANKGUARANTEEDOC" before insert or update on BANKGUARANTEEDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39769,12 +40705,13 @@ ALTER TRIGGER "VER_BANKGUARANTEEDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_BANKGUARANTEEREFDOC" before insert or update on BANKGUARANTEEREFDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_BANKGUARANTEEREFDOC" before insert or update on BANKGUARANTEEREFDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39785,12 +40722,13 @@ ALTER TRIGGER "VER_BANKGUARANTEEREFDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_BANKGUARANTEEREFREASON" before insert or update on BANKGUARANTEEREFREASON
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_BANKGUARANTEEREFREASON" before insert or update on BANKGUARANTEEREFREASON  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39801,12 +40739,13 @@ ALTER TRIGGER "VER_BANKGUARANTEEREFREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_BUDGCODE" before insert or update on BUDGCODE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_BUDGCODE" before insert or update on BUDGCODE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39817,12 +40756,13 @@ ALTER TRIGGER "VER_BUDGCODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_BUDGET" before insert or update on BUDGET
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_BUDGET" before insert or update on BUDGET  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39833,12 +40773,13 @@ ALTER TRIGGER "VER_BUDGET" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_BUDGETLINE" before insert or update on BUDGETLINE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_BUDGETLINE" before insert or update on BUDGETLINE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39849,12 +40790,13 @@ ALTER TRIGGER "VER_BUDGETLINE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_BUDGETSTAGE" before insert or update on BUDGETSTAGE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_BUDGETSTAGE" before insert or update on BUDGETSTAGE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39865,12 +40807,13 @@ ALTER TRIGGER "VER_BUDGETSTAGE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CACHELIST" before insert or update on CACHELIST
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CACHELIST" before insert or update on CACHELIST  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39881,12 +40824,13 @@ ALTER TRIGGER "VER_CACHELIST" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CAVILDOC" before insert or update on CAVILDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CAVILDOC" before insert or update on CAVILDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39897,12 +40841,13 @@ ALTER TRIGGER "VER_CAVILDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CAVILTYPE" before insert or update on CAVILTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CAVILTYPE" before insert or update on CAVILTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39913,12 +40858,13 @@ ALTER TRIGGER "VER_CAVILTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CERTINTERCHANGEREQUEST" before insert or update on CERTINTERCHANGEREQUEST
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CERTINTERCHANGEREQUEST" before insert or update on CERTINTERCHANGEREQUEST  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39929,12 +40875,13 @@ ALTER TRIGGER "VER_CERTINTERCHANGEREQUEST" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CERTREQUEST" before insert or update on CERTREQUEST
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CERTREQUEST" before insert or update on CERTREQUEST  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39945,12 +40892,13 @@ ALTER TRIGGER "VER_CERTREQUEST" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CERTREVOKEREQUEST" before insert or update on CERTREVOKEREQUEST
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CERTREVOKEREQUEST" before insert or update on CERTREVOKEREQUEST  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39961,12 +40909,13 @@ ALTER TRIGGER "VER_CERTREVOKEREQUEST" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CLAIMDOC" before insert or update on CLAIMDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CLAIMDOC" before insert or update on CLAIMDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39977,12 +40926,13 @@ ALTER TRIGGER "VER_CLAIMDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CLAIMPAYFACT" before insert or update on CLAIMPAYFACT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CLAIMPAYFACT" before insert or update on CLAIMPAYFACT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -39993,12 +40943,13 @@ ALTER TRIGGER "VER_CLAIMPAYFACT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CLAIMPENALTYCHANGEDOCINFO" before insert or update on CLAIMPENALTYCHANGEDOCINFO
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CLAIMPENALTYCHANGEDOCINFO" before insert or update on CLAIMPENALTYCHANGEDOCINFO  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40009,12 +40960,13 @@ ALTER TRIGGER "VER_CLAIMPENALTYCHANGEDOCINFO" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CLASSOPER" before insert or update on CLASSOPER
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CLASSOPER" before insert or update on CLASSOPER  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40025,12 +40977,13 @@ ALTER TRIGGER "VER_CLASSOPER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CLIENTOBJECT" before insert or update on CLIENTOBJECT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CLIENTOBJECT" before insert or update on CLIENTOBJECT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40041,12 +40994,13 @@ ALTER TRIGGER "VER_CLIENTOBJECT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CLIENTOBJECTCOMMENTS" before insert or update on CLIENTOBJECTCOMMENTS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CLIENTOBJECTCOMMENTS" before insert or update on CLIENTOBJECTCOMMENTS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40057,12 +41011,13 @@ ALTER TRIGGER "VER_CLIENTOBJECTCOMMENTS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CLNDDAY" before insert or update on CLNDDAY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CLNDDAY" before insert or update on CLNDDAY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40073,12 +41028,13 @@ ALTER TRIGGER "VER_CLNDDAY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CLNDDAYTYPE" before insert or update on CLNDDAYTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CLNDDAYTYPE" before insert or update on CLNDDAYTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40089,12 +41045,13 @@ ALTER TRIGGER "VER_CLNDDAYTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CLNDTYPE" before insert or update on CLNDTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CLNDTYPE" before insert or update on CLNDTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40105,12 +41062,13 @@ ALTER TRIGGER "VER_CLNDTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CODETYPE" before insert or update on CODETYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CODETYPE" before insert or update on CODETYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40121,12 +41079,13 @@ ALTER TRIGGER "VER_CODETYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_COMMEMBER" before insert or update on COMMEMBER
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_COMMEMBER" before insert or update on COMMEMBER  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40137,12 +41096,13 @@ ALTER TRIGGER "VER_COMMEMBER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_COMMISSION" before insert or update on COMMISSION
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_COMMISSION" before insert or update on COMMISSION  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40153,12 +41113,13 @@ ALTER TRIGGER "VER_COMMISSION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_COMPLAINTDOC" before insert or update on COMPLAINTDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_COMPLAINTDOC" before insert or update on COMPLAINTDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40169,12 +41130,13 @@ ALTER TRIGGER "VER_COMPLAINTDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CONFCONCLUSIONCONTRACT" before insert or update on CONFCONCLUSIONCONTRACT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CONFCONCLUSIONCONTRACT" before insert or update on CONFCONCLUSIONCONTRACT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40185,12 +41147,13 @@ ALTER TRIGGER "VER_CONFCONCLUSIONCONTRACT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CONPAYFACT" before insert or update on CONPAYFACT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CONPAYFACT" before insert or update on CONPAYFACT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40201,12 +41164,13 @@ ALTER TRIGGER "VER_CONPAYFACT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CONSOLIDDOC" before insert or update on CONSOLIDDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CONSOLIDDOC" before insert or update on CONSOLIDDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40217,12 +41181,13 @@ ALTER TRIGGER "VER_CONSOLIDDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CONSTRUCTION" before insert or update on CONSTRUCTION
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CONSTRUCTION" before insert or update on CONSTRUCTION  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40233,12 +41198,13 @@ ALTER TRIGGER "VER_CONSTRUCTION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CONTRACTCARDDOC" before insert or update on CONTRACTCARDDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CONTRACTCARDDOC" before insert or update on CONTRACTCARDDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40249,12 +41215,13 @@ ALTER TRIGGER "VER_CONTRACTCARDDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CONTRACTDOC" before insert or update on CONTRACTDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CONTRACTDOC" before insert or update on CONTRACTDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40265,12 +41232,13 @@ ALTER TRIGGER "VER_CONTRACTDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CONTRACTEXECDOC" before insert or update on CONTRACTEXECDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CONTRACTEXECDOC" before insert or update on CONTRACTEXECDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40281,12 +41249,13 @@ ALTER TRIGGER "VER_CONTRACTEXECDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CONTRACTREASON" before insert or update on CONTRACTREASON
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CONTRACTREASON" before insert or update on CONTRACTREASON  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40297,12 +41266,13 @@ ALTER TRIGGER "VER_CONTRACTREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CONTRACTREASON_DOCLINES" before insert or update on CONTRACTREASON_DOCLINES
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CONTRACTREASON_DOCLINES" before insert or update on CONTRACTREASON_DOCLINES  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40313,12 +41283,13 @@ ALTER TRIGGER "VER_CONTRACTREASON_DOCLINES" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CONTRACTTEMPLATEDOC" before insert or update on CONTRACTTEMPLATEDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CONTRACTTEMPLATEDOC" before insert or update on CONTRACTTEMPLATEDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40329,12 +41300,13 @@ ALTER TRIGGER "VER_CONTRACTTEMPLATEDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CONTYPE" before insert or update on CONTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CONTYPE" before insert or update on CONTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40345,12 +41317,13 @@ ALTER TRIGGER "VER_CONTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CONTYPEATTACH" before insert or update on CONTYPEATTACH
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CONTYPEATTACH" before insert or update on CONTYPEATTACH  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40361,12 +41334,13 @@ ALTER TRIGGER "VER_CONTYPEATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_COUNTRY" before insert or update on COUNTRY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_COUNTRY" before insert or update on COUNTRY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40377,12 +41351,13 @@ ALTER TRIGGER "VER_COUNTRY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CRLFILE" before insert or update on CRLFILE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CRLFILE" before insert or update on CRLFILE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40393,12 +41368,13 @@ ALTER TRIGGER "VER_CRLFILE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CRLPOINT" before insert or update on CRLPOINT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CRLPOINT" before insert or update on CRLPOINT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40409,12 +41385,13 @@ ALTER TRIGGER "VER_CRLPOINT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CURHISTORY" before insert or update on CURHISTORY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CURHISTORY" before insert or update on CURHISTORY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40425,12 +41402,13 @@ ALTER TRIGGER "VER_CURHISTORY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_CURRENCY" before insert or update on CURRENCY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_CURRENCY" before insert or update on CURRENCY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40441,12 +41419,13 @@ ALTER TRIGGER "VER_CURRENCY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DATAOBJECTCHANGELOG" before insert or update on DATAOBJECTCHANGELOG
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DATAOBJECTCHANGELOG" before insert or update on DATAOBJECTCHANGELOG  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40457,12 +41436,13 @@ ALTER TRIGGER "VER_DATAOBJECTCHANGELOG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DATASOURCE" before insert or update on DATASOURCE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DATASOURCE" before insert or update on DATASOURCE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40473,12 +41453,13 @@ ALTER TRIGGER "VER_DATASOURCE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DBCONNECT" before insert or update on DBCONNECT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DBCONNECT" before insert or update on DBCONNECT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40489,12 +41470,13 @@ ALTER TRIGGER "VER_DBCONNECT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DBCONSTRAINT" before insert or update on DBCONSTRAINT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DBCONSTRAINT" before insert or update on DBCONSTRAINT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40505,12 +41487,13 @@ ALTER TRIGGER "VER_DBCONSTRAINT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DECREASON" before insert or update on DECREASON
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DECREASON" before insert or update on DECREASON  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40521,12 +41504,13 @@ ALTER TRIGGER "VER_DECREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DELIVERYBASIS" before insert or update on DELIVERYBASIS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DELIVERYBASIS" before insert or update on DELIVERYBASIS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40537,12 +41521,13 @@ ALTER TRIGGER "VER_DELIVERYBASIS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DESCGROUP" before insert or update on DESCGROUP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DESCGROUP" before insert or update on DESCGROUP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40553,12 +41538,13 @@ ALTER TRIGGER "VER_DESCGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DESCRIPTION" before insert or update on DESCRIPTION
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DESCRIPTION" before insert or update on DESCRIPTION  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40569,12 +41555,13 @@ ALTER TRIGGER "VER_DESCRIPTION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DESCRIPTIONCACHE" before insert or update on DESCRIPTIONCACHE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DESCRIPTIONCACHE" before insert or update on DESCRIPTIONCACHE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40585,12 +41572,13 @@ ALTER TRIGGER "VER_DESCRIPTIONCACHE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DEVIATIONFACTFOUNDATION" before insert or update on DEVIATIONFACTFOUNDATION
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DEVIATIONFACTFOUNDATION" before insert or update on DEVIATIONFACTFOUNDATION  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40601,12 +41589,13 @@ ALTER TRIGGER "VER_DEVIATIONFACTFOUNDATION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DIGEST" before insert or update on DIGEST
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DIGEST" before insert or update on DIGEST  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40617,12 +41606,13 @@ ALTER TRIGGER "VER_DIGEST" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DIGESTSIGN" before insert or update on DIGESTSIGN
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DIGESTSIGN" before insert or update on DIGESTSIGN  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40633,12 +41623,13 @@ ALTER TRIGGER "VER_DIGESTSIGN" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DISPSTATUS" before insert or update on DISPSTATUS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DISPSTATUS" before insert or update on DISPSTATUS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40649,12 +41640,13 @@ ALTER TRIGGER "VER_DISPSTATUS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCACTION" before insert or update on DOCACTION
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCACTION" before insert or update on DOCACTION  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40665,35 +41657,29 @@ ALTER TRIGGER "VER_DOCACTION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCATTACH" before insert or update on DOCATTACH
- 
+CREATE OR ALTER TRIGGER "VER_DOCATTACH" before insert or update on DOCATTACH  
 AS
 
   DECLARE TaskJournalId NUMERIC(15,0);
   DECLARE RecordAction NUMERIC(1,0);
-begin
+ BEGIN
  if (inserting) then 
  begin 
    if ((new.version is null or (new.version < 1))) then 
      new.version = 1; 
-   
 end 
 else 
   if ((new.version IS NULL or (new.version <= old.version))) then 
-    new.version = coalesce(old.version, 0) + 1;
-   
-   
+    new.version = coalesce(old.version, 0) + 1; 
   if (inserting) then 
-    RecordAction = 0; 
+    RecordAction = 0;
   else 
-    RecordAction = 1; 
-   
+    RecordAction = 1;
   TaskJournalId = RPLTRANSACTION.get_task_journal_id; 
   if (:TaskJournalId is not null) then 
     insert into RplVersionLog (Ver, Num_Transaction, RplTable_Id, TaskJournal_Id, Record_Id, Record_Action) 
-    values (new.version, dbms_transaction.local_transaction_id, 49, :TaskJournalId, new.id, :RecordAction); 
-   
-end^
+    values (new.version, dbms_transaction.local_transaction_id, 49, :TaskJournalId, new.id, :RecordAction);
+ END^
 
 SET TERM ; ^
 
@@ -40704,35 +41690,29 @@ ALTER TRIGGER "VER_DOCATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCATTACHEX" before insert or update on DOCATTACHEX
- 
+CREATE OR ALTER TRIGGER "VER_DOCATTACHEX" before insert or update on DOCATTACHEX  
 AS
 
   DECLARE TaskJournalId NUMERIC(15,0);
   DECLARE RecordAction NUMERIC(1,0);
-begin
+ BEGIN
  if (inserting) then 
  begin 
    if ((new.version is null or (new.version < 1))) then 
      new.version = 1; 
-   
 end 
 else 
   if ((new.version IS NULL or (new.version <= old.version))) then 
-    new.version = coalesce(old.version, 0) + 1;
-   
-   
+    new.version = coalesce(old.version, 0) + 1; 
   if (inserting) then 
-    RecordAction = 0; 
+    RecordAction = 0;
   else 
-    RecordAction = 1; 
-   
-  TaskJournalId = RPLTRANSACTION.get_task_journal_id; 
-  if (:TaskJournalId is not null) then 
+    RecordAction = 1;
+  TaskJournalId = RPLTRANSACTION.get_task_journal_id;
+  if (:TaskJournalId is not null) then
     insert into RplVersionLog (Ver, Num_Transaction, RplTable_Id, TaskJournal_Id, Record_Id, Record_Action) 
-    values (new.version, dbms_transaction.local_transaction_id, 2, :TaskJournalId, new.id, :RecordAction); 
-   
-end^
+    values (new.version, dbms_transaction.local_transaction_id, 2, :TaskJournalId, new.id, :RecordAction);
+ END^
 
 SET TERM ; ^
 
@@ -40743,12 +41723,13 @@ ALTER TRIGGER "VER_DOCATTACHEX" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCCATEGORY" before insert or update on DOCCATEGORY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCCATEGORY" before insert or update on DOCCATEGORY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40759,12 +41740,13 @@ ALTER TRIGGER "VER_DOCCATEGORY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCCLASS_DISPSTATUS" before insert or update on DOCCLASS_DISPSTATUS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCCLASS_DISPSTATUS" before insert or update on DOCCLASS_DISPSTATUS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40775,12 +41757,13 @@ ALTER TRIGGER "VER_DOCCLASS_DISPSTATUS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCCOMMENT" before insert or update on DOCCOMMENT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCCOMMENT" before insert or update on DOCCOMMENT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40791,12 +41774,13 @@ ALTER TRIGGER "VER_DOCCOMMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCCUSTOMFIELDS" before insert or update on DOCCUSTOMFIELDS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCCUSTOMFIELDS" before insert or update on DOCCUSTOMFIELDS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40807,12 +41791,13 @@ ALTER TRIGGER "VER_DOCCUSTOMFIELDS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCDIGESTRULE" before insert or update on DOCDIGESTRULE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCDIGESTRULE" before insert or update on DOCDIGESTRULE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40823,12 +41808,13 @@ ALTER TRIGGER "VER_DOCDIGESTRULE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCEVENT" before insert or update on DOCEVENT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCEVENT" before insert or update on DOCEVENT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40839,12 +41825,13 @@ ALTER TRIGGER "VER_DOCEVENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCEVERRLOG" before insert or update on DOCEVERRLOG
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCEVERRLOG" before insert or update on DOCEVERRLOG  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40855,12 +41842,13 @@ ALTER TRIGGER "VER_DOCEVERRLOG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCEXCHANGESCHEME" before insert or update on DOCEXCHANGESCHEME
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCEXCHANGESCHEME" before insert or update on DOCEXCHANGESCHEME  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40871,12 +41859,13 @@ ALTER TRIGGER "VER_DOCEXCHANGESCHEME" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCFLAGCATEGORY" before insert or update on DOCFLAGCATEGORY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCFLAGCATEGORY" before insert or update on DOCFLAGCATEGORY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40887,12 +41876,13 @@ ALTER TRIGGER "VER_DOCFLAGCATEGORY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCFLAGTYPE" before insert or update on DOCFLAGTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCFLAGTYPE" before insert or update on DOCFLAGTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40903,12 +41893,13 @@ ALTER TRIGGER "VER_DOCFLAGTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCGROUP" before insert or update on DOCGROUP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCGROUP" before insert or update on DOCGROUP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40919,12 +41910,13 @@ ALTER TRIGGER "VER_DOCGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCREQ" before insert or update on DOCREQ
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCREQ" before insert or update on DOCREQ  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40935,12 +41927,13 @@ ALTER TRIGGER "VER_DOCREQ" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCRETENTION" before insert or update on DOCRETENTION
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCRETENTION" before insert or update on DOCRETENTION  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40951,12 +41944,13 @@ ALTER TRIGGER "VER_DOCRETENTION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCRETENTIONSTATITEMS" before insert or update on DOCRETENTIONSTATITEMS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCRETENTIONSTATITEMS" before insert or update on DOCRETENTIONSTATITEMS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40967,12 +41961,13 @@ ALTER TRIGGER "VER_DOCRETENTIONSTATITEMS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCRETENTIONSTATUS" before insert or update on DOCRETENTIONSTATUS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCRETENTIONSTATUS" before insert or update on DOCRETENTIONSTATUS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40983,12 +41978,13 @@ ALTER TRIGGER "VER_DOCRETENTIONSTATUS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCSTATUS" before insert or update on DOCSTATUS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCSTATUS" before insert or update on DOCSTATUS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -40999,12 +41995,13 @@ ALTER TRIGGER "VER_DOCSTATUS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCUMENT" before insert or update on DOCUMENT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCUMENT" before insert or update on DOCUMENT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41015,12 +42012,13 @@ ALTER TRIGGER "VER_DOCUMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCUMENTCLASS" before insert or update on DOCUMENTCLASS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCUMENTCLASS" before insert or update on DOCUMENTCLASS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41031,12 +42029,13 @@ ALTER TRIGGER "VER_DOCUMENTCLASS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOCUMENTREPORTS" before insert or update on DOCUMENTREPORTS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOCUMENTREPORTS" before insert or update on DOCUMENTREPORTS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41047,12 +42046,13 @@ ALTER TRIGGER "VER_DOCUMENTREPORTS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_DOMEN" before insert or update on DOMEN
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_DOMEN" before insert or update on DOMEN  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41063,12 +42063,13 @@ ALTER TRIGGER "VER_DOMEN" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_EQUALITY" before insert or update on EQUALITY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_EQUALITY" before insert or update on EQUALITY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41079,12 +42080,13 @@ ALTER TRIGGER "VER_EQUALITY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_EQUALITYCODES" before insert or update on EQUALITYCODES
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_EQUALITYCODES" before insert or update on EQUALITYCODES  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41095,12 +42097,13 @@ ALTER TRIGGER "VER_EQUALITYCODES" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ESCHECKRULE" before insert or update on ESCHECKRULE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ESCHECKRULE" before insert or update on ESCHECKRULE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41111,12 +42114,13 @@ ALTER TRIGGER "VER_ESCHECKRULE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ESTIMATE" before insert or update on ESTIMATE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ESTIMATE" before insert or update on ESTIMATE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41127,12 +42131,13 @@ ALTER TRIGGER "VER_ESTIMATE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ETP" before insert or update on ETP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ETP" before insert or update on ETP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41143,12 +42148,13 @@ ALTER TRIGGER "VER_ETP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ETPATTACH" before insert or update on ETPATTACH
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ETPATTACH" before insert or update on ETPATTACH  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41159,12 +42165,13 @@ ALTER TRIGGER "VER_ETPATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ETPTYPE" before insert or update on ETPTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ETPTYPE" before insert or update on ETPTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41175,12 +42182,13 @@ ALTER TRIGGER "VER_ETPTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_FACTDOC" before insert or update on FACTDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_FACTDOC" before insert or update on FACTDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41191,12 +42199,13 @@ ALTER TRIGGER "VER_FACTDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_FACTDOCTYPE" before insert or update on FACTDOCTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_FACTDOCTYPE" before insert or update on FACTDOCTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41207,12 +42216,13 @@ ALTER TRIGGER "VER_FACTDOCTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_FETCHMODE" before insert or update on FETCHMODE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_FETCHMODE" before insert or update on FETCHMODE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41223,12 +42233,13 @@ ALTER TRIGGER "VER_FETCHMODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_FGROUP" before insert or update on FGROUP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_FGROUP" before insert or update on FGROUP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41239,12 +42250,13 @@ ALTER TRIGGER "VER_FGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_FGROUPATTACH" before insert or update on FGROUPATTACH
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_FGROUPATTACH" before insert or update on FGROUPATTACH  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41255,12 +42267,13 @@ ALTER TRIGGER "VER_FGROUPATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_FGROUPHEADER" before insert or update on FGROUPHEADER
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_FGROUPHEADER" before insert or update on FGROUPHEADER  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41271,12 +42284,13 @@ ALTER TRIGGER "VER_FGROUPHEADER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_FINSRC" before insert or update on FINSRC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_FINSRC" before insert or update on FINSRC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41287,12 +42301,13 @@ ALTER TRIGGER "VER_FINSRC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_FINSRCSATISFY" before insert or update on FINSRCSATISFY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_FINSRCSATISFY" before insert or update on FINSRCSATISFY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41303,12 +42318,13 @@ ALTER TRIGGER "VER_FINSRCSATISFY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_FORMATCONVERTER" before insert or update on FORMATCONVERTER
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_FORMATCONVERTER" before insert or update on FORMATCONVERTER  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41319,12 +42335,13 @@ ALTER TRIGGER "VER_FORMATCONVERTER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_FUNCAT" before insert or update on FUNCAT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_FUNCAT" before insert or update on FUNCAT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41335,12 +42352,13 @@ ALTER TRIGGER "VER_FUNCAT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_FUNUNIT" before insert or update on FUNUNIT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_FUNUNIT" before insert or update on FUNUNIT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41351,12 +42369,13 @@ ALTER TRIGGER "VER_FUNUNIT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GCREGISTER" before insert or update on GCREGISTER
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GCREGISTER" before insert or update on GCREGISTER  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41367,12 +42386,13 @@ ALTER TRIGGER "VER_GCREGISTER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODS" before insert or update on GOODS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODS" before insert or update on GOODS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41383,12 +42403,13 @@ ALTER TRIGGER "VER_GOODS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSBAN" before insert or update on GOODSBAN
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSBAN" before insert or update on GOODSBAN  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41399,12 +42420,13 @@ ALTER TRIGGER "VER_GOODSBAN" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSBANGOODSOKPD" before insert or update on GOODSBANGOODSOKPD
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSBANGOODSOKPD" before insert or update on GOODSBANGOODSOKPD  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41415,12 +42437,13 @@ ALTER TRIGGER "VER_GOODSBANGOODSOKPD" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSBANPURCHASEMODE" before insert or update on GOODSBANPURCHASEMODE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSBANPURCHASEMODE" before insert or update on GOODSBANPURCHASEMODE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41431,12 +42454,13 @@ ALTER TRIGGER "VER_GOODSBANPURCHASEMODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSBRANCH" before insert or update on GOODSBRANCH
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSBRANCH" before insert or update on GOODSBRANCH  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41447,12 +42471,13 @@ ALTER TRIGGER "VER_GOODSBRANCH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSGROUP" before insert or update on GOODSGROUP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSGROUP" before insert or update on GOODSGROUP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41463,12 +42488,13 @@ ALTER TRIGGER "VER_GOODSGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSGROUPDOCDETAIL" before insert or update on GOODSGROUPDOCDETAIL
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSGROUPDOCDETAIL" before insert or update on GOODSGROUPDOCDETAIL  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41479,12 +42505,13 @@ ALTER TRIGGER "VER_GOODSGROUPDOCDETAIL" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSGROUPPURCHASEMODE" before insert or update on GOODSGROUPPURCHASEMODE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSGROUPPURCHASEMODE" before insert or update on GOODSGROUPPURCHASEMODE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41495,12 +42522,13 @@ ALTER TRIGGER "VER_GOODSGROUPPURCHASEMODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSOKDP" before insert or update on GOODSOKDP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSOKDP" before insert or update on GOODSOKDP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41511,12 +42539,13 @@ ALTER TRIGGER "VER_GOODSOKDP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSOKDPCOUNTRYPREF" before insert or update on GOODSOKDPCOUNTRYPREF
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSOKDPCOUNTRYPREF" before insert or update on GOODSOKDPCOUNTRYPREF  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41527,12 +42556,13 @@ ALTER TRIGGER "VER_GOODSOKDPCOUNTRYPREF" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSOKDPPURCHASEMODE" before insert or update on GOODSOKDPPURCHASEMODE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSOKDPPURCHASEMODE" before insert or update on GOODSOKDPPURCHASEMODE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41543,12 +42573,13 @@ ALTER TRIGGER "VER_GOODSOKDPPURCHASEMODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSOKPD" before insert or update on GOODSOKPD
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSOKPD" before insert or update on GOODSOKPD  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41559,12 +42590,13 @@ ALTER TRIGGER "VER_GOODSOKPD" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSOKPDCOUNTRYPREF" before insert or update on GOODSOKPDCOUNTRYPREF
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSOKPDCOUNTRYPREF" before insert or update on GOODSOKPDCOUNTRYPREF  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41575,12 +42607,13 @@ ALTER TRIGGER "VER_GOODSOKPDCOUNTRYPREF" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSOKPDPURCHASEMODE" before insert or update on GOODSOKPDPURCHASEMODE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSOKPDPURCHASEMODE" before insert or update on GOODSOKPDPURCHASEMODE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41591,12 +42624,13 @@ ALTER TRIGGER "VER_GOODSOKPDPURCHASEMODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSOKVED" before insert or update on GOODSOKVED
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSOKVED" before insert or update on GOODSOKVED  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41607,12 +42641,13 @@ ALTER TRIGGER "VER_GOODSOKVED" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GOODSPRICE" before insert or update on GOODSPRICE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GOODSPRICE" before insert or update on GOODSPRICE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41623,12 +42658,13 @@ ALTER TRIGGER "VER_GOODSPRICE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GRANTINVESTMENT" before insert or update on GRANTINVESTMENT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GRANTINVESTMENT" before insert or update on GRANTINVESTMENT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41639,12 +42675,13 @@ ALTER TRIGGER "VER_GRANTINVESTMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_GROUPPROP" before insert or update on GROUPPROP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_GROUPPROP" before insert or update on GROUPPROP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41655,12 +42692,13 @@ ALTER TRIGGER "VER_GROUPPROP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_HISTORYMODIFY" before insert or update on HISTORYMODIFY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_HISTORYMODIFY" before insert or update on HISTORYMODIFY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41671,12 +42709,13 @@ ALTER TRIGGER "VER_HISTORYMODIFY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_INDUSTRYCODE" before insert or update on INDUSTRYCODE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_INDUSTRYCODE" before insert or update on INDUSTRYCODE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41687,12 +42726,13 @@ ALTER TRIGGER "VER_INDUSTRYCODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_INSTITUTIONLINE" before insert or update on INSTITUTIONLINE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_INSTITUTIONLINE" before insert or update on INSTITUTIONLINE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41703,12 +42743,13 @@ ALTER TRIGGER "VER_INSTITUTIONLINE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_INTERBUDGET" before insert or update on INTERBUDGET
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_INTERBUDGET" before insert or update on INTERBUDGET  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41719,12 +42760,13 @@ ALTER TRIGGER "VER_INTERBUDGET" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_INVOICEDOC" before insert or update on INVOICEDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_INVOICEDOC" before insert or update on INVOICEDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41735,12 +42777,13 @@ ALTER TRIGGER "VER_INVOICEDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_JAVACLASS" before insert or update on JAVACLASS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_JAVACLASS" before insert or update on JAVACLASS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41751,12 +42794,13 @@ ALTER TRIGGER "VER_JAVACLASS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_KBKLINEFIT" before insert or update on KBKLINEFIT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_KBKLINEFIT" before insert or update on KBKLINEFIT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41767,12 +42811,13 @@ ALTER TRIGGER "VER_KBKLINEFIT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_KLADR" before insert or update on KLADR
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_KLADR" before insert or update on KLADR  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41783,12 +42828,13 @@ ALTER TRIGGER "VER_KLADR" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_KLADRSTREET" before insert or update on KLADRSTREET
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_KLADRSTREET" before insert or update on KLADRSTREET  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41799,12 +42845,13 @@ ALTER TRIGGER "VER_KLADRSTREET" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_LEDGER" before insert or update on LEDGER
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_LEDGER" before insert or update on LEDGER  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41815,12 +42862,13 @@ ALTER TRIGGER "VER_LEDGER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_LIABILITYCREDENTIAL" before insert or update on LIABILITYCREDENTIAL
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_LIABILITYCREDENTIAL" before insert or update on LIABILITYCREDENTIAL  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41831,12 +42879,13 @@ ALTER TRIGGER "VER_LIABILITYCREDENTIAL" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_LIABILITYEXPENSE" before insert or update on LIABILITYEXPENSE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_LIABILITYEXPENSE" before insert or update on LIABILITYEXPENSE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41847,12 +42896,13 @@ ALTER TRIGGER "VER_LIABILITYEXPENSE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_LIABILITYEXPENSE_DOCLINES" before insert or update on LIABILITYEXPENSE_DOCLINES
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_LIABILITYEXPENSE_DOCLINES" before insert or update on LIABILITYEXPENSE_DOCLINES  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41863,12 +42913,13 @@ ALTER TRIGGER "VER_LIABILITYEXPENSE_DOCLINES" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_LIABILITYGROUP" before insert or update on LIABILITYGROUP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_LIABILITYGROUP" before insert or update on LIABILITYGROUP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41879,12 +42930,13 @@ ALTER TRIGGER "VER_LIABILITYGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_LICTYPE" before insert or update on LICTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_LICTYPE" before insert or update on LICTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41895,12 +42947,13 @@ ALTER TRIGGER "VER_LICTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_MAIL" before insert or update on MAIL
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_MAIL" before insert or update on MAIL  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41911,35 +42964,29 @@ ALTER TRIGGER "VER_MAIL" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_MAILATTACH" before insert or update on MAILATTACH
- 
+CREATE OR ALTER TRIGGER "VER_MAILATTACH" before insert or update on MAILATTACH  
 AS
 
   DECLARE TaskJournalId NUMERIC(15,0);
   DECLARE RecordAction NUMERIC(1,0);
-begin
+ BEGIN
  if (inserting) then 
  begin 
    if ((new.version is null or (new.version < 1))) then 
      new.version = 1; 
-   
 end 
 else 
   if ((new.version IS NULL or (new.version <= old.version))) then 
-    new.version = coalesce(old.version, 0) + 1;
-   
-   
+    new.version = coalesce(old.version, 0) + 1; 
   if (inserting) then 
     RecordAction = 0; 
   else 
-    RecordAction = 1; 
-   
+    RecordAction = 1;
   TaskJournalId = RPLTRANSACTION.get_task_journal_id; 
   if (:TaskJournalId is not null) then 
     insert into RplVersionLog (Ver, Num_Transaction, RplTable_Id, TaskJournal_Id, Record_Id, Record_Action) 
-    values (new.version, dbms_transaction.local_transaction_id, 66, :TaskJournalId, new.id, :RecordAction); 
-   
-end^
+    values (new.version, dbms_transaction.local_transaction_id, 66, :TaskJournalId, new.id, :RecordAction);
+ END^
 
 SET TERM ; ^
 
@@ -41950,12 +42997,13 @@ ALTER TRIGGER "VER_MAILATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_MAILRECEIVERGROUP" before insert or update on MAILRECEIVERGROUP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_MAILRECEIVERGROUP" before insert or update on MAILRECEIVERGROUP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41966,12 +43014,13 @@ ALTER TRIGGER "VER_MAILRECEIVERGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_MAILRECEIVERGROUP_RECEIVER" before insert or update on MAILRECEIVERGROUP_RECEIVER
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_MAILRECEIVERGROUP_RECEIVER" before insert or update on MAILRECEIVERGROUP_RECEIVER  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41982,12 +43031,13 @@ ALTER TRIGGER "VER_MAILRECEIVERGROUP_RECEIVER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_MENU" before insert or update on MENU
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_MENU" before insert or update on MENU  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -41998,12 +43048,13 @@ ALTER TRIGGER "VER_MENU" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_MENUITEM" before insert or update on MENUITEM
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_MENUITEM" before insert or update on MENUITEM  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42014,12 +43065,13 @@ ALTER TRIGGER "VER_MENUITEM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_MENUITEMWEB" before insert or update on MENUITEMWEB
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_MENUITEMWEB" before insert or update on MENUITEMWEB  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42030,12 +43082,13 @@ ALTER TRIGGER "VER_MENUITEMWEB" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_METACONSTRAINT" before insert or update on METACONSTRAINT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_METACONSTRAINT" before insert or update on METACONSTRAINT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42046,12 +43099,13 @@ ALTER TRIGGER "VER_METACONSTRAINT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_METAOBJECT" before insert or update on METAOBJECT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_METAOBJECT" before insert or update on METAOBJECT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42062,12 +43116,13 @@ ALTER TRIGGER "VER_METAOBJECT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_MSG" before insert or update on MSG
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_MSG" before insert or update on MSG  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42078,12 +43133,13 @@ ALTER TRIGGER "VER_MSG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_MSGLINKTYPE" before insert or update on MSGLINKTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_MSGLINKTYPE" before insert or update on MSGLINKTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42094,12 +43150,13 @@ ALTER TRIGGER "VER_MSGLINKTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_MSGQUEUE" before insert or update on MSGQUEUE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_MSGQUEUE" before insert or update on MSGQUEUE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42110,12 +43167,13 @@ ALTER TRIGGER "VER_MSGQUEUE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_MSGSITE" before insert or update on MSGSITE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_MSGSITE" before insert or update on MSGSITE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42126,12 +43184,13 @@ ALTER TRIGGER "VER_MSGSITE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_NECESSITY" before insert or update on NECESSITY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_NECESSITY" before insert or update on NECESSITY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42142,12 +43201,13 @@ ALTER TRIGGER "VER_NECESSITY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_NOTICEDOC" before insert or update on NOTICEDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_NOTICEDOC" before insert or update on NOTICEDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42158,12 +43218,13 @@ ALTER TRIGGER "VER_NOTICEDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_NOTICEEMAILORG" before insert or update on NOTICEEMAILORG
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_NOTICEEMAILORG" before insert or update on NOTICEEMAILORG  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42174,12 +43235,13 @@ ALTER TRIGGER "VER_NOTICEEMAILORG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_NOTIFYMSG" before insert or update on NOTIFYMSG
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_NOTIFYMSG" before insert or update on NOTIFYMSG  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42190,12 +43252,13 @@ ALTER TRIGGER "VER_NOTIFYMSG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_NOTIFYMSGEVENT" before insert or update on NOTIFYMSGEVENT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_NOTIFYMSGEVENT" before insert or update on NOTIFYMSGEVENT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42206,12 +43269,13 @@ ALTER TRIGGER "VER_NOTIFYMSGEVENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_NOTIFYMSGGROUP" before insert or update on NOTIFYMSGGROUP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_NOTIFYMSGGROUP" before insert or update on NOTIFYMSGGROUP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42222,12 +43286,13 @@ ALTER TRIGGER "VER_NOTIFYMSGGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_NOTIFYMSGRULE" before insert or update on NOTIFYMSGRULE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_NOTIFYMSGRULE" before insert or update on NOTIFYMSGRULE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42238,12 +43303,13 @@ ALTER TRIGGER "VER_NOTIFYMSGRULE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_NUMGENERATOR" before insert or update on NUMGENERATOR
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_NUMGENERATOR" before insert or update on NUMGENERATOR  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42254,12 +43320,13 @@ ALTER TRIGGER "VER_NUMGENERATOR" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_NUMPREFIX" before insert or update on NUMPREFIX
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_NUMPREFIX" before insert or update on NUMPREFIX  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42270,12 +43337,13 @@ ALTER TRIGGER "VER_NUMPREFIX" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_NUMSEQUENCE" before insert or update on NUMSEQUENCE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_NUMSEQUENCE" before insert or update on NUMSEQUENCE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42286,12 +43354,13 @@ ALTER TRIGGER "VER_NUMSEQUENCE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_OFFERDOC" before insert or update on OFFERDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_OFFERDOC" before insert or update on OFFERDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42302,12 +43371,13 @@ ALTER TRIGGER "VER_OFFERDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_OFRREQREASON" before insert or update on OFRREQREASON
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_OFRREQREASON" before insert or update on OFRREQREASON  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42318,12 +43388,13 @@ ALTER TRIGGER "VER_OFRREQREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_OFRRETREASON" before insert or update on OFRRETREASON
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_OFRRETREASON" before insert or update on OFRRETREASON  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42334,12 +43405,13 @@ ALTER TRIGGER "VER_OFRRETREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_OIDREF" before insert or update on OIDREF
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_OIDREF" before insert or update on OIDREF  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42350,12 +43422,13 @@ ALTER TRIGGER "VER_OIDREF" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_OKTMO" before insert or update on OKTMO
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_OKTMO" before insert or update on OKTMO  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42366,12 +43439,13 @@ ALTER TRIGGER "VER_OKTMO" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_OLAPQUERY" before insert or update on OLAPQUERY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_OLAPQUERY" before insert or update on OLAPQUERY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42382,12 +43456,13 @@ ALTER TRIGGER "VER_OLAPQUERY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_OOSORGROLE" before insert or update on OOSORGROLE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_OOSORGROLE" before insert or update on OOSORGROLE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42398,12 +43473,13 @@ ALTER TRIGGER "VER_OOSORGROLE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_OOS223PURCHASENOTICEINFO" before insert or update on OOS223PURCHASENOTICEINFO
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_OOS223PURCHASENOTICEINFO" before insert or update on OOS223PURCHASENOTICEINFO  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42414,12 +43490,13 @@ ALTER TRIGGER "VER_OOS223PURCHASENOTICEINFO" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_OOS223PURCHNOTICELOTINFO" before insert or update on OOS223PURCHNOTICELOTINFO
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_OOS223PURCHNOTICELOTINFO" before insert or update on OOS223PURCHNOTICELOTINFO  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42430,12 +43507,13 @@ ALTER TRIGGER "VER_OOS223PURCHNOTICELOTINFO" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_OPERTYPE" before insert or update on OPERTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_OPERTYPE" before insert or update on OPERTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42446,12 +43524,13 @@ ALTER TRIGGER "VER_OPERTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ORDERDOC" before insert or update on ORDERDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ORDERDOC" before insert or update on ORDERDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42462,12 +43541,13 @@ ALTER TRIGGER "VER_ORDERDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ORDERSUMMARY" before insert or update on ORDERSUMMARY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ORDERSUMMARY" before insert or update on ORDERSUMMARY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42478,12 +43558,13 @@ ALTER TRIGGER "VER_ORDERSUMMARY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ORG" before insert or update on ORG
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ORG" before insert or update on ORG  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42494,12 +43575,13 @@ ALTER TRIGGER "VER_ORG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ORGACCOUNT" before insert or update on ORGACCOUNT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ORGACCOUNT" before insert or update on ORGACCOUNT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42510,12 +43592,13 @@ ALTER TRIGGER "VER_ORGACCOUNT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ORGACCTYPE" before insert or update on ORGACCTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ORGACCTYPE" before insert or update on ORGACCTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42526,12 +43609,13 @@ ALTER TRIGGER "VER_ORGACCTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ORGADDKPP" before insert or update on ORGADDKPP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ORGADDKPP" before insert or update on ORGADDKPP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42542,12 +43626,13 @@ ALTER TRIGGER "VER_ORGADDKPP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ORGCONCCONT" before insert or update on ORGCONCCONT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ORGCONCCONT" before insert or update on ORGCONCCONT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42558,12 +43643,13 @@ ALTER TRIGGER "VER_ORGCONCCONT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ORGETP" before insert or update on ORGETP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ORGETP" before insert or update on ORGETP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42574,12 +43660,13 @@ ALTER TRIGGER "VER_ORGETP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ORGFORM" before insert or update on ORGFORM
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ORGFORM" before insert or update on ORGFORM  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42590,12 +43677,13 @@ ALTER TRIGGER "VER_ORGFORM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ORGOOS223FZUSER" before insert or update on ORGOOS223FZUSER
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ORGOOS223FZUSER" before insert or update on ORGOOS223FZUSER  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42606,12 +43694,13 @@ ALTER TRIGGER "VER_ORGOOS223FZUSER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ORGROLE" before insert or update on ORGROLE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ORGROLE" before insert or update on ORGROLE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42622,12 +43711,13 @@ ALTER TRIGGER "VER_ORGROLE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ORGSTATUS" before insert or update on ORGSTATUS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ORGSTATUS" before insert or update on ORGSTATUS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42638,12 +43728,13 @@ ALTER TRIGGER "VER_ORGSTATUS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ORGUNFAIR" before insert or update on ORGUNFAIR
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ORGUNFAIR" before insert or update on ORGUNFAIR  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42654,12 +43745,13 @@ ALTER TRIGGER "VER_ORGUNFAIR" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PACKTYPE" before insert or update on PACKTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PACKTYPE" before insert or update on PACKTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42670,12 +43762,13 @@ ALTER TRIGGER "VER_PACKTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PANEL" before insert or update on PANEL
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PANEL" before insert or update on PANEL  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42686,12 +43779,13 @@ ALTER TRIGGER "VER_PANEL" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PANELITEM" before insert or update on PANELITEM
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PANELITEM" before insert or update on PANELITEM  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42702,12 +43796,13 @@ ALTER TRIGGER "VER_PANELITEM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PAYCONDITION" before insert or update on PAYCONDITION
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PAYCONDITION" before insert or update on PAYCONDITION  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42718,12 +43813,13 @@ ALTER TRIGGER "VER_PAYCONDITION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PERSON" before insert or update on PERSON
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PERSON" before insert or update on PERSON  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42734,12 +43830,13 @@ ALTER TRIGGER "VER_PERSON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PERSONAL" before insert or update on PERSONAL
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PERSONAL" before insert or update on PERSONAL  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42750,12 +43847,13 @@ ALTER TRIGGER "VER_PERSONAL" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLACEMENTFEATURE" before insert or update on PLACEMENTFEATURE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLACEMENTFEATURE" before insert or update on PLACEMENTFEATURE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42766,12 +43864,13 @@ ALTER TRIGGER "VER_PLACEMENTFEATURE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLACEMENTFEATUREPM" before insert or update on PLACEMENTFEATUREPM
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLACEMENTFEATUREPM" before insert or update on PLACEMENTFEATUREPM  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42782,12 +43881,13 @@ ALTER TRIGGER "VER_PLACEMENTFEATUREPM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLACINGWAY" before insert or update on PLACINGWAY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLACINGWAY" before insert or update on PLACINGWAY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42798,12 +43898,13 @@ ALTER TRIGGER "VER_PLACINGWAY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLANDOC" before insert or update on PLANDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLANDOC" before insert or update on PLANDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42814,12 +43915,13 @@ ALTER TRIGGER "VER_PLANDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLANPOSITIONCHANGEREASON" before insert or update on PLANPOSITIONCHANGEREASON
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLANPOSITIONCHANGEREASON" before insert or update on PLANPOSITIONCHANGEREASON  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42830,12 +43932,13 @@ ALTER TRIGGER "VER_PLANPOSITIONCHANGEREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLAN2ARRANGEMENT" before insert or update on PLAN2ARRANGEMENT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLAN2ARRANGEMENT" before insert or update on PLAN2ARRANGEMENT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42846,12 +43949,13 @@ ALTER TRIGGER "VER_PLAN2ARRANGEMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLAN2CHANGEREASON" before insert or update on PLAN2CHANGEREASON
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLAN2CHANGEREASON" before insert or update on PLAN2CHANGEREASON  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42862,12 +43966,13 @@ ALTER TRIGGER "VER_PLAN2CHANGEREASON" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLAN2DOC" before insert or update on PLAN2DOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLAN2DOC" before insert or update on PLAN2DOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42878,12 +43983,13 @@ ALTER TRIGGER "VER_PLAN2DOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLAN2GOODS" before insert or update on PLAN2GOODS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLAN2GOODS" before insert or update on PLAN2GOODS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42894,12 +44000,13 @@ ALTER TRIGGER "VER_PLAN2GOODS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLAN2LEDGER" before insert or update on PLAN2LEDGER
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLAN2LEDGER" before insert or update on PLAN2LEDGER  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42910,12 +44017,13 @@ ALTER TRIGGER "VER_PLAN2LEDGER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLAN2OOSEXTNUMBER" before insert or update on PLAN2OOSEXTNUMBER
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLAN2OOSEXTNUMBER" before insert or update on PLAN2OOSEXTNUMBER  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42926,12 +44034,13 @@ ALTER TRIGGER "VER_PLAN2OOSEXTNUMBER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLAN2OOSFEATURE" before insert or update on PLAN2OOSFEATURE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLAN2OOSFEATURE" before insert or update on PLAN2OOSFEATURE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42942,12 +44051,13 @@ ALTER TRIGGER "VER_PLAN2OOSFEATURE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLAN2OOSKBK" before insert or update on PLAN2OOSKBK
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLAN2OOSKBK" before insert or update on PLAN2OOSKBK  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42958,12 +44068,13 @@ ALTER TRIGGER "VER_PLAN2OOSKBK" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLAN2OOSKBKYEAR" before insert or update on PLAN2OOSKBKYEAR
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLAN2OOSKBKYEAR" before insert or update on PLAN2OOSKBKYEAR  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42974,12 +44085,13 @@ ALTER TRIGGER "VER_PLAN2OOSKBKYEAR" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLAN2OOSOKVED" before insert or update on PLAN2OOSOKVED
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLAN2OOSOKVED" before insert or update on PLAN2OOSOKVED  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -42990,12 +44102,13 @@ ALTER TRIGGER "VER_PLAN2OOSOKVED" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLAN2OOSPOSITION" before insert or update on PLAN2OOSPOSITION
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLAN2OOSPOSITION" before insert or update on PLAN2OOSPOSITION  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43006,12 +44119,13 @@ ALTER TRIGGER "VER_PLAN2OOSPOSITION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLAN2OOSPRODUCT" before insert or update on PLAN2OOSPRODUCT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLAN2OOSPRODUCT" before insert or update on PLAN2OOSPRODUCT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43022,12 +44136,13 @@ ALTER TRIGGER "VER_PLAN2OOSPRODUCT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLAN3DOC" before insert or update on PLAN3DOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLAN3DOC" before insert or update on PLAN3DOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43038,12 +44153,13 @@ ALTER TRIGGER "VER_PLAN3DOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PLAN3PURCHASEDOC" before insert or update on PLAN3PURCHASEDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PLAN3PURCHASEDOC" before insert or update on PLAN3PURCHASEDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43054,12 +44170,13 @@ ALTER TRIGGER "VER_PLAN3PURCHASEDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PREFERENCEGROUP" before insert or update on PREFERENCEGROUP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PREFERENCEGROUP" before insert or update on PREFERENCEGROUP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43070,12 +44187,13 @@ ALTER TRIGGER "VER_PREFERENCEGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PREFERENCEGROUPFEATURE" before insert or update on PREFERENCEGROUPFEATURE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PREFERENCEGROUPFEATURE" before insert or update on PREFERENCEGROUPFEATURE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43086,12 +44204,13 @@ ALTER TRIGGER "VER_PREFERENCEGROUPFEATURE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PROCTREE" before insert or update on PROCTREE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PROCTREE" before insert or update on PROCTREE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43102,12 +44221,13 @@ ALTER TRIGGER "VER_PROCTREE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PROCUREMENT" before insert or update on PROCUREMENT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PROCUREMENT" before insert or update on PROCUREMENT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43118,12 +44238,13 @@ ALTER TRIGGER "VER_PROCUREMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PROPTYPE" before insert or update on PROPTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PROPTYPE" before insert or update on PROPTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43134,12 +44255,13 @@ ALTER TRIGGER "VER_PROPTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PURCHASECARRY" before insert or update on PURCHASECARRY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PURCHASECARRY" before insert or update on PURCHASECARRY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43150,12 +44272,13 @@ ALTER TRIGGER "VER_PURCHASECARRY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PURCHASEMETHOD" before insert or update on PURCHASEMETHOD
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PURCHASEMETHOD" before insert or update on PURCHASEMETHOD  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43166,12 +44289,13 @@ ALTER TRIGGER "VER_PURCHASEMETHOD" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PURCHASEMODE" before insert or update on PURCHASEMODE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PURCHASEMODE" before insert or update on PURCHASEMODE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43182,12 +44306,13 @@ ALTER TRIGGER "VER_PURCHASEMODE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PURCHASEPLAN" before insert or update on PURCHASEPLAN
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PURCHASEPLAN" before insert or update on PURCHASEPLAN  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43198,12 +44323,13 @@ ALTER TRIGGER "VER_PURCHASEPLAN" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_PURCHASEPLANDOC" before insert or update on PURCHASEPLANDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_PURCHASEPLANDOC" before insert or update on PURCHASEPLANDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43214,12 +44340,13 @@ ALTER TRIGGER "VER_PURCHASEPLANDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_QUALREQ" before insert or update on QUALREQ
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_QUALREQ" before insert or update on QUALREQ  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43230,12 +44357,13 @@ ALTER TRIGGER "VER_QUALREQ" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_RECOILDOC" before insert or update on RECOILDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_RECOILDOC" before insert or update on RECOILDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43246,35 +44374,29 @@ ALTER TRIGGER "VER_RECOILDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REFATTACH" before insert or update on REFATTACH
- 
+CREATE OR ALTER TRIGGER "VER_REFATTACH" before insert or update on REFATTACH  
 AS
 
   DECLARE TaskJournalId NUMERIC(15,0);
   DECLARE RecordAction NUMERIC(1,0);
-begin
+ BEGIN
  if (inserting) then 
  begin 
    if ((new.version is null or (new.version < 1))) then 
      new.version = 1; 
-   
 end 
 else 
   if ((new.version IS NULL or (new.version <= old.version))) then 
-    new.version = coalesce(old.version, 0) + 1;
-   
-   
+    new.version = coalesce(old.version, 0) + 1; 
   if (inserting) then 
     RecordAction = 0; 
   else 
-    RecordAction = 1; 
-   
+    RecordAction = 1;
   TaskJournalId = RPLTRANSACTION.get_task_journal_id; 
   if (:TaskJournalId is not null) then 
     insert into RplVersionLog (Ver, Num_Transaction, RplTable_Id, TaskJournal_Id, Record_Id, Record_Action) 
-    values (new.version, dbms_transaction.local_transaction_id, 253, :TaskJournalId, new.id, :RecordAction); 
-   
-end^
+    values (new.version, dbms_transaction.local_transaction_id, 253, :TaskJournalId, new.id, :RecordAction);
+ END^
 
 SET TERM ; ^
 
@@ -43285,12 +44407,13 @@ ALTER TRIGGER "VER_REFATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REFERENCECLASS" before insert or update on REFERENCECLASS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REFERENCECLASS" before insert or update on REFERENCECLASS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43301,12 +44424,13 @@ ALTER TRIGGER "VER_REFERENCECLASS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REFINANCINGRATE" before insert or update on REFINANCINGRATE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REFINANCINGRATE" before insert or update on REFINANCINGRATE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43317,12 +44441,13 @@ ALTER TRIGGER "VER_REFINANCINGRATE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REFUSALFACTFOUNDATION" before insert or update on REFUSALFACTFOUNDATION
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REFUSALFACTFOUNDATION" before insert or update on REFUSALFACTFOUNDATION  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43333,12 +44458,13 @@ ALTER TRIGGER "VER_REFUSALFACTFOUNDATION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REPDOCUMENT" before insert or update on REPDOCUMENT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REPDOCUMENT" before insert or update on REPDOCUMENT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43349,12 +44475,13 @@ ALTER TRIGGER "VER_REPDOCUMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REPFIELD" before insert or update on REPFIELD
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REPFIELD" before insert or update on REPFIELD  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43365,12 +44492,13 @@ ALTER TRIGGER "VER_REPFIELD" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REPFORM" before insert or update on REPFORM
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REPFORM" before insert or update on REPFORM  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43381,12 +44509,13 @@ ALTER TRIGGER "VER_REPFORM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REPFRAGMENT" before insert or update on REPFRAGMENT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REPFRAGMENT" before insert or update on REPFRAGMENT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43397,12 +44526,13 @@ ALTER TRIGGER "VER_REPFRAGMENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REPFRAGMENTCHILD" before insert or update on REPFRAGMENTCHILD
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REPFRAGMENTCHILD" before insert or update on REPFRAGMENTCHILD  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43413,12 +44543,13 @@ ALTER TRIGGER "VER_REPFRAGMENTCHILD" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REPORT" before insert or update on REPORT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REPORT" before insert or update on REPORT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43429,12 +44560,13 @@ ALTER TRIGGER "VER_REPORT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REPPROFILE" before insert or update on REPPROFILE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REPPROFILE" before insert or update on REPPROFILE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43445,12 +44577,13 @@ ALTER TRIGGER "VER_REPPROFILE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REPSOURCE" before insert or update on REPSOURCE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REPSOURCE" before insert or update on REPSOURCE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43461,12 +44594,13 @@ ALTER TRIGGER "VER_REPSOURCE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REPTEMPLATEATTACH" before insert or update on REPTEMPLATEATTACH
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REPTEMPLATEATTACH" before insert or update on REPTEMPLATEATTACH  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43477,12 +44611,13 @@ ALTER TRIGGER "VER_REPTEMPLATEATTACH" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REQUESTDOC" before insert or update on REQUESTDOC
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REQUESTDOC" before insert or update on REQUESTDOC  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43493,12 +44628,13 @@ ALTER TRIGGER "VER_REQUESTDOC" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REQUIREMENTTYPE" before insert or update on REQUIREMENTTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REQUIREMENTTYPE" before insert or update on REQUIREMENTTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43509,12 +44645,13 @@ ALTER TRIGGER "VER_REQUIREMENTTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_REQUIREMENTTYPEPM" before insert or update on REQUIREMENTTYPEPM
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_REQUIREMENTTYPEPM" before insert or update on REQUIREMENTTYPEPM  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43525,12 +44662,13 @@ ALTER TRIGGER "VER_REQUIREMENTTYPEPM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_RESERVEDBUDGETLINE" before insert or update on RESERVEDBUDGETLINE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_RESERVEDBUDGETLINE" before insert or update on RESERVEDBUDGETLINE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43541,12 +44679,13 @@ ALTER TRIGGER "VER_RESERVEDBUDGETLINE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_RESPONSIBILITY" before insert or update on RESPONSIBILITY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_RESPONSIBILITY" before insert or update on RESPONSIBILITY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43557,12 +44696,13 @@ ALTER TRIGGER "VER_RESPONSIBILITY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_RNP" before insert or update on RNP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_RNP" before insert or update on RNP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43573,12 +44713,13 @@ ALTER TRIGGER "VER_RNP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_ROLEREGISTER" before insert or update on ROLEREGISTER
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_ROLEREGISTER" before insert or update on ROLEREGISTER  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43589,12 +44730,13 @@ ALTER TRIGGER "VER_ROLEREGISTER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_RPL" before insert or update on RPL
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_RPL" before insert or update on RPL  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43605,12 +44747,13 @@ ALTER TRIGGER "VER_RPL" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_RPLOBJECT" before insert or update on RPLOBJECT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_RPLOBJECT" before insert or update on RPLOBJECT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43621,12 +44764,13 @@ ALTER TRIGGER "VER_RPLOBJECT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_RPLRULE" before insert or update on RPLRULE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_RPLRULE" before insert or update on RPLRULE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43637,12 +44781,13 @@ ALTER TRIGGER "VER_RPLRULE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_RPLSITE" before insert or update on RPLSITE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_RPLSITE" before insert or update on RPLSITE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43653,12 +44798,13 @@ ALTER TRIGGER "VER_RPLSITE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_RPLTABLE" before insert or update on RPLTABLE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_RPLTABLE" before insert or update on RPLTABLE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43669,12 +44815,13 @@ ALTER TRIGGER "VER_RPLTABLE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_RPLTABLEPLUGIN" before insert or update on RPLTABLEPLUGIN
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_RPLTABLEPLUGIN" before insert or update on RPLTABLEPLUGIN  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43685,12 +44832,13 @@ ALTER TRIGGER "VER_RPLTABLEPLUGIN" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_RULEREQUISITE" before insert or update on RULEREQUISITE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_RULEREQUISITE" before insert or update on RULEREQUISITE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43701,12 +44849,13 @@ ALTER TRIGGER "VER_RULEREQUISITE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_RULESCRIPT" before insert or update on RULESCRIPT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_RULESCRIPT" before insert or update on RULESCRIPT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43717,12 +44866,13 @@ ALTER TRIGGER "VER_RULESCRIPT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SCHEXPDOCS" before insert or update on SCHEXPDOCS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SCHEXPDOCS" before insert or update on SCHEXPDOCS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43733,12 +44883,13 @@ ALTER TRIGGER "VER_SCHEXPDOCS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SCHPLAN" before insert or update on SCHPLAN
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SCHPLAN" before insert or update on SCHPLAN  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43749,12 +44900,13 @@ ALTER TRIGGER "VER_SCHPLAN" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SCHTASK" before insert or update on SCHTASK
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SCHTASK" before insert or update on SCHTASK  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43765,12 +44917,13 @@ ALTER TRIGGER "VER_SCHTASK" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SERVERACTION" before insert or update on SERVERACTION
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SERVERACTION" before insert or update on SERVERACTION  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43781,12 +44934,13 @@ ALTER TRIGGER "VER_SERVERACTION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SERVERERROR" before insert or update on SERVERERROR
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SERVERERROR" before insert or update on SERVERERROR  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43797,12 +44951,13 @@ ALTER TRIGGER "VER_SERVERERROR" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SERVERPROCESSOR" before insert or update on SERVERPROCESSOR
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SERVERPROCESSOR" before insert or update on SERVERPROCESSOR  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43813,12 +44968,13 @@ ALTER TRIGGER "VER_SERVERPROCESSOR" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SERVERPROVIDER" before insert or update on SERVERPROVIDER
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SERVERPROVIDER" before insert or update on SERVERPROVIDER  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43829,12 +44985,13 @@ ALTER TRIGGER "VER_SERVERPROVIDER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SIGNEXPORTLOG" before insert or update on SIGNEXPORTLOG
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SIGNEXPORTLOG" before insert or update on SIGNEXPORTLOG  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43845,12 +45002,13 @@ ALTER TRIGGER "VER_SIGNEXPORTLOG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SIGNFORMAT" before insert or update on SIGNFORMAT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SIGNFORMAT" before insert or update on SIGNFORMAT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43861,12 +45019,13 @@ ALTER TRIGGER "VER_SIGNFORMAT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SIGNTYPE" before insert or update on SIGNTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SIGNTYPE" before insert or update on SIGNTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43877,12 +45036,13 @@ ALTER TRIGGER "VER_SIGNTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_STATISTICSSOURCE" before insert or update on STATISTICSSOURCE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_STATISTICSSOURCE" before insert or update on STATISTICSSOURCE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43893,12 +45053,13 @@ ALTER TRIGGER "VER_STATISTICSSOURCE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_STOREDDOCUMENTS" before insert or update on STOREDDOCUMENTS
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_STOREDDOCUMENTS" before insert or update on STOREDDOCUMENTS  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43909,12 +45070,13 @@ ALTER TRIGGER "VER_STOREDDOCUMENTS" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SUPPORTCRYPTOLIB" before insert or update on SUPPORTCRYPTOLIB
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SUPPORTCRYPTOLIB" before insert or update on SUPPORTCRYPTOLIB  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43925,12 +45087,13 @@ ALTER TRIGGER "VER_SUPPORTCRYPTOLIB" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SUPPORTCRYPTOLIBFORMAT" before insert or update on SUPPORTCRYPTOLIBFORMAT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SUPPORTCRYPTOLIBFORMAT" before insert or update on SUPPORTCRYPTOLIBFORMAT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43941,12 +45104,13 @@ ALTER TRIGGER "VER_SUPPORTCRYPTOLIBFORMAT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SUPPORTCRYPTOLIBPARAM" before insert or update on SUPPORTCRYPTOLIBPARAM
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SUPPORTCRYPTOLIBPARAM" before insert or update on SUPPORTCRYPTOLIBPARAM  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43957,12 +45121,13 @@ ALTER TRIGGER "VER_SUPPORTCRYPTOLIBPARAM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SYSEVENT" before insert or update on SYSEVENT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SYSEVENT" before insert or update on SYSEVENT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43973,12 +45138,13 @@ ALTER TRIGGER "VER_SYSEVENT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SYSPARAM" before insert or update on SYSPARAM
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SYSPARAM" before insert or update on SYSPARAM  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -43989,12 +45155,13 @@ ALTER TRIGGER "VER_SYSPARAM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SYSRIGHT" before insert or update on SYSRIGHT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SYSRIGHT" before insert or update on SYSRIGHT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44005,12 +45172,13 @@ ALTER TRIGGER "VER_SYSRIGHT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_SYSUSER" before insert or update on SYSUSER
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_SYSUSER" before insert or update on SYSUSER  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44021,12 +45189,13 @@ ALTER TRIGGER "VER_SYSUSER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_TASKJOURNAL" before insert or update on TASKJOURNAL
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_TASKJOURNAL" before insert or update on TASKJOURNAL  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44037,12 +45206,13 @@ ALTER TRIGGER "VER_TASKJOURNAL" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_TENDER" before insert or update on TENDER
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_TENDER" before insert or update on TENDER  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44053,12 +45223,13 @@ ALTER TRIGGER "VER_TENDER" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_TENDERCRITERION" before insert or update on TENDERCRITERION
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_TENDERCRITERION" before insert or update on TENDERCRITERION  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44069,12 +45240,13 @@ ALTER TRIGGER "VER_TENDERCRITERION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_TENDERCRITERIONCHILD" before insert or update on TENDERCRITERIONCHILD
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_TENDERCRITERIONCHILD" before insert or update on TENDERCRITERIONCHILD  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44085,12 +45257,13 @@ ALTER TRIGGER "VER_TENDERCRITERIONCHILD" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_TENDERCRITERIONPM" before insert or update on TENDERCRITERIONPM
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_TENDERCRITERIONPM" before insert or update on TENDERCRITERIONPM  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44101,12 +45274,13 @@ ALTER TRIGGER "VER_TENDERCRITERIONPM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_TENDERLINE" before insert or update on TENDERLINE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_TENDERLINE" before insert or update on TENDERLINE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44117,12 +45291,13 @@ ALTER TRIGGER "VER_TENDERLINE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_TENDERLINECOMM" before insert or update on TENDERLINECOMM
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_TENDERLINECOMM" before insert or update on TENDERLINECOMM  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44133,12 +45308,13 @@ ALTER TRIGGER "VER_TENDERLINECOMM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_TERRITORY" before insert or update on TERRITORY
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_TERRITORY" before insert or update on TERRITORY  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44149,12 +45325,13 @@ ALTER TRIGGER "VER_TERRITORY" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_TERTYPE" before insert or update on TERTYPE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_TERTYPE" before insert or update on TERTYPE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44165,12 +45342,13 @@ ALTER TRIGGER "VER_TERTYPE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_TYPEDOCREQGROUP" before insert or update on TYPEDOCREQGROUP
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_TYPEDOCREQGROUP" before insert or update on TYPEDOCREQGROUP  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44181,12 +45359,13 @@ ALTER TRIGGER "VER_TYPEDOCREQGROUP" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_TYPEREQCRIT" before insert or update on TYPEREQCRIT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_TYPEREQCRIT" before insert or update on TYPEREQCRIT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44197,12 +45376,13 @@ ALTER TRIGGER "VER_TYPEREQCRIT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_UNIT" before insert or update on UNIT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_UNIT" before insert or update on UNIT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44213,12 +45393,13 @@ ALTER TRIGGER "VER_UNIT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_UPDPACKAGE" before insert or update on UPDPACKAGE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_UPDPACKAGE" before insert or update on UPDPACKAGE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44229,12 +45410,13 @@ ALTER TRIGGER "VER_UPDPACKAGE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_USERBUDGET" before insert or update on USERBUDGET
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_USERBUDGET" before insert or update on USERBUDGET  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44245,12 +45427,13 @@ ALTER TRIGGER "VER_USERBUDGET" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_USERCERT" before insert or update on USERCERT
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_USERCERT" before insert or update on USERCERT  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44261,12 +45444,13 @@ ALTER TRIGGER "VER_USERCERT" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_USERORG" before insert or update on USERORG
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_USERORG" before insert or update on USERORG  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44277,12 +45461,13 @@ ALTER TRIGGER "VER_USERORG" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_USERROLE" before insert or update on USERROLE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_USERROLE" before insert or update on USERROLE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44293,12 +45478,13 @@ ALTER TRIGGER "VER_USERROLE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_USERSESSION" before insert or update on USERSESSION
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_USERSESSION" before insert or update on USERSESSION  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44309,12 +45495,13 @@ ALTER TRIGGER "VER_USERSESSION" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_USESCRYPTOLIB" before insert or update on USESCRYPTOLIB
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_USESCRYPTOLIB" before insert or update on USESCRYPTOLIB  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44325,12 +45512,13 @@ ALTER TRIGGER "VER_USESCRYPTOLIB" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_USESCRYPTOLIBPARAM" before insert or update on USESCRYPTOLIBPARAM
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_USESCRYPTOLIBPARAM" before insert or update on USESCRYPTOLIBPARAM  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44341,12 +45529,13 @@ ALTER TRIGGER "VER_USESCRYPTOLIBPARAM" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_WEBSTATCACHE" before insert or update on WEBSTATCACHE
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_WEBSTATCACHE" before insert or update on WEBSTATCACHE  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 
@@ -44357,12 +45546,13 @@ ALTER TRIGGER "VER_WEBSTATCACHE" ACTIVE;
 
   SET TERM ^ ;
 
-CREATE OR ALTER TRIGGER "VER_WEBSTATCACHEVAL" before insert or update on WEBSTATCACHEVAL
-   AS
-begin
+CREATE OR ALTER TRIGGER "VER_WEBSTATCACHEVAL" before insert or update on WEBSTATCACHEVAL  
+AS
+
+  BEGIN
 IF (new.version IS NULL or (new.version <= old.version)) THEN
     new.version = coalesce(old.version, 0) + 1;
-end^
+  END^
 
 SET TERM ; ^
 

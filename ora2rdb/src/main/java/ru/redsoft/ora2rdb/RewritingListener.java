@@ -35,6 +35,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
     ArrayList<String> loop_index_names = new ArrayList<String>();
     TreeMap<String, String> loop_rec_name_and_cursor_name = new TreeMap<>();
 
+    StringBuilder triggers = new StringBuilder();
+
     boolean containsException = false;
     boolean exceptionExist = false;
 
@@ -268,6 +270,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
         else
             current_plsql_block.popScope();
     }
+
+    @Override
+    public void exitSql_script(Sql_scriptContext ctx) {
+        replace(ctx, getRewriterText(ctx) + triggers.toString());
+
+    }
+
 
     @Override
     public void exitUnit_statement(PlSqlParser.Unit_statementContext ctx) {
@@ -836,17 +845,32 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void enterCreate_view(Create_viewContext ctx) {
         current_view = Ora2rdb.views.get(Ora2rdb.getRealName(getRuleText(ctx.id_expression(0))));
+
     }
 
     @Override
     public void exitCreate_view(Create_viewContext ctx) {
         replace(ctx.REPLACE(), "ALTER");
         delete(ctx.FORCE());
+
         if (ctx.PERIOD() != null) {
+            String str = ctx.schema_name().getText();
+            String str2 = str.substring(0, str.lastIndexOf('"'));
+            String str3 = ctx.id_expression(0).getText().substring(1);
+            String str4 = str2+"_"+str3;
+
             delete(ctx.schema_name());
             delete(ctx.PERIOD());
+            replace(ctx.id_expression(0), str4);
         }
+
         current_view = null;
+    }
+
+    @Override
+    public void exitEditioning_clause(Editioning_clauseContext ctx) {
+        delete(ctx);
+        deleteSpacesLeft(ctx);
     }
 
     @Override
@@ -1636,6 +1660,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         popScope();
         create_triggers.add(ctx);
+        triggers.append(getRewriterText(ctx)).append("\n\n");
+        delete(ctx);
     }
 
     @Override
@@ -1735,6 +1761,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.DISABLE(), "INACTIVE");
 
         alter_triggers.add(ctx);
+        triggers.append(getRewriterText(ctx)).append("\n\n");
+        delete(ctx);
     }
 
     @Override
@@ -1784,7 +1812,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
             if (ctx.string_function().TO_DATE() != null) {
                 replace(ctx.string_function().TO_DATE(), "CAST");
                 delete(ctx.string_function().RIGHT_PAREN());
-                insertAfter(ctx.string_function().table_element(), " AS TIMESTAMP)");
+                if(ctx.string_function().expression() != null)
+                    insertAfter(ctx.string_function().expression(0), " AS TIMESTAMP)");
+                else if(ctx.string_function().table_element() != null)
+                    insertAfter(ctx.string_function().table_element(), " AS TIMESTAMP)");
                 delete(ctx.string_function().COMMA(0));
                 delete(ctx.string_function().quoted_string());
 

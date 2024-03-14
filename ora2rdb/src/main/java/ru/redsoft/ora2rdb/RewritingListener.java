@@ -315,7 +315,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 for (Relational_propertyContext rel_prop_ctx : relational_tableContext.relational_property()) {
 
                     Column_definitionContext col_def_ctx = rel_prop_ctx.column_definition();
-
                     if (col_def_ctx != null) {
                         String column_name = Ora2rdb.getRealName(getRuleText(col_def_ctx.column_name()));
 
@@ -332,6 +331,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
                             if (!not_null)
                                 insertAfter(col_def_ctx, " NOT NULL");
                         }
+                    }
+
+                    if(rel_prop_ctx.out_of_line_constraint() != null){
+                        delete(rel_prop_ctx);
+                        deleteSpacesLeft(rel_prop_ctx);
+                        delete(relational_tableContext.COMMA(relational_tableContext.COMMA().size() -1));
                     }
                 }
             }

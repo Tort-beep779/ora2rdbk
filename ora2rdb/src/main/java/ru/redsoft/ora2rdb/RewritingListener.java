@@ -771,6 +771,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 if (id.startsWith(":"))
                     replace(id_expr_ctx, id.substring(1));
             }
+            if(StorageInfo.package_constant_names.contains(getRewriterText(ctx.id_expression(1)))){
+                replace(ctx.PERIOD(), ":");
+            }
         }
     }
 
@@ -859,16 +862,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
         delete(ctx.FORCE());
 
         if (ctx.PERIOD() != null) {
-            String str = ctx.schema_name().getText();
-            String str2 = str.substring(0, str.lastIndexOf('"'));
-            String str3 = ctx.id_expression(0).getText().substring(1);
-            String str4 = str2+"_"+str3;
-
             delete(ctx.schema_name());
             delete(ctx.PERIOD());
-            replace(ctx.id_expression(0), str4);
         }
-
         current_view = null;
     }
 
@@ -1190,26 +1186,37 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitVariable_declaration(Variable_declarationContext ctx) {
-        String name = Ora2rdb.getRealName(getRuleText(ctx.identifier()));
-        String type = Ora2rdb.getRealName(getRuleText(ctx.type_spec()));
+        if (current_plsql_block != null && ctx.CONSTANT() != null
+                && ctx.parent.getClass().equals(PlSqlParser.Package_obj_specContext.class)
+                || ctx.parent.getClass().equals(PlSqlParser.Package_obj_bodyContext.class)) {
 
-        if (current_plsql_block != null) {
-            if (current_plsql_block.array_types.containsKey(type)) {
-                current_plsql_block.declareArray(name, type);
-                commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
-                return;
+            current_plsql_block.package_constant_names.add(ctx.identifier().getText());
+            if (ctx.default_value_part() != null)
+                replace(ctx.default_value_part().ASSIGN_OP(), "=");
+
+            delete(ctx.CONSTANT());
+            insertBefore(ctx, "CONSTANT ");
+        } else {
+            String name = Ora2rdb.getRealName(getRuleText(ctx.identifier()));
+            String type = Ora2rdb.getRealName(getRuleText(ctx.type_spec()));
+
+            if (current_plsql_block != null) {
+                if (current_plsql_block.array_types.containsKey(type)) {
+                    current_plsql_block.declareArray(name, type);
+                    commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+                    return;
+                }
+
+                current_plsql_block.declareVar(name);
             }
 
-            current_plsql_block.declareVar(name);
-        }
+            if (ctx.type_spec().PERCENT_ROWTYPE() != null) {
+                insertBefore(ctx, "VARIABLE ");
+            }
 
-        if (ctx.type_spec().PERCENT_ROWTYPE() != null) {
-            insertBefore(ctx, "VARIABLE ");
+            insertBefore(ctx, "DECLARE ");
         }
-
-        insertBefore(ctx, "DECLARE ");
     }
-
 
     private boolean existTypeInList(String tableName, String columnName) {
         return Ora2rdb.types_of_column.containsKey(tableName)
@@ -1329,6 +1336,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
+    public void enterCreate_package(PlSqlParser.Create_packageContext ctx) {
+        pushScope();
+    }
+    @Override
     public void exitCreate_package(PlSqlParser.Create_packageContext ctx) {
         if (ctx.REPLACE() != null) {
             replace(ctx.REPLACE(), "ALTER");
@@ -1349,6 +1360,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 delete(ctx.package_name(ctx.package_name().size() - 1));
             }
         }
+        popScope();
     }
 
     @Override

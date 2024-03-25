@@ -245,7 +245,15 @@ public class ScanListener extends PlSqlParserBaseListener {
             }
         }
     }
+    @Override
+    public void exitVariable_declaration(Variable_declarationContext ctx) {
+        if (ctx.CONSTANT() != null
+                && ctx.parent.getClass().equals(PlSqlParser.Package_obj_specContext.class)
+                || ctx.parent.getClass().equals(PlSqlParser.Package_obj_bodyContext.class)) {
 
+            StorageInfo.package_constant_names.add(ctx.identifier().getText());
+        }
+    }
     @Override
     public void enterCreate_view(Create_viewContext ctx) {
         Ora2rdb.views.put(Ora2rdb.getRealName(ctx.id_expression(0).getText()), new View(ctx));

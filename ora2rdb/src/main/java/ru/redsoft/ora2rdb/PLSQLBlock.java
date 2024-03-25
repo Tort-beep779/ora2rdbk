@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class PLSQLBlock {
+    ArrayList<String> package_constant_names = new ArrayList<>();
     Stack<TreeSet<String>> scopes = new Stack<TreeSet<String>>();
     private PlSqlParser.StatementContext statement;
     ArrayList<String> trigger_fields = new ArrayList<String>();

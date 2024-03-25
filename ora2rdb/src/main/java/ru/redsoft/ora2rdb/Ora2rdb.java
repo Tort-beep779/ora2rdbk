@@ -82,6 +82,7 @@ public class Ora2rdb {
         Ora2rdb.function_returns_type_with_parent.clear();
         Ora2rdb.function_returns_type.clear();
         Ora2rdb.types_of_column.clear();
+        StorageInfo.clearInfo();
         return converter;
     }
 

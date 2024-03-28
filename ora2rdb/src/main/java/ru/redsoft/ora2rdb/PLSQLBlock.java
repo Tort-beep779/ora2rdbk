@@ -127,20 +127,4 @@ public class PLSQLBlock {
             temporary_tables_ddl.add(table_ddl.toString());
         }
     }
-
-
-    void declareCustomType(String name) {
-        TreeSet<String> field_name_set = new TreeSet<>(fields_custom_type_array.keySet());
-        StringBuilder table_ddl = new StringBuilder("CREATE GLOBAL TEMPORARY TABLE " + name + " (\n");
-        for (String field_name : field_name_set) {
-            if (!field_name.equals(field_name_set.last()))
-                table_ddl.append(field_name).append('\t').append(fields_custom_type_array.get(field_name)).append(",\n");
-            else
-                table_ddl.append(field_name).append('\t').append(fields_custom_type_array.get(field_name)).append("\n);\n");
-        }
-        temporary_tables_ddl.add(table_ddl.toString());
-        System.out.println(table_ddl.toString());
-    }
-
-
 }

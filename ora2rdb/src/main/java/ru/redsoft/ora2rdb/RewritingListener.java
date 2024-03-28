@@ -1218,51 +1218,31 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
     }
 
-    private boolean existTypeInList(String tableName, String columnName) {
-        return Ora2rdb.types_of_column.containsKey(tableName)
-                && Ora2rdb.types_of_column.get(tableName).containsKey(columnName)
-                && Ora2rdb.types_of_column.get(tableName).get(columnName) != null;
+    @Override
+    public void exitDefault_value_part(Default_value_partContext ctx) {
+        if(ctx.ASSIGN_OP() != null){
+            replace(ctx.ASSIGN_OP(), "=");
+        }
     }
 
     @Override
     public void exitType_declaration(Type_declarationContext ctx) {
-        commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
-        if (ctx.table_type_def() != null) {
-            if (current_plsql_block != null && ctx.table_type_def().TABLE() != null
-                    && ctx.table_type_def().table_indexed_by_part() != null) {
-                current_plsql_block.declareTypeOfArray(Ora2rdb.getRealName(getRuleText(ctx.identifier())),
-                        getRewriterText(ctx.table_type_def().type_spec()),
-                        getRewriterText(ctx.table_type_def().table_indexed_by_part().type_spec()));
-            }
-        }
         if (ctx.record_type_def() != null) {
-            if (current_plsql_block != null) {
-                if (ctx.record_type_def().field_spec() != null) {
-                    for (Field_specContext fieldSpec : ctx.record_type_def().field_spec()) {
-                        boolean type_of_column_exist = false;
-                        if (fieldSpec.type_spec().PERCENT_TYPE() != null) {
-                            Type_specContext type_spec = fieldSpec.type_spec();
-                            if (type_spec.datatype() == null) {
-                                String table_name = Ora2rdb.getRealName(type_spec.type_name().id_expression(0).getText());
-                                String column_name = Ora2rdb.getRealName(type_spec.type_name().id_expression(1).getText());
-                                if (existTypeInList(table_name, column_name)) {
-                                    current_plsql_block.fields_custom_type_array.put(
-                                            getRewriterText(fieldSpec.column_name()),
-                                            Ora2rdb.types_of_column.get(table_name).get(column_name));
-                                    type_of_column_exist = true;
-                                }
-                            }
-                        }
-                        if (!type_of_column_exist) {
-                            current_plsql_block.fields_custom_type_array.put(
-                                    getRewriterText(fieldSpec.column_name()),
-                                    getRewriterText(fieldSpec.type_spec()));
-                        }
-                    }
-                    current_plsql_block.declareCustomType(getRewriterText(ctx.identifier()));
+            insertBefore(ctx.TYPE(), "DECLARE ");
+            delete(ctx.IS());
+            delete(ctx.record_type_def().RECORD());
+        }else {
+            commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+            if (ctx.table_type_def() != null) {
+                if (current_plsql_block != null && ctx.table_type_def().TABLE() != null
+                        && ctx.table_type_def().table_indexed_by_part() != null) {
+                    current_plsql_block.declareTypeOfArray(Ora2rdb.getRealName(getRuleText(ctx.identifier())),
+                            getRewriterText(ctx.table_type_def().type_spec()),
+                            getRewriterText(ctx.table_type_def().table_indexed_by_part().type_spec()));
                 }
             }
         }
+
     }
 
     @Override
@@ -1639,9 +1619,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
             replace(ctx, "TYPE OF COLUMN " + getRuleText(ctx.type_name()));
         if (ctx.PERCENT_ROWTYPE() != null) {
             delete(ctx.PERCENT_ROWTYPE());
-            replace(ctx, "TYPE OF TABLE " + getRuleText(ctx.type_name()));
-        }
-        if (ctx.type_name() != null && ctx.PERCENT_TYPE() == null && ctx.PERCENT_ROWTYPE() == null) {
             replace(ctx, "TYPE OF TABLE " + getRuleText(ctx.type_name()));
         }
     }

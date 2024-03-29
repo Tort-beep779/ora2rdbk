@@ -74,7 +74,6 @@ public class Ora2rdb {
         Ora2rdb.index_names.clear();
         Ora2rdb.procedures_names.clear();
         Ora2rdb.views.clear();
-        Ora2rdb.reorder = false;
         Ora2rdb.out_parameters_in_procedure.clear();
         Ora2rdb.out_parameters_in_function.clear();
         Ora2rdb.procedures_with_out_parameters.clear();

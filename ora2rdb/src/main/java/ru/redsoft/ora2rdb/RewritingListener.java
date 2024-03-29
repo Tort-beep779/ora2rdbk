@@ -272,13 +272,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitSql_script(Sql_scriptContext ctx) {
-        replace(ctx, getRewriterText(ctx) + triggers.toString());
-
-    }
-
-
-    @Override
     public void exitUnit_statement(PlSqlParser.Unit_statementContext ctx) {
         if (!exceptionExist & containsException) {
             String exception = "CREATE EXCEPTION CUSTOM_EXCEPTION 'error';";
@@ -1654,8 +1647,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         popScope();
         create_triggers.add(ctx);
-        triggers.append(getRewriterText(ctx)).append("\n\n");
-        delete(ctx);
     }
 
     @Override
@@ -1755,8 +1746,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.DISABLE(), "INACTIVE");
 
         alter_triggers.add(ctx);
-        triggers.append(getRewriterText(ctx)).append("\n\n");
-        delete(ctx);
     }
 
     @Override

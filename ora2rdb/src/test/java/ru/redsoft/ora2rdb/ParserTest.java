@@ -132,4 +132,9 @@ class ParserTest {
         test("rowtype.sql");
     }
 
+    @Test
+    void package_constantsTest() throws IOException {
+        test("package_constants.sql");
+    }
+
 }

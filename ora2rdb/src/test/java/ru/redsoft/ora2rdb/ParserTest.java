@@ -127,4 +127,9 @@ class ParserTest {
         test("hr_ora.sql");
     }
 
+    @Test
+    void rowtypeTest() throws IOException {
+        test("rowtype.sql");
+    }
+
 }

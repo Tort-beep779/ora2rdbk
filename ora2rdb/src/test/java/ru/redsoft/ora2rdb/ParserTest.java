@@ -137,4 +137,8 @@ class ParserTest {
         test("package_constants.sql");
     }
 
+    @Test
+    void loopsTest() throws IOException {
+        test("loops.sql");
+    }
 }

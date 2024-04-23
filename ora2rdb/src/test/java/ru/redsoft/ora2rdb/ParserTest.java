@@ -141,4 +141,9 @@ class ParserTest {
     void loopsTest() throws IOException {
         test("loops.sql");
     }
+
+    @Test
+    void associative_arraysTest() throws IOException {
+        test("associative_arrays.sql");
+    }
 }

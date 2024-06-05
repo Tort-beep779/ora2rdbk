@@ -1983,7 +1983,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.FOR(), indentation + "WHILE (");
         insertAfter(ctx.cursor_loop_param(), ") DO" + '\n' + indentation + "BEGIN");
         
-        replace(ctx.cursor_loop_param().IN(), " < ");
+        replace(ctx.cursor_loop_param().IN(), " <= ");
         deleteSpacesAbut(ctx.cursor_loop_param().IN());
         delete(ctx.cursor_loop_param().lower_bound());
         deleteSpacesAbut(ctx.cursor_loop_param().lower_bound());
@@ -2014,7 +2014,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.FOR(), indentation + "WHILE (");
         insertAfter(ctx.cursor_loop_param(), ") DO" + '\n' + indentation + "BEGIN");
         insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
-        replace(ctx.cursor_loop_param().IN(), " > ");
+        replace(ctx.cursor_loop_param().IN(), " >= ");
         delete(ctx.cursor_loop_param().REVERSE());
         delete(ctx.cursor_loop_param().upper_bound());
         delete(ctx.cursor_loop_param().DOUBLE_PERIOD());

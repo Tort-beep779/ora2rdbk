@@ -13,17 +13,6 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 public class Ora2rdb {
-    public static TreeMap<String, TreeSet<String>> table_not_null_cols = new TreeMap<String, TreeSet<String>>();
-    public static TreeSet<String> index_names = new TreeSet<String>();
-    public static TreeSet<String> procedures_names = new TreeSet<String>();
-    public static TreeMap<String, View> views = new TreeMap<String, View>();
-    public static TreeMap<String, TreeMap<String, TreeMap<String, Integer>>> procedures_with_out_parameters = new TreeMap<>();
-    public static TreeMap<String, TreeMap<String, TreeMap<String, Integer>>> functions_with_out_parameters = new TreeMap<>();
-    public static TreeMap<String, TreeMap<String, Integer>> out_parameters_in_procedure = new TreeMap<>();
-    public static TreeMap<String, TreeMap<String, Integer>> out_parameters_in_function = new TreeMap<>();
-    public static TreeMap<String, TreeMap<String, String>> function_returns_type_with_parent = new TreeMap<>();
-    public static TreeMap<String, String> function_returns_type = new TreeMap<>();
-    public static TreeMap<String, TreeMap<String, String>> types_of_column = new TreeMap<>();
     public static boolean reorder = false;
 
     static String stripQuotes(String str) {
@@ -70,17 +59,7 @@ public class Ora2rdb {
         RewritingListener converter = new RewritingListener(tokens);
         walker.walk(converter, tree);
 
-        Ora2rdb.table_not_null_cols.clear();
-        Ora2rdb.index_names.clear();
-        Ora2rdb.procedures_names.clear();
-        Ora2rdb.views.clear();
-        Ora2rdb.out_parameters_in_procedure.clear();
-        Ora2rdb.out_parameters_in_function.clear();
-        Ora2rdb.procedures_with_out_parameters.clear();
-        Ora2rdb.functions_with_out_parameters.clear();
-        Ora2rdb.function_returns_type_with_parent.clear();
-        Ora2rdb.function_returns_type.clear();
-        Ora2rdb.types_of_column.clear();
+
         StorageInfo.clearInfo();
         return converter;
     }

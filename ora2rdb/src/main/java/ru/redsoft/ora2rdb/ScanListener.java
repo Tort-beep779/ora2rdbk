@@ -1,14 +1,19 @@
 package ru.redsoft.ora2rdb;
 
+import java.util.Objects;
+import java.util.Stack;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import ru.redsoft.ora2rdb.PlSqlParser.*;
 
 public class ScanListener extends PlSqlParserBaseListener {
+    Stack<StoredBlock> storedBlocksStack = new Stack<>();
     String currentProcedureName;
+    String current_package_name = null;
 
     @Override
     public void enterCreate_package_body(Create_package_bodyContext ctx) {
+        current_package_name = Ora2rdb.getRealName(ctx.package_name(0).getText());
         for (Package_obj_bodyContext obj_body : ctx.package_obj_body()) {
             if (obj_body.type_declaration() != null) {
                 Type_declarationContext type = obj_body.type_declaration();
@@ -19,12 +24,12 @@ public class ScanListener extends PlSqlParserBaseListener {
                             if (typeSpec.type_name() != null) {
                                 String tableName = Ora2rdb.getRealName(typeSpec.type_name().id_expression(0).getText());
                                 String columnName = Ora2rdb.getRealName(typeSpec.type_name().id_expression(1).getText());
-                                if (Ora2rdb.types_of_column.containsKey(tableName)) {
-                                    Ora2rdb.types_of_column.get(tableName).put(columnName, null);
+                                if (StorageInfo.types_of_column.containsKey(tableName)) {
+                                    StorageInfo.types_of_column.get(tableName).put(columnName, null);
                                 } else {
                                     TreeMap<String, String> unknown_column_type = new TreeMap<>();
                                     unknown_column_type.put(columnName, null);
-                                    Ora2rdb.types_of_column.put(tableName, unknown_column_type);
+                                    StorageInfo.types_of_column.put(tableName, unknown_column_type);
                                 }
                             }
                         }
@@ -32,6 +37,11 @@ public class ScanListener extends PlSqlParserBaseListener {
                 }
             }
         }
+    }
+
+    @Override
+    public void exitCreate_package_body(Create_package_bodyContext ctx){
+         current_package_name = null;
     }
 
     @Override
@@ -54,12 +64,12 @@ public class ScanListener extends PlSqlParserBaseListener {
                                 String table_name = Ora2rdb.getRealName(ctx.tableview_name().id_expression().getText());
                                 String column_name = Ora2rdb.getRealName(modify_col_properties_ctx.column_name().getText());
 
-                                if (Ora2rdb.table_not_null_cols.containsKey(table_name)) {
-                                    Ora2rdb.table_not_null_cols.get(table_name).add(column_name);
+                                if (StorageInfo.table_not_null_cols.containsKey(table_name)) {
+                                    StorageInfo.table_not_null_cols.get(table_name).add(column_name);
                                 } else {
                                     TreeSet<String> columns_set = new TreeSet<String>();
                                     columns_set.add(column_name);
-                                    Ora2rdb.table_not_null_cols.put(table_name, columns_set);
+                                    StorageInfo.table_not_null_cols.put(table_name, columns_set);
                                 }
                             }
                         }
@@ -78,18 +88,18 @@ public class ScanListener extends PlSqlParserBaseListener {
 
                     String table_name = Ora2rdb.getRealName(ctx.tableview_name().id_expression().getText());
 
-                    if (Ora2rdb.table_not_null_cols.containsKey(table_name))
-                        Ora2rdb.table_not_null_cols.get(table_name).addAll(columns_set);
+                    if (StorageInfo.table_not_null_cols.containsKey(table_name))
+                        StorageInfo.table_not_null_cols.get(table_name).addAll(columns_set);
                     else
-                        Ora2rdb.table_not_null_cols.put(table_name, columns_set);
+                        StorageInfo.table_not_null_cols.put(table_name, columns_set);
                 }
                 if (out_of_line_constraint_ctx.PRIMARY() != null)
-                    Ora2rdb.index_names.add(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()));
+                    StorageInfo.index_names.add(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()));
                 else if (out_of_line_constraint_ctx.UNIQUE() != null)
-                    Ora2rdb.index_names.add(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()));
+                    StorageInfo.index_names.add(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()));
                 else if (out_of_line_constraint_ctx.foreign_key_clause() != null) {
                     if (out_of_line_constraint_ctx.foreign_key_clause().FOREIGN() != null)
-                        Ora2rdb.index_names.add(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()));
+                        StorageInfo.index_names.add(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()));
 
                 }
 
@@ -101,150 +111,230 @@ public class ScanListener extends PlSqlParserBaseListener {
     @Override
     public void enterCreate_procedure_body(Create_procedure_bodyContext ctx) {
         String procedureName;
-        if (ctx.procedure_name().id_expression() != null) {
+        StoredProcedure storedProcedure = new StoredProcedure();
+        if (ctx.procedure_name().id_expression() != null)
             procedureName = Ora2rdb.getRealName(ctx.procedure_name().id_expression().getText());
-            Ora2rdb.procedures_names.add(procedureName);
-        } else {
+        else
             procedureName = Ora2rdb.getRealName(ctx.procedure_name().identifier().id_expression().getText());
-            Ora2rdb.procedures_names.add(procedureName);
-        }
-        if (ctx.parameter() != null) {
-            for (int i = 0; i < ctx.parameter().size(); i++) {
-                if (!ctx.parameter(i).OUT().isEmpty()) {
-                    String parameter_name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
-                    if (Ora2rdb.out_parameters_in_procedure.containsKey(procedureName)) {
-                        Ora2rdb.out_parameters_in_procedure.get(procedureName).put(parameter_name, i);
-                    } else {
-                        TreeMap<String, Integer> parameter_set = new TreeMap<>();
-                        parameter_set.put(parameter_name, i);
-                        Ora2rdb.out_parameters_in_procedure.put(procedureName, parameter_set);
-                    }
-                }
+
+        storedProcedure.setName(procedureName);
+        storedProcedure.setPackage_name(current_package_name);
+
+        if(ctx.parameter() != null){
+            for(int i = 0; i < ctx.parameter().size(); i++ ){
+                String name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
+                String type;
+                if(ctx.parameter(i).type_spec().datatype() != null)
+                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().datatype().native_datatype_element().getText());
+                else
+                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().getText());
+                storedProcedure.setParameters(i, name, type, !ctx.parameter(i).OUT().isEmpty());
             }
         }
         currentProcedureName = procedureName;
+        storedBlocksStack.push(storedProcedure);
     }
 
     @Override
     public void exitCreate_procedure_body(Create_procedure_bodyContext ctx) {
         currentProcedureName = null;
+        StorageInfo.stored_blocks_list.add(storedBlocksStack.pop());
     }
 
     @Override
     public void enterProcedure_body(Procedure_bodyContext ctx) {
-
+        StoredProcedure storedProcedure = new StoredProcedure();
         String procedureName = Ora2rdb.getRealName(ctx.identifier().id_expression().getText());
-        Ora2rdb.procedures_names.add(procedureName);
-        if (ctx.parameter() != null) {
-            for (int i = 0; i < ctx.parameter().size(); i++) {
-                if (!ctx.parameter(i).OUT().isEmpty()) {
-                    String parameter_name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
-                    if (currentProcedureName != null) {
-                        if (Ora2rdb.procedures_with_out_parameters.containsKey(currentProcedureName)) {
-                            if (Ora2rdb.procedures_with_out_parameters.get(currentProcedureName).containsKey(procedureName)) {
-                                Ora2rdb.procedures_with_out_parameters.get(currentProcedureName).get(procedureName).put(parameter_name, i);
-                            } else {
-                                TreeMap<String, Integer> parameter_set = new TreeMap<>();
-                                parameter_set.put(parameter_name, i);
-                                Ora2rdb.procedures_with_out_parameters.get(currentProcedureName).put(procedureName, parameter_set);
-                            }
-                        } else {
-                            TreeMap<String, TreeMap<String, Integer>> out_parameters_in_procedure = new TreeMap<>();
-                            TreeMap<String, Integer> parameter_set = new TreeMap<>();
-                            parameter_set.put(parameter_name, i);
-                            out_parameters_in_procedure.put(procedureName, parameter_set);
-                            Ora2rdb.procedures_with_out_parameters.put(currentProcedureName, out_parameters_in_procedure);
-                        }
-                    } else if (Ora2rdb.out_parameters_in_procedure.containsKey(procedureName)) {
-                        Ora2rdb.out_parameters_in_procedure.get(procedureName).put(parameter_name, i);
-                    } else {
-                        TreeMap<String, Integer> parameter_set = new TreeMap<>();
-                        parameter_set.put(parameter_name, i);
-                        Ora2rdb.out_parameters_in_procedure.put(procedureName, parameter_set);
-                    }
-                }
+
+
+        storedProcedure.setName(procedureName);
+        storedProcedure.setPackage_name(current_package_name);
+
+        if(ctx.parameter() != null){
+            for(int i = 0; i < ctx.parameter().size(); i++ ){
+                String name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
+                String type;
+                if(ctx.parameter(i).type_spec().datatype() != null)
+                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().datatype().native_datatype_element().getText());
+                else
+                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().getText());
+                storedProcedure.setParameters(i, name, type, !ctx.parameter(i).OUT().isEmpty());
             }
         }
+        if(!storedBlocksStack.isEmpty()) {
+            storedProcedure.setParent(storedBlocksStack.peek());
+            storedBlocksStack.peek().setChildren(storedProcedure);
+        }
+        storedBlocksStack.push(storedProcedure);
         currentProcedureName = procedureName;
+
     }
 
     @Override
     public void exitProcedure_body(Procedure_bodyContext ctx) {
         currentProcedureName = null;
+        StorageInfo.stored_blocks_list.add(storedBlocksStack.pop());
     }
 
     @Override
     public void enterCreate_function_body(Create_function_bodyContext ctx) {
         String functionName;
-        if (ctx.function_name().id_expression() != null) {
+        StoredFunction storedFunction = new StoredFunction();
+        if (ctx.function_name().id_expression() != null)
             functionName = Ora2rdb.getRealName(ctx.function_name().id_expression().getText());
-            Ora2rdb.procedures_names.add(functionName);
-        } else {
+        else
             functionName = Ora2rdb.getRealName(ctx.function_name().identifier().id_expression().getText());
-            Ora2rdb.procedures_names.add(functionName);
-        }
 
-        if (ctx.parameter() != null) {
-            for (int i = 0; i < ctx.parameter().size(); i++) {
-                if (!ctx.parameter(i).OUT().isEmpty()) {
-                    Ora2rdb.function_returns_type.put(functionName, getConvertType(ctx.type_spec()));
-                    String parameter_name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
-                    if (Ora2rdb.out_parameters_in_function.containsKey(functionName)) {
-                        Ora2rdb.out_parameters_in_function.get(functionName).put(parameter_name, i);
-                    } else {
-                        TreeMap<String, Integer> parameter_set = new TreeMap<>();
-                        parameter_set.put(parameter_name, i);
-                        Ora2rdb.out_parameters_in_function.put(functionName, parameter_set);
-
-                    }
-                }
-
+        storedFunction.setName(functionName);
+        storedFunction.setPackage_name(current_package_name);
+        if(ctx.type_spec().datatype() != null)
+            storedFunction.setFunction_returns_type(Ora2rdb.getRealName(ctx.type_spec().datatype().native_datatype_element().getText()));
+        else
+            storedFunction.setFunction_returns_type(Ora2rdb.getRealName(ctx.type_spec().getText()));
+        storedFunction.setConvert_function_return_type(getConvertType(ctx.type_spec()));
+        if(ctx.parameter() != null){
+            for(int i = 0; i < ctx.parameter().size(); i++ ){
+                String name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
+                String type;
+                if(ctx.parameter(i).type_spec().datatype() != null)
+                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().datatype().native_datatype_element().getText());
+                else
+                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().getText());
+                storedFunction.setParameters(i, name, type, !ctx.parameter(i).OUT().isEmpty());
             }
         }
         currentProcedureName = functionName;
+        storedBlocksStack.push(storedFunction);
+    }
+
+    @Override
+    public void exitCreate_function_body(Create_function_bodyContext ctx){
+        StorageInfo.stored_blocks_list.add(storedBlocksStack.pop());
     }
 
     @Override
     public void enterFunction_body(Function_bodyContext ctx) {
+        StoredFunction storedFunction = new StoredFunction();
         String functionName = Ora2rdb.getRealName(ctx.identifier().id_expression().getText());
 
-        if (ctx.parameter() != null) {
-            for (int i = 0; i < ctx.parameter().size(); i++) {
-                if (!ctx.parameter(i).OUT().isEmpty()) {
-                    Ora2rdb.procedures_names.add(functionName);
-                    String parameter_name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
-                    if (currentProcedureName != null) {
-                        TreeMap<String, String> functionReturnType = new TreeMap<>();
-                        functionReturnType.put(functionName, getConvertType(ctx.type_spec()));
-                        Ora2rdb.function_returns_type_with_parent.put(currentProcedureName, functionReturnType);
-                        if (Ora2rdb.functions_with_out_parameters.containsKey(currentProcedureName)) {
-                            if (Ora2rdb.functions_with_out_parameters.get(currentProcedureName).containsKey(functionName)) {
-                                Ora2rdb.functions_with_out_parameters.get(currentProcedureName).get(functionName).put(parameter_name, i);
-                            } else {
-                                TreeMap<String, Integer> parameter_set = new TreeMap<>();
-                                parameter_set.put(parameter_name, i);
-                                Ora2rdb.functions_with_out_parameters.get(currentProcedureName).put(functionName, parameter_set);
-                            }
-                        } else {
-                            TreeMap<String, TreeMap<String, Integer>> out_parameters_in_function = new TreeMap<>();
-                            TreeMap<String, Integer> parameter_set = new TreeMap<>();
-                            parameter_set.put(parameter_name, i);
-                            out_parameters_in_function.put(functionName, parameter_set);
-                            Ora2rdb.functions_with_out_parameters.put(currentProcedureName, out_parameters_in_function);
-                        }
-                    } else if (Ora2rdb.out_parameters_in_function.containsKey(functionName)) {
-                        Ora2rdb.out_parameters_in_function.get(functionName).put(parameter_name, i);
-                        Ora2rdb.function_returns_type.put(functionName, getConvertType(ctx.type_spec()));
-                    } else {
-                        TreeMap<String, Integer> parameter_set = new TreeMap<>();
-                        parameter_set.put(parameter_name, i);
-                        Ora2rdb.out_parameters_in_function.put(functionName, parameter_set);
-                        Ora2rdb.function_returns_type.put(functionName, getConvertType(ctx.type_spec()));
-                    }
-                }
+        storedFunction.setName(functionName);
+        storedFunction.setPackage_name(current_package_name);
+        if(ctx.type_spec().datatype() != null)
+            storedFunction.setFunction_returns_type(Ora2rdb.getRealName(ctx.type_spec().datatype().native_datatype_element().getText()));
+        else
+            storedFunction.setFunction_returns_type(Ora2rdb.getRealName(ctx.type_spec().getText()));
+        storedFunction.setConvert_function_return_type(getConvertType(ctx.type_spec()));
+        if(ctx.parameter() != null){
+            for(int i = 0; i < ctx.parameter().size(); i++ ){
+                String name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
+                String type;
+                if(ctx.parameter(i).type_spec().datatype() != null)
+                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().datatype().native_datatype_element().getText());
+                else
+                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().getText());
+                storedFunction.setParameters(i, name, type, !ctx.parameter(i).OUT().isEmpty());
             }
         }
+
+        if(!storedBlocksStack.isEmpty()){
+            storedFunction.setParent(storedBlocksStack.peek());
+            storedBlocksStack.peek().setChildren(storedFunction);
+        }
+        storedBlocksStack.push(storedFunction);
+
     }
+
+    @Override
+    public void exitFunction_body(Function_bodyContext ctx){
+        StorageInfo.stored_blocks_list.add(storedBlocksStack.pop());
+    }
+
+    @Override
+    public void enterFunction_call(Function_callContext ctx) {
+        FinderBlockCall finder = new FinderBlockCall();
+        String name;
+        String package_name;
+        if(ctx.routine_name().id_expression(0) != null){
+            name = Ora2rdb.getRealName(ctx.routine_name().id_expression(0).getText());
+            package_name = Ora2rdb.getRealName(ctx.routine_name().identifier().getText());
+        } else {
+            name = Ora2rdb.getRealName(ctx.routine_name().identifier().getText());
+            package_name = null;
+        }
+        finder.setName(name);
+        finder.setPackage_name(package_name);
+        finder.setArea_package_name(current_package_name);
+
+        if (ctx.function_argument() != null && !storedBlocksStack.isEmpty() ) {
+            String arg_name;
+            for (int i = 0; i < ctx.function_argument().argument().size(); i++) {
+                arg_name = Ora2rdb.getRealName(ctx.function_argument().argument(i).getText());
+                finder.setParameters(
+                        i,
+                        arg_name,
+                        storedBlocksStack.peek().getParamType(arg_name)
+                );
+            }
+        }
+        if(!storedBlocksStack.isEmpty())
+            storedBlocksStack.peek().getChildren().stream()
+                .filter(e -> e.equalsIgnoreParent(finder))
+                .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
+
+
+        StoredBlock storedBlock = StorageInfo.stored_blocks_list.stream()
+                .filter(e -> e.equals(finder))
+                .findFirst().orElse(null);
+        if(storedBlock != null && !storedBlocksStack.isEmpty())
+            if(!storedBlocksStack.peek().getCalledStorageBlocks().contains(storedBlock))
+                storedBlocksStack.peek().setCalledStorageBlocks(storedBlock);
+    }
+
+    @Override 
+    public void enterGeneral_element_part(General_element_partContext ctx) {
+        if(ctx.function_argument() != null){
+            FinderBlockCall finder = new FinderBlockCall();
+            String name;
+            String package_name;
+            if(!ctx.PERIOD().isEmpty()){
+                name = Ora2rdb.getRealName(ctx.id_expression(1).getText());
+                package_name = Ora2rdb.getRealName(ctx.id_expression(0).getText());
+            }
+            else{
+                name = Ora2rdb.getRealName(ctx.id_expression(0).getText());
+                package_name = null;
+            }
+            finder.setName(name);
+            finder.setPackage_name(package_name);
+            finder.setArea_package_name(current_package_name);
+
+            if (ctx.function_argument() != null && !storedBlocksStack.isEmpty()) {
+                String arg_name;
+                for (int i = 0; i < ctx.function_argument().argument().size(); i++) {
+                    arg_name = Ora2rdb.getRealName(ctx.function_argument().argument(i).getText());
+                    finder.setParameters(
+                            i,
+                            arg_name,
+                            storedBlocksStack.peek().getParamType(arg_name)
+                    );
+                }
+            }
+            if( !storedBlocksStack.isEmpty())
+                 storedBlocksStack.peek().getChildren().stream()
+                    .filter(e -> e.equalsIgnoreParent(finder))
+                    .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
+
+
+            StoredBlock storedBlock = StorageInfo.stored_blocks_list.stream()
+                    .filter(e -> e.equals(finder))
+                    .findFirst().orElse(null);
+            if(storedBlock != null && !storedBlocksStack.isEmpty())
+                if(!storedBlocksStack.peek().getCalledStorageBlocks().contains(storedBlock))
+                    storedBlocksStack.peek().setCalledStorageBlocks(storedBlock);
+        }
+    }
+
+
     @Override
     public void exitVariable_declaration(Variable_declarationContext ctx) {
         if (ctx.CONSTANT() != null
@@ -253,10 +343,19 @@ public class ScanListener extends PlSqlParserBaseListener {
 
             StorageInfo.package_constant_names.add(ctx.identifier().getText());
         }
+        if(!storedBlocksStack.isEmpty()){
+            String name = Ora2rdb.getRealName(ctx.identifier().getText());
+            String type;
+            if(ctx.type_spec().datatype() != null)
+                type = Ora2rdb.getRealName(ctx.type_spec().datatype().native_datatype_element().getText());
+            else
+                type = Ora2rdb.getRealName(ctx.type_spec().getText());
+            storedBlocksStack.peek().setDeclaredVariables(name, type);
+        }
     }
     @Override
     public void enterCreate_view(Create_viewContext ctx) {
-        Ora2rdb.views.put(Ora2rdb.getRealName(ctx.id_expression(0).getText()), new View(ctx));
+        StorageInfo.views.put(Ora2rdb.getRealName(ctx.id_expression(0).getText()), new View(ctx));
     }
 
     private String getConvertType(Type_specContext ctx) { //todo переделать стандартные значения

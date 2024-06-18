@@ -1,9 +1,7 @@
 package ru.redsoft.ora2rdb;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
+
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.TerminalNode;

@@ -979,32 +979,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
             selectQuery.append(" FROM ").append(getRewriterText(ctx));
             selectQuery.append(" INTO ");
 
-                    selectQuery.append(ctx.function_argument().argument(parameter_numbers.get(parameter)).getText()).append('\n');
-                else
-                    selectQuery.append(ctx.function_argument().argument(parameter_numbers.get(parameter)).getText()).append(", ");
-            }
-            current_plsql_block.qwery_call_function_with_out_parameters = selectQuery.toString();
-            replace(ctx, functionRetValName);
-
-            if (current_plsql_block.getStatement() != null) {
-                if (current_plsql_block.getStatement().loop_statement() != null) {
-                    Loop_statementContext loop = current_plsql_block.getStatement().loop_statement();
-                    StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.
-                            append(selectQuery.toString()).
-                            append("if(:").append(functionRetValName).append(")\n").
-                            append("break;\n");
-
-                    replace(loop.condition(), "TRUE");
-                    insertBefore(loop.seq_of_statements(), stringBuilder.toString());
-                } else {
-                    insertBefore(current_plsql_block.getStatement(), current_plsql_block.qwery_call_function_with_out_parameters);
-                    current_plsql_block.clearStatement();
-
-                }
-            }
-        }
-
             for (int i : storedProcedure.getParameters().keySet()) {
                 if (storedProcedure.getParameters().get(i).getOut()) {
                     if (!Objects.equals(i, storedProcedure.getParameters().lastKey()))
@@ -1314,17 +1288,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
                     if (parameterContext != null) {
                         type = getRewriterText(parameterContext.type_spec());
                     }
-                }
-                if (parameter_name.equals(parameter_set.last()))
-                    return_parameters.append(parameter_name).append("_OUT ").append(type_spec).append(")\n");
-                else
-                    return_parameters.append(parameter_name).append("_OUT ").append(type_spec).append(", \n");
-            }
-            insertAfter(ctx.type_spec(), return_parameters + " )");
-        } else {
-            replace(ctx.RETURN(), "RETURNS");
-        }
-        delete(ctx.SEMICOLON());
                     if (parameter.getOut()) {
                         if (!currentFunction.getParameters().lastKey().equals(i))
                             return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(", \n");

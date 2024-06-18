@@ -110,7 +110,7 @@ public class StoredProcedure implements StoredBlock{
         }
         return true;
     }
-    @Override//todo необходимо дописать методы сравнения finder и storedBlock
+    @Override
     public boolean equals(FinderBlockCall finder) {
         return equalFinderBlockName(finder)
                 && equalFinderBlockPackage(finder)

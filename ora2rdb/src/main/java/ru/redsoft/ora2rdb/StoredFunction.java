@@ -241,7 +241,7 @@ public class StoredFunction implements StoredBlock {
     }
 
     @Override
-    public String getMaybe_package_name() {//todo до переделать поиск function call на использование класса finder.
+    public String getMaybe_package_name() {
         return maybe_package_name;
     }
 
@@ -264,7 +264,7 @@ public class StoredFunction implements StoredBlock {
             this.calledProcedure.add((StoredProcedure) calledBlock);
     }
 
-    public ArrayList<StoredFunction> getCalledFunctions() { //todo такую штуку надо добавить в Stored Procedure.
+    public ArrayList<StoredFunction> getCalledFunctions() {
         return calledFunctions;
     }
 

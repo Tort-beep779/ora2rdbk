@@ -383,7 +383,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             } else if (ctx.native_datatype_element().VARCHAR2() != null ||
                     ctx.native_datatype_element().VARCHAR() != null) {
                 if (ctx.precision_part() == null)
-                    replace(ctx, getRewriterText(ctx) + "(250)");
+                    replace(ctx, getRewriterText(ctx) + "(32000)");
             } else if (ctx.native_datatype_element().NUMERIC() != null) {
                 if (ctx.precision_part() == null)
                     replace(ctx, getRewriterText(ctx) + "(18, 4)");

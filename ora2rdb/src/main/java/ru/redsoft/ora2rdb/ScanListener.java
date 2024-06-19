@@ -366,7 +366,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                 Native_datatype_elementContext nde = datatype.native_datatype_element();
 
                 if (nde.VARCHAR2() != null || nde.NVARCHAR2() != null)
-                    type = "VARCHAR (4000)";
+                    type = "VARCHAR (32000)";
                 else if (nde.NUMBER() != null)
                     type = "NUMERIC (18, 4)";
                 else if (nde.BINARY_FLOAT() != null)

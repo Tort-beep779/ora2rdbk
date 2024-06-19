@@ -32,8 +32,8 @@ SET TERM ; ^
    SET TERM ^ ;
 
 create PROCEDURE Base (
-      customer_  VARCHAR(250),
-      methodname_  VARCHAR(250) )
+      customer_  VARCHAR(32000),
+      methodname_  VARCHAR(32000) )
    AS
        DECLARE text_ VARCHAR(10);
        DECLARE local_separator_ VARCHAR(1);

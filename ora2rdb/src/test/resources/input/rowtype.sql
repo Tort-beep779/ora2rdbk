@@ -6,7 +6,7 @@
 --------------------so it cannot be executed.--------------------------------
 -----------------------------------------------------------------------------
 
-CREATE OR REPLACE PACKAGE VTAPP.Cf_Rep_Customer_API IS
+CREATE OR REPLACE PACKAGE ORA.Customer IS
 
 module_                   CONSTANT VARCHAR2(6)      := 'PROJ';
 lu_name_                  CONSTANT VARCHAR2(30)     := 'CfRepCustomer';
@@ -23,10 +23,10 @@ TYPE Public_Rec IS RECORD
    rowkey                         CF_REP_CUSTOMER_TAB.rowkey%TYPE,
    description                    CF_REP_CUSTOMER_TAB.description%TYPE);
 
-end Cf_Rep_Customer_API;
+end Customer;
 
 
-CREATE OR REPLACE PACKAGE BODY VTAPP.Cf_Rep_Customer_API IS
+CREATE OR REPLACE PACKAGE BODY ORA.Customer IS
 
 -----------------------------------------------------------------------------
 -------------------- PRIVATE DECLARATIONS -----------------------------------
@@ -166,7 +166,7 @@ FUNCTION Public_To_Table___ (
    END Public_To_Table___;
 
 
-end Cf_Rep_Customer_API;
+end Customer;
 
 
 

@@ -1495,8 +1495,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitSql_plus_command_wrapper(PlSqlParser.Sql_plus_command_wrapperContext ctx) {
-        delete(ctx);
+    public void exitSql_plus_command_wrapper(Sql_plus_command_wrapperContext ctx) {
+        if(ctx.PROMPT_MESSAGE() != null)
+            commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+        else
+            delete(ctx);
     }
 
     @Override

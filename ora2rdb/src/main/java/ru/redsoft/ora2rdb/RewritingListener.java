@@ -2101,10 +2101,21 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         if (ctx.FOR() != null)
             convertLoopFor(ctx);
-        if (ctx.WHILE() != null) {
+        else if (ctx.WHILE() != null)
             convertLoopWhile(ctx);
+        else{
+            replace(ctx.LOOP(0),"WHILE (TRUE) DO BEGIN");
+            delete(ctx.LOOP(1));
         }
     }
+    @Override
+    public void exitExit_statement(Exit_statementContext ctx) {
+        delete(ctx.EXIT());
+        if(ctx.WHEN() != null)
+            delete(ctx.WHEN());
+        replace(ctx.condition(), "IF( " + getRewriterText(ctx.condition()) + " ) BEGIN LEAVE END");
+    }
+
     private boolean cursorNameIsFunction (Loop_statementContext ctx) {
         if (ctx.cursor_loop_param() != null) {
             Cursor_loop_paramContext cursorLoopParam = ctx.cursor_loop_param();

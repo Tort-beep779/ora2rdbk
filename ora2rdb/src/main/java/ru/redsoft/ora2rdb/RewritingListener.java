@@ -273,6 +273,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
 
+    @Override
+    public void exitSql_script(Sql_scriptContext ctx) {
+        insertBefore(ctx, "CREATE EXCEPTION NO_DATA_FOUND\n" +
+                "\t'no data found';\n");
+    }
 
     @Override
     public void exitUnit_statement(Unit_statementContext ctx) {
@@ -1130,6 +1135,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
             delete(ctx.into_clause());
             insertAfter(ctx.selected_list(), '\n' + indentation);
             replace(ctx, getRewriterText(ctx) + '\n' + indentation + into_clause);
+
+            StringBuilder if_clause = new StringBuilder();
+            if_clause.append('\n').append(indentation).append("IF (ROW_COUNT = 0) THEN").append('\n');
+            if_clause.append(indentation).append('\t').append("EXCEPTION NO_DATA_FOUND");
+            replace(ctx, getRewriterText(ctx) + ";" + if_clause);
         }
     }
 
@@ -1904,6 +1914,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitBody(BodyContext ctx) {
+        if(ctx.EXCEPTION() != null)
+            replace(ctx.EXCEPTION(), "/*EXCEPTION*/");
         if (current_plsql_block != null &&
                 (!current_plsql_block.trigger_fields.isEmpty() || current_plsql_block.trigger_when_condition != null)) {
             String execute_condition = "\nIF (";
@@ -2317,4 +2329,43 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         popScope();
     }
+
+    @Override
+    public void enterSelection_directive(Selection_directiveContext ctx) {
+        commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+    }
+    @Override
+    public void exitException_handler(Exception_handlerContext ctx) {
+        String indentation = getIndentation(ctx.seq_of_statements());
+        replace(ctx.THEN(), "DO");
+        deleteSpacesAbut(ctx.seq_of_statements());
+        insertBefore(ctx.seq_of_statements(), "BEGIN\n\t" + indentation);
+        insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
+
+        for (int i = 0; i < ctx.exception_name().size(); i++) {
+            replace(ctx.exception_name(i), convertException_name(ctx.exception_name(i)));
+        }
+
+    }
+
+    private String convertException_name(Exception_nameContext ctx){
+         String exceptionName = Ora2rdb.getRealName(ctx.getText());
+         switch (exceptionName){
+             case "TOO_MANY_ROWS":
+                return "GDSCODE SING_SELECT_ERR";
+             case "DUP_VAL_ON_INDEX":
+                 return "GDSCODE UNIQUE_KEY_VIOLATION";
+             case "NO_DATA_FOUND":
+                 return "EXCEPTION NO_DATA_FOUND";
+//             case "ROW_LOCKED":
+//                 return "SING_SELECT_ERR";
+             case "VALUE_ERROR":
+                 return "GDSCODE SING_SELECT_ERR";
+             case "ZERO_DIVIDE":
+                 return "GDSCODE EXCEPTION_INTEGER_DIVIDE_BY_ZERO, EXCEPTION_FLOAT_DIVIDE_BY_ZERO";
+         }
+         return exceptionName;
+    }
+
+
 }

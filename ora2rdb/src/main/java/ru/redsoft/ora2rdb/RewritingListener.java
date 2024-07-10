@@ -516,7 +516,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (ctx.function_argument() != null && !storedBlocksStack.isEmpty()) {
             String arg_name;
             for (int i = 0; i < ctx.function_argument().argument().size(); i++) {
-                arg_name = Ora2rdb.getRealName(ctx.function_argument().argument(i).getText());
+                arg_name = Ora2rdb.getRealParameterName(ctx.function_argument().argument(i).getText());
                 finder.setParameters(
                         i,
                         arg_name,
@@ -529,14 +529,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 .filter(e -> e.equalsIgnoreParent(finder))
                 .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
 
-        StoredBlock returnBlock = StorageInfo.stored_blocks_list.stream()// todo crutch
+        return StorageInfo.stored_blocks_list.stream()
                 .filter(e -> e.equals(finder))
                 .findFirst().orElse(null);
-        if(returnBlock == null)
-            returnBlock = StorageInfo.stored_blocks_list.stream()
-                    .filter(e -> e.equalsIgnoreParameters(finder))
-                    .findFirst().orElse(null);
-        return returnBlock;
+
     }
 
     private StoredBlock findFunctionCall(General_element_partContext ctx) {
@@ -566,15 +562,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 .filter(e -> e.equalsIgnoreParent(finder))
                 .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
 
-        StoredBlock returnBlock = StorageInfo.stored_blocks_list.stream()// todo crutch
+        return StorageInfo.stored_blocks_list.stream()
                 .filter(e -> e.equals(finder))
                 .findFirst().orElse(null);
-        if(returnBlock == null)
-            returnBlock = StorageInfo.stored_blocks_list.stream()
-                    .filter(e -> e.equalsIgnoreParameters(finder))
-                    .findFirst().orElse(null);
-
-        return returnBlock;
     }
 
     //    todo part233
@@ -708,6 +698,18 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 .findFirst().orElse(null);
     }
 
+    private StoredTrigger findStorageTrigger(Create_triggerContext ctx) {
+        String trigger_name;
+        if (ctx.trigger_name().PERIOD() != null)
+            trigger_name = Ora2rdb.getRealName(ctx.trigger_name().id_expression().getText());
+        else
+            trigger_name = Ora2rdb.getRealName(ctx.trigger_name().identifier().getText());
+        StoredTrigger storedTrigger = new StoredTrigger();
+        storedTrigger.setName(trigger_name);
+        return (StoredTrigger) StorageInfo.stored_blocks_list.stream()
+                .filter(e -> e.equals(storedTrigger))
+                .findFirst().orElse(null);
+    }
 
     @Override
     public void exitGeneral_element_part(General_element_partContext ctx) {
@@ -1836,13 +1838,16 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitTrigger_name(Trigger_nameContext ctx) {
-        delete(ctx.identifier());
-        delete(ctx.PERIOD());
+        if(ctx.PERIOD() != null) {
+            delete(ctx.identifier());
+            delete(ctx.PERIOD());
+        }
     }
 
     @Override
     public void enterCreate_trigger(Create_triggerContext ctx) {
         pushScope();
+        storedBlocksStack.push(findStorageTrigger(ctx));
     }
 
     @Override
@@ -1865,6 +1870,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         popScope();
         create_triggers.add(ctx);
+        storedBlocksStack.pop();
     }
 
     @Override

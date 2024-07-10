@@ -45,6 +45,23 @@ public class ScanListener extends PlSqlParserBaseListener {
     }
 
     @Override
+    public void enterCreate_table(Create_tableContext ctx) {
+        Table table = new Table();
+        String name;
+        if(ctx.tableview_name().PERIOD(0) != null)
+            name = Ora2rdb.getRealName(ctx.tableview_name().id_expression().getText());
+        else
+            name = Ora2rdb.getRealName(ctx.tableview_name().identifier().getText());
+        table.setName(name);
+        for( Relational_propertyContext rela_prop :ctx.relational_table().relational_property()){
+            table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
+                    Ora2rdb.getRealName(rela_prop.column_definition().datatype().getText())
+            );
+        }
+        StorageInfo.tables.add(table);
+    }
+
+    @Override
     public void enterAlter_table(Alter_tableContext ctx) {
         Column_clausesContext columns_ctx = ctx.column_clauses();
         Constraint_clausesContext constraint_clauses_ctx = ctx.constraint_clauses();
@@ -106,6 +123,52 @@ public class ScanListener extends PlSqlParserBaseListener {
 
             }
         }
+    }
+
+    @Override
+    public void enterCreate_trigger(Create_triggerContext ctx) {
+        StoredTrigger storedTrigger = new StoredTrigger();
+        String name;
+        if(ctx.trigger_name().PERIOD() != null)
+            name = Ora2rdb.getRealName(ctx.trigger_name().id_expression().getText());
+        else
+            name = Ora2rdb.getRealName(ctx.trigger_name().identifier().getText());
+        storedTrigger.setName(name);
+        if(ctx.simple_dml_trigger() != null){
+            Simple_dml_triggerContext simpleDmlTrigger = ctx.simple_dml_trigger();
+            if(simpleDmlTrigger.dml_event_clause() != null){
+                Dml_event_clauseContext dmlEventClause = simpleDmlTrigger.dml_event_clause();
+                if(dmlEventClause.tableview_name() != null){
+                    String table_name;
+                    if(!dmlEventClause.tableview_name().PERIOD().isEmpty())
+                        table_name = Ora2rdb.getRealName(dmlEventClause.tableview_name().id_expression().getText());
+                    else
+                        table_name = Ora2rdb.getRealName(dmlEventClause.tableview_name().identifier().getText());
+
+                    StorageInfo.tables.stream()
+                            .filter(e -> Objects.equals(e.getName(), table_name))
+                            .findFirst().ifPresent(storedTrigger::setTable_view);
+                }
+            }
+        }
+
+        if(ctx.trigger_body().trigger_block() != null) {
+            Trigger_blockContext trigger_block = ctx.trigger_body().trigger_block();
+            for (Declare_specContext declare_spec : trigger_block.declare_spec()){
+                if(declare_spec.variable_declaration() != null){
+                    String param_name = Ora2rdb.getRealName(declare_spec.variable_declaration().identifier().getText());
+                    String param_type = Ora2rdb.getRealName(declare_spec.variable_declaration().type_spec().getText());
+                    storedTrigger.setDeclaredVariables(param_name, param_type);
+                }
+            }
+        }
+        storedBlocksStack.push(storedTrigger);
+
+    }
+
+    @Override
+    public void exitCreate_trigger(Create_triggerContext ctx) {
+        StorageInfo.stored_blocks_list.add(storedBlocksStack.pop());
     }
 
     @Override
@@ -268,7 +331,7 @@ public class ScanListener extends PlSqlParserBaseListener {
         if (ctx.function_argument() != null && !storedBlocksStack.isEmpty() ) {
             String arg_name;
             for (int i = 0; i < ctx.function_argument().argument().size(); i++) {
-                arg_name = Ora2rdb.getRealName(ctx.function_argument().argument(i).getText());
+                arg_name = Ora2rdb.getRealParameterName(ctx.function_argument().argument(i).getText());
                 finder.setParameters(
                         i,
                         arg_name,

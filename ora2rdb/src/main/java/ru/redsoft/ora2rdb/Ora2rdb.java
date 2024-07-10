@@ -29,6 +29,13 @@ public class Ora2rdb {
             return str.toUpperCase();
     }
 
+    static String getRealParameterName(String str) {
+        return str.toUpperCase()
+                .substring(str.lastIndexOf(".") + 1,
+                           str.length()
+                );
+    }
+
     static void printUsage() {
         System.err.println("Usage: ora2rdb.jar <input_file> [options]\n" +
                 "Options:\n" +

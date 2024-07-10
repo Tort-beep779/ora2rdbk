@@ -31,8 +31,7 @@ public interface StoredBlock {
     String getPackage_name();
     void setPackage_name(String package_name);
 
-    String getMaybe_package_name();
-    void setMaybe_package_name(String maybe_package_name);
+
 
      ArrayList<StoredBlock> getCalledStorageBlocks();
      void setCalledStorageBlocks(StoredBlock calledStorageBlocks);

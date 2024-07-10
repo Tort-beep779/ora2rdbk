@@ -191,7 +191,7 @@ public class StoredProcedure implements StoredBlock{
         parameter.setType(type);
         parameter.setName(name);
         parameter.setOut(false);
-        this.declaredVariables.add(parameter) ;
+        this.declaredVariables.add(parameter);
     }
 
     @Override
@@ -224,15 +224,7 @@ public class StoredProcedure implements StoredBlock{
         this.package_name = package_name;
     }
 
-    @Override
-    public String getMaybe_package_name() {
-        return maybe_package_name;
-    }
 
-    @Override
-    public void setMaybe_package_name(String maybe_package_name) {
-        this.maybe_package_name = maybe_package_name;
-    }
 
 
     public ArrayList<StoredBlock> getCalledStorageBlocks() {

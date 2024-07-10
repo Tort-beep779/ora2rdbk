@@ -240,15 +240,7 @@ public class StoredFunction implements StoredBlock {
         this.package_name = package_name;
     }
 
-    @Override
-    public String getMaybe_package_name() {
-        return maybe_package_name;
-    }
 
-    @Override
-    public void setMaybe_package_name(String maybe_package_name) {
-        this.maybe_package_name = maybe_package_name;
-    }
 
     @Override
     public ArrayList<StoredBlock> getCalledStorageBlocks() {

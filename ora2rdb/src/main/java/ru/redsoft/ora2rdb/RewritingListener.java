@@ -1,6 +1,7 @@
 package ru.redsoft.ora2rdb;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 import org.antlr.v4.runtime.*;
@@ -524,15 +525,49 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 );
             }
         }
-        if(!storedBlocksStack.isEmpty())
-            storedBlocksStack.peek().getChildren().stream()
-                .filter(e -> e.equalsIgnoreParent(finder))
-                .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
+        StoredBlock storedBlock;
+        if(!storedBlocksStack.isEmpty()) {
+            List<StoredBlock> tempList = storedBlocksStack.peek().getChildren().stream()
+                    .filter(e -> e.equalsIgnoreParent(finder, true)).collect(Collectors.toList());
+            if(tempList.size() > 1)
+                tempList.stream().filter(e -> e.equalsIgnoreParent(finder, false))
+                        .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
+            else if(!tempList.isEmpty())
+                finder.setParent(tempList.get(0));
 
-        return StorageInfo.stored_blocks_list.stream()
-                .filter(e -> e.equals(finder))
-                .findFirst().orElse(null);
 
+            tempList = storedBlocksStack.peek().getCalledStorageBlocks().stream()
+                    .filter(e -> e.equal(finder, true))
+                    .collect(Collectors.toList());
+            if(tempList.size() > 1)
+                storedBlock = tempList.stream().filter(e -> e.equal(finder, false ))
+                        .findFirst().orElse(null);
+            else
+                storedBlock = tempList.stream().findFirst().orElse(null);
+        }
+        else {
+            List<StoredBlock> tempList = StorageInfo.stored_blocks_list.stream()
+                    .filter(e -> e.getPackage_name() != null)
+                    .filter(e -> e.equal(finder, true))
+                    .collect(Collectors.toList());
+            if(tempList.size() > 1)
+                storedBlock = tempList.stream().filter(e -> e.equal(finder, false))
+                        .findFirst().orElse(null);
+            else
+                storedBlock = tempList.stream().findFirst().orElse(null);
+
+            if(storedBlock == null){
+                tempList = StorageInfo.stored_blocks_list.stream()
+                        .filter(e -> e.equal(finder, true))
+                        .collect(Collectors.toList());
+                if(tempList.size() > 1)
+                    storedBlock = tempList.stream().filter(e -> e.equal(finder, false))
+                            .findFirst().orElse(null);
+                else
+                    storedBlock = tempList.stream().findFirst().orElse(null);
+            }
+        }
+        return storedBlock;
     }
 
     private StoredBlock findFunctionCall(General_element_partContext ctx) {
@@ -557,10 +592,15 @@ public class RewritingListener extends PlSqlParserBaseListener {
             }
         }
 
-        if(!storedBlocksStack.isEmpty())
-            storedBlocksStack.peek().getChildren().stream()
-                .filter(e -> e.equalsIgnoreParent(finder))
-                .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
+        if(!storedBlocksStack.isEmpty()) {
+            List<StoredBlock> tempList = storedBlocksStack.peek().getChildren().stream()
+                    .filter(e -> e.equalsIgnoreParent(finder, true)).collect(Collectors.toList());
+            if(tempList.size() > 1)
+                tempList.stream().filter(e -> e.equalsIgnoreParent(finder, false))
+                        .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
+            else if(!tempList.isEmpty())
+                finder.setParent(tempList.get(0));
+        }
 
         return StorageInfo.stored_blocks_list.stream()
                 .filter(e -> e.equals(finder))
@@ -589,18 +629,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
         storedFunction.setPackage_name(current_package_name);
         if(ctx.parameter() != null){
             for(int i = 0; i < ctx.parameter().size(); i++ ){
-                String parameter_name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
-                String parameter_type;
-                if(ctx.parameter(i).type_spec().datatype() != null)
-                    parameter_type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().datatype().native_datatype_element().getText());
-                else
-                    parameter_type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().getText());
-                storedFunction.setParameters(i, parameter_name, parameter_type, !ctx.parameter(i).OUT().isEmpty());
+                storedFunction.setParameters(i, ctx.parameter(i), !ctx.parameter(i).OUT().isEmpty());
             }
         }
 
         return (StoredFunction) StorageInfo.stored_blocks_list.stream()
-                .filter(e -> e.equals(storedFunction))
+                .filter(e -> e.equal(storedFunction))
                 .findFirst().orElse(null);
     }
 
@@ -624,13 +658,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         storedFunction.setPackage_name(package_name);
         if(ctx.parameter() != null){
             for(int i = 0; i < ctx.parameter().size(); i++ ){
-                String parameter_name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
-                String parameter_type;
-                if(ctx.parameter(i).type_spec().datatype() != null)
-                    parameter_type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().datatype().native_datatype_element().getText());
-                else
-                    parameter_type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().getText());
-                storedFunction.setParameters(i, parameter_name, parameter_type, !ctx.parameter(i).OUT().isEmpty());
+                storedFunction.setParameters(i, ctx.parameter(i), !ctx.parameter(i).OUT().isEmpty());
             }
         }
 
@@ -639,7 +667,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
 
         return (StoredFunction) StorageInfo.stored_blocks_list.stream()
-                .filter(e -> e.equals(storedFunction))
+                .filter(e -> e.equal(storedFunction))
                 .findFirst().orElse(null);
     }
 
@@ -655,18 +683,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         if(ctx.parameter() != null){
             for(int i = 0; i < ctx.parameter().size(); i++ ){
-                String parameter_name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
-                String parameter_type;
-                if(ctx.parameter(i).type_spec().datatype() != null)
-                    parameter_type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().datatype().native_datatype_element().getText());
-                else
-                    parameter_type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().getText());
-                storedProcedure.setParameters(i, parameter_name, parameter_type, !ctx.parameter(i).OUT().isEmpty());
+                storedProcedure.setParameters(i, ctx.parameter(i), !ctx.parameter(i).OUT().isEmpty());
             }
         }
 
         return  (StoredProcedure) StorageInfo.stored_blocks_list.stream()
-                .filter(e -> e.equals(storedProcedure))
+                .filter(e -> e.equal(storedProcedure))
                 .findFirst().orElse(null);
     }
 
@@ -680,13 +702,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         if(ctx.parameter() != null){
             for(int i = 0; i < ctx.parameter().size(); i++ ){
-                String parameter_name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
-                String parameter_type;
-                if(ctx.parameter(i).type_spec().datatype() != null)
-                    parameter_type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().datatype().native_datatype_element().getText());
-                else
-                    parameter_type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().getText());
-                storedProcedure.setParameters(i, parameter_name, parameter_type, !ctx.parameter(i).OUT().isEmpty());
+                storedProcedure.setParameters(i, ctx.parameter(i), !ctx.parameter(i).OUT().isEmpty());
             }
         }
 
@@ -694,7 +710,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             storedProcedure.setParent(storedBlocksStack.peek());
 
         return  (StoredProcedure) StorageInfo.stored_blocks_list.stream()
-                .filter(e -> e.equals(storedProcedure))
+                .filter(e -> e.equal(storedProcedure))
                 .findFirst().orElse(null);
     }
 
@@ -707,7 +723,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         StoredTrigger storedTrigger = new StoredTrigger();
         storedTrigger.setName(trigger_name);
         return (StoredTrigger) StorageInfo.stored_blocks_list.stream()
-                .filter(e -> e.equals(storedTrigger))
+                .filter(e -> e.equal(storedTrigger))
                 .findFirst().orElse(null);
     }
 
@@ -804,7 +820,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             if(storedBlock != null){
                 if(storedBlock instanceof StoredFunction) {
                     if (storedBlock.containOutParameters())
-                        convertFunctionWithOutParameters(ctx);
+                        convertFunctionWithOutParameters(ctx, (StoredFunction) storedBlock);
                 }
                 else if(storedBlock instanceof StoredProcedure){
                     if(storedBlock.containOutParameters())
@@ -814,9 +830,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
 //            else insertBefore(ctx, "\n/*ФУНКЦИЯ НЕ ОПРЕДЕЛИЛАСЬ*/\n");
 
     }
-    private void convertFunctionWithOutParameters(General_element_partContext ctx) {
+    private void convertFunctionWithOutParameters(General_element_partContext ctx, StoredFunction storedFunction) {
         StringBuilder selectQuery = new StringBuilder();
-        StoredBlock storedFunction = findFunctionCall(ctx);
         if (storedFunction != null) {
             if (storedFunction.containOutParameters()) {
                 selectQuery.append("SELECT ").append("RET_VAL, ");
@@ -863,7 +878,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
             }
         }
     }
-
     private void convertProcedureWithOutParameters(General_element_partContext ctx, StoredProcedure storedProcedure) {
 
 
@@ -1976,7 +1990,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitLabel_name(Label_nameContext ctx) {
-        delete(ctx);
+        replace(ctx, "/*"+ getRewriterText(ctx)+"*/");
     }
 
     @Override

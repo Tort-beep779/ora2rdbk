@@ -49,7 +49,7 @@ public class StoredProcedure implements StoredBlock{
     }
 
     @Override
-    public boolean equals(StoredBlock storedBlock) {
+    public boolean equal(StoredBlock storedBlock) {
         if(storedBlock instanceof StoredProcedure){
             return equalsProcedure((StoredProcedure)storedBlock);
         }
@@ -63,25 +63,11 @@ public class StoredProcedure implements StoredBlock{
                 && equalFinderBlockParent(finder);
     }
 
-//    public boolean equalsFunctionsIgnoreParent(StoredFunction function){
-//        return equalFunctionsNames(function)
-//                && equalFunctionsParameters(function)
-//                && equalFunctionsPackage(function);
-//    }
-
-//    @Override
-//    public boolean equalsIgnoreParent(StoredBlock storedBlock) {
-//        return false;
-//    }
-
     @Override
     public boolean containOutParameters() {
         return parameters.values().stream()
                 .anyMatch(Parameter::getOut);
     }
-
-
-
 
 
 
@@ -95,34 +81,41 @@ public class StoredProcedure implements StoredBlock{
 
         if(finder.getPackage_name() != null)
             return Objects.equals(this.package_name, finder.getPackage_name());
-        else if(finder.getArea_package_name() != null)
+        else if(this.package_name != null)
             return Objects.equals(this.package_name, finder.getArea_package_name());
         return Objects.equals(this.package_name, finder.getPackage_name());
     }
-    private boolean equalFinderBlockParameters(FinderBlockCall finder){
+    private boolean equalFinderBlockParameters(FinderBlockCall finder, boolean withTypeConversion){
         TreeMap<Integer, Parameter> parameters = finder.getParameters();
         if(parameters.size() != this.getParameters().size())
             return false;
-        for(Integer seq_num : parameters.keySet()){
-            if(!this.getParameters().get(seq_num).equalParameter(parameters.get(seq_num)))
-                return false;
-
-        }
+        if(withTypeConversion)
+            for (Integer seq_num : parameters.keySet()) {
+                if (!this.getParameters().get(seq_num).equalParameterWithTypeConversion(parameters.get(seq_num))) {
+                    return false;
+                }
+            }
+        else
+            for (Integer seq_num : parameters.keySet()) {
+                if (!this.getParameters().get(seq_num).equalParameter(parameters.get(seq_num))) {
+                    return false;
+                }
+            }
         return true;
     }
     @Override
-    public boolean equals(FinderBlockCall finder) {
+    public boolean equal(FinderBlockCall finder, boolean withTypeConversion) {
         return equalFinderBlockName(finder)
                 && equalFinderBlockPackage(finder)
-                && equalFinderBlockParameters(finder)
+                && equalFinderBlockParameters(finder, withTypeConversion)
                 && equalFinderBlockParent(finder);
     }
 
     @Override
-    public boolean equalsIgnoreParent (FinderBlockCall finder){
+    public boolean equalsIgnoreParent (FinderBlockCall finder, boolean withTypeConversion){
         return equalFinderBlockName(finder)
                 && equalFinderBlockPackage(finder)
-                && equalFinderBlockParameters(finder);
+                && equalFinderBlockParameters(finder, withTypeConversion);
     }
 
 
@@ -181,6 +174,60 @@ public class StoredProcedure implements StoredBlock{
     }
 
     @Override
+    public void setParameters(Integer sequence_number, PlSqlParser.ParameterContext ctx, boolean is_out) {
+        String param_name = Ora2rdb.getRealName(ctx.parameter_name().getText());
+        String param_type = "";
+        if(ctx.type_spec().PERCENT_TYPE() != null){
+            PlSqlParser.Type_nameContext type_name = ctx.type_spec().type_name();
+            if(type_name.PERIOD(0) != null){
+                Table table = StorageInfo.tables.stream()
+                        .filter(e -> e.getName().equals(Ora2rdb.getRealName(type_name.id_expression(0).getText())))
+                        .findFirst().orElse(null);
+                if(table != null)
+                    param_type = table.getColumns().get(Ora2rdb.getRealName(type_name.id_expression(1).getText()));
+                else
+                    param_type = Ora2rdb.getRealName(type_name.getText());
+
+            }
+        }
+        else param_type = Ora2rdb.getRealName(ctx.type_spec().getText());
+
+        Parameter parameter = new Parameter();
+        parameter.setType(param_type);
+        parameter.setName(param_name);
+        parameter.setOut(is_out);
+        this.parameters.put(sequence_number, parameter);
+        this.declaredVariables.add(parameter);
+    }
+
+    @Override
+    public void setParameters(Integer sequence_number, PlSqlParser.Variable_declarationContext ctx, boolean is_out) {
+        String param_name = Ora2rdb.getRealName(ctx.identifier().getText());
+        String param_type = "";
+        if(ctx.type_spec().PERCENT_TYPE() != null){
+            PlSqlParser.Type_nameContext type_name = ctx.type_spec().type_name();
+            if(type_name.PERIOD(0) != null){
+                Table table = StorageInfo.tables.stream()
+                        .filter(e -> e.getName().equals(Ora2rdb.getRealName(type_name.id_expression(0).getText())))
+                        .findFirst().orElse(null);
+                if(table != null)
+                    param_type = table.getColumns().get(Ora2rdb.getRealName(type_name.id_expression(1).getText()));
+                else
+                    param_type = Ora2rdb.getRealName(type_name.getText());
+
+            }
+        }
+        else param_type = Ora2rdb.getRealName(ctx.type_spec().getText());
+
+        Parameter parameter = new Parameter();
+        parameter.setType(param_type);
+        parameter.setName(param_name);
+        parameter.setOut(is_out);
+        this.parameters.put(sequence_number, parameter);
+        this.declaredVariables.add(parameter);
+    }
+
+    @Override
     public ArrayList<Parameter> getDeclaredVariables() {
         return declaredVariables;
     }
@@ -190,6 +237,31 @@ public class StoredProcedure implements StoredBlock{
         Parameter parameter = new Parameter();
         parameter.setType(type);
         parameter.setName(name);
+        parameter.setOut(false);
+        this.declaredVariables.add(parameter);
+    }
+    @Override
+    public void setDeclaredVariables(PlSqlParser.Variable_declarationContext ctx){
+        String param_name = Ora2rdb.getRealName(ctx.identifier().getText());
+        String param_type = "";
+        if(ctx.type_spec().PERCENT_TYPE() != null){
+            PlSqlParser.Type_nameContext type_name = ctx.type_spec().type_name();
+            if(type_name.PERIOD(0) != null){
+                Table table = StorageInfo.tables.stream()
+                        .filter(e -> e.getName().equals(Ora2rdb.getRealName(type_name.id_expression(0).getText())))
+                        .findFirst().orElse(null);
+                if(table != null)
+                    param_type = table.getColumns().get(Ora2rdb.getRealName(type_name.id_expression(1).getText()));
+                else
+                    param_type = Ora2rdb.getRealName(type_name.getText());
+
+            }
+        }
+        else param_type = Ora2rdb.getRealName(ctx.type_spec().getText());
+
+        Parameter parameter = new Parameter();
+        parameter.setType(param_type);
+        parameter.setName(param_name);
         parameter.setOut(false);
         this.declaredVariables.add(parameter);
     }

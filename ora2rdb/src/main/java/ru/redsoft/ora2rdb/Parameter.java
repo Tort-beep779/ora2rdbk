@@ -35,17 +35,19 @@ public class Parameter {
     public void setOut(boolean out) {
         this.out = out;
     }
+
     public boolean equalParameter(Parameter parameter) {
         return (Objects.equals(parameter.getType(), this.getType()));
     }
 
+    public boolean equalParameterWithTypeConversion(Parameter parameter) {
+        if(TypeConversion.conversion_type.get(parameter.getType()) != null)
+            return TypeConversion.conversion_type.get(parameter.getType()).contains(this.getType());
+        else
+            return (Objects.equals(parameter.getType(), this.getType()));
+    }
 
-//    public String getConvertType_spec() {
-//        return convertType_spec;
-//    }
-//
-//    public void setConvertType_spec(String convertType_spec) {
-//        this.convertType_spec = convertType_spec;
-//    }
+
+
 }
 

@@ -1,9 +1,8 @@
 package ru.redsoft.ora2rdb;
 
-import java.util.Objects;
-import java.util.Stack;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import ru.redsoft.ora2rdb.PlSqlParser.*;
 
 public class ScanListener extends PlSqlParserBaseListener {
@@ -54,9 +53,18 @@ public class ScanListener extends PlSqlParserBaseListener {
             name = Ora2rdb.getRealName(ctx.tableview_name().identifier().getText());
         table.setName(name);
         for( Relational_propertyContext rela_prop :ctx.relational_table().relational_property()){
-            table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
-                    Ora2rdb.getRealName(rela_prop.column_definition().datatype().getText())
-            );
+            if(rela_prop.column_definition() == null)
+                continue;
+            if(rela_prop.column_definition().datatype() != null)
+                table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
+                                Ora2rdb.getRealName(rela_prop.column_definition().datatype().getText())
+                );
+            else
+                table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
+                                Ora2rdb.getRealName(rela_prop.column_definition().type_name().getText())
+
+                );
+
         }
         StorageInfo.tables.add(table);
     }
@@ -161,6 +169,13 @@ public class ScanListener extends PlSqlParserBaseListener {
                     storedTrigger.setDeclaredVariables(param_name, param_type);
                 }
             }
+            for (Declare_specContext declare_spec : trigger_block.declare_spec()){
+                if(declare_spec.variable_declaration() != null){
+                    String param_name = Ora2rdb.getRealName(declare_spec.variable_declaration().identifier().getText());
+                    String param_type = Ora2rdb.getRealName(declare_spec.variable_declaration().type_spec().getText());
+                    storedTrigger.setDeclaredVariables(param_name, param_type);
+                }
+            }
         }
         storedBlocksStack.push(storedTrigger);
 
@@ -185,13 +200,7 @@ public class ScanListener extends PlSqlParserBaseListener {
 
         if(ctx.parameter() != null){
             for(int i = 0; i < ctx.parameter().size(); i++ ){
-                String name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
-                String type;
-                if(ctx.parameter(i).type_spec().datatype() != null)
-                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().datatype().native_datatype_element().getText());
-                else
-                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().getText());
-                storedProcedure.setParameters(i, name, type, !ctx.parameter(i).OUT().isEmpty());
+                storedProcedure.setParameters(i, ctx.parameter(i), !ctx.parameter(i).OUT().isEmpty());
             }
         }
         currentProcedureName = procedureName;
@@ -215,13 +224,7 @@ public class ScanListener extends PlSqlParserBaseListener {
 
         if(ctx.parameter() != null){
             for(int i = 0; i < ctx.parameter().size(); i++ ){
-                String name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
-                String type;
-                if(ctx.parameter(i).type_spec().datatype() != null)
-                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().datatype().native_datatype_element().getText());
-                else
-                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().getText());
-                storedProcedure.setParameters(i, name, type, !ctx.parameter(i).OUT().isEmpty());
+                storedProcedure.setParameters(i, ctx.parameter(i), !ctx.parameter(i).OUT().isEmpty());
             }
         }
         if(!storedBlocksStack.isEmpty()) {
@@ -257,13 +260,7 @@ public class ScanListener extends PlSqlParserBaseListener {
         storedFunction.setConvert_function_return_type(getConvertType(ctx.type_spec()));
         if(ctx.parameter() != null){
             for(int i = 0; i < ctx.parameter().size(); i++ ){
-                String name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
-                String type;
-                if(ctx.parameter(i).type_spec().datatype() != null)
-                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().datatype().native_datatype_element().getText());
-                else
-                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().getText());
-                storedFunction.setParameters(i, name, type, !ctx.parameter(i).OUT().isEmpty());
+                storedFunction.setParameters(i, ctx.parameter(i), !ctx.parameter(i).OUT().isEmpty());
             }
         }
         currentProcedureName = functionName;
@@ -289,13 +286,7 @@ public class ScanListener extends PlSqlParserBaseListener {
         storedFunction.setConvert_function_return_type(getConvertType(ctx.type_spec()));
         if(ctx.parameter() != null){
             for(int i = 0; i < ctx.parameter().size(); i++ ){
-                String name = Ora2rdb.getRealName(ctx.parameter(i).parameter_name().getText());
-                String type;
-                if(ctx.parameter(i).type_spec().datatype() != null)
-                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().datatype().native_datatype_element().getText());
-                else
-                    type = Ora2rdb.getRealName(ctx.parameter(i).type_spec().getText());
-                storedFunction.setParameters(i, name, type, !ctx.parameter(i).OUT().isEmpty());
+                storedFunction.setParameters(i, ctx.parameter(i), !ctx.parameter(i).OUT().isEmpty());
             }
         }
 
@@ -339,15 +330,40 @@ public class ScanListener extends PlSqlParserBaseListener {
                 );
             }
         }
-        if(!storedBlocksStack.isEmpty())
-            storedBlocksStack.peek().getChildren().stream()
-                .filter(e -> e.equalsIgnoreParent(finder))
-                .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
-
-
-        StoredBlock storedBlock = StorageInfo.stored_blocks_list.stream()
-                .filter(e -> e.equals(finder))
+        if(!storedBlocksStack.isEmpty()) {
+            List<StoredBlock> tempList = storedBlocksStack.peek().getChildren().stream()
+                    .filter(e -> e.equalsIgnoreParent(finder, true)).collect(Collectors.toList());
+            if(tempList.size() > 1)
+                tempList.stream().filter(e -> e.equalsIgnoreParent(finder, false))
+                        .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
+            else if(!tempList.isEmpty())
+                finder.setParent(tempList.get(0));
+        }
+        StoredBlock storedBlock;
+        List<StoredBlock> tempList =
+        StorageInfo.stored_blocks_list.stream()
+                .filter(e -> e.getPackage_name() != null)
+                .filter(e -> e.equal(finder, true))
+                .collect(Collectors.toList());
+        if(tempList.size() > 1)
+            storedBlock = tempList.stream()
+                    .filter(e -> e.equal(finder, false))
+                    .findFirst().orElse(null);
+        else storedBlock = tempList.stream()
                 .findFirst().orElse(null);
+
+
+        if(storedBlock == null) {
+            tempList = StorageInfo.stored_blocks_list.stream()
+                    .filter(e -> e.equal(finder, true))
+                    .collect(Collectors.toList());
+            if (tempList.size() > 1) {
+                storedBlock = tempList.stream()
+                        .filter(e -> e.equal(finder, false))
+                        .findFirst().orElse(tempList.get(0));
+            } else storedBlock = tempList.stream()
+                    .findFirst().orElse(null);
+        }
         if(storedBlock != null && !storedBlocksStack.isEmpty())
             if(!storedBlocksStack.peek().getCalledStorageBlocks().contains(storedBlock))
                 storedBlocksStack.peek().setCalledStorageBlocks(storedBlock);
@@ -382,15 +398,41 @@ public class ScanListener extends PlSqlParserBaseListener {
                     );
                 }
             }
-            if( !storedBlocksStack.isEmpty())
-                 storedBlocksStack.peek().getChildren().stream()
-                    .filter(e -> e.equalsIgnoreParent(finder))
-                    .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
 
+            if(!storedBlocksStack.isEmpty()) {
+                List<StoredBlock> tempList = storedBlocksStack.peek().getChildren().stream()
+                        .filter(e -> e.equalsIgnoreParent(finder, true)).collect(Collectors.toList());
+                if(tempList.size() > 1)
+                    tempList.stream().filter(e -> e.equalsIgnoreParent(finder, false))
+                            .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
+                else if(!tempList.isEmpty())
+                    finder.setParent(tempList.get(0));
+            }
 
-            StoredBlock storedBlock = StorageInfo.stored_blocks_list.stream()
-                    .filter(e -> e.equals(finder))
+            StoredBlock storedBlock;
+            List<StoredBlock> tempList =
+                    StorageInfo.stored_blocks_list.stream()
+                            .filter(e -> e.getPackage_name() != null)
+                            .filter(e -> e.equal(finder, true))
+                            .collect(Collectors.toList());
+            if(tempList.size() > 1)
+                storedBlock = tempList.stream()
+                        .filter(e -> e.equal(finder, false))
+                        .findFirst().orElse(null);
+            else storedBlock = tempList.stream()
                     .findFirst().orElse(null);
+
+            if(storedBlock == null) {
+                tempList = StorageInfo.stored_blocks_list.stream()
+                        .filter(e -> e.equal(finder, true))
+                        .collect(Collectors.toList());
+                if (tempList.size() > 1) {
+                    storedBlock = tempList.stream()
+                            .filter(e -> e.equal(finder, false))
+                            .findFirst().orElse(tempList.get(0));
+                } else storedBlock = tempList.stream()
+                        .findFirst().orElse(null);
+            }
             if(storedBlock != null && !storedBlocksStack.isEmpty())
                 if(!storedBlocksStack.peek().getCalledStorageBlocks().contains(storedBlock))
                     storedBlocksStack.peek().setCalledStorageBlocks(storedBlock);
@@ -407,13 +449,7 @@ public class ScanListener extends PlSqlParserBaseListener {
             StorageInfo.package_constant_names.add(ctx.identifier().getText());
         }
         if(!storedBlocksStack.isEmpty()){
-            String name = Ora2rdb.getRealName(ctx.identifier().getText());
-            String type;
-            if(ctx.type_spec().datatype() != null)
-                type = Ora2rdb.getRealName(ctx.type_spec().datatype().native_datatype_element().getText());
-            else
-                type = Ora2rdb.getRealName(ctx.type_spec().getText());
-            storedBlocksStack.peek().setDeclaredVariables(name, type);
+            storedBlocksStack.peek().setDeclaredVariables(ctx);
         }
     }
     @Override

@@ -26,7 +26,7 @@ public class StoredTrigger implements StoredBlock{
     }
 
     @Override
-    public boolean equals(StoredBlock storedBlock) {
+    public boolean equal(StoredBlock storedBlock) {
         if(storedBlock instanceof StoredTrigger){
             return equalsTrigger((StoredTrigger)storedBlock);
         }
@@ -41,12 +41,12 @@ public class StoredTrigger implements StoredBlock{
     }
 
     @Override
-    public boolean equals(FinderBlockCall finder) {
+    public boolean equal(FinderBlockCall finder, boolean withTypeConversion) {
         return false;
     }
 
     @Override
-    public boolean equalsIgnoreParent(FinderBlockCall finder) {
+    public boolean equalsIgnoreParent(FinderBlockCall finder, boolean withTypeConversion) {
         return false;
     }
 
@@ -102,6 +102,16 @@ public class StoredTrigger implements StoredBlock{
     }
 
     @Override
+    public void setParameters(Integer sequence_number, PlSqlParser.ParameterContext ctx, boolean is_out) {
+
+    }
+
+    @Override
+    public void setParameters(Integer sequence_number, PlSqlParser.Variable_declarationContext ctx, boolean is_out) {
+
+    }
+
+    @Override
     public ArrayList<Parameter> getDeclaredVariables() {
         return declaredVariables;
     }
@@ -113,6 +123,11 @@ public class StoredTrigger implements StoredBlock{
         parameter.setName(name);
         parameter.setOut(false);
         this.declaredVariables.add(parameter);
+    }
+
+    @Override
+    public void setDeclaredVariables(PlSqlParser.Variable_declarationContext ctx) {
+
     }
 
     @Override

@@ -5,10 +5,10 @@ import java.util.TreeMap;
 
 public interface StoredBlock {
 
-    boolean equals(StoredBlock storedBlock);
+    boolean equal(StoredBlock storedBlock);
     boolean containOutParameters();
-    boolean equals(FinderBlockCall finder);
-    boolean equalsIgnoreParent (FinderBlockCall finder);
+    boolean equal(FinderBlockCall finder, boolean withTypeConversion);
+    boolean equalsIgnoreParent (FinderBlockCall finder, boolean withTypeConversion);
     boolean equalsIgnoreParameters (FinderBlockCall finder);
 
     String getName();
@@ -18,9 +18,12 @@ public interface StoredBlock {
     TreeMap<Integer, Parameter> getParameters();
     void setParameters(Integer sequence_number, String name, String type, boolean is_out);
     void setParameters(Integer sequence_number, String name, String type);
+    void setParameters(Integer sequence_number, PlSqlParser.ParameterContext ctx, boolean is_out);
+    void setParameters(Integer sequence_number, PlSqlParser.Variable_declarationContext ctx, boolean is_out);
 
     ArrayList<Parameter> getDeclaredVariables();
     void setDeclaredVariables(String name,String type);
+    void setDeclaredVariables(PlSqlParser.Variable_declarationContext ctx);
 
     StoredBlock getParent();
     void setParent(StoredBlock parent);

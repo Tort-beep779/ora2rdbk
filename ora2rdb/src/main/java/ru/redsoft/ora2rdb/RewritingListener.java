@@ -1290,9 +1290,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitFunction_body(Function_bodyContext ctx) {
         replace(ctx.IS(), "AS");
         replace(ctx.SEMICOLON(), "^");
-        for (ParameterContext parameter : ctx.parameter())
-            if (getRewriterText(parameter).startsWith(":"))
-                replace(parameter, getRewriterText(parameter).substring(1));
 
         if(storedBlocksStack.peek() instanceof StoredFunction) {
             StoredFunction currentFunction = (StoredFunction) storedBlocksStack.peek();
@@ -1383,6 +1380,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         if (current_plsql_block != null)
             current_plsql_block.declareVar(Ora2rdb.getRealName(getRuleText(ctx.parameter_name())));
+
+        if (getRewriterText(ctx).startsWith(":"))
+            replace(ctx, getRewriterText(ctx).substring(1));
     }
 
     @Override
@@ -1720,10 +1720,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitProcedure_body(Procedure_bodyContext ctx) {
         replace(ctx.IS(), "AS");
         delete(ctx.SEMICOLON());
-
-        for (ParameterContext parameter : ctx.parameter())
-            if (getRewriterText(parameter).startsWith(":"))
-                replace(parameter, getRewriterText(parameter).substring(1));
 
         StoredProcedure currentProcedure = (StoredProcedure) storedBlocksStack.peek();
         String procedure_name = currentProcedure.getName();//todo

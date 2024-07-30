@@ -1520,13 +1520,14 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     }
 
-//    @Override
-//    public void exitSql_plus_command_wrapper(Sql_plus_command_wrapperContext ctx) {
-//        if(ctx.PROMPT_MESSAGE() != null)
-//            commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
-//        else
-//            delete(ctx);
-//    }
+    @Override
+    public void exitSql_plus_command_wrapper(Sql_plus_command_wrapperContext ctx) {
+        if(ctx.PROMPT_MESSAGE() != null)
+            commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+        else
+            delete(ctx);
+    }
+
 
     @Override
     public void enterCreate_package(Create_packageContext ctx) {
@@ -2346,10 +2347,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
         popScope();
     }
 
-//    @Override
-//    public void enterSelection_directive(Selection_directiveContext ctx) {
-//        commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
-//    }
+    @Override
+    public void enterSelection_directive(Selection_directiveContext ctx) {
+        commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+    }
+
     @Override
     public void exitException_handler(Exception_handlerContext ctx) {
         String indentation = getIndentation(ctx.seq_of_statements());

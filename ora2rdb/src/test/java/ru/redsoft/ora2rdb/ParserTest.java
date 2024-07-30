@@ -146,4 +146,15 @@ class ParserTest {
     void associative_arraysTest() throws IOException {
         test("associative_arrays.sql");
     }
+
+    @Test
+    void blocks_separationTest() throws IOException {
+        test("blocks_separation.sql");
+    }
+
+    @Test
+    void package_separationTest() throws IOException {
+        test("package_separation.sql");
+    }
+
 }

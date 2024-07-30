@@ -1,19 +1,17 @@
 package ru.redsoft.ora2rdb;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.io.*;
+import java.util.*;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 public class Ora2rdb {
     public static boolean reorder = false;
+    private static StringBuilder errors = new StringBuilder();
+    final static String errorMessage = "Found error(s) in file while parsing\n";
+    private final static String packageBodyStart = "CREATE OR REPLACE PACKAGE BODY package_for_parse IS";
+    private final static String packageBodyEND = "END package_for_parse;";
 
     static String stripQuotes(String str) {
         if (str.startsWith("\""))
@@ -32,7 +30,7 @@ public class Ora2rdb {
     static String getRealParameterName(String str) {
         return str.toUpperCase()
                 .substring(str.lastIndexOf(".") + 1,
-                           str.length()
+                        str.length()
                 );
     }
 
@@ -49,7 +47,12 @@ public class Ora2rdb {
     }
 
     static RewritingListener convert(InputStream is) throws IOException {
-        CharStream input = CharStreams.fromStream(is);
+        SqlCodeParser sqlCodeParser = new SqlCodeParser();
+        List<String> splitBlocks = sqlCodeParser.splitMetadataIntoBlocks(is);
+
+        StringBuilder mergedBlocks = convertSplitBlocks(splitBlocks,sqlCodeParser);
+
+        CharStream input = CharStreams.fromString(mergedBlocks.toString());
         PlSqlLexer lexer = new PlSqlLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         PlSqlParser parser = new PlSqlParser(tokens);
@@ -57,6 +60,8 @@ public class Ora2rdb {
         ParserRuleContext tree;
         tree = parser.sql_script();
 
+        mergedBlocks.setLength(0);
+        errors.setLength(0);
 
         ParseTreeWalker walker = new ParseTreeWalker();
 
@@ -69,6 +74,66 @@ public class Ora2rdb {
 
         StorageInfo.clearInfo();
         return converter;
+    }
+
+    private static StringBuilder convertSplitBlocks(List<String> splitBlocks,SqlCodeParser sqlCodeParser) {
+        Map<Integer, List<String>> mapWithBlocksInPackages = sqlCodeParser.getBlocksInPackage();
+        StringBuilder mergedBlocks = new StringBuilder();
+        int numberOfBlock = 0;
+        for (String singleBlock : splitBlocks) {
+            if (mapWithBlocksInPackages.containsKey(numberOfBlock)) {
+                StringBuilder insidePackage = new StringBuilder();
+                List<String> listWithBlocks = mapWithBlocksInPackages.get(numberOfBlock);
+                for (int id = 0; id < listWithBlocks.size() - 2; id++) {
+                    String singleBlockInPackage = tryToParseBlock(packageBodyStart + " " + listWithBlocks.get(id) + " " + packageBodyEND).toString();
+                    singleBlockInPackage = singleBlockInPackage.replace(packageBodyStart, "");
+                    singleBlockInPackage = singleBlockInPackage.replace(packageBodyEND, "");
+                    insidePackage.append(singleBlockInPackage);
+                }
+                int size = listWithBlocks.size();
+                StringBuilder parsedPackageDeclaration = tryToParseBlock(listWithBlocks.get(size - 2) + " " + listWithBlocks.get(size - 1));
+                String[] splitPackageDeclaration = sqlCodeParser.findLastIndexOfEndSubstring(parsedPackageDeclaration.toString());
+                mergedBlocks.append("\n\n\n").append(splitPackageDeclaration[0]).append(insidePackage).append(splitPackageDeclaration[1]);
+            } else {
+                mergedBlocks.append(tryToParseBlock(singleBlock));
+            }
+            numberOfBlock++;
+        }
+        if (errors.length() != 0) {
+            errors.insert(0, errorMessage);
+            errors.insert(0, "/*");
+            errors.append("*/").append("\n\n\n");
+            errors.append(mergedBlocks);
+            mergedBlocks.setLength(0);
+            mergedBlocks.append(errors);
+        }
+        return mergedBlocks;
+    }
+
+    private static StringBuilder tryToParseBlock(String block) {
+        StringBuilder parsedBlock = new StringBuilder();
+        CustomErrorListener customErrorListener = new CustomErrorListener();
+        try {
+            CharStream input = CharStreams.fromString(block);
+            PlSqlLexer lexer = new PlSqlLexer(input);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            PlSqlParser parser = new PlSqlParser(tokens);
+            parser.setErrorHandler(new BailErrorStrategy());
+            parser.removeErrorListeners();
+            parser.addErrorListener(customErrorListener);
+            ParserRuleContext tree = parser.sql_script();
+            parsedBlock.append(block);
+        } catch (Exception e) {
+            block = block.replaceAll("/\\*", "").replaceAll("\\*/", "");
+            List<String> errorList = customErrorListener.getErrorMessages();
+            parsedBlock.append("\n").append("/*");
+            for (String s : errorList) {
+                errors.append(s).append("\n");
+                parsedBlock.append("\n").append(s);
+            }
+            parsedBlock.append("\n").append(block).append("\n").append("*/");
+        }
+        return parsedBlock;
     }
 
     public static void main(String[] args) throws Exception {

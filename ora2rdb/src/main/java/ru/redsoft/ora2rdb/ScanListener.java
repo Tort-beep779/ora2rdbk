@@ -40,28 +40,28 @@ public class ScanListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitCreate_package_body(Create_package_bodyContext ctx){
-         current_package_name = null;
+        current_package_name = null;
     }
 
     @Override
     public void enterCreate_table(Create_tableContext ctx) {
         Table table = new Table();
         String name;
-        if(ctx.tableview_name().PERIOD(0) != null)
-            name = Ora2rdb.getRealName(ctx.tableview_name().id_expression().getText());
-        else
-            name = Ora2rdb.getRealName(ctx.tableview_name().identifier().getText());
+//        if(ctx.tableview_name().PERIOD() != null)
+//            name = Ora2rdb.getRealName(ctx.tableview_name().schema_and_table_name().getText());
+//        else
+        name = Ora2rdb.getRealName(ctx.tableview_name().schema_and_name().name.getText());
         table.setName(name);
         for( Relational_propertyContext rela_prop :ctx.relational_table().relational_property()){
             if(rela_prop.column_definition() == null)
                 continue;
             if(rela_prop.column_definition().datatype() != null)
                 table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
-                                Ora2rdb.getRealName(rela_prop.column_definition().datatype().getText())
+                        Ora2rdb.getRealName(rela_prop.column_definition().datatype().getText())
                 );
             else
                 table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
-                                Ora2rdb.getRealName(rela_prop.column_definition().type_name().getText())
+                        Ora2rdb.getRealName(rela_prop.column_definition().type_name().getText())
 
                 );
 
@@ -86,7 +86,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                             Inline_constraintContext inline_constraint_ctx = modify_col_properties_ctx.inline_constraint(0);
 
                             if (inline_constraint_ctx.NOT() != null && inline_constraint_ctx.NULL_() != null) {
-                                String table_name = Ora2rdb.getRealName(ctx.tableview_name().id_expression().getText());
+                                String table_name = Ora2rdb.getRealName(ctx.tableview_name().schema_and_name().name.getText());
                                 String column_name = Ora2rdb.getRealName(modify_col_properties_ctx.column_name().getText());
 
                                 if (StorageInfo.table_not_null_cols.containsKey(table_name)) {
@@ -111,7 +111,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                     for (Column_nameContext column_name_ctx : out_of_line_constraint_ctx.column_name())
                         columns_set.add(Ora2rdb.getRealName(column_name_ctx.getText()));
 
-                    String table_name = Ora2rdb.getRealName(ctx.tableview_name().id_expression().getText());
+                    String table_name = Ora2rdb.getRealName(ctx.tableview_name().schema_and_name().name.getText());
 
                     if (StorageInfo.table_not_null_cols.containsKey(table_name))
                         StorageInfo.table_not_null_cols.get(table_name).addAll(columns_set);
@@ -137,10 +137,10 @@ public class ScanListener extends PlSqlParserBaseListener {
     public void enterCreate_trigger(Create_triggerContext ctx) {
         StoredTrigger storedTrigger = new StoredTrigger();
         String name;
-        if(ctx.trigger_name().PERIOD() != null)
-            name = Ora2rdb.getRealName(ctx.trigger_name().id_expression().getText());
-        else
-            name = Ora2rdb.getRealName(ctx.trigger_name().identifier().getText());
+//        if(ctx.trigger_name().schema_and_name().PERIOD() != null)
+//            name = Ora2rdb.getRealName(ctx.trigger_name().id_expression().getText());
+//        else
+        name = Ora2rdb.getRealName(ctx.trigger_name().schema_and_name().name.getText());
         storedTrigger.setName(name);
         if(ctx.simple_dml_trigger() != null){
             Simple_dml_triggerContext simpleDmlTrigger = ctx.simple_dml_trigger();
@@ -148,10 +148,10 @@ public class ScanListener extends PlSqlParserBaseListener {
                 Dml_event_clauseContext dmlEventClause = simpleDmlTrigger.dml_event_clause();
                 if(dmlEventClause.tableview_name() != null){
                     String table_name;
-                    if(!dmlEventClause.tableview_name().PERIOD().isEmpty())
-                        table_name = Ora2rdb.getRealName(dmlEventClause.tableview_name().id_expression().getText());
-                    else
-                        table_name = Ora2rdb.getRealName(dmlEventClause.tableview_name().identifier().getText());
+//                    if(!dmlEventClause.tableview_name().PERIOD().isEmpty())
+//                        table_name = Ora2rdb.getRealName(dmlEventClause.tableview_name().id_expression().getText());
+//                    else
+                    table_name = Ora2rdb.getRealName(dmlEventClause.tableview_name().schema_and_name().name.getText());
 
                     StorageInfo.tables.stream()
                             .filter(e -> Objects.equals(e.getName(), table_name))
@@ -190,10 +190,10 @@ public class ScanListener extends PlSqlParserBaseListener {
     public void enterCreate_procedure_body(Create_procedure_bodyContext ctx) {
         String procedureName;
         StoredProcedure storedProcedure = new StoredProcedure();
-        if (ctx.procedure_name().id_expression() != null)
-            procedureName = Ora2rdb.getRealName(ctx.procedure_name().id_expression().getText());
-        else
-            procedureName = Ora2rdb.getRealName(ctx.procedure_name().identifier().id_expression().getText());
+//        if (ctx.procedure_name().schema_and_name()sc != null)
+//            procedureName = Ora2rdb.getRealName(ctx.procedure_name().id_expression().getText());
+//        else
+        procedureName = Ora2rdb.getRealName(ctx.procedure_name().schema_and_name().name.getText());
 
         storedProcedure.setName(procedureName);
         storedProcedure.setPackage_name(current_package_name);
@@ -246,10 +246,10 @@ public class ScanListener extends PlSqlParserBaseListener {
     public void enterCreate_function_body(Create_function_bodyContext ctx) {
         String functionName;
         StoredFunction storedFunction = new StoredFunction();
-        if (ctx.function_name().id_expression() != null)
-            functionName = Ora2rdb.getRealName(ctx.function_name().id_expression().getText());
-        else
-            functionName = Ora2rdb.getRealName(ctx.function_name().identifier().id_expression().getText());
+//        if (ctx.function_name().schema_and_name().PERIOD() != null)
+//            functionName = Ora2rdb.getRealName(ctx.function_name().id_expression().getText());
+//        else
+        functionName = Ora2rdb.getRealName(ctx.function_name().schema_and_name().name.getText());
 
         storedFunction.setName(functionName);
         storedFunction.setPackage_name(current_package_name);
@@ -341,10 +341,10 @@ public class ScanListener extends PlSqlParserBaseListener {
         }
         StoredBlock storedBlock;
         List<StoredBlock> tempList =
-        StorageInfo.stored_blocks_list.stream()
-                .filter(e -> e.getPackage_name() != null)
-                .filter(e -> e.equal(finder, true))
-                .collect(Collectors.toList());
+                StorageInfo.stored_blocks_list.stream()
+                        .filter(e -> e.getPackage_name() != null)
+                        .filter(e -> e.equal(finder, true))
+                        .collect(Collectors.toList());
         if(tempList.size() > 1)
             storedBlock = tempList.stream()
                     .filter(e -> e.equal(finder, false))
@@ -369,7 +369,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                 storedBlocksStack.peek().setCalledStorageBlocks(storedBlock);
     }
 
-    @Override 
+    @Override
     public void enterGeneral_element_part(General_element_partContext ctx) {
         if(ctx.function_argument() != null){
             FinderBlockCall finder = new FinderBlockCall();

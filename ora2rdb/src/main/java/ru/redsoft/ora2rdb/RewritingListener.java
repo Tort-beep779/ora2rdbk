@@ -1,13 +1,11 @@
 package ru.redsoft.ora2rdb;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
-
 import ru.redsoft.ora2rdb.PlSqlParser.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class RewritingListener extends PlSqlParserBaseListener {
 
@@ -299,13 +297,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitCreate_table(Create_tableContext ctx) {
 
         String table_name;
-        if (ctx.tableview_name().id_expression() != null) {
-            delete(ctx.tableview_name().PERIOD(0));
-            delete(ctx.tableview_name().identifier());
-            table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().id_expression()));
+        if (ctx.tableview_name().schema_and_name().schema != null) {
+            delete(ctx.tableview_name().PERIOD());
+            delete(ctx.tableview_name().schema_and_name().schema);
+            table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().schema_and_name().name));
         } else
-            table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().identifier()));
-
+            table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().schema_and_name().name));
 
         if (StorageInfo.table_not_null_cols.containsKey(table_name)) {
             TreeSet<String> columns_set = StorageInfo.table_not_null_cols.get(table_name);
@@ -434,12 +431,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitTableview_name(Tableview_nameContext ctx) {
-        if (ctx.id_expression() != null) {
-            delete(ctx.identifier());
-
-            if (!ctx.PERIOD().isEmpty())
-                delete(ctx.PERIOD(0));
-
+        if (ctx.schema_and_name().schema != null) {
+            delete(ctx.schema_and_name().schema);
+            if (ctx.schema_and_name().PERIOD() != null) {
+                delete(ctx.schema_and_name().PERIOD());
+            }
         }
     }
 
@@ -451,9 +447,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitAlter_table(Alter_tableContext ctx) {
 
-        if (ctx.tableview_name().PERIOD() != null) {
-            delete(ctx.tableview_name().PERIOD(0));
-            delete(ctx.tableview_name().identifier());
+        if (ctx.tableview_name().schema_and_name().PERIOD() != null) {
+            delete(ctx.tableview_name().schema_and_name().PERIOD());
+            delete(ctx.tableview_name().schema_and_name().schema);
         }
         Constraint_clausesContext constraint_clauses_ctx = ctx.constraint_clauses();
         Column_clausesContext column_clauses_ctx = ctx.column_clauses();
@@ -611,11 +607,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
     private StoredFunction findStorageFunction(Create_function_bodyContext ctx){
         StoredFunction storedFunction = new StoredFunction();
         String name;
-        if (ctx.function_name().id_expression() != null) {
-            name = Ora2rdb.getRealName(ctx.function_name().id_expression().getText());
-        } else {
-            name = Ora2rdb.getRealName(ctx.function_name().identifier().id_expression().getText());
-        }
+//        if (ctx.function_name().schema_and_name().schema != null) {
+//            name = Ora2rdb.getRealName(ctx.function_name().id_expression().getText());
+//        } else
+        name = Ora2rdb.getRealName(ctx.function_name().schema_and_name().name.getText());
+
         String type;
 
         if(ctx.type_spec().datatype() != null)
@@ -674,10 +670,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
     private StoredProcedure findStorageProcedure(Create_procedure_bodyContext ctx){
         StoredProcedure storedProcedure = new StoredProcedure();
         String name;
-        if (ctx.procedure_name().id_expression() != null)
-            name = Ora2rdb.getRealName(ctx.procedure_name().id_expression().getText());
-        else
-            name = Ora2rdb.getRealName(ctx.procedure_name().identifier().id_expression().getText());
+//        if (ctx.procedure_name().id_expression() != null)
+//            name = Ora2rdb.getRealName(ctx.procedure_name().id_expression().getText());
+//        else
+        name = Ora2rdb.getRealName(ctx.procedure_name().schema_and_name().name.getText());
         storedProcedure.setName(name);
         storedProcedure.setPackage_name(current_package_name);
 
@@ -716,10 +712,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     private StoredTrigger findStorageTrigger(Create_triggerContext ctx) {
         String trigger_name;
-        if (ctx.trigger_name().PERIOD() != null)
-            trigger_name = Ora2rdb.getRealName(ctx.trigger_name().id_expression().getText());
-        else
-            trigger_name = Ora2rdb.getRealName(ctx.trigger_name().identifier().getText());
+//        if (ctx.trigger_name().PERIOD() != null)
+//            trigger_name = Ora2rdb.getRealName(ctx.trigger_name().id_expression().getText());
+//        else
+        trigger_name = Ora2rdb.getRealName(ctx.trigger_name().schema_and_name().name.getText());
         StoredTrigger storedTrigger = new StoredTrigger();
         storedTrigger.setName(trigger_name);
         return (StoredTrigger) StorageInfo.stored_blocks_list.stream()
@@ -817,16 +813,15 @@ public class RewritingListener extends PlSqlParserBaseListener {
     private void convertFunctionCall(General_element_partContext ctx) {
 
         StoredBlock storedBlock = findFunctionCall(ctx);
-            if(storedBlock != null){
-                if(storedBlock instanceof StoredFunction) {
-                    if (storedBlock.containOutParameters())
-                        convertFunctionWithOutParameters(ctx, (StoredFunction) storedBlock);
-                }
-                else if(storedBlock instanceof StoredProcedure){
-                    if(storedBlock.containOutParameters())
-                        convertProcedureWithOutParameters(ctx, (StoredProcedure) storedBlock);
-                }
+        if (storedBlock != null) {
+            if (storedBlock instanceof StoredFunction) {
+                if (storedBlock.containOutParameters())
+                    convertFunctionWithOutParameters(ctx, (StoredFunction) storedBlock);
+            } else if (storedBlock instanceof StoredProcedure) {
+                if (storedBlock.containOutParameters())
+                    convertProcedureWithOutParameters(ctx, (StoredProcedure) storedBlock);
             }
+        }
 //            else insertBefore(ctx, "\n/*ФУНКЦИЯ НЕ ОПРЕДЕЛИЛАСЬ*/\n");
 
     }
@@ -1028,18 +1023,18 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitReferences_clause(References_clauseContext ctx) {
         if (ctx.tableview_name().PERIOD() != null) {
-            delete(ctx.tableview_name().identifier());
-            delete(ctx.tableview_name().PERIOD(0));
+            delete(ctx.tableview_name().schema_and_name().schema);
+            delete(ctx.tableview_name().PERIOD());
         }
     }
 
     @Override
     public void exitCreate_index(Create_indexContext ctx) {
         String index_name;
-        if (ctx.index_name().PERIOD() != null)
-            index_name = Ora2rdb.getRealName(getRuleText(ctx.index_name().id_expression()));
-        else
-            index_name = Ora2rdb.getRealName(getRuleText(ctx.index_name().identifier()));
+//        if (ctx.index_name().PERIOD() != null)
+//            index_name = Ora2rdb.getRealName(getRuleText(ctx.index_name().id_expression()));
+//        else
+        index_name = Ora2rdb.getRealName(getRuleText(ctx.index_name().schema_and_name().name));
 
         if (StorageInfo.index_names.contains(index_name)) {
             delete(ctx);
@@ -1056,13 +1051,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
 
 
-        delete(ctx.index_name().identifier());
-        delete(ctx.index_name().PERIOD());
+        delete(ctx.index_name().schema_and_name().schema);
+        delete(ctx.index_name().schema_and_name().PERIOD());
 
 
-        if (table_index_clause_ctx.tableview_name().PERIOD() != null) {
-            delete(table_index_clause_ctx.tableview_name().identifier());
-            delete(table_index_clause_ctx.tableview_name().PERIOD(0));
+        if (table_index_clause_ctx.tableview_name().schema_and_name().PERIOD() != null) {
+            delete(table_index_clause_ctx.tableview_name().schema_and_name().schema);
+            delete(table_index_clause_ctx.tableview_name().schema_and_name().PERIOD());
         }
         delete(table_index_clause_ctx.index_properties());
 
@@ -1174,9 +1169,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitFunction_name(Function_nameContext ctx) {
-        if (ctx.id_expression() != null) {
-            delete(ctx.identifier());
-            delete(ctx.PERIOD());
+        if (ctx.schema_and_name().schema != null) {
+            delete(ctx.schema_and_name().schema);
+            delete(ctx.schema_and_name().PERIOD());
         }
     }
 
@@ -1184,14 +1179,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void enterCreate_function_body(Create_function_bodyContext ctx) {
         pushScope();
         String procedureName;
-        if (ctx.function_name().id_expression() != null)
-            procedureName = Ora2rdb.getRealName(ctx.function_name().id_expression().getText());
-        else
-            procedureName = Ora2rdb.getRealName(ctx.function_name().identifier().id_expression().getText());
-        if (ctx.function_name().id_expression() != null)
-            current_plsql_block.procedure_name = procedureName;
-        else
-            current_plsql_block.procedure_name = procedureName;
+//        if (ctx.function_name().schema_and_name().schema != null)
+//            procedureName = Ora2rdb.getRealName(ctx.function_name().id_expression().getText());
+//        else
+        procedureName = Ora2rdb.getRealName(ctx.function_name().schema_and_name().name.getText());
+        current_plsql_block.procedure_name = procedureName;
 
         storedBlocksStack.push(findStorageFunction(ctx));
 
@@ -1236,10 +1228,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
             currentFunction.getCalledFunctions().stream()
                     .filter(StoredFunction::containOutParameters)
                     .forEach(e -> declare_ret_val.append("\nDECLARE ")
-                                    .append(e.getName())
-                                    .append("_RET_VAL ")
-                                    .append(e.getConvert_function_return_type())
-                                    .append(";")
+                            .append(e.getName())
+                            .append("_RET_VAL ")
+                            .append(e.getConvert_function_return_type())
+                            .append(";")
                     );
             insertBefore(ctx.body(), declare_ret_val.append('\n'));
         }
@@ -1528,7 +1520,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
             delete(ctx);
     }
 
-
     @Override
     public void enterCreate_package(Create_packageContext ctx) {
         pushScope();
@@ -1604,9 +1595,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitProcedure_name(Procedure_nameContext ctx) {
-        if (ctx.id_expression() != null) {
-            delete(ctx.identifier());
-            delete(ctx.PERIOD());
+        if (ctx.schema_and_name().schema != null) {
+            delete(ctx.schema_and_name().schema);
+            delete(ctx.schema_and_name().PERIOD());
         }
     }
 
@@ -1624,7 +1615,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.IS(), "AS");
         replace(ctx.SEMICOLON(), "^");
 
-        String procedure_name = Ora2rdb.getRealName(ctx.procedure_name().identifier().id_expression().getText());
+        //String procedure_name = Ora2rdb.getRealName(ctx.procedure_name().schema_and_name().schema.getText()); TODO : delete?
+
 
         StoredProcedure currentProcedure = (StoredProcedure) storedBlocksStack.peek();
         if (currentProcedure.containOutParameters()) {
@@ -1849,9 +1841,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitTrigger_name(Trigger_nameContext ctx) {
-        if(ctx.PERIOD() != null) {
-            delete(ctx.identifier());
-            delete(ctx.PERIOD());
+        if (ctx.schema_and_name().schema != null) {
+            delete(ctx.schema_and_name().schema);
+            delete(ctx.schema_and_name().PERIOD());
         }
     }
 
@@ -2156,7 +2148,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                         return true;
                 }
             }
-            
+
         }
         return false;
     }
@@ -2175,7 +2167,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         delete(ctx.cursor_loop_param());
         deleteSpacesAbut(ctx.cursor_loop_param());
         insertAfter(ctx.seq_of_statements(), "\n" + indentation + "\tFETCH " + cursorName + " INTO " + recName + ";\n"
-                                                  + indentation + "END");
+                + indentation + "END");
         insertAfter(ctx, "\n" + indentation + "CLOSE " + cursorName + ";\n");
 
 
@@ -2206,7 +2198,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         replace(ctx.FOR(), indentation + "WHILE (");
         insertAfter(ctx.cursor_loop_param(), ") DO" + '\n' + indentation + "BEGIN");
-        
+
         replace(ctx.cursor_loop_param().IN(), " <= ");
         deleteSpacesAbut(ctx.cursor_loop_param().IN());
         delete(ctx.cursor_loop_param().lower_bound());
@@ -2266,19 +2258,18 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         else{
 
-        String indentation = getIndentation(ctx);
+            String indentation = getIndentation(ctx);
 
-        insertAfter(ctx.cursor_loop_param(), "\n" + indentation + "DO" + '\n' + indentation + "BEGIN");
-        insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
+            insertAfter(ctx.cursor_loop_param(), "\n" + indentation + "DO" + '\n' + indentation + "BEGIN");
+            insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
 
 
-
-        delete(ctx.LOOP(0));
-        deleteSpacesLeft(ctx.LOOP(0));
-        delete(ctx.END());
-        deleteSpacesLeft(ctx.END());
-        delete(ctx.LOOP(1));
-        deleteSpacesLeft(ctx.LOOP(1));
+            delete(ctx.LOOP(0));
+            deleteSpacesLeft(ctx.LOOP(0));
+            delete(ctx.END());
+            deleteSpacesLeft(ctx.END());
+            delete(ctx.LOOP(1));
+            deleteSpacesLeft(ctx.LOOP(1));
         }
     }
 
@@ -2351,7 +2342,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void enterSelection_directive(Selection_directiveContext ctx) {
         commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
     }
-
     @Override
     public void exitException_handler(Exception_handlerContext ctx) {
         String indentation = getIndentation(ctx.seq_of_statements());
@@ -2367,22 +2357,22 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     private String convertException_name(Exception_nameContext ctx){
-         String exceptionName = Ora2rdb.getRealName(ctx.getText());
-         switch (exceptionName){
-             case "TOO_MANY_ROWS":
+        String exceptionName = Ora2rdb.getRealName(ctx.getText());
+        switch (exceptionName) {
+            case "TOO_MANY_ROWS":
                 return "GDSCODE SING_SELECT_ERR";
-             case "DUP_VAL_ON_INDEX":
-                 return "GDSCODE UNIQUE_KEY_VIOLATION";
-             case "NO_DATA_FOUND":
-                 return "EXCEPTION NO_DATA_FOUND";
+            case "DUP_VAL_ON_INDEX":
+                return "GDSCODE UNIQUE_KEY_VIOLATION";
+            case "NO_DATA_FOUND":
+                return "EXCEPTION NO_DATA_FOUND";
 //             case "ROW_LOCKED":
 //                 return "SING_SELECT_ERR";
-             case "VALUE_ERROR":
-                 return "GDSCODE SING_SELECT_ERR";
-             case "ZERO_DIVIDE":
-                 return "GDSCODE EXCEPTION_INTEGER_DIVIDE_BY_ZERO, EXCEPTION_FLOAT_DIVIDE_BY_ZERO";
-         }
-         return exceptionName;
+            case "VALUE_ERROR":
+                return "GDSCODE SING_SELECT_ERR";
+            case "ZERO_DIVIDE":
+                return "GDSCODE EXCEPTION_INTEGER_DIVIDE_BY_ZERO, EXCEPTION_FLOAT_DIVIDE_BY_ZERO";
+        }
+        return exceptionName;
     }
 
 

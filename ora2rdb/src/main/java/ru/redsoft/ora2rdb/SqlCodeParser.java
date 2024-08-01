@@ -65,6 +65,7 @@ public class SqlCodeParser {
                 else
                     type = findTheTypeOfBlockInsidePackage(i);
             }
+
             switch (type) {
                 case PACKAGE:
                 case TYPE_BODY:

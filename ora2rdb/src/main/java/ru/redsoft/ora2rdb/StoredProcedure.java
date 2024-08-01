@@ -181,10 +181,10 @@ public class StoredProcedure implements StoredBlock{
             PlSqlParser.Type_nameContext type_name = ctx.type_spec().type_name();
             if(type_name.PERIOD(0) != null){
                 Table table = StorageInfo.tables.stream()
-                        .filter(e -> e.getName().equals(Ora2rdb.getRealName(type_name.id_expression(0).getText())))
+                        .filter(e -> e.getName().equals(Ora2rdb.getRealName(type_name.id_expression(1).getText())))
                         .findFirst().orElse(null);
                 if(table != null)
-                    param_type = table.getColumns().get(Ora2rdb.getRealName(type_name.id_expression(1).getText()));
+                    param_type = table.getColumns().get(Ora2rdb.getRealName(type_name.id_expression(0).getText()));
                 else
                     param_type = Ora2rdb.getRealName(type_name.getText());
 

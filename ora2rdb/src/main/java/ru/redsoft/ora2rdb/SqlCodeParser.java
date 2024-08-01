@@ -46,6 +46,7 @@ public class SqlCodeParser {
 
     List<String> splitMetadataIntoBlocks(InputStream inputStream) {
         splittedInput = fromStreamToString(inputStream);
+
         for (int i = 0; i < splittedInput.size(); i++) {
             if (splittedInput.get(i).isEmpty()) {
                 continue;
@@ -175,10 +176,14 @@ public class SqlCodeParser {
         StringBuilder command = new StringBuilder();
         start = Math.max(start, 0);
         end = Math.min(end, splittedInput.size() - 1);
-        for (int i = start; i <= end; i++) {
-            if (!checkIfQuoteOrCommentOrWhiteSpace(splittedInput.get(i))) {
-                command.append(splittedInput.get(i));
+        while (start <= end) {
+            if (!checkIfQuoteOrCommentOrWhiteSpace(splittedInput.get(start))) {
+                command.append(splittedInput.get(start));
+            } else {
+                if (end < splittedInput.size() - 1)
+                    end++;
             }
+            start++;
         }
         return command.toString();
     }
@@ -369,8 +374,9 @@ public class SqlCodeParser {
             }
             StringBuilder currentWord = new StringBuilder();
             boolean inSingleQuotes = false;
-            boolean inMultiLineComment = false;
+            boolean inDoubleQuotes = false;
             boolean inSingleLineComment = false;
+            int multiLineCommentDepth = 0;
 
             char[] chars = result.toString().toCharArray();
             int i = 0;
@@ -379,24 +385,26 @@ public class SqlCodeParser {
                 char c = chars[i];
 
                 if (c == '/' && i + 1 < chars.length && chars[i + 1] == '*') {
-                    if (currentWord.length() > 0) {
+                    if (currentWord.length() > 0 && multiLineCommentDepth == 0) {
                         words.add(currentWord.toString());
                         currentWord.setLength(0);
                     }
-                    inMultiLineComment = true;
+                    multiLineCommentDepth++;
                     currentWord.append("/*");
                     i += 2;
                     continue;
                 }
 
-                if (inMultiLineComment) {
+                if (multiLineCommentDepth > 0) {
                     currentWord.append(c);
                     if (c == '*' && i + 1 < chars.length && chars[i + 1] == '/') {
-                        inMultiLineComment = false;
+                        multiLineCommentDepth--;
                         currentWord.append('/');
-                        words.add(currentWord.toString());
-                        currentWord.setLength(0);
                         i += 2;
+                        if (multiLineCommentDepth == 0) {
+                            words.add("/*" + currentWord.toString().replace("/*", "").replace("*/", "") + "*/");
+                            currentWord.setLength(0);
+                        }
                         continue;
                     }
                     i++;
@@ -436,7 +444,18 @@ public class SqlCodeParser {
                     continue;
                 }
 
-                if (inSingleQuotes) {
+                if (c == '"') {
+                    if (currentWord.length() > 0 && !inDoubleQuotes) {
+                        words.add(currentWord.toString());
+                        currentWord.setLength(0);
+                    }
+                    inDoubleQuotes = !inDoubleQuotes;
+                    currentWord.append(c);
+                    i++;
+                    continue;
+                }
+
+                if (inSingleQuotes || inDoubleQuotes) {
                     currentWord.append(c);
                     i++;
                     continue;
@@ -464,6 +483,7 @@ public class SqlCodeParser {
         }
 
         return words;
+
     }
 
     public Map<Integer, List<String>> getBlocksInPackage() {

@@ -297,9 +297,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitCreate_table(Create_tableContext ctx) {
 
         String table_name;
-        if (ctx.tableview_name().schema_and_name().schema != null) {
-            exitSchema_and_name(ctx.tableview_name().schema_and_name());
-        }
         table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().schema_and_name().name));
 
         if (StorageInfo.table_not_null_cols.containsKey(table_name)) {
@@ -429,9 +426,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitTableview_name(Tableview_nameContext ctx) {
-        if (ctx.schema_and_name().schema != null) {
-            exitSchema_and_name(ctx.schema_and_name());
-        }
     }
 
     @Override
@@ -441,10 +435,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitAlter_table(Alter_tableContext ctx) {
-
-        if (ctx.tableview_name().schema_and_name().PERIOD() != null) {
-            exitSchema_and_name(ctx.tableview_name().schema_and_name());
-        }
         Constraint_clausesContext constraint_clauses_ctx = ctx.constraint_clauses();
         Column_clausesContext column_clauses_ctx = ctx.column_clauses();
 
@@ -486,7 +476,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
     }
 
-    @Override public void exitSchema_and_name(Schema_and_nameContext ctx) {
+    @Override
+    public void exitSchema_and_name(Schema_and_nameContext ctx) {
         delete(ctx.schema);
         delete(ctx.PERIOD());
     }
@@ -499,8 +490,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if(ctx.routine_name().id_expression(0) != null){
             finder.setName(Ora2rdb.getRealName(ctx.routine_name().id_expression(0).getText()));
             finder.setPackage_name(Ora2rdb.getRealName(ctx.routine_name().identifier().getText()));
-        }
-        else{
+        } else{
             finder.setName(Ora2rdb.getRealName(ctx.routine_name().identifier().getText()));
             finder.setPackage_name(null);
         }
@@ -1008,9 +998,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitReferences_clause(References_clauseContext ctx) {
-        if (ctx.tableview_name().PERIOD() != null) {
-            exitSchema_and_name(ctx.tableview_name().schema_and_name());
-        }
     }
 
     @Override
@@ -1032,12 +1019,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
             }
         }
 
-
-        exitSchema_and_name(ctx.index_name().schema_and_name());
-
-        if (table_index_clause_ctx.tableview_name().schema_and_name().PERIOD() != null) {
-            exitSchema_and_name(table_index_clause_ctx.tableview_name().schema_and_name());
-        }
         delete(table_index_clause_ctx.index_properties());
 
         create_indexes.add(ctx);
@@ -1148,9 +1129,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitFunction_name(Function_nameContext ctx) {
-        if (ctx.schema_and_name().schema != null) {
-            exitSchema_and_name(ctx.schema_and_name());
-        }
     }
 
     @Override
@@ -1570,9 +1548,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitProcedure_name(Procedure_nameContext ctx) {
-        if (ctx.schema_and_name().schema != null) {
-            exitSchema_and_name(ctx.schema_and_name());
-        }
     }
 
     //    todo part233
@@ -1815,9 +1790,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitTrigger_name(Trigger_nameContext ctx) {
-        if (ctx.schema_and_name().schema != null) {
-            exitSchema_and_name(ctx.schema_and_name());
-        }
     }
 
     @Override

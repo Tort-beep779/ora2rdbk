@@ -298,11 +298,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         String table_name;
         if (ctx.tableview_name().schema_and_name().schema != null) {
-            delete(ctx.tableview_name().PERIOD());
-            delete(ctx.tableview_name().schema_and_name().schema);
-            table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().schema_and_name().name));
-        } else
-            table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().schema_and_name().name));
+            exitSchema_and_name(ctx.tableview_name().schema_and_name());
+        }
+        table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().schema_and_name().name));
 
         if (StorageInfo.table_not_null_cols.containsKey(table_name)) {
             TreeSet<String> columns_set = StorageInfo.table_not_null_cols.get(table_name);
@@ -432,10 +430,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitTableview_name(Tableview_nameContext ctx) {
         if (ctx.schema_and_name().schema != null) {
-            delete(ctx.schema_and_name().schema);
-            if (ctx.schema_and_name().PERIOD() != null) {
-                delete(ctx.schema_and_name().PERIOD());
-            }
+            exitSchema_and_name(ctx.schema_and_name());
         }
     }
 
@@ -448,8 +443,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitAlter_table(Alter_tableContext ctx) {
 
         if (ctx.tableview_name().schema_and_name().PERIOD() != null) {
-            delete(ctx.tableview_name().schema_and_name().PERIOD());
-            delete(ctx.tableview_name().schema_and_name().schema);
+            exitSchema_and_name(ctx.tableview_name().schema_and_name());
         }
         Constraint_clausesContext constraint_clauses_ctx = ctx.constraint_clauses();
         Column_clausesContext column_clauses_ctx = ctx.column_clauses();
@@ -492,9 +486,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
     }
 
-
-
-
+    @Override public void exitSchema_and_name(Schema_and_nameContext ctx) {
+        delete(ctx.schema);
+        delete(ctx.PERIOD());
+    }
 
 
 
@@ -607,9 +602,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
     private StoredFunction findStorageFunction(Create_function_bodyContext ctx){
         StoredFunction storedFunction = new StoredFunction();
         String name;
-//        if (ctx.function_name().schema_and_name().schema != null) {
-//            name = Ora2rdb.getRealName(ctx.function_name().id_expression().getText());
-//        } else
         name = Ora2rdb.getRealName(ctx.function_name().schema_and_name().name.getText());
 
         String type;
@@ -670,9 +662,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
     private StoredProcedure findStorageProcedure(Create_procedure_bodyContext ctx){
         StoredProcedure storedProcedure = new StoredProcedure();
         String name;
-//        if (ctx.procedure_name().id_expression() != null)
-//            name = Ora2rdb.getRealName(ctx.procedure_name().id_expression().getText());
-//        else
         name = Ora2rdb.getRealName(ctx.procedure_name().schema_and_name().name.getText());
         storedProcedure.setName(name);
         storedProcedure.setPackage_name(current_package_name);
@@ -712,9 +701,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     private StoredTrigger findStorageTrigger(Create_triggerContext ctx) {
         String trigger_name;
-//        if (ctx.trigger_name().PERIOD() != null)
-//            trigger_name = Ora2rdb.getRealName(ctx.trigger_name().id_expression().getText());
-//        else
         trigger_name = Ora2rdb.getRealName(ctx.trigger_name().schema_and_name().name.getText());
         StoredTrigger storedTrigger = new StoredTrigger();
         storedTrigger.setName(trigger_name);
@@ -876,7 +862,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     private void convertProcedureWithOutParameters(General_element_partContext ctx, StoredProcedure storedProcedure) {
 
 
-        if(storedProcedure != null){
+        if (storedProcedure != null){
             StringBuilder selectQuery = new StringBuilder();
             selectQuery.append("SELECT ");
             for (int i : storedProcedure.getParameters().keySet()) {
@@ -929,7 +915,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                     replace(ctx, "EXECUTE PROCEDURE " + getRewriterText(ctx));
 
 
-        }else {
+        } else {
             String name = Ora2rdb.getRealName(ctx.routine_name().getText());
             storedBlock = StorageInfo.stored_blocks_list.stream().filter(e -> e.getName().equals(name)).findFirst().orElse(null);
             if (storedBlock instanceof StoredProcedure)
@@ -1023,17 +1009,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitReferences_clause(References_clauseContext ctx) {
         if (ctx.tableview_name().PERIOD() != null) {
-            delete(ctx.tableview_name().schema_and_name().schema);
-            delete(ctx.tableview_name().PERIOD());
+            exitSchema_and_name(ctx.tableview_name().schema_and_name());
         }
     }
 
     @Override
     public void exitCreate_index(Create_indexContext ctx) {
         String index_name;
-//        if (ctx.index_name().PERIOD() != null)
-//            index_name = Ora2rdb.getRealName(getRuleText(ctx.index_name().id_expression()));
-//        else
         index_name = Ora2rdb.getRealName(getRuleText(ctx.index_name().schema_and_name().name));
 
         if (StorageInfo.index_names.contains(index_name)) {
@@ -1051,13 +1033,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
 
 
-        delete(ctx.index_name().schema_and_name().schema);
-        delete(ctx.index_name().schema_and_name().PERIOD());
-
+        exitSchema_and_name(ctx.index_name().schema_and_name());
 
         if (table_index_clause_ctx.tableview_name().schema_and_name().PERIOD() != null) {
-            delete(table_index_clause_ctx.tableview_name().schema_and_name().schema);
-            delete(table_index_clause_ctx.tableview_name().schema_and_name().PERIOD());
+            exitSchema_and_name(table_index_clause_ctx.tableview_name().schema_and_name());
         }
         delete(table_index_clause_ctx.index_properties());
 
@@ -1170,8 +1149,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitFunction_name(Function_nameContext ctx) {
         if (ctx.schema_and_name().schema != null) {
-            delete(ctx.schema_and_name().schema);
-            delete(ctx.schema_and_name().PERIOD());
+            exitSchema_and_name(ctx.schema_and_name());
         }
     }
 
@@ -1179,9 +1157,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void enterCreate_function_body(Create_function_bodyContext ctx) {
         pushScope();
         String procedureName;
-//        if (ctx.function_name().schema_and_name().schema != null)
-//            procedureName = Ora2rdb.getRealName(ctx.function_name().id_expression().getText());
-//        else
         procedureName = Ora2rdb.getRealName(ctx.function_name().schema_and_name().name.getText());
         current_plsql_block.procedure_name = procedureName;
 
@@ -1596,8 +1571,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitProcedure_name(Procedure_nameContext ctx) {
         if (ctx.schema_and_name().schema != null) {
-            delete(ctx.schema_and_name().schema);
-            delete(ctx.schema_and_name().PERIOD());
+            exitSchema_and_name(ctx.schema_and_name());
         }
     }
 
@@ -1615,7 +1589,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.IS(), "AS");
         replace(ctx.SEMICOLON(), "^");
 
-        //String procedure_name = Ora2rdb.getRealName(ctx.procedure_name().schema_and_name().schema.getText()); TODO : delete?
+        //String procedure_name = Ora2rdb.getRealName(ctx.procedure_name().schema_and_name().schema.getText());
 
 
         StoredProcedure currentProcedure = (StoredProcedure) storedBlocksStack.peek();
@@ -1842,8 +1816,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitTrigger_name(Trigger_nameContext ctx) {
         if (ctx.schema_and_name().schema != null) {
-            delete(ctx.schema_and_name().schema);
-            delete(ctx.schema_and_name().PERIOD());
+            exitSchema_and_name(ctx.schema_and_name());
         }
     }
 

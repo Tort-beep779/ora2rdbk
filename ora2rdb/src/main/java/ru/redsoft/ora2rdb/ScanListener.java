@@ -20,7 +20,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                     for (Field_specContext field_spec : type.record_type_def().field_spec()) {
                         if (field_spec.type_spec() != null) {
                             Type_specContext typeSpec = field_spec.type_spec();
-                            if (typeSpec.type_name() != null) {
+                            if (typeSpec.type_name() != null && typeSpec.PERCENT_TYPE() != null && typeSpec.PERCENT_ROWTYPE() != null ) {
                                 String tableName = Ora2rdb.getRealName(typeSpec.type_name().id_expression(0).getText());
                                 String columnName = Ora2rdb.getRealName(typeSpec.type_name().id_expression(1).getText());
                                 if (StorageInfo.types_of_column.containsKey(tableName)) {
@@ -34,6 +34,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                         }
                     }
                 }
+
             }
         }
     }
@@ -47,9 +48,6 @@ public class ScanListener extends PlSqlParserBaseListener {
     public void enterCreate_table(Create_tableContext ctx) {
         Table table = new Table();
         String name;
-//        if(ctx.tableview_name().PERIOD() != null)
-//            name = Ora2rdb.getRealName(ctx.tableview_name().schema_and_table_name().getText());
-//        else
         name = Ora2rdb.getRealName(ctx.tableview_name().schema_and_name().name.getText());
         table.setName(name);
         for( Relational_propertyContext rela_prop :ctx.relational_table().relational_property()){
@@ -62,7 +60,6 @@ public class ScanListener extends PlSqlParserBaseListener {
             else
                 table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
                         Ora2rdb.getRealName(rela_prop.column_definition().type_name().getText())
-
                 );
 
         }
@@ -137,9 +134,6 @@ public class ScanListener extends PlSqlParserBaseListener {
     public void enterCreate_trigger(Create_triggerContext ctx) {
         StoredTrigger storedTrigger = new StoredTrigger();
         String name;
-//        if(ctx.trigger_name().schema_and_name().PERIOD() != null)
-//            name = Ora2rdb.getRealName(ctx.trigger_name().id_expression().getText());
-//        else
         name = Ora2rdb.getRealName(ctx.trigger_name().schema_and_name().name.getText());
         storedTrigger.setName(name);
         if(ctx.simple_dml_trigger() != null){
@@ -148,9 +142,6 @@ public class ScanListener extends PlSqlParserBaseListener {
                 Dml_event_clauseContext dmlEventClause = simpleDmlTrigger.dml_event_clause();
                 if(dmlEventClause.tableview_name() != null){
                     String table_name;
-//                    if(!dmlEventClause.tableview_name().PERIOD().isEmpty())
-//                        table_name = Ora2rdb.getRealName(dmlEventClause.tableview_name().id_expression().getText());
-//                    else
                     table_name = Ora2rdb.getRealName(dmlEventClause.tableview_name().schema_and_name().name.getText());
 
                     StorageInfo.tables.stream()
@@ -190,9 +181,6 @@ public class ScanListener extends PlSqlParserBaseListener {
     public void enterCreate_procedure_body(Create_procedure_bodyContext ctx) {
         String procedureName;
         StoredProcedure storedProcedure = new StoredProcedure();
-//        if (ctx.procedure_name().schema_and_name()sc != null)
-//            procedureName = Ora2rdb.getRealName(ctx.procedure_name().id_expression().getText());
-//        else
         procedureName = Ora2rdb.getRealName(ctx.procedure_name().schema_and_name().name.getText());
 
         storedProcedure.setName(procedureName);
@@ -246,9 +234,6 @@ public class ScanListener extends PlSqlParserBaseListener {
     public void enterCreate_function_body(Create_function_bodyContext ctx) {
         String functionName;
         StoredFunction storedFunction = new StoredFunction();
-//        if (ctx.function_name().schema_and_name().PERIOD() != null)
-//            functionName = Ora2rdb.getRealName(ctx.function_name().id_expression().getText());
-//        else
         functionName = Ora2rdb.getRealName(ctx.function_name().schema_and_name().name.getText());
 
         storedFunction.setName(functionName);

@@ -1,4 +1,5 @@
-DECLARE
+CREATE OR REPLACE PACKAGE BODY string_tracker
+IS
 
 TYPE Employee_Row IS RECORD (
         emp_row employees%ROWTYPE
@@ -69,8 +70,5 @@ TYPE Employee_Row IS RECORD (
         product_name products.product_name%TYPE
     );
 
-
-BEGIN
-NULL;
-END;
+END string_tracker;
 /

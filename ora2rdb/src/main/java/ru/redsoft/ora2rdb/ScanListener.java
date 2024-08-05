@@ -20,7 +20,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                     for (Field_specContext field_spec : type.record_type_def().field_spec()) {
                         if (field_spec.type_spec() != null) {
                             Type_specContext typeSpec = field_spec.type_spec();
-                            if (typeSpec.type_name() != null && typeSpec.PERCENT_TYPE() != null && typeSpec.PERCENT_ROWTYPE() != null ) {
+                            if (typeSpec.type_name() != null && typeSpec.PERCENT_TYPE() != null) {
                                 String tableName = Ora2rdb.getRealName(typeSpec.type_name().id_expression(0).getText());
                                 String columnName = Ora2rdb.getRealName(typeSpec.type_name().id_expression(1).getText());
                                 if (StorageInfo.types_of_column.containsKey(tableName)) {

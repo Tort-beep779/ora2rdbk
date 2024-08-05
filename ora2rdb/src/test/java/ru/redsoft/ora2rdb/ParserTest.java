@@ -156,5 +156,10 @@ class ParserTest {
     void package_separationTest() throws IOException {
         test("package_separation.sql");
     }
+    @Test
+    void type_declarationTest() throws IOException {
+        test("type_declaration.sql");
+    }
+
 
 }

@@ -43,6 +43,7 @@ public class SqlCodeParser {
     private final static String createProcedureTriggerRegex = "(?i)(?s)create\\s*(or\\s*replace\\s*)?\\s*(EDITIONING|EDITIONABLE|NONEDITIONABLE)?\\s*(procedure|trigger).*?";
     private final static String createPackageRegex = "(?i)(?s)create\\s*(or\\s*replace\\s*)?package.*?";
     private final static String createTypeBodyRegex = "(?i)(?s)create\\s*(or\\s*replace\\s*)?type\\s*body.*?";
+    private final static String pragmaDeclarationRegex = "(?i)(?s)\\n*\\s*PRAGMA\\s*\\n*(SERIALLY_REUSABLE|AUTONOMOUS_TRANSACTION|EXCEPTION_INIT|INLINE|RESTRICT_REFERENCES).*?";
 
     List<String> splitMetadataIntoBlocks(InputStream inputStream) {
         splittedInput = fromStreamToString(inputStream);
@@ -357,7 +358,7 @@ public class SqlCodeParser {
 
     private List<String> fromStreamToString(InputStream is) {
         StringBuilder result = new StringBuilder();
-        List<String> words = new ArrayList<>();
+//        List<String> words = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -372,13 +373,21 @@ public class SqlCodeParser {
                     result.append('\n');
                 }
             }
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        return fromStringToSeparateWords(result.toString());
+    }
+
+    private List<String> fromStringToSeparateWords(String result) {
+        List<String> words = new ArrayList<>();
             StringBuilder currentWord = new StringBuilder();
             boolean inSingleQuotes = false;
             boolean inDoubleQuotes = false;
             boolean inSingleLineComment = false;
             int multiLineCommentDepth = 0;
 
-            char[] chars = result.toString().toCharArray();
+            char[] chars = result.toCharArray();
             int i = 0;
 
             while (i < chars.length) {
@@ -477,13 +486,7 @@ public class SqlCodeParser {
             if (currentWord.length() > 0) {
                 words.add(currentWord.toString());
             }
-
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
-
         return words;
-
     }
 
     public Map<Integer, List<String>> getBlocksInPackage() {
@@ -510,4 +513,13 @@ public class SqlCodeParser {
         }
     }
 
+    public boolean checkIfPragmaDeclaration(String inputBlock) {
+        StringBuilder pragmaDecl = new StringBuilder();
+        for (String word : fromStringToSeparateWords(inputBlock)){
+            if (!checkIfQuoteOrCommentOrWhiteSpace(word)){
+                pragmaDecl.append(word);
+            }
+        }
+        return pragmaDecl.toString().matches(pragmaDeclarationRegex);
+    }
 }

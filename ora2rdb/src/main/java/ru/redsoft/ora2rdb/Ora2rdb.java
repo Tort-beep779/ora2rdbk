@@ -11,7 +11,8 @@ public class Ora2rdb {
     private static StringBuilder errors = new StringBuilder();
     final static String errorMessage = "Found error(s) in file while parsing\n";
     private final static String packageBodyStart = "CREATE OR REPLACE PACKAGE BODY package_for_parse IS";
-    private final static String packageBodyEND = "END package_for_parse;";
+    private final static String packageEnd = "END package_for_parse;";
+    private final static String packageStart = "CREATE OR REPLACE PACKAGE package_for_parse IS";
 
     static String stripQuotes(String str) {
         if (str.startsWith("\""))
@@ -85,9 +86,13 @@ public class Ora2rdb {
                 StringBuilder insidePackage = new StringBuilder();
                 List<String> listWithBlocks = mapWithBlocksInPackages.get(numberOfBlock);
                 for (int id = 0; id < listWithBlocks.size() - 2; id++) {
-                    String singleBlockInPackage = tryToParseBlock(packageBodyStart + " " + listWithBlocks.get(id) + " " + packageBodyEND).toString();
-                    singleBlockInPackage = singleBlockInPackage.replace(packageBodyStart, "");
-                    singleBlockInPackage = singleBlockInPackage.replace(packageBodyEND, "");
+                    String startOfPackage = packageBodyStart;
+                    if (sqlCodeParser.checkIfPragmaDeclaration(listWithBlocks.get(id))){
+                        startOfPackage = packageStart;
+                    }
+                    String singleBlockInPackage = tryToParseBlock(startOfPackage + " " + listWithBlocks.get(id) + " " + packageEnd).toString();
+                    singleBlockInPackage = singleBlockInPackage.replace(startOfPackage, "");
+                    singleBlockInPackage = singleBlockInPackage.replace(packageEnd, "");
                     insidePackage.append(singleBlockInPackage);
                 }
                 int size = listWithBlocks.size();

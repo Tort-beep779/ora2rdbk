@@ -337,7 +337,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                 tempList.stream().filter(e -> e.equalsIgnoreParent(finder, false))
                         .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
             else if(!tempList.isEmpty())
-                finder.setParent(tempList.get(0));
+                finder.setParent(tempList.get(0).getParent());
         }
         StoredBlock storedBlock;
         List<StoredBlock> tempList =
@@ -406,7 +406,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                     tempList.stream().filter(e -> e.equalsIgnoreParent(finder, false))
                             .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
                 else if(!tempList.isEmpty())
-                    finder.setParent(tempList.get(0));
+                    finder.setParent(tempList.get(0).getParent());
             }
 
             StoredBlock storedBlock;

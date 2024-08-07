@@ -533,7 +533,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 tempList.stream().filter(e -> e.equalsIgnoreParent(finder, false))
                         .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
             else if(!tempList.isEmpty())
-                finder.setParent(tempList.get(0));
+                finder.setParent(tempList.get(0).getParent());
 
 
             tempList = storedBlocksStack.peek().getCalledStorageBlocks().stream()
@@ -599,7 +599,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 tempList.stream().filter(e -> e.equalsIgnoreParent(finder, false))
                         .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
             else if(!tempList.isEmpty())
-                finder.setParent(tempList.get(0));
+                finder.setParent(tempList.get(0).getParent());
         }
 
         return StorageInfo.stored_blocks_list.stream()

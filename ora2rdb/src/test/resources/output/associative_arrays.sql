@@ -1,22 +1,18 @@
 
 
------------------------------------------------------------------------------
--------------------- Metadata is used only as a syntax check ----------------
--------------------- and contains logical errors, ---------------------------
--------------------- so it cannot be executed. ------------------------------
------------------------------------------------------------------------------
 
+CREATE EXCEPTION NO_DATA_FOUND
+	'no data found';
+CREATE OR ALTER PACKAGE PACKAGE_1 AS BEGIN 
 
-CREATE OR ALTER PACKAGE PACKAGE_1 AS BEGIN
-
-
+/*  TEST_FUNCTION_1   */
 -----------------------------------------------------------------------------
 -------------------- PUBLIC DECLARATIONS ------------------------------------
 -----------------------------------------------------------------------------
 
 
 
-end ;
+  end ;
 
 
 CREATE GLOBAL TEMPORARY TABLE CITY_POPULATION (
@@ -45,7 +41,7 @@ CREATE GLOBAL TEMPORARY TABLE CITY_POPULATION3 (
 
 SET TERM ^ ;
 
-RECREATE   PACKAGE BODY PACKAGE_NAME_1 AS BEGIN
+RECREATE   PACKAGE BODY PACKAGE_NAME_1 AS BEGIN 
 
 -----------------------------------------------------------------------------
 -------------------- PRIVATE DECLARATIONS -----------------------------------
@@ -75,7 +71,7 @@ AS
     /*city_population  TEST_PACKAGE_FUNCTION_1_population;*/
 BEGIN
     null;
-END 
+END /*TEST_PACKAGE_FUNCTION_1*/  
 
 
 
@@ -88,7 +84,7 @@ AS
     /*city_population  TEST_PACKAGE_FUNCTION_2_population;*/
 BEGIN
     UPDATE OR INSERT INTO CITY_POPULATION1 VALUES ('Village', 2000);
-END 
+END /*TEST_PACKAGE_FUNCTION_2*/  
 
 
 
@@ -101,7 +97,7 @@ AS
     /*city_population  TEST_PACKAGE_FUNCTION_3_population;*/
 BEGIN
  DBMS_Output.PUT_LINE( (SELECT VAL FROM CITY_POPULATION2 WHERE I1 = 'Village') );
-END 
+END /*TEST_PACKAGE_FUNCTION_3*/  
 
 
 
@@ -118,11 +114,11 @@ AS
     BEGIN
             UPDATE OR INSERT INTO CITY_POPULATION3 VALUES ('Village', 2000);
             DBMS_Output.PUT_LINE( (SELECT VAL FROM CITY_POPULATION3 WHERE I1 = 'Village') );
-    END 
+    END /*Base*/
 
 BEGIN
     null;
-END 
+END /*TEST_PACKAGE_FUNCTION_4*/  
 
 
 
@@ -140,7 +136,7 @@ END
 
 
 
-end ;
+  end ;
 
 SET TERM ; ^
 
@@ -170,7 +166,7 @@ AS
     /*city_population  TEST_FUNCTION_1_population;*/
 BEGIN
     null;
-END ^
+END /*TEST_FUNCTION_1*/^
 
 SET TERM ; ^
 
@@ -193,7 +189,7 @@ AS
     /*city_population  TEST_FUNCTION_2_population;*/
 BEGIN
     UPDATE OR INSERT INTO CITY_POPULATION5 VALUES ('Village', 2000);
-END ^
+END /*TEST_FUNCTION_2*/^
 
 SET TERM ; ^
 
@@ -217,7 +213,7 @@ AS
     /*city_population  TEST_FUNCTION_3_population;*/
 BEGIN
     DBMS_Output.PUT_LINE( (SELECT VAL FROM CITY_POPULATION6 WHERE I1 = 'Village') );
-END ^
+END /*TEST_FUNCTION_3*/^
 
 SET TERM ; ^
 
@@ -244,10 +240,10 @@ AS
     BEGIN
             UPDATE OR INSERT INTO CITY_POPULATION7 VALUES ('Village', 2000);
             DBMS_Output.PUT_LINE( (SELECT VAL FROM CITY_POPULATION7 WHERE I1 = 'Village') );
-    END 
+    END /*Base*/
 BEGIN
     null;
-END ^
+END /*TEST_FUNCTION_4*/^
 
 SET TERM ; ^
 
@@ -290,7 +286,7 @@ AS
     /*city_population  TEST_PROCEDURE_1_population;*/
 BEGIN
     null;
-END ^
+END /*TEST_PROCEDURE_1*/^
 
 SET TERM ; ^
 
@@ -313,7 +309,7 @@ AS
     /*city_population  TEST_PROCEDURE_2_population;*/
 BEGIN
     UPDATE OR INSERT INTO CITY_POPULATION9 VALUES ('Village', 2000);
-END ^
+END /*TEST_PROCEDURE_2*/^
 
 SET TERM ; ^
 
@@ -336,7 +332,7 @@ AS
     /*city_population  TEST_FUNCTION_3_population;*/
 BEGIN
     DBMS_Output.PUT_LINE( (SELECT VAL FROM CITY_POPULATION10 WHERE I1 = 'Village') );
-END ^
+END /*TEST_PROCEDURE_3*/^
 
 SET TERM ; ^
 
@@ -363,34 +359,13 @@ AS
     BEGIN
             UPDATE OR INSERT INTO CITY_POPULATION11 VALUES ('Village', 2000);
             DBMS_Output.PUT_LINE( (SELECT VAL FROM CITY_POPULATION11 WHERE I1 = 'Village') );
-    END 
+    END /*Base*/
 BEGIN
     null;
-END ^
+END /*TEST_PROCEDURE_4*/^
 
 SET TERM ; ^
 
-
-
-
------------------------ TEST_PROCEDURE_5 -----------------------
-
---CREATE PROCEDURE TEST_PROCEDURE_5 (
---    NUM NUMBER)
---IS
---
---BEGIN
---    null;
---END TEST_PROCEDURE_5;
-
-
-
-
-
-
------------------------------------------------------------------------------
----------------------------PACKAGE PROCEDURES -------------------------------
------------------------------------------------------------------------------
 
 CREATE GLOBAL TEMPORARY TABLE CITY_POPULATION12 (
 	I1 VARCHAR(64),
@@ -418,7 +393,7 @@ CREATE GLOBAL TEMPORARY TABLE CITY_POPULATION15 (
 
 SET TERM ^ ;
 
-RECREATE   PACKAGE BODY PACKAGE_NAME_2 AS BEGIN
+RECREATE   PACKAGE BODY PACKAGE_NAME_2 AS BEGIN 
 
 
 ------------------- TEST_PACKAGE_PROCEDURE_1 -------------------
@@ -430,7 +405,7 @@ AS
     /*city_population  TEST_PACKAGE_PROCEDURE_1_population;*/
 BEGIN
     null;
-END 
+END /*TEST_PACKAGE_PROCEDURE_1*/  
 
 
 
@@ -443,7 +418,7 @@ AS
     /*city_population  TEST_PACKAGE_PROCEDURE_2_population;*/
 BEGIN
     UPDATE OR INSERT INTO CITY_POPULATION13 VALUES ('Village', 2000);
-END 
+END /*TEST_PACKAGE_PROCEDURE_2*/  
 
 
 
@@ -456,7 +431,7 @@ AS
     /*city_population  TEST_PACKAGE_PROCEDURE_3_population;*/
 BEGIN
     DBMS_Output.PUT_LINE( (SELECT VAL FROM CITY_POPULATION14 WHERE I1 = 'Village') );
-END 
+END /*TEST_PACKAGE_PROCEDURE_3*/  
 
 
 
@@ -473,10 +448,10 @@ AS
     BEGIN
         UPDATE OR INSERT INTO CITY_POPULATION15 VALUES ('Village', 2000);
         DBMS_Output.PUT_LINE( (SELECT VAL FROM CITY_POPULATION15 WHERE I1 = 'Village') );
-    END 
+    END /*Base*/
 BEGIN
     null;
-END 
+END /*TEST_PACKAGE_PROCEDURE_4*/  
 
 
 
@@ -493,6 +468,6 @@ END
 
 
 
-end ;
+  end ;
 
 SET TERM ; ^

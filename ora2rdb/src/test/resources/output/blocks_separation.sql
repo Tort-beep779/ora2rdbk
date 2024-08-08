@@ -1,5 +1,4 @@
 /*Found error(s) in file while parsing
-Error at line 3:25 - mismatched input '(' expecting ';'
 Error at line 9:0 - mismatched input '/' expecting ';'
 Error at line 16:19 - no viable alternative at input 'l_limbs MULTISET'
 Error at line 15:19 - no viable alternative at input 'l_limbs MULTISET'
@@ -10,10 +9,8 @@ Error at line 19:19 - no viable alternative at input 'l_limbs MULTISET'
 Error at line 14:19 - no viable alternative at input 'l_limbs MULTISET'
 Error at line 16:19 - no viable alternative at input 'l_limbs MULTISET'
 Error at line 16:19 - no viable alternative at input 'l_limbs MULTISET'
-Error at line 40:9 - no viable alternative at input 'tab_1.EXTEND'
 Error at line 13:0 - mismatched input '/' expecting ';'
 Error at line 6:4 - mismatched input '/' expecting ';'
-Error at line 18:10 - no viable alternative at input 'retval.EXTEND'
 Error at line 13:0 - mismatched input '/' expecting ';'
 Error at line 8:33 - no viable alternative at input 'authors_pkg.steven_authors MULTISET'
 Error at line 6:0 - mismatched input 'CREATE' expecting ';'
@@ -26,6 +23,13 @@ transaction to write a row to the error log; call the full suite of error-relate
 to gather all generic information; pass in application-specific data for logging.
 */
 
+    /*
+
+This very, VERY basic error logging package demonstrations the critical elements: use an autonomous
+transaction to write a row to the error log; call the full suite of error-related built-in functions
+to gather all generic information; pass in application-specific data for logging.
+
+*/
 -- Error Logging Table
 CREATE EXCEPTION NO_DATA_FOUND
 	'no data found';
@@ -44,17 +48,12 @@ CREATE TABLE error_log
 
 CREATE OR ALTER PACKAGE 
 AS BEGIN 
-   failure_in_forall   EXCEPTION; 
-/*
-Error at line 3:25 - mismatched input '(' expecting ';'
- 
 
-   PRAGMA EXCEPTION_INIT (failure_in_forall, -24381); 
-*/ 
+   failure_in_forall   EXCEPTION;  
 
    PROCEDURE log_error (app_info_in  VARCHAR(32000));  
   END;
-/
+
 
 
 SET TERM ^ ;
@@ -63,9 +62,8 @@ RECREATE   PACKAGE BODY
 AS BEGIN 
    PROCEDURE log_error (app_info_in  VARCHAR(32000))
    AS
-      
       /* Cannot call this function directly in SQL */
-      DECLARE c_code   CONSTANT INTEGER = SQLCODE;
+       DECLARE c_code   CONSTANT INTEGER = SQLCODE;
 BEGIN
 IN AUTONOMOUS TRANSACTION DO BEGIN
 INSERT INTO error_log (created_on,
@@ -89,11 +87,11 @@ END
   END;
 
 SET TERM ; ^
-/
+
 
 -- Try it Out
 DECLARE
-DECLARE l_company_id   INTEGER;
+ DECLARE l_company_id   INTEGER;
 BEGIN
    IF (l_company_id IS NULL)
    THEN
@@ -103,7 +101,7 @@ EXCEPTION
    DOBEGIN
 	      error_mgr.log_error ('Company ID is NULL - not allowed.');
       ENDEND;
-/
+
 
 SELECT backtrace, errorstack, callstack FROM error_log;
 
@@ -117,7 +115,7 @@ BEGIN
       DBMS_OUTPUT.put_line (rec.common_name);
 END
 END;
-/
+
 
 -- Cursor FOR Loop with Explicit Cursor
 /*
@@ -157,7 +155,7 @@ END
 CLOSE SPECIES_CUR;
 
 END;
-/
+
 
 /*
 The MULTISET operators are fantastic, declarative, set-oriented functionality
@@ -186,7 +184,7 @@ INSERT INTO limbs VALUES ('tail', 3);
 
 COMMIT;
 END;
-/
+
 /*
 Error at line 9:0 - mismatched input '/' expecting ';'
 
@@ -220,7 +218,7 @@ l_limbs := l_limbs MULTISET UNION l_limbs;
    DBMS_OUTPUT.put_line ('Lots of limbs! ' || l_limbs.COUNT);
 END;
 */
-/
+
 /*
 Error at line 15:19 - no viable alternative at input 'l_limbs MULTISET'
 
@@ -241,7 +239,7 @@ l_limbs := l_limbs MULTISET UNION l_limbs;
    DBMS_OUTPUT.put_line ('Lots of limbs! ' || l_limbs.COUNT);
 END;
 */
-/
+
 /*
 Error at line 16:19 - no viable alternative at input 'l_limbs MULTISET'
 
@@ -263,7 +261,7 @@ l_limbs := l_limbs MULTISET EXCEPT l_limbs;
    DBMS_OUTPUT.put_line ('Lots of limbs! ' || l_limbs.COUNT);
 END;
 */
-/
+
 /*
 Error at line 14:19 - no viable alternative at input 'l_limbs MULTISET'
 
@@ -283,7 +281,7 @@ l_limbs := l_limbs MULTISET UNION DISTINCT l_limbs;
    DBMS_OUTPUT.put_line ('Lots of limbs! ' || l_limbs.COUNT);
 END;
 */
-/
+
 /*
 Error at line 12:0 - mismatched input '/' expecting ';'
 
@@ -311,7 +309,7 @@ BEGIN
 RETURN CHAR_LENGTH (self.nm);
 END;
 END;
-/
+
 /*
 Error at line 19:19 - no viable alternative at input 'l_limbs MULTISET'
 
@@ -336,7 +334,7 @@ l_limbs := l_limbs MULTISET UNION DISTINCT l_limbs;
    DBMS_OUTPUT.put_line ('Lots of limbs! ' || l_limbs.COUNT);
 END;
 */
-/
+
 /*
 Error at line 14:19 - no viable alternative at input 'l_limbs MULTISET'
 
@@ -356,7 +354,7 @@ l_limbs := l_limbs MULTISET EXCEPT l_limbs;
    DBMS_OUTPUT.put_line ('Lots of limbs! ' || l_limbs.COUNT);
 END;
 */
-/
+
 /*
 Error at line 16:19 - no viable alternative at input 'l_limbs MULTISET'
 
@@ -378,7 +376,7 @@ l_limbs := l_limbs MULTISET EXCEPT l_limbs;
    DBMS_OUTPUT.put_line ('Lots of limbs! ' || l_limbs.COUNT);
 END;
 */
-/
+
 
 -- Tweak Mapping Algorithm
 
@@ -398,7 +396,7 @@ BEGIN
 RETURN CHAR_LENGTH (self.nm) + self.avg_len;
 END;
 END;
-/
+
 /*
 Error at line 16:19 - no viable alternative at input 'l_limbs MULTISET'
 
@@ -420,12 +418,9 @@ l_limbs := l_limbs MULTISET UNION DISTINCT l_limbs;
    DBMS_OUTPUT.put_line ('Lots of limbs! ' || l_limbs.COUNT);
 END;
 */
-/
+
+
 /*
-Error at line 40:9 - no viable alternative at input 'tab_1.EXTEND'
-
-
-
 One of the nicest things about nested tables is that you can compare two
 such collections for equality using nothing more than...the equality operator!
 
@@ -433,45 +428,46 @@ Key things to remember: order of elements is not significant; if the collections
 have different numbers of elements, "=" returns FALSE; if they have the same
 number of elements, but at least one of the values in either collection is NULL,
 "=" returns NULL; two initialized, but empty collections are equal.
-
+*/
 
 -- What do you think will be displayed?
 -- Before running this script, see if you can predict the outcome!
 DECLARE
-TYPE nested_tab_t IS TABLE OF INTEGER;
+/*TYPE nested_tab_t IS TABLE OF INTEGER;*/
 
-   tab_1   nested_tab_t := nested_tab_t (1, 2, 3, 4, 5, 6, 7);
-   tab_2   nested_tab_t := nested_tab_t (7, 6, 5, 4, 3, 2, 1);
-   tab_3   nested_tab_t := nested_tab_t ();
-   tab_4  nested_tab_t := nested_tab_t ();
-   tab_5  nested_tab_t := nested_tab_t (null);
-   tab_6  nested_tab_t := nested_tab_t (null);
+    DECLARE tab_1   nested_tab_t = nested_tab_t (1, 2, 3, 4, 5, 6, 7);
+    DECLARE tab_2   nested_tab_t = nested_tab_t (7, 6, 5, 4, 3, 2, 1);
+    DECLARE tab_3   nested_tab_t = nested_tab_t ();
+    DECLARE tab_4  nested_tab_t = nested_tab_t ();
+    DECLARE tab_5  nested_tab_t = nested_tab_t (null);
+    DECLARE tab_6  nested_tab_t = nested_tab_t (null);
 
-   PROCEDURE check_for_equality (i_tab_1   IN nested_tab_t,
-                                 i_tab_2   IN nested_tab_t)
-IS
-      v_equal   BOOLEAN := i_tab_1 = i_tab_2;
+   PROCEDURE check_for_equality (i_tab_1    nested_tab_t,
+                                 i_tab_2    nested_tab_t)
+AS
+       DECLARE v_equal   BOOLEAN = :i_tab_1 = :i_tab_2;
+
+  DECLARE VARIABLE SPECIES_CUR_REC TYPE OF TABLE SPECIES_CUR;
 BEGIN
       DBMS_OUTPUT.put_line (
             'Equal? '
          || CASE
-               WHEN v_equal IS NULL THEN 'null'
-               WHEN v_equal THEN 'equal'
+               WHEN :v_equal IS NULL THEN 'null'
+               WHEN :v_equal THEN 'equal'
                ELSE 'not equal'
             END);
-END check_for_equality;
+END /*check_for_equality*/
 BEGIN
-   check_for_equality (tab_1, tab_2);
+   EXECUTE PROCEDURE check_for_equality (tab_1, tab_2);
    tab_1.EXTEND (1);
-   check_for_equality (tab_1, tab_2);
+   EXECUTE PROCEDURE check_for_equality (tab_1, tab_2);
    tab_2.EXTEND (1);
-   check_for_equality (tab_1, tab_2);
-   check_for_equality (tab_1, tab_3);
-   check_for_equality (tab_3, tab_4);
-   check_for_equality (tab_5, tab_6);
+   EXECUTE PROCEDURE check_for_equality (tab_1, tab_2);
+   EXECUTE PROCEDURE check_for_equality (tab_1, tab_3);
+   EXECUTE PROCEDURE check_for_equality (tab_3, tab_4);
+   EXECUTE PROCEDURE check_for_equality (tab_5, tab_6);
 END;
-*/
-/
+
 
 /*
 While PL/SQL is mostly used to provide secure, efficient access to the relational
@@ -506,7 +502,7 @@ CREATE TYPE food_t AS OBJECT (
       RETURN NUMERIC(18, 4)
 )
 NOT FINAL NOT INSTANTIABLE;
-/
+
 
 -- Every Dessert is a Food
 
@@ -523,7 +519,7 @@ CREATE TYPE dessert_t UNDER food_t (
       RETURN NUMERIC(18, 4)
 )
 NOT FINAL;
-/
+
 
 -- An Object Type Body
 /*
@@ -535,7 +531,7 @@ IS
    OVERRIDING MEMBER FUNCTION price
       RETURN NUMERIC(18, 4)
    IS
-      DECLARE multiplier   NUMERIC(18, 4) = 1;
+       DECLARE multiplier   NUMERIC(18, 4) = 1;
 BEGIN
       DBMS_OUTPUT.put_line ('Dessert price!');
 
@@ -550,7 +546,7 @@ BEGIN
 RETURN (10.00 * multiplier);
 END;
 END;
-/
+
 /*
 Error at line 13:0 - mismatched input '/' expecting ';'
 
@@ -583,22 +579,22 @@ RETURN  (  5.00                                             -- base price
     );
 END;
 END;
-/
+
 
 -- Can I Declare a Food Variable?
 -- No! The type is NOT INSTANTIABLE, so this attempt fails.
 DECLARE
-DECLARE my_favorite_vegetable   food_t
+ DECLARE my_favorite_vegetable   food_t
                            = food_t ('Brussel Sprouts', 'VEGETABLE', 'farm');
 BEGIN
    DBMS_OUTPUT.put_line (my_favorite_vegetable.price);
 END;
-/
+
 
 DECLARE
-DECLARE last_resort_dessert   dessert_t
+ DECLARE last_resort_dessert   dessert_t
                          = dessert_t ('Jello', 'PROTEIN', 'bowl', 'N', 1887);
-   DECLARE heavenly_cake         cake_t
+    DECLARE heavenly_cake         cake_t
       = cake_t ('Marzepan Delight'
                , 'CARBOHYDRATE'
                , 'bakery'
@@ -611,12 +607,12 @@ BEGIN
    DBMS_OUTPUT.put_line (last_resort_dessert.price);
    DBMS_OUTPUT.put_line (heavenly_cake.price);
 END;
-/
+
 
 DECLARE
 /*TYPE foodstuffs_nt IS TABLE OF food_t;*/
 
-   DECLARE fridge_contents   foodstuffs_nt
+    DECLARE fridge_contents   foodstuffs_nt
       = foodstuffs_nt (dessert_t ('Strawberries and cream'
                                  , 'FRUIT'
                                  , 'Backyard'
@@ -650,7 +646,7 @@ BEGIN
 indx = indx + 1;
 END
 END;
-/
+
 /*
 Error at line 6:4 - mismatched input '/' expecting ';'
 
@@ -664,13 +660,13 @@ CREATE TABLE food_tab (food food_t)
 -- Cakes and Desserts are Foods
 -- So I can insert them into the table.
 DECLARE
-DECLARE s_and_c    dessert_t
+ DECLARE s_and_c    dessert_t
                  = dessert_t ('Strawberries and cream',
                                'FRUIT',
                                'Backyard',
                                'N',
                                2001);
-   DECLARE choc_sup   cake_t
+    DECLARE choc_sup   cake_t
                  = cake_t ('Chocolate Supreme',
                             'CARBOHYDATE',
                             'Kitchen',
@@ -685,10 +681,10 @@ VALUES (s_and_c);
 INSERT INTO food_tab
 VALUES (choc_sup);
 END;
-/
+
 
 SELECT COUNT (*) FROM food_tab
-    /
+    
 
 
 DECLARE
@@ -700,8 +696,6 @@ ORDER BY common_name);
 
 PROCEDURE start_conservation_effort
 AS
-
-  DECLARE VARIABLE SPECIES_CUR_REC TYPE OF TABLE SPECIES_CUR;
 
   DECLARE VARIABLE indx INTEGER;
 BEGIN
@@ -748,37 +742,43 @@ in 12.1 and higher in a package specification.
 */
 
 CREATE OR REPLACE TYPE names_nt IS TABLE OF VARCHAR ( 1000 );
-/
-/*
-Error at line 18:10 - no viable alternative at input 'retval.EXTEND'
 
 
 -- Silly Dataset Generator
-
+/*
 I need to generated N number of names. Here's a function that does it.
 It's a silly example. I can do this in SQL, too, but it demonstrates the ability
 to programmatically (procedurally) populate a collection.
+*/
 
+SET TERM ^ ;
 
-CREATE OR REPLACE FUNCTION lotsa_names (
-   base_name_in   IN   VARCHAR2
- , count_in       IN   INTEGER
+CREATE OR ALTER FUNCTION lotsa_names (
+   base_name_in      VARCHAR(32000)
+ , count_in          INTEGER
 )
-   RETURN names_nt
-IS
-   retval names_nt := names_nt ( );
-BEGIN
-   retval.EXTEND ( count_in );
+   RETURNS names_nt
+AS
+    DECLARE retval names_nt = names_nt ( );
 
-FOR indx IN 1 .. count_in
-   LOOP
-      retval ( indx ) := base_name_in || ' ' || indx;
-END LOOP;
+  DECLARE VARIABLE SPECIES_CUR_REC TYPE OF TABLE SPECIES_CUR;
+
+  DECLARE VARIABLE indx INTEGER;
+BEGIN
+   :retval.EXTEND ( :count_in );
+
+indx = 1;
+WHILE ( indx <= :count_in) DO
+BEGIN
+      retval ( :indx ) = :base_name_in || ' ' || :indx;
+indx = indx + 1;
+END
 
 RETURN retval;
-END lotsa_names;
-*/
-/
+END /*lotsa_names*/^
+
+SET TERM ; ^
+
 
 -- Call table function inside SELECT
 /*
@@ -819,9 +819,7 @@ CREATE OR ALTER FUNCTION lotsa_names_cv (
 )
    RETURNS sys_refcursor
 AS
-   DECLARE retval sys_refcursor;
-
-  DECLARE VARIABLE SPECIES_CUR_REC TYPE OF TABLE SPECIES_CUR;
+    DECLARE retval sys_refcursor;
 BEGIN
 OPEN :retval FOR
 SELECT COLUMN_VALUE
@@ -831,11 +829,11 @@ RETURN retval;
 END /*lotsa_names_cv*/^
 
 SET TERM ; ^
-/
+
 
 DECLARE
-DECLARE l_names_cur sys_refcursor;
-   DECLARE l_name VARCHAR ( 32767 );
+ DECLARE l_names_cur sys_refcursor;
+    DECLARE l_name VARCHAR ( 32767 );
 BEGIN
    l_names_cur = lotsa_names_cv ( 'Steven', 100 );
 
@@ -848,7 +846,7 @@ END
 
 CLOSE l_names_cur;
 END;
-/
+
 /*
 Error at line 13:0 - mismatched input '/' expecting ';'
 
@@ -869,15 +867,15 @@ CREATE OR REPLACE TYPE strings_nt IS TABLE OF VARCHAR2 (1000)
 
 CREATE OR ALTER PACKAGE 
 AS BEGIN 
-   DECLARE steven_authors   strings_nt;  
-   DECLARE veva_authors     strings_nt;  
-   DECLARE eli_authors      strings_nt;  
+    DECLARE steven_authors   strings_nt;  
+    DECLARE veva_authors     strings_nt;  
+    DECLARE eli_authors      strings_nt;  
 
    PROCEDURE show_authors (title_in  VARCHAR(32000), authors_in  strings_nt);  
 
-   DECLARE PROCEDURE init_authors;  
+   PROCEDURE init_authors;  
   END;
-/
+
 
 
 SET TERM ^ ;
@@ -918,7 +916,7 @@ END
   END;
 
 SET TERM ; ^
-/
+
 /*
 Error at line 8:33 - no viable alternative at input 'authors_pkg.steven_authors MULTISET'
 
@@ -951,7 +949,7 @@ END LOOP;
    authors_pkg.show_authors ('Steven then Veva with DISTINCT', our_authors);
 END;
 */
-/
+
 
 /*
  Method 2 means your dynamically-constructed SQL statement in a non-query DML
@@ -982,8 +980,8 @@ CREATE OR ALTER FUNCTION table_count (
    RETURNS PLS_INTEGER
    AUTHID CURRENT_USER
 AS
-   DECLARE l_table_name   TYPE OF COLUMN all_tables.table_name;
-   DECLARE l_return       PLS_INTEGER;
+    DECLARE l_table_name   TYPE OF COLUMN all_tables.table_name;
+    DECLARE l_return       PLS_INTEGER;
 BEGIN
    l_table_name = sys.DBMS_ASSERT.sql_object_name (:table_name_in);
 EXECUTE STATEMENT
@@ -994,7 +992,7 @@ RETURN l_return;
 END^
 
 SET TERM ; ^
-/
+
 
 -- Can't Bind Column Names
 /*
@@ -1008,7 +1006,7 @@ SET TERM ^ ;
 CREATE OR ALTER PROCEDURE set_to_10000 (col_in              VARCHAR(32000),
                                           department_id_in    PLS_INTEGER)
 AS
-   DECLARE l_update CONSTANT VARCHAR (1000) =
+    DECLARE l_update CONSTANT VARCHAR (1000) =
       'UPDATE employees SET :colname = 10000
         WHERE department_id = :dept';
 BEGIN
@@ -1018,14 +1016,14 @@ DBMS_OUTPUT.put_line ('Rows updated: ' || CAST (SQL%ROWCOUNT));
 END^
 
 SET TERM ; ^
-/
+
 
 -- Can't Bind Column Names - In Action
 BEGIN
    EXECUTE PROCEDURE set_to_10000 ('salary', 50);
 /* ORA-01747: invalid user.table.column, table.column, or column specification */
 END;
-/
+
 
 -- Bind Single Variable
 /*
@@ -1040,7 +1038,7 @@ SET TERM ^ ;
 CREATE OR ALTER PROCEDURE set_to_10000 (col_in              VARCHAR(32000),
                                           department_id_in    PLS_INTEGER)
 AS
-   DECLARE l_update   VARCHAR (1000)
+    DECLARE l_update   VARCHAR (1000)
       =    'UPDATE employees SET '
          || :col_in
          || ' = 10000
@@ -1052,7 +1050,7 @@ DBMS_OUTPUT.put_line ('Rows updated: ' || CAST (SQL%ROWCOUNT));
 END^
 
 SET TERM ; ^
-/
+
 
 BEGIN
    DBMS_OUTPUT.put_line (
@@ -1068,7 +1066,7 @@ BEGIN
                       'department_id = 50 AND salary = 10000'));
 ROLLBACK;
 END;
-/
+
 
 -- Multiple Placeholders, Different Names
 -- I have two placeholders with different names. I therefore have two expressions in the USING clause.
@@ -1078,7 +1076,7 @@ CREATE OR ALTER PROCEDURE updnumval (col_in              VARCHAR(32000),
                                        department_id_in    PLS_INTEGER,
                                        val_in              NUMERIC(18, 4))
 AS
-   DECLARE l_update   VARCHAR (1000)
+    DECLARE l_update   VARCHAR (1000)
       =    'UPDATE employees SET '
          || :col_in
          || ' = :val
@@ -1090,7 +1088,7 @@ DBMS_OUTPUT.put_line ('Rows updated: ' || CAST (SQL%ROWCOUNT));
 END^
 
 SET TERM ; ^
-/
+
 
 BEGIN
    DBMS_OUTPUT.put_line (
@@ -1106,7 +1104,7 @@ BEGIN
                       'department_id = 50 AND salary = 10000'));
 ROLLBACK;
 END;
-/
+
 
 -- Three Placeholders, Repeating Names
 -- Now I have three placeholders and the name "val" is used twice. When I execute a dynamic SQL statement, I must have an expression in the USING clause for each placeholder - by position, not name. So you see three variables, including val_in twice. Of course, I could use a different expression for the second "val" placeholder. They are NOT connected by name.
@@ -1116,7 +1114,7 @@ CREATE OR ALTER PROCEDURE updnumval (col_in              VARCHAR(32000),
                                        department_id_in    PLS_INTEGER,
                                        val_in              NUMERIC(18, 4))
 AS
-   DECLARE l_update   VARCHAR (1000)
+    DECLARE l_update   VARCHAR (1000)
       =    'UPDATE employees SET '
          || :col_in
          || ' = :val
@@ -1128,7 +1126,7 @@ DBMS_OUTPUT.put_line ('Rows updated: ' || CAST (SQL%ROWCOUNT));
 END^
 
 SET TERM ; ^
-/
+
 
 BEGIN
    DBMS_OUTPUT.put_line (
@@ -1144,7 +1142,7 @@ BEGIN
                       'department_id = 50 AND salary = 10000'));
 ROLLBACK;
 END;
-/
+
 
 /*
 The "in tab" procedure displays what's in a table, using DBMS_SQL and method 4 dynamic SQL.
@@ -1184,7 +1182,7 @@ AS
    SUBTYPE max_varchar2_t IS VARCHAR (32767);
 
    -- Minimize size of a string column.
-   DECLARE c_min_length   CONSTANT PLS_INTEGER = 10;
+    DECLARE c_min_length   CONSTANT PLS_INTEGER = 10;
 
    -- Collection to hold the column information for this table.
    /*TYPE columns_tt IS TABLE OF TYPE OF TABLE all_tab_columns
@@ -1192,12 +1190,12 @@ AS
 
    /*l_columns               columns_tt;*/
    -- Open a cursor for use by DBMS_SQL subprograms throughout this procedure.
-   DECLARE l_cursor                INTEGER;
+    DECLARE l_cursor                INTEGER;
    --
    -- Formatting and SELECT elements used throughout the program.
-   DECLARE l_header                max_varchar2_t;
-   DECLARE l_select_list           max_varchar2_t;
-   DECLARE g_row_line_length       INTEGER = 0;
+    DECLARE l_header                max_varchar2_t;
+    DECLARE l_select_list           max_varchar2_t;
+    DECLARE g_row_line_length       INTEGER = 0;
 
    /* Utility functions that determine the "family" of the column datatype.
    They do NOT comprehensively cover the datatypes supported by Oracle.
@@ -1230,18 +1228,17 @@ END
       select_list_io      VARCHAR(32000),
       header_io           VARCHAR(32000),
       columns_io          columns_tt)
-RETURNS( SELECT_LIST_IO_OUT VARCHAR(32000), 
-HEADER_IO_OUT VARCHAR(32000), 
-COLUMNS_IO_OUT columns_tt)
+     RETURNS(      SELECT_LIST_IO_OUT VARCHAR(32000), 
+     HEADER_IO_OUT VARCHAR(32000), 
+     COLUMNS_IO_OUT columns_tt)
 
 AS
-      DECLARE l_dot_location   PLS_INTEGER;
-      DECLARE l_owner          VARCHAR (100);
-      DECLARE l_table          VARCHAR (100);
-      DECLARE l_index          PLS_INTEGER;
+       DECLARE l_dot_location   PLS_INTEGER;
+       DECLARE l_owner          VARCHAR (100);
+       DECLARE l_table          VARCHAR (100);
+       DECLARE l_index          PLS_INTEGER;
       --
       no_such_table    EXCEPTION;
-      
 BEGIN
       -- Separate the schema and table names, if both are present.
       l_dot_location = POSITION ('.', table_in);
@@ -1317,14 +1314,14 @@ ELSE
                         :columns_io (:l_index).data_length);
             l_index = columns_io.NEXT (:l_index);
          END
-SELECT_LIST_IO_OUT = SELECT_LIST_IO;
-HEADER_IO_OUT = HEADER_IO;
-COLUMNS_IO_OUT = COLUMNS_IO;
-SUSPEND;
+     SELECT_LIST_IO_OUT = SELECT_LIST_IO;
+     HEADER_IO_OUT = HEADER_IO;
+     COLUMNS_IO_OUT = COLUMNS_IO;
+     SUSPEND;
 END /*load_column_information*/
 
    PROCEDURE report_error (text_in  VARCHAR(32000), cursor_io   INTEGER)
-RETURNS( CURSOR_IO_OUT INTEGER)
+     RETURNS(      CURSOR_IO_OUT INTEGER)
 
 AS
 BEGIN
@@ -1334,18 +1331,18 @@ BEGIN
 
       DBMS_OUTPUT.put_line (:text_in);
       DBMS_OUTPUT.put_line (DBMS_UTILITY.format_error_backtrace);
-CURSOR_IO_OUT = CURSOR_IO;
-SUSPEND;
+     CURSOR_IO_OUT = CURSOR_IO;
+     SUSPEND;
 END
 
    PROCEDURE construct_and_open_cursor (select_list_in        VARCHAR(32000),
                                         cursor_out           INTEGER)
-RETURNS( CURSOR_OUT_OUT INTEGER)
+     RETURNS(      CURSOR_OUT_OUT INTEGER)
 
 AS
-      DECLARE l_query          max_varchar2_t;
-      DECLARE l_where_clause   max_varchar2_t = LTRIM (:where_in);
-      DECLARE :l_cursor         SYS_REFCURSOR;
+       DECLARE l_query          max_varchar2_t;
+       DECLARE l_where_clause   max_varchar2_t = LTRIM (:where_in);
+       DECLARE :l_cursor         SYS_REFCURSOR;
 BEGIN
       -- Construct a where clause if a value was specified.
 
@@ -1379,17 +1376,17 @@ cursor_out = DBMS_SQL.to_cursor_number (:l_cursor);
 	         EXECUTE PROCEDURE report_error ('Error constructing and opening cursor: ' || :l_query,
                        :cursor_out);
          RAISE;
-         ENDCURSOR_OUT_OUT = CURSOR_OUT;
-SUSPEND;
+         END     CURSOR_OUT_OUT = CURSOR_OUT;
+     SUSPEND;
 END
 
    PROCEDURE define_columns_and_execute (cursor_io      INTEGER,
                                          columns_in        columns_tt)
-RETURNS( CURSOR_IO_OUT INTEGER, 
+     RETURNS(      CURSOR_IO_OUT INTEGER, 
 
 AS
-      DECLARE l_index      PLS_INTEGER;
-      DECLARE l_feedback   PLS_INTEGER;
+       DECLARE l_index      PLS_INTEGER;
+       DECLARE l_feedback   PLS_INTEGER;
 BEGIN
       /*
       DBMS_SQL.DEFINE_COLUMN
@@ -1423,36 +1420,36 @@ BEGIN
       DOBEGIN
 	         EXECUTE PROCEDURE report_error ('Error defining columns', :cursor_io);
          RAISE;
-         ENDCURSOR_IO_OUT = CURSOR_IO;
-SUSPEND;
+         END     CURSOR_IO_OUT = CURSOR_IO;
+     SUSPEND;
 END
 
    PROCEDURE build_and_display_output (header_in         VARCHAR(32000),
                                        cursor_io      INTEGER,
                                        columns_in        columns_tt)
-RETURNS( CURSOR_IO_OUT INTEGER, 
+     RETURNS(      CURSOR_IO_OUT INTEGER, 
 
 AS
       -- Used to hold the retrieved column values.
-      DECLARE l_string_value     VARCHAR (2000);
-      DECLARE l_number_value     NUMERIC(18, 4);
-      DECLARE l_date_value       DATE;
+       DECLARE l_string_value     VARCHAR (2000);
+       DECLARE l_number_value     NUMERIC(18, 4);
+       DECLARE l_date_value       DATE;
       --
-      DECLARE l_feedback         INTEGER;
-      DECLARE l_index            PLS_INTEGER;
-      DECLARE l_one_row_string   max_varchar2_t;
+       DECLARE l_feedback         INTEGER;
+       DECLARE l_index            PLS_INTEGER;
+       DECLARE l_one_row_string   max_varchar2_t;
 
       -- Formatting for the output of the header information
 
       PROCEDURE display_header
 AS
-         DECLARE l_border   max_varchar2_t = RPAD ('-', :g_row_line_length, '-');
+          DECLARE l_border   max_varchar2_t = RPAD ('-', :g_row_line_length, '-');
 
          FUNCTION centered_string (string_in    VARCHAR(32000),
                                    length_in    INTEGER)
             RETURNS VARCHAR(32000)
          AS
-            DECLARE len_string   INTEGER = CHAR_LENGTH (:string_in);
+             DECLARE len_string   INTEGER = CHAR_LENGTH (:string_in);
 BEGIN
             IF (:len_string IS NULL OR :length_in <= 0)
             THEN
@@ -1524,8 +1521,8 @@ BEGIN
 	         EXECUTE PROCEDURE report_error (
             'Error displaying output; last row = ' || :l_one_row_string,
             :cursor_io);
-         ENDCURSOR_IO_OUT = CURSOR_IO;
-SUSPEND;
+         END     CURSOR_IO_OUT = CURSOR_IO;
+     SUSPEND;
 END
 BEGIN
    EXECUTE PROCEDURE load_column_information (:l_select_list, :l_header, l_columns);
@@ -1535,21 +1532,21 @@ BEGIN
 END /*intab*/^
 
 SET TERM ; ^
-/
+
 
 BEGIN
    EXECUTE PROCEDURE intab ('HR.DEPARTMENTS',
           where_in          => 'department_name like ''%io%''',
           colname_like_in   => '%NAME%');
 END;
-/
+
 
 BEGIN
    EXECUTE PROCEDURE intab ('HR.EMPLOYEES',
           where_in          => 'department_id = 80',
           colname_like_in   => '%NAME%');
 END;
-/
+
 
 
 CREATE OR ALTER PACKAGE sql_injection_demo
@@ -1567,7 +1564,7 @@ AS BEGIN
     , rows_inout   sys_refcursor
    );  
   END ;
-/
+
 
 
 SET TERM ^ ;
@@ -1577,9 +1574,9 @@ AS BEGIN
    FUNCTION name_sal_for (where_in  VARCHAR(32000) DEFAULT NULL)
       RETURNS sys_refcursor
    AS
-      DECLARE l_query   VARCHAR (32767)
+       DECLARE l_query   VARCHAR (32767)
               = 'select last_name, salary from employees WHERE ' || :where_in;
-      DECLARE l_cursor        sys_refcursor;
+       DECLARE l_cursor        sys_refcursor;
 BEGIN
 OPEN :l_cursor FOR :l_query;
 
@@ -1590,10 +1587,10 @@ END /*name_sal_for*/
       title_in  VARCHAR(32000)
     , rows_inout   sys_refcursor
    )
-RETURNS( ROWS_INOUT_OUT sys_refcursor)
+     RETURNS(      ROWS_INOUT_OUT sys_refcursor)
 
 AS
-      DECLARE l_employee   name_sal_rt;
+       DECLARE l_employee   name_sal_rt;
 BEGIN
       DBMS_OUTPUT.put_line (RPAD ('=', 100, '='));
       DBMS_OUTPUT.put_line ('SQL Injection Demonstration: ' || :title_in);
@@ -1609,18 +1606,18 @@ FETCH :rows_inout
 END 
 
 CLOSE :rows_inout;
-ROWS_INOUT_OUT = ROWS_INOUT;
-SUSPEND;
+     ROWS_INOUT_OUT = ROWS_INOUT;
+     SUSPEND;
 END /*show_name_sal*/  
   END ;
 
 SET TERM ; ^
-/
+
 
 -- That's a Funny WHERE Clause!
 -- Yep. I can just append a UNION to end of a "normal" WHERE clause predicate, and go crazy.
 DECLARE
-DECLARE l_rows   sys_refcursor;
+ DECLARE l_rows   sys_refcursor;
 BEGIN
    l_rows = sql_injection_demo.name_sal_for ('department_id = 100');
    sql_injection_demo.show_name_sal ('Department 100', l_rows);
@@ -1632,7 +1629,7 @@ BEGIN
                     );
    sql_injection_demo.show_name_sal ('Department 100 PLUS Users', l_rows);
 END;
-/
+
 
 /*
 The DBMS_UTILITY.format_error_backtrace function, added in Oracle Database 10g Release 2,
@@ -1652,20 +1649,20 @@ BEGIN
 END^
 
 SET TERM ; ^
-/
+
 
 SET TERM ^ ;
 
 CREATE OR ALTER PROCEDURE proc2
 AS
-   DECLARE l_str   VARCHAR (30) = 'calling proc1';
+    DECLARE l_str   VARCHAR (30) = 'calling proc1';
 BEGIN
    DBMS_OUTPUT.put_line (:l_str);
    EXECUTE PROCEDURE proc1;
 END^
 
 SET TERM ; ^
-/
+
 
 SET TERM ^ ;
 
@@ -1677,7 +1674,7 @@ BEGIN
 END^
 
 SET TERM ; ^
-/
+
 
 -- Without Back Trace....
 -- The only way to "see" the line number on which the error was raised was to let the exception go unhandled.
@@ -1685,7 +1682,7 @@ BEGIN
    DBMS_OUTPUT.put_line ('Proc3 -> Proc2 -> Proc1 unhandled');
    EXECUTE PROCEDURE proc3;
 END;
-/
+
 
 -- Trap and Display Error Stack (Error Message)
 -- Sure, that works fine and is very good info to have, but the error stack (error message) will contain the line number on which the error was raised!
@@ -1697,7 +1694,7 @@ EXCEPTION
    DOBEGIN
 	      DBMS_OUTPUT.put_line (DBMS_UTILITY.format_error_stack);
       ENDEND;
-/
+
 
 -- Add Back Trace to Error Handler
 -- Now we trap the exception at the top level subprogram and view both the error stack and the back trace.
@@ -1717,13 +1714,13 @@ BEGIN
       ENDEND^
 
 SET TERM ; ^
-/
+
 
 BEGIN
    DBMS_OUTPUT.put_line ('Proc3 -> Proc2 -> Proc1 backtrace');
    EXECUTE PROCEDURE proc3;
 END;
-/
+
 
 -- Re-Raise Exception
 -- I show the back trace, but then re-raise.
@@ -1743,7 +1740,7 @@ BEGIN
       ENDEND^
 
 SET TERM ; ^
-/
+
 
 -- Can't Trace All the Way Back
 -- The call to back trace in this upper-level subprogram no longer finds it way back to the line number of the original exception. That was wiped out with the call to RAISE;
@@ -1762,13 +1759,13 @@ BEGIN
       ENDEND^
 
 SET TERM ; ^
-/
+
 
 BEGIN
    DBMS_OUTPUT.put_line ('Proc3 -> Proc2 -> Proc1, re-reraise in Proc1');
    EXECUTE PROCEDURE proc3;
 END;
-/
+
 
 -- Handle and Raise At Every Level
 -- And see how the back trace changes!
@@ -1788,7 +1785,7 @@ BEGIN
       ENDEND^
 
 SET TERM ; ^
-/
+
 
 SET TERM ^ ;
 
@@ -1804,7 +1801,7 @@ BEGIN
       ENDEND^
 
 SET TERM ; ^
-/
+
 
 SET TERM ^ ;
 
@@ -1821,14 +1818,14 @@ BEGIN
       ENDEND^
 
 SET TERM ; ^
-/
+
 
 BEGIN
    DBMS_OUTPUT.put_line
 ('Proc3 -> Proc2 -> Proc1, re-reraise in Proc1, raise VE in Proc2');
    EXECUTE PROCEDURE proc3;
 END;
-/
+
 
 
 CREATE OR ALTER PACKAGE 
@@ -1839,7 +1836,7 @@ AS BEGIN
    FUNCTION format_error_backtrace RETURNS VARCHAR(32000);  
    FUNCTION backtrace_to RETURNS VARCHAR(32000);  
   END;
-/
+
 
 
 SET TERM ^ ;
@@ -1849,7 +1846,7 @@ AS BEGIN
    FUNCTION format_call_stack
       RETURNS VARCHAR(32000)
    AS
-      DECLARE l_return   VARCHAR (32767)
+       DECLARE l_return   VARCHAR (32767)
          =    '----- PL/SQL Call Stack -------'
             || CHR (10)
             || 'Line     Object name'
@@ -1880,7 +1877,7 @@ END
    FUNCTION format_error_stack
       RETURNS VARCHAR(32000)
    AS
-      DECLARE l_return   VARCHAR (32767);
+       DECLARE l_return   VARCHAR (32767);
 
   DECLARE VARIABLE indx INTEGER;
 BEGIN
@@ -1903,7 +1900,7 @@ END
    FUNCTION format_error_backtrace
       RETURNS VARCHAR(32000)
    AS
-      DECLARE l_return   VARCHAR (32767);
+       DECLARE l_return   VARCHAR (32767);
 
   DECLARE VARIABLE indx INTEGER;
 BEGIN
@@ -1944,7 +1941,7 @@ END
   END;
 
 SET TERM ; ^
-/
+
 /*
 Error at line 6:0 - mismatched input 'CREATE' expecting ';'
 
@@ -1970,15 +1967,15 @@ BEGIN
    nested_in_p1;
 END;
 */
-/
+
 
 
 CREATE OR ALTER PACKAGE 
    AUTHID DEFINER
 AS BEGIN 
-   DECLARE PROCEDURE p;  
+   PROCEDURE p;  
   END;
-/
+
 
 
 SET TERM ^ ;
@@ -1993,7 +1990,7 @@ END
   END;
 
 SET TERM ; ^
-/
+
 
 SET TERM ^ ;
 
@@ -2005,7 +2002,7 @@ BEGIN
 END^
 
 SET TERM ; ^
-/
+
 
 SET TERM ^ ;
 
@@ -2042,7 +2039,7 @@ BEGIN
       ENDEND^
 
 SET TERM ; ^
-/
+
 
 BEGIN
    EXECUTE PROCEDURE p3;
@@ -2055,7 +2052,7 @@ EXCEPTION WHEN OTHERS
    DOBEGIN
 	      NULL;
       ENDEND;
-/
+
 
 
 CREATE OR ALTER PACKAGE dbms_errlog_helper
@@ -2129,7 +2126,7 @@ AS BEGIN
                            , err_log_package_name  VARCHAR(32000) DEFAULT NULL
                             );  
   END ;
-/
+
 
 
 SET TERM ^ ;
@@ -2168,29 +2165,28 @@ AS BEGIN
                            , err_log_package_spec  DBMS_SQL.varchar2s
                            , err_log_package_body  DBMS_SQL.varchar2s
                             )
-RETURNS( ERR_LOG_PACKAGE_SPEC_OUT DBMS_SQL.varchar2s, 
-ERR_LOG_PACKAGE_BODY_OUT DBMS_SQL.varchar2s)
+     RETURNS(      ERR_LOG_PACKAGE_SPEC_OUT DBMS_SQL.varchar2s, 
+     ERR_LOG_PACKAGE_BODY_OUT DBMS_SQL.varchar2s)
 
 AS
-      
-      DECLARE c_package_name CONSTANT maxvarchar2_t
+       DECLARE c_package_name CONSTANT maxvarchar2_t
             = SUBSTRING (COALESCE (:err_log_package_name, 'ELP$_' || :dml_table_name)
                       FROM  1
                       FOR  30
                       ) ;
-      DECLARE c_errlog_table_name CONSTANT maxvarchar2_t
+       DECLARE c_errlog_table_name CONSTANT maxvarchar2_t
             = SUBSTRING (COALESCE (:err_log_table_name, 'ERR$_' || :dml_table_name)
                       FROM  1
                       FOR  30
                       ) ;
-      DECLARE c_qual_errlog_table_name CONSTANT maxvarchar2_t
+       DECLARE c_qual_errlog_table_name CONSTANT maxvarchar2_t
             = CASE
                   WHEN :err_log_table_owner IS NULL THEN NULL
                   ELSE :err_log_table_owner || '.'
 END
 || :c_errlog_table_name ;
-      DECLARE l_spec   DBMS_SQL.varchar2s;
-      DECLARE l_body   DBMS_SQL.varchar2s;
+       DECLARE l_spec   DBMS_SQL.varchar2s;
+       DECLARE l_body   DBMS_SQL.varchar2s;
 
       PROCEDURE create_error_log
 AS
@@ -2240,7 +2236,7 @@ END /*create_error_log*/
       PROCEDURE generate_spec (package_name_in      VARCHAR(32000)
                              , code_out            DBMS_SQL.varchar2s
                               )
-RETURNS( CODE_OUT_OUT DBMS_SQL.varchar2s)
+        RETURNS(         CODE_OUT_OUT DBMS_SQL.varchar2s)
 
 AS
          PROCEDURE add_line (line_in  VARCHAR(32000))
@@ -2267,14 +2263,14 @@ BEGIN
          -- add_line ('PROCEDURE dump_error_log;');
          EXECUTE PROCEDURE add_line ('END ' || :c_package_name || ';');
          code_out = :l_spec;
-CODE_OUT_OUT = CODE_OUT;
-SUSPEND;
+        CODE_OUT_OUT = CODE_OUT;
+        SUSPEND;
 END /*generate_spec*/
 
       PROCEDURE generate_body (package_name_in      VARCHAR(32000)
                              , code_out            DBMS_SQL.varchar2s
                               )
-RETURNS( CODE_OUT_OUT DBMS_SQL.varchar2s)
+        RETURNS(         CODE_OUT_OUT DBMS_SQL.varchar2s)
 
 AS
          PROCEDURE add_line (line_in  VARCHAR(32000))
@@ -2323,8 +2319,8 @@ BEGIN
          RAISE;');
          EXECUTE PROCEDURE add_line ('END error_log_contents; END ' || :c_package_name || ';');
          code_out = :l_body;
-CODE_OUT_OUT = CODE_OUT;
-SUSPEND;
+        CODE_OUT_OUT = CODE_OUT;
+        SUSPEND;
 END /*generate_body*/
 BEGIN
       IN AUTONOMOUS TRANSACTION DO BEGIN
@@ -2332,9 +2328,9 @@ EXECUTE PROCEDURE create_error_log;
       EXECUTE PROCEDURE generate_spec (:c_package_name, :err_log_package_spec);
       EXECUTE PROCEDURE generate_body (:c_package_name, :err_log_package_body);
 	END
-ERR_LOG_PACKAGE_SPEC_OUT = ERR_LOG_PACKAGE_SPEC;
-ERR_LOG_PACKAGE_BODY_OUT = ERR_LOG_PACKAGE_BODY;
-SUSPEND;
+     ERR_LOG_PACKAGE_SPEC_OUT = ERR_LOG_PACKAGE_SPEC;
+     ERR_LOG_PACKAGE_BODY_OUT = ERR_LOG_PACKAGE_BODY;
+     SUSPEND;
 END /*create_objects*/  
 
    PROCEDURE create_objects (dml_table_name           VARCHAR(32000)
@@ -2347,14 +2343,14 @@ END /*create_objects*/
                            , err_log_package_spec  VARCHAR(32000)
                            , err_log_package_body  VARCHAR(32000)
                             )
-RETURNS( ERR_LOG_PACKAGE_SPEC_OUT VARCHAR(32000), 
-ERR_LOG_PACKAGE_BODY_OUT VARCHAR(32000))
+     RETURNS(      ERR_LOG_PACKAGE_SPEC_OUT VARCHAR(32000), 
+     ERR_LOG_PACKAGE_BODY_OUT VARCHAR(32000))
 
 AS
-      DECLARE l_spec          DBMS_SQL.varchar2s;
-      DECLARE l_body          DBMS_SQL.varchar2s;
-      DECLARE l_spec_string   maxvarchar2_t;
-      DECLARE l_body_string   maxvarchar2_t;
+       DECLARE l_spec          DBMS_SQL.varchar2s;
+       DECLARE l_body          DBMS_SQL.varchar2s;
+       DECLARE l_spec_string   maxvarchar2_t;
+       DECLARE l_body_string   maxvarchar2_t;
 
   DECLARE VARIABLE indx INTEGER;
 BEGIN
@@ -2393,9 +2389,9 @@ END
 
       err_log_package_spec = :l_spec_string;
       err_log_package_body = :l_body_string;
-ERR_LOG_PACKAGE_SPEC_OUT = ERR_LOG_PACKAGE_SPEC;
-ERR_LOG_PACKAGE_BODY_OUT = ERR_LOG_PACKAGE_BODY;
-SUSPEND;
+     ERR_LOG_PACKAGE_SPEC_OUT = ERR_LOG_PACKAGE_SPEC;
+     ERR_LOG_PACKAGE_BODY_OUT = ERR_LOG_PACKAGE_BODY;
+     SUSPEND;
 END /*create_objects*/  
 
    PROCEDURE create_objects (dml_table_name        VARCHAR(32000)
@@ -2407,13 +2403,12 @@ END /*create_objects*/
                            , err_log_package_name  VARCHAR(32000) DEFAULT NULL
                             )
 AS
-      
-      DECLARE l_spec   DBMS_SQL.varchar2s;
-      DECLARE l_body   DBMS_SQL.varchar2s;
+       DECLARE l_spec   DBMS_SQL.varchar2s;
+       DECLARE l_body   DBMS_SQL.varchar2s;
 
       PROCEDURE compile_statement (array_in  DBMS_SQL.varchar2s)
 AS
-         DECLARE l_cur   PLS_INTEGER = DBMS_SQL.open_cursor;
+          DECLARE l_cur   PLS_INTEGER = DBMS_SQL.open_cursor;
 BEGIN
          DBMS_SQL.parse (:l_cur
                        , :array_in

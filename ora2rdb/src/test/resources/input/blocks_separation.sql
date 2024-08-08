@@ -4,6 +4,13 @@ transaction to write a row to the error log; call the full suite of error-relate
 to gather all generic information; pass in application-specific data for logging.
 */
 
+    /*
+/*
+This very, VERY basic error logging package demonstrations the critical elements: use an autonomous
+transaction to write a row to the error log; call the full suite of error-related built-in functions
+to gather all generic information; pass in application-specific data for logging.
+*/
+*/
 -- Error Logging Table
 CREATE TABLE error_log
 (
@@ -22,6 +29,7 @@ CREATE TABLE error_log
 -- raised when a FORALL with SAVE EXCEPTIONS encounters at least one failed statement.
 CREATE OR REPLACE PACKAGE error_mgr
 IS
+
    failure_in_forall   EXCEPTION;
 
    PRAGMA EXCEPTION_INIT (failure_in_forall, -24381);

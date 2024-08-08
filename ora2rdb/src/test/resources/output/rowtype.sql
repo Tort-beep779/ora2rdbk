@@ -1,16 +1,13 @@
 
 
------------------------------------------------------------------------------
---------------------Metadata is used only as a syntax check -----------------
---------------------and contains logical errors, ----------------------------
---------------------so it cannot be executed.--------------------------------
------------------------------------------------------------------------------
 
-CREATE OR ALTER PACKAGE Cf_Rep_Customer_API AS BEGIN
+CREATE EXCEPTION NO_DATA_FOUND
+	'no data found';
+CREATE OR ALTER PACKAGE Customer AS BEGIN 
 
-CONSTANT module_                    VARCHAR(6)      = 'PROJ';
-CONSTANT lu_name_                   VARCHAR(30)     = 'CfRepCustomer';
-CONSTANT lu_type_                   VARCHAR(30)     = 'Entity';
+CONSTANT module_                    VARCHAR(6)      = 'PROJ';  
+CONSTANT lu_name_                   VARCHAR(30)     = 'CfRepCustomer';  
+CONSTANT lu_type_                   VARCHAR(30)     = 'Entity';  
 
 -----------------------------------------------------------------------------
 -------------------- PUBLIC DECLARATIONS ------------------------------------
@@ -21,14 +18,14 @@ DECLARE TYPE Public_Rec
    "rowid"                        rowid,
    rowversion                     TYPE OF COLUMN CF_REP_CUSTOMER_TAB.rowversion,
    rowkey                         TYPE OF COLUMN CF_REP_CUSTOMER_TAB.rowkey,
-   description                    TYPE OF COLUMN CF_REP_CUSTOMER_TAB.description);
+   description                    TYPE OF COLUMN CF_REP_CUSTOMER_TAB.description);  
 
-end ;
+  end ;
 
 
 SET TERM ^ ;
 
-RECREATE   PACKAGE BODY Cf_Rep_Customer_API AS BEGIN
+RECREATE   PACKAGE BODY Customer AS BEGIN 
 
 -----------------------------------------------------------------------------
 -------------------- PRIVATE DECLARATIONS -----------------------------------
@@ -36,7 +33,7 @@ RECREATE   PACKAGE BODY Cf_Rep_Customer_API AS BEGIN
 
 DECLARE TYPE Indicator_Rec  
   (customer                       BOOLEAN = FALSE,
-   description                    BOOLEAN = FALSE);
+   description                    BOOLEAN = FALSE);  
 
 
 
@@ -49,7 +46,7 @@ DECLARE TYPE Indicator_Rec
 -----------------------------------------------------------------------------
 
 FUNCTION Public_To_Table___ (
-   public_  Public_Rec ) RETURNS TYPE OF TABLE cf_rep_customer_tab;
+   public_  Public_Rec ) RETURNS TYPE OF TABLE cf_rep_customer_tab;  
 
 
 
@@ -65,13 +62,13 @@ FUNCTION Public_To_Table___ (
          loc_id     NUMERIC(4) = 1700
        );
 
-       DECLARE dept_rec DeptRecTyp;
+        DECLARE dept_rec DeptRecTyp;
     BEGIN
         DBMS_OUTPUT.PUT_LINE('dept_id:   ' || dept_rec.dept_id);
         DBMS_OUTPUT.PUT_LINE('dept_name: ' || dept_rec.dept_name);
         DBMS_OUTPUT.PUT_LINE('mgr_id:    ' || dept_rec.mgr_id);
         DBMS_OUTPUT.PUT_LINE('loc_id:    ' || dept_rec.loc_id);
-    END 
+    END /*TEST_PACKAGE_FUNCTION_2*/  
 
 
 ------------------- TEST_PACKAGE_FUNCTION_3 -------------------
@@ -87,6 +84,7 @@ FUNCTION Public_To_Table___ (
                 AND    object_name NOT IN ('DOMAIN_SYS', 'CUSTOM_FIELDS_SYS'));
   DECLARE VARIABLE LANG_REF_REC_ TYPE OF TABLE LANG_REF;
 
+
     BEGIN
             OPEN LANG_REF;
             FETCH LANG_REF INTO LANG_REF_REC_;
@@ -97,7 +95,7 @@ FUNCTION Public_To_Table___ (
             END
             CLOSE LANG_REF;
 
-    END 
+    END /*TEST_PACKAGE_FUNCTION_3*/  
 
 
 
@@ -108,8 +106,8 @@ FUNCTION TEST_PACKAGE_FUNCTION_4 (
     inputParameter_1 Public_Rec) RETURNS TYPE OF TABLE cf_rep_customer_tab
 AS
    DECLARE TYPE Rec_Typ   (field1 NUMERIC(18, 4), field2 VARCHAR(32) DEFAULT 'who');
-   DECLARE rec1 Rec_Typ;
-   DECLARE rec2 Rec_Typ;
+    DECLARE rec1 Rec_Typ;
+    DECLARE rec2 Rec_Typ;
 BEGIN
    rec1.field1 = 100;
    rec1.field2 = 'what&';
@@ -118,7 +116,7 @@ BEGIN
       dbms_output.put_line('Field1 = '
       || COALESCE(CAST(:rec1.field1),'<NULL>') || ', field2 = ' || rec1.field2);
 
-END 
+END /*TEST_PACKAGE_FUNCTION_4*/  
 
 
 
@@ -126,9 +124,9 @@ END
 
 PROCEDURE TEST_PACKAGE_FUNCTION_5 (
     inputParameter_1  TYPE OF TABLE cf_rep_customer_tab) RETURNS (RET_VAL TYPE OF TABLE cf_rep_customer_tab, INPUTPARAMETER_1_OUT TYPE OF TABLE cf_rep_customer_tab)
- )
+
 AS
-   DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
+    DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
 BEGIN
     REC1.PARAM1 = "NEW__";
     inputParameter_1 = :REC1;
@@ -136,20 +134,19 @@ BEGIN
     INPUTPARAMETER_1_OUT = INPUTPARAMETER_1;
     SUSPEND;
     EXIT;
-END 
+END /*TEST_PACKAGE_FUNCTION_5*/  
 
 
 ------------------- TEST_PACKAGE_FUNCTION_6 -------------------
 
-FUNCTION TEST_PACKAGE_FUNCTION_6 (--todo TEST_PACKAGE_FUNCTION_5_RET_VAL is not be created
+FUNCTION TEST_PACKAGE_FUNCTION_6 (
     inputParameter_1 Public_Rec) RETURNS TYPE OF TABLE cf_rep_customer_tab
 AS
-    DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
+     DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
 BEGIN
-    SELECT RET_VAL, INPUTPARAMETER_1_OUT  FROM TEST_PACKAGE_FUNCTION_5(:inputParameter_1) INTO TEST_PACKAGE_FUNCTION_5_RET_VAL, inputParameter_1
-:REC1 = TEST_PACKAGE_FUNCTION_5_RET_VAL;
+    REC1 = TEST_PACKAGE_FUNCTION_5(:inputParameter_1);
     RETURN REC1;
-END 
+END /*TEST_PACKAGE_FUNCTION_6*/  
 
 
 ------------------- TEST_PACKAGE_FUNCTION_7 -------------------
@@ -169,17 +166,17 @@ END
 FUNCTION Public_To_Table___ (
       public_  Public_Rec ) RETURNS TYPE OF TABLE cf_rep_customer_tab
    AS
-      DECLARE VARIABLE rec_ TYPE OF TABLE cf_rep_customer_tab;
+       DECLARE VARIABLE rec_ TYPE OF TABLE cf_rep_customer_tab;
    BEGIN
       rec_.rowversion                     = public_.rowversion;
       rec_.rowkey                         = public_.rowkey;
       rec_.customer                       = public_.customer;
       rec_.description                    = public_.description;
       RETURN rec_;
-   END 
+   END /*Public_To_Table___*/  
 
 
-end ;
+  end ;
 
 SET TERM ; ^
 
@@ -200,13 +197,13 @@ CREATE FUNCTION TEST_FUNCTION_2 (
         loc_id     NUMERIC(4) = 1700
       );
 
-      DECLARE dept_rec DeptRecTyp;
+       DECLARE dept_rec DeptRecTyp;
     BEGIN
       DBMS_OUTPUT.PUT_LINE('dept_id:   ' || dept_rec.dept_id);
       DBMS_OUTPUT.PUT_LINE('dept_name: ' || dept_rec.dept_name);
       DBMS_OUTPUT.PUT_LINE('mgr_id:    ' || dept_rec.mgr_id);
       DBMS_OUTPUT.PUT_LINE('loc_id:    ' || dept_rec.loc_id);
-    END ^
+    END /*TEST_FUNCTION_2*/^
 
 SET TERM ; ^
 
@@ -225,9 +222,10 @@ AS
             FROM   user_procedures p
             WHERE  procedure_name = refresh_method_
             AND    object_name NOT IN ('DOMAIN_SYS', 'CUSTOM_FIELDS_SYS'));
+
+
+
   DECLARE VARIABLE LANG_REF_REC_ TYPE OF TABLE LANG_REF;
-
-
 BEGIN
         OPEN LANG_REF;
         FETCH LANG_REF INTO LANG_REF_REC_;
@@ -238,7 +236,7 @@ BEGIN
         END
         CLOSE LANG_REF;
 
-END ^
+END /*TEST_FUNCTION_3*/^
 
 SET TERM ; ^
 
@@ -252,8 +250,8 @@ CREATE FUNCTION TEST_FUNCTION_4 (
     inputParameter_1 Public_Rec ) RETURNS Public_Rec
 AS
    DECLARE TYPE Rec_Typ   (field1 NUMERIC(18, 4), field2 VARCHAR(32) DEFAULT 'who');
-   DECLARE rec1 Rec_Typ;
-   DECLARE rec2 Rec_Typ;
+    DECLARE rec1 Rec_Typ;
+    DECLARE rec2 Rec_Typ;
 BEGIN
    rec1.field1 = 100;
    rec1.field2 = 'what&';
@@ -262,7 +260,7 @@ BEGIN
       dbms_output.put_line('Field1 = '
       || COALESCE(CAST(:rec1.field1),'<NULL>') || ', field2 = ' || rec1.field2);
 
-END ^
+END /*TEST_FUNCTION_4*/^
 
 SET TERM ; ^
 
@@ -274,9 +272,9 @@ SET TERM ^ ;
 
 CREATE PROCEDURE TEST_FUNCTION_5 (
     inputParameter_1  TYPE OF TABLE cf_rep_customer_tab) RETURNS (RET_VAL TYPE OF TABLE cf_rep_customer_tab, INPUTPARAMETER_1_OUT TYPE OF TABLE cf_rep_customer_tab)
- )
+
 AS
-    DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
+     DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
 BEGIN
     REC1.PARAM1 = "NEW__";
     inputParameter_1 = :REC1;
@@ -284,7 +282,7 @@ BEGIN
     INPUTPARAMETER_1_OUT = INPUTPARAMETER_1;
     SUSPEND;
     EXIT;
-END ^
+END /*TEST_FUNCTION_5*/^
 
 SET TERM ; ^
 
@@ -293,16 +291,14 @@ SET TERM ; ^
 
 SET TERM ^ ;
 
-CREATE FUNCTION TEST_FUNCTION_6 ( --todo need to correct it :REC 1 = TEST_PACKAGE_FUNCTION_5_RET_VAL;
+CREATE FUNCTION TEST_FUNCTION_6 (
     inputParameter_1 Public_Rec ) RETURNS TYPE OF TABLE cf_rep_customer_tab
 AS
-    DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
-DECLARE TEST_PACKAGE_FUNCTION_5_RET_VAL CF_REP_CUSTOMER_TAB%ROWTYPE;
+     DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
 BEGIN
-    SELECT RET_VAL, INPUTPARAMETER_1_OUT  FROM TEST_PACKAGE_FUNCTION_5(:inputParameter_1) INTO TEST_PACKAGE_FUNCTION_5_RET_VAL, inputParameter_1
-:REC1 = TEST_PACKAGE_FUNCTION_5_RET_VAL;
+    REC1 = TEST_PACKAGE_FUNCTION_5(:inputParameter_1);
     RETURN REC1;
-END ^
+END /*TEST_FUNCTION_6*/^
 
 SET TERM ; ^
 
@@ -322,31 +318,25 @@ SET TERM ; ^
 
 SET TERM ^ ;
 
-create FUNCTION Table_To_Public___ (--todo it is necessary to correct the INDIRECT__OUT = INDIRECT; in two places
+create FUNCTION Table_To_Public___ (
    rec_  TYPE OF TABLE cf_rep_customer_tab ) RETURNS Public_Rec
 AS
 
     FUNCTION Base (
       rec_  TYPE OF TABLE cf_rep_customer_tab ) RETURNS Public_Rec
     AS
-      DECLARE public_ Public_Rec;
+       DECLARE public_ Public_Rec;
     BEGIN
       public_.rowversion                     = rec_.rowversion;
       public_.rowkey                         = rec_.rowkey;
       public_.customer                       = rec_.customer;
       public_.description                    = rec_.description;
-      RET_VAL = public_;
-INDREC__OUT = INDREC_;
-      SUSPEND;
-      EXIT;
-    END 
+      RETURN public_;
+    END /*Base*/
 
 BEGIN
-   RET_VAL = Base(:rec_);
-INDREC__OUT = INDREC_;
-   SUSPEND;
-   EXIT;
-END ^
+   RETURN Base(:rec_);
+END /*Table_To_Public___*/^
 
 SET TERM ; ^
 
@@ -371,13 +361,13 @@ create PROCEDURE TEST_PROCEDURE_2 (
         loc_id     NUMERIC(4) = 1700
       );
 
-      DECLARE dept_rec DeptRecTyp;
+       DECLARE dept_rec DeptRecTyp;
     BEGIN
       DBMS_OUTPUT.PUT_LINE('dept_id:   ' || dept_rec.dept_id);
       DBMS_OUTPUT.PUT_LINE('dept_name: ' || dept_rec.dept_name);
       DBMS_OUTPUT.PUT_LINE('mgr_id:    ' || dept_rec.mgr_id);
       DBMS_OUTPUT.PUT_LINE('loc_id:    ' || dept_rec.loc_id);
-    END ^
+    END /*TEST_PROCEDURE_2*/^
 
 SET TERM ; ^
 
@@ -397,9 +387,10 @@ create PROCEDURE TEST_PROCEDURE_3 (
               FROM   user_procedures p
               WHERE  procedure_name = refresh_method_
               AND    object_name NOT IN ('DOMAIN_SYS', 'CUSTOM_FIELDS_SYS'));
-  DECLARE VARIABLE LANG_REF_REC_ TYPE OF TABLE LANG_REF;
 
-    BEGIN
+    
+  DECLARE VARIABLE LANG_REF_REC_ TYPE OF TABLE LANG_REF;
+BEGIN
         OPEN LANG_REF;
         FETCH LANG_REF INTO LANG_REF_REC_;
         WHILE ( ROW_COUNT != 0 ) DO
@@ -409,7 +400,7 @@ create PROCEDURE TEST_PROCEDURE_3 (
         END
         CLOSE LANG_REF;
 
-    END ^
+    END /*TEST_PROCEDURE_3*/^
 
 SET TERM ; ^
 
@@ -426,8 +417,8 @@ create PROCEDURE TEST_PROCEDURE_4 (
     )
     AS
        DECLARE TYPE Rec_Typ   (field1 NUMERIC(18, 4), field2 VARCHAR(32) DEFAULT 'who');
-       DECLARE rec1 Rec_Typ;
-       DECLARE rec2 Rec_Typ;
+        DECLARE rec1 Rec_Typ;
+        DECLARE rec2 Rec_Typ;
     BEGIN
        rec1.field1 = 100;
        rec1.field2 = 'what&';
@@ -436,7 +427,7 @@ create PROCEDURE TEST_PROCEDURE_4 (
           dbms_output.put_line('Field1 = '
           || COALESCE(CAST(:rec1.field1),'<NULL>') || ', field2 = ' || rec1.field2);
 
-    END ^
+    END /*TEST_PROCEDURE_4*/^
 
 SET TERM ; ^
 
@@ -448,16 +439,17 @@ SET TERM ; ^
 create PROCEDURE TEST_PROCEDURE_5 (
         inputParameter_1  TYPE OF TABLE cf_rep_customer_tab
     )
-    RETURNS( INPUTPARAMETER_1_OUT TYPE OF TABLE cf_rep_customer_tab)
+          RETURNS(       INPUTPARAMETER_1_OUT TYPE OF TABLE cf_rep_customer_tab)
 
 AS
-        DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
+         DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
     BEGIN
         REC1.PARAM1 = "NEW__";
         inputParameter_1 = :REC1;
-        INPUTPARAMETER_1_OUT = INPUTPARAMETER_1;
-    SUSPEND;
-END ^
+    
+      INPUTPARAMETER_1_OUT = INPUTPARAMETER_1;
+      SUSPEND;
+END /*TEST_PROCEDURE_5*/^
 
 SET TERM ; ^
 
@@ -470,12 +462,12 @@ create PROCEDURE TEST_PROCEDURE_6 (
         inputParameter_1 Public_Rec
     )
     AS
-        DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
+         DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
 
     BEGIN
         REC1.ROW_1 = "QWER";
-        SELECT INPUTPARAMETER_1_OUT  FROM TEST_PROCEDURE_5(:REC1) INTO INPUTPARAMETER_1;
-    END ^
+        SELECT INPUTPARAMETER_1_OUT  FROM TEST_PROCEDURE_5(:REC1) INTO REC1;
+    END /*TEST_PROCEDURE_6*/^
 
 SET TERM ; ^
 
@@ -501,53 +493,50 @@ SET TERM ^ ;
 create PROCEDURE Unpack___ (
    newrec_      TYPE OF TABLE cf_rep_customer_tab,
    indrec_      Indicator_Rec,
-   attr_        VARCHAR(250) )
-RETURNS( ATTR__OUT VARCHAR(250), 
-INDREC__OUT Indicator_Rec, 
-NEWREC__OUT TYPE OF TABLE cf_rep_customer_tab)
+   attr_        VARCHAR(32000) )
+  RETURNS(   NEWREC__OUT TYPE OF TABLE cf_rep_customer_tab, 
+  INDREC__OUT Indicator_Rec, 
+  ATTR__OUT VARCHAR(32000))
 
 AS
 
    PROCEDURE Base (
       newrec_      TYPE OF TABLE cf_rep_customer_tab,
       indrec_      Indicator_Rec,
-      attr_        VARCHAR(250) )
-   RETURNS( ATTR__OUT VARCHAR(250), 
-INDREC__OUT Indicator_Rec, 
-NEWREC__OUT TYPE OF TABLE cf_rep_customer_tab)
+      attr_        VARCHAR(32000) )
+        RETURNS(      NEWREC__OUT TYPE OF TABLE cf_rep_customer_tab, 
+     INDREC__OUT Indicator_Rec, 
+     ATTR__OUT VARCHAR(32000))
 
 AS
-      DECLARE ptr_   NUMERIC(18, 4);
-      DECLARE name_  VARCHAR(308);
-      DECLARE value_ VARCHAR(32000);
-      DECLARE msg_   VARCHAR(32000);
+       DECLARE ptr_   NUMERIC(18, 4);
+       DECLARE name_  VARCHAR(308);
+       DECLARE value_ VARCHAR(32000);
+       DECLARE msg_   VARCHAR(32000);
    BEGIN
        newrec_.customer = :value_;
        indrec_.customer = TRUE;
-      NEWREC__OUT = NEWREC_;
-   INDREC__OUT = INDREC_;
-   ATTR__OUT = ATTR_;
-   SUSPEND;
-END 
+        NEWREC__OUT = NEWREC_;
+     INDREC__OUT = INDREC_;
+     ATTR__OUT = ATTR_;
+     SUSPEND;
+END /*Base*/
 
 BEGIN
-   SELECT ATTR__OUT, INDREC__OUT, NEWREC__OUT  FROM Base(:newrec_, :indrec_, :attr_) INTO ATTR_, INDREC_, NEWREC_;
-NEWREC__OUT = NEWREC_;
-INDREC__OUT = INDREC_;
-ATTR__OUT = ATTR_;
-SUSPEND;
-END ^
+   Base(:newrec_, :indrec_, :attr_);
+
+  NEWREC__OUT = NEWREC_;
+  INDREC__OUT = INDREC_;
+  ATTR__OUT = ATTR_;
+  SUSPEND;
+END /*Unpack___*/^
 
 SET TERM ; ^
 
 
-
-
-
-
 SET TERM ^ ;
 
-RECREATE   PACKAGE BODY PACKAGE_NAME_3 AS BEGIN
+RECREATE   PACKAGE BODY PACKAGE_NAME_3 AS BEGIN 
 
 
 ------------------- TEST_PACKAGE_PROCEDURE_2 -------------------
@@ -564,13 +553,13 @@ RECREATE   PACKAGE BODY PACKAGE_NAME_3 AS BEGIN
         loc_id     NUMERIC(4) = 1700
       );
 
-      DECLARE dept_rec DeptRecTyp;
+       DECLARE dept_rec DeptRecTyp;
    BEGIN
       DBMS_OUTPUT.PUT_LINE('dept_id:   ' || dept_rec.dept_id);
       DBMS_OUTPUT.PUT_LINE('dept_name: ' || dept_rec.dept_name);
       DBMS_OUTPUT.PUT_LINE('mgr_id:    ' || dept_rec.mgr_id);
       DBMS_OUTPUT.PUT_LINE('loc_id:    ' || dept_rec.loc_id);
-   END 
+   END /*TEST_PACKAGE_PROCEDURE_2*/  
 
 
 ------------------- TEST_PACKAGE_PROCEDURE_3 -------------------
@@ -585,9 +574,10 @@ RECREATE   PACKAGE BODY PACKAGE_NAME_3 AS BEGIN
             FROM   user_procedures p
             WHERE  procedure_name = refresh_method_
             AND    object_name NOT IN ('DOMAIN_SYS', 'CUSTOM_FIELDS_SYS'));
-  DECLARE VARIABLE LANG_REF_REC_ TYPE OF TABLE LANG_REF;
 
-   BEGIN
+   
+  DECLARE VARIABLE LANG_REF_REC_ TYPE OF TABLE LANG_REF;
+BEGIN
         OPEN LANG_REF;
         FETCH LANG_REF INTO LANG_REF_REC_;
         WHILE ( ROW_COUNT != 0 ) DO
@@ -597,7 +587,7 @@ RECREATE   PACKAGE BODY PACKAGE_NAME_3 AS BEGIN
         END
         CLOSE LANG_REF;
 
-   END 
+   END /*TEST_PACKAGE_PROCEDURE_3*/  
 
 
 
@@ -610,8 +600,8 @@ RECREATE   PACKAGE BODY PACKAGE_NAME_3 AS BEGIN
    )
    AS
         DECLARE TYPE Rec_Typ   (field1 NUMERIC(18, 4), field2 VARCHAR(32) DEFAULT 'who');
-        DECLARE rec1 Rec_Typ;
-        DECLARE rec2 Rec_Typ;
+         DECLARE rec1 Rec_Typ;
+         DECLARE rec2 Rec_Typ;
    BEGIN
         ec1.field1 = 100;
         rec1.field2 = 'what&';
@@ -620,7 +610,7 @@ RECREATE   PACKAGE BODY PACKAGE_NAME_3 AS BEGIN
         dbms_output.put_line('Field1 = '
         || COALESCE(CAST(:rec1.field1),'<NULL>') || ', field2 = ' || rec1.field2);
 
-   END 
+   END /*TEST_PACKAGE_PROCEDURE_4*/  
 
 
 
@@ -631,16 +621,16 @@ RECREATE   PACKAGE BODY PACKAGE_NAME_3 AS BEGIN
     PROCEDURE TEST_PACKAGE_PROCEDURE_5 (
         inputParameter_1  TYPE OF TABLE cf_rep_customer_tab
    )
-   RETURNS( INPUTPARAMETER_1_OUT TYPE OF TABLE cf_rep_customer_tab)
+         RETURNS(       INPUTPARAMETER_1_OUT TYPE OF TABLE cf_rep_customer_tab)
 
 AS
-        DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
+         DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
    BEGIN
         REC1.PARAM1 = "NEW__";
         inputParameter_1 = :REC1;
-       INPUTPARAMETER_1_OUT = INPUTPARAMETER_1;
-    SUSPEND;
-END 
+         INPUTPARAMETER_1_OUT = INPUTPARAMETER_1;
+      SUSPEND;
+END /*TEST_PACKAGE_PROCEDURE_5*/  
 
 
 ------------------- TEST_PACKAGE_PROCEDURE_6 -------------------
@@ -651,11 +641,11 @@ END
         inputParameter_1 Public_Rec
    )
    AS
-        DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
+         DECLARE VARIABLE REC1 TYPE OF TABLE cf_rep_customer_tab;
    BEGIN
         REC1.ROW_1 = "QWER";
-        SELECT INPUTPARAMETER_1_OUT  FROM TEST_PROCEDURE_5(:REC1) INTO INPUTPARAMETER_1;
-   END 
+        SELECT INPUTPARAMETER_1_OUT  FROM TEST_PROCEDURE_5(:REC1) INTO REC1;
+   END /*TEST_PACKAGE_PROCEDURE_6*/  
 
 
 ------------------- TEST_PACKAGE_PROCEDURE_7 -------------------
@@ -676,19 +666,20 @@ END
 
    PROCEDURE Base (
       indrec_    Indicator_Rec )
-   RETURNS( INDREC__OUT Indicator_Rec)
+        RETURNS(      INDREC__OUT Indicator_Rec)
 
 AS
-      DECLARE empty_indrec_ Indicator_Rec;
+       DECLARE empty_indrec_ Indicator_Rec;
 
          DECLARE lang_ref CURSOR FOR
             (SELECT object_name package_name
             FROM   user_procedures p
             WHERE  procedure_name = refresh_method_
             AND    object_name NOT IN ('DOMAIN_SYS', 'CUSTOM_FIELDS_SYS'));
-  DECLARE VARIABLE LANG_REF_REC_ TYPE OF TABLE LANG_REF;
 
-   BEGIN
+   
+  DECLARE VARIABLE LANG_REF_REC_ TYPE OF TABLE LANG_REF;
+BEGIN
       indrec_ = :empty_indrec_;
         OPEN LANG_REF;
         FETCH LANG_REF INTO LANG_REF_REC_;
@@ -699,13 +690,13 @@ AS
         END
         CLOSE LANG_REF;
 
-      INDREC__OUT = INDREC_;
-   SUSPEND;
-END 
+        INDREC__OUT = INDREC_;
+     SUSPEND;
+END /*Base*/  
 
 
 
 
-end ;
+  end ;
 
 SET TERM ; ^

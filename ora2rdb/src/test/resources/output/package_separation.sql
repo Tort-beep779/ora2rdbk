@@ -1,5 +1,5 @@
 /*Found error(s) in file while parsing
-Error at line 9:18 - mismatched input '>' expecting {<EOF>, ';'}
+Error at line 10:6 - no viable alternative at input 'l_local_variable                -- MY ERROR -> missed "IF"\n      THEN'
 Error at line 4:39 - no viable alternative at input 'FUNCTION my_function (param1    IN INTEGER\n                       , in_param2 INS DATE'
 Error at line 7:9 - mismatched input '(' expecting ';'
 Error at line 2:0 - no viable alternative at input 'END'
@@ -8,9 +8,8 @@ Error at line 3:35 - mismatched input '(' expecting ';'
 Error at line 12:25 - mismatched input '(' expecting {<EOF>, ';'}
 Error at line 4:6 - no viable alternative at input 'FUNCTION getcell                                                -- MY ERROR -> missed "("\n      array_in'
 Error at line 13:36 - mismatched input '(' expecting {<EOF>, ';'}
-Error at line 7:6 - mismatched input 'IN' expecting {<EOF>, ';'}
-Error at line 10:0 - no viable alternative at input 'BEGIN\nNOT'
-Error at line 3:25 - mismatched input '(' expecting ';'
+Error at line 7:11 - mismatched input '..' expecting '.'
+Error at line 12:6 - mismatched input 'THEN' expecting '.'
 Error at line 14:4 - no viable alternative at input 'VALS'
 Error at line 2:31 - no viable alternative at input 'FUNCTION format_call_stack  VARCHAR2'
 Error at line 3:7 - no viable alternative at input 'FUNCTION format_call_stack\n       VARCHAR2'
@@ -30,15 +29,15 @@ AS BEGIN
    FUNCTION format_error_backtrace RETURNS VARCHAR(32000);  
    FUNCTION backtrace_to RETURNS VARCHAR(32000);  
   END;
-/
+
 
 
 CREATE OR ALTER PACKAGE 
    AUTHID DEFINER
 AS BEGIN 
-   DECLARE PROCEDURE p;  
+   PROCEDURE p;  
   END;
-/
+
 
 
 SET TERM ^ ;
@@ -53,7 +52,7 @@ END
   END;
 
 SET TERM ; ^
-/
+
 
 
 CREATE OR ALTER PACKAGE dbms_errlog_helper
@@ -90,7 +89,7 @@ AS BEGIN
                            , err_log_package_name  VARCHAR(32000) DEFAULT NULL
                             );  
   END ;
-/
+
 
 
 SET TERM ^ ;
@@ -109,8 +108,8 @@ AS BEGIN
                            , err_log_package_spec  DBMS_SQL.varchar2s
                            , err_log_package_body  DBMS_SQL.varchar2s
                             )
-RETURNS( ERR_LOG_PACKAGE_SPEC_OUT DBMS_SQL.varchar2s, 
-ERR_LOG_PACKAGE_BODY_OUT DBMS_SQL.varchar2s)
+     RETURNS(      ERR_LOG_PACKAGE_SPEC_OUT DBMS_SQL.varchar2s, 
+     ERR_LOG_PACKAGE_BODY_OUT DBMS_SQL.varchar2s)
 
 AS
       
@@ -142,9 +141,12 @@ BEGIN
 EXECUTE STATEMENT ('DROP TABLE ' || :c_qual_errlog_table_name);
 /*EXCEPTION*/
                WHEN OTHERS
-               DOBEGIN
+               DO
+                  BEGIN
 	                  NULL;
-                  ENDEND
+                  END
+END
+ 
          DBMS_ERRLOG.create_error_log (
             :dml_table_name        => :dml_table_name
           , :err_log_table_name    => :err_log_table_name
@@ -176,7 +178,7 @@ END /*create_error_log*/
       PROCEDURE generate_spec (package_name_in      VARCHAR(32000)
                              , code_out            DBMS_SQL.varchar2s
                               )
-RETURNS( CODE_OUT_OUT DBMS_SQL.varchar2s)
+        RETURNS(         CODE_OUT_OUT DBMS_SQL.varchar2s)
 
 AS
          PROCEDURE add_line (line_in  VARCHAR(32000))
@@ -203,14 +205,14 @@ BEGIN
          -- add_line ('PROCEDURE dump_error_log;');
          EXECUTE PROCEDURE add_line ('END ' || :c_package_name || ';');
          code_out = :l_spec;
-CODE_OUT_OUT = CODE_OUT;
-SUSPEND;
+        CODE_OUT_OUT = CODE_OUT;
+        SUSPEND;
 END /*generate_spec*/
 
       PROCEDURE generate_body (package_name_in      VARCHAR(32000)
                              , code_out            DBMS_SQL.varchar2s
                               )
-RETURNS( CODE_OUT_OUT DBMS_SQL.varchar2s)
+        RETURNS(         CODE_OUT_OUT DBMS_SQL.varchar2s)
 
 AS
          PROCEDURE add_line (line_in  VARCHAR(32000))
@@ -259,8 +261,8 @@ BEGIN
          RAISE;');
          EXECUTE PROCEDURE add_line ('END error_log_contents; END ' || :c_package_name || ';');
          code_out = :l_body;
-CODE_OUT_OUT = CODE_OUT;
-SUSPEND;
+        CODE_OUT_OUT = CODE_OUT;
+        SUSPEND;
 END /*generate_body*/
 BEGIN
       IN AUTONOMOUS TRANSACTION DO BEGIN
@@ -268,9 +270,9 @@ EXECUTE PROCEDURE create_error_log;
       EXECUTE PROCEDURE generate_spec (:c_package_name, :err_log_package_spec);
       EXECUTE PROCEDURE generate_body (:c_package_name, :err_log_package_body);
 	END
-ERR_LOG_PACKAGE_SPEC_OUT = ERR_LOG_PACKAGE_SPEC;
-ERR_LOG_PACKAGE_BODY_OUT = ERR_LOG_PACKAGE_BODY;
-SUSPEND;
+     ERR_LOG_PACKAGE_SPEC_OUT = ERR_LOG_PACKAGE_SPEC;
+     ERR_LOG_PACKAGE_BODY_OUT = ERR_LOG_PACKAGE_BODY;
+     SUSPEND;
 END /*create_objects*/  
 
    PROCEDURE create_objects (dml_table_name           VARCHAR(32000)
@@ -283,8 +285,8 @@ END /*create_objects*/
                            , err_log_package_spec  VARCHAR(32000)
                            , err_log_package_body  VARCHAR(32000)
                             )
-RETURNS( ERR_LOG_PACKAGE_SPEC_OUT VARCHAR(32000), 
-ERR_LOG_PACKAGE_BODY_OUT VARCHAR(32000))
+     RETURNS(      ERR_LOG_PACKAGE_SPEC_OUT VARCHAR(32000), 
+     ERR_LOG_PACKAGE_BODY_OUT VARCHAR(32000))
 
 AS
       DECLARE l_spec          DBMS_SQL.varchar2s;
@@ -306,8 +308,9 @@ BEGIN
                      );
 
 indx = 1;
-WHILE ( indx <= l_spec.COUNT) DO
+WHILE ( indx  <=    l_spec.COUNT) DO
 BEGIN
+      
          l_spec_string =
             CASE
                WHEN :indx = 1 THEN :l_spec (:indx)
@@ -315,10 +318,12 @@ BEGIN
 END;
 indx = indx + 1;
 END
+ 
 
 indx = 1;
-WHILE ( indx <= l_body.COUNT) DO
+WHILE ( indx  <=    l_body.COUNT) DO
 BEGIN
+      
          l_body_string =
             CASE
                WHEN :indx = 1 THEN :l_body (:indx)
@@ -326,12 +331,13 @@ BEGIN
 END;
 indx = indx + 1;
 END
+ 
 
       err_log_package_spec = :l_spec_string;
       err_log_package_body = :l_body_string;
-ERR_LOG_PACKAGE_SPEC_OUT = ERR_LOG_PACKAGE_SPEC;
-ERR_LOG_PACKAGE_BODY_OUT = ERR_LOG_PACKAGE_BODY;
-SUSPEND;
+     ERR_LOG_PACKAGE_SPEC_OUT = ERR_LOG_PACKAGE_SPEC;
+     ERR_LOG_PACKAGE_BODY_OUT = ERR_LOG_PACKAGE_BODY;
+     SUSPEND;
 END /*create_objects*/  
 
    PROCEDURE create_objects (dml_table_name        VARCHAR(32000)
@@ -376,9 +382,10 @@ EXECUTE PROCEDURE create_objects (:dml_table_name         => :dml_table_name
       EXECUTE PROCEDURE compile_statement (:l_body);
 	END
 /*EXCEPTION*/
-      WHEN OTHERS DOBEGIN
+      WHEN OTHERS DO BEGIN
 	 dbms_output.put_line (dbms_utility.format_error_backtrace); raise;
- ENDEND /*create_objects*/  
+ END
+END /*create_objects*/  
   END ;
 
 SET TERM ; ^
@@ -395,7 +402,7 @@ AS BEGIN
     PROCEDURE SET_PAR_URL(PAR_URL  VARCHAR(32000));  
     FUNCTION GET_NEXT_ITEM RETURNS BLOB SUB_TYPE TEXT;  
   END;
-/
+
 
 
 SET TERM ^ ;
@@ -440,11 +447,13 @@ ELSE
 
                 -- Iterate and remove each item from the global array
                 itemsIndx = 0;
-                WHILE ( itemsIndx <= ADBS_PAR_URL_CLIENT.ITEMS.get_size - 1) DO
+                WHILE ( itemsIndx  <=    ADBS_PAR_URL_CLIENT.ITEMS.get_size - 1) DO
                 BEGIN
+                
                     ADBS_PAR_URL_CLIENT.ITEMS.REMOVE(:itemsIndx);
                 itemsIndx = itemsIndx + 1;
                 END
+ 
 
                 -- Initialize the CLOB.
                 DBMS_LOB.CREATETEMPORARY(:RESPONSE_CONTENT, false);
@@ -475,13 +484,18 @@ END
                         UTL_HTTP.END_RESPONSE(:HTTP_RESPONSE);
 
 /*EXCEPTION*/
-                        WHEN UTL_HTTP.END_OF_BODY DOBEGIN
+                        WHEN UTL_HTTP.END_OF_BODY DO
+                            BEGIN
 	                            UTL_HTTP.END_RESPONSE(:HTTP_RESPONSE);
-                            ENDWHEN OTHERS DOBEGIN
+                            END
+
+WHEN OTHERS DO
+                            BEGIN
 	                            DBMS_OUTPUT.PUT_LINE(SQLERRM);
                             DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_BACKTRACE);
                             UTL_HTTP.END_RESPONSE(:HTTP_RESPONSE);
-                            ENDEND
+                            END
+END
 
                     JSON_OBJ = JSON_OBJECT_T( :RESPONSE_CONTENT );
                     ADBS_PAR_URL_CLIENT.ITEMS = JSON_OBJ.GET_ARRAY('items');
@@ -495,15 +509,18 @@ END
 
                     -- Iterate and get the next page href if available
 linksIndx = 0;
-WHILE ( linksIndx <= LINKS.get_size - 1) DO
+WHILE ( linksIndx  <=    LINKS.get_size - 1) DO
 BEGIN
+                    
                         IF (JSON_OBJECT_T( LINKS.get(:linksIndx)).GET_STRING('rel') = 'next') THEN
                         BEGIN
                             ADBS_PAR_URL_CLIENT.NEXT_GET_PAR_URL = JSON_OBJECT_T(LINKS.get(:linksIndx)).GET_STRING('href');
                             DBMS_OUTPUT.PUT_LINE('next href: ' || ADBS_PAR_URL_CLIENT.NEXT_GET_PAR_URL);
                         END
+ 
 linksIndx = linksIndx + 1;
 END
+ 
 
                     -- Get the hasMore field from the json response
                     HAS_MORE = JSON_OBJ.GET_STRING('hasMore');
@@ -511,6 +528,7 @@ END
 
                     IF (:HAS_MORE = 'false') THEN
                         ADBS_PAR_URL_CLIENT.NEXT_GET_PAR_URL = NULL;
+ 
 
                     -- Relase the resources associated with the temporary LOB.
                     DBMS_LOB.FREETEMPORARY(:RESPONSE_CONTENT);
@@ -524,14 +542,17 @@ BEGIN
                     UTL_HTTP.END_RESPONSE(:HTTP_RESPONSE);
 RETURN NULL;
 END
+ 
             END
 ELSE
                 RETURN NULL;
+ 
+ 
 END  
   END;
 
 SET TERM ; ^
-/
+
 
 
 CREATE OR ALTER PACKAGE plscope_demo
@@ -540,7 +561,7 @@ AS BEGIN
                          , param2     TYPE OF COLUMN employees.last_name
                           );  
   END ;
-/
+
 
 
 SET TERM ^ ;
@@ -548,7 +569,7 @@ SET TERM ^ ;
 RECREATE   PACKAGE BODY plscope_demo
 AS BEGIN
 /*
-Error at line 9:18 - mismatched input '>' expecting {<EOF>, ';'}
+Error at line 10:6 - no viable alternative at input 'l_local_variable                -- MY ERROR -> missed "IF"\n      THEN'
  
    PROCEDURE my_procedure (param1_in IN INTEGER
                          , param2    IN employees.last_name%TYPE
@@ -568,7 +589,7 @@ END my_procedure;
   END ;
 
 SET TERM ; ^
-/
+
 
 
 CREATE OR ALTER PACKAGE plscope_demo
@@ -587,7 +608,7 @@ Error at line 4:39 - no viable alternative at input 'FUNCTION my_function (param
       RETURN VARCHAR2; 
 */ 
   END ;
-/
+
 
 
 CREATE OR ALTER PACKAGE  AUTHID DEFINER
@@ -599,7 +620,7 @@ AS BEGIN
 
    FUNCTION my_array RETURNS array_t;  
   END;
-/
+
 
 
 SET TERM ^ ;
@@ -629,7 +650,7 @@ Error at line 2:0 - no viable alternative at input 'END'
 
 END;
 */
-/
+
 
 
 CREATE OR ALTER PACKAGE  AUTHID DEFINER
@@ -645,7 +666,7 @@ AS BEGIN
 
    FUNCTION my_array RETURNS array_t;  
   END;
-/
+
 
 
 SET TERM ^ ;
@@ -670,7 +691,7 @@ END;
   END;
 
 SET TERM ; ^
-/
+
 
 
 CREATE OR ALTER PACKAGE multdim AUTHID DEFINER
@@ -710,7 +731,7 @@ Error at line 3:35 - mismatched input '(' expecting ';'
    )
       RETURNS BOOLEAN;  
   END ;
-/
+
 
 
 SET TERM ^ ;
@@ -775,7 +796,7 @@ END;
   END ;
 
 SET TERM ; ^
-/
+
 
 
 CREATE OR ALTER PACKAGE 
@@ -786,9 +807,9 @@ AS BEGIN
 
    PROCEDURE show_authors (title_in  VARCHAR(32000), authors_in  strings_nt);  
 
-   DECLARE PROCEDURE init_authors;  
+   PROCEDURE init_authors;  
   END;
-/
+
 
 
 SET TERM ^ ;
@@ -796,7 +817,7 @@ SET TERM ^ ;
 RECREATE   PACKAGE BODY 
 AS BEGIN
 /*
-Error at line 7:6 - mismatched input 'IN' expecting {<EOF>, ';'}
+Error at line 7:11 - mismatched input '..' expecting '.'
  
    PROCEDURE show_authors (title_in IN VARCHAR2, authors_in IN strings_nt)
    IS
@@ -829,7 +850,7 @@ END
   END;
 
 SET TERM ; ^
-/
+
 
 
 CREATE OR ALTER PACKAGE assert
@@ -859,7 +880,7 @@ AS BEGIN
     , display_call_stack_in  BOOLEAN DEFAULT FALSE
    );  
   END ;
-/
+
 
 
 SET TERM ^ ;
@@ -867,7 +888,7 @@ SET TERM ^ ;
 RECREATE   PACKAGE BODY assert
 AS BEGIN
 /*
-Error at line 10:0 - no viable alternative at input 'BEGIN\nNOT'
+Error at line 12:6 - mismatched input 'THEN' expecting '.'
  
    PROCEDURE assert (
       condition_in IN BOOLEAN
@@ -923,22 +944,18 @@ END /*is_true*/
   END ;
 
 SET TERM ; ^
-/
+
 
 
 CREATE OR ALTER PACKAGE 
 AS BEGIN 
-   failure_in_forall   EXCEPTION; 
-/*
-Error at line 3:25 - mismatched input '(' expecting ';'
- 
+   failure_in_forall   EXCEPTION;  
 
-   PRAGMA EXCEPTION_INIT (failure_in_forall, -24381); 
-*/ 
+     
 
    PROCEDURE log_error (app_info_in  VARCHAR(32000));  
   END;
-/
+
 
 
 SET TERM ^ ;
@@ -974,7 +991,7 @@ END;
   END;
 
 SET TERM ; ^
-/
+
 
 
 CREATE OR ALTER PACKAGE 
@@ -989,7 +1006,7 @@ Error at line 2:31 - no viable alternative at input 'FUNCTION format_call_stack 
    FUNCTION format_error_backtrace RETURNS VARCHAR(32000);  
    FUNCTION backtrace_to RETURNS VARCHAR(32000);  
   END;
-/
+
 
 
 SET TERM ^ ;
@@ -1035,8 +1052,9 @@ END;
   DECLARE VARIABLE indx INTEGER;
 BEGIN
 indx = 1;
-WHILE ( indx <= utl_call_stack.error_depth) DO
+WHILE ( indx  <=    utl_call_stack.error_depth) DO
 BEGIN
+      
          l_return =
                :l_return
             || case when :l_return is not null then CHR (10) end
@@ -1046,6 +1064,7 @@ BEGIN
             || utl_call_stack.error_msg (:indx);
 indx = indx + 1;
 END
+ 
 
 RETURN l_return;
 END  
@@ -1058,8 +1077,9 @@ END
   DECLARE VARIABLE indx INTEGER;
 BEGIN
 indx = 1;
-WHILE ( indx <= utl_call_stack.backtrace_depth) DO
+WHILE ( indx  <=    utl_call_stack.backtrace_depth) DO
 BEGIN
+      
          l_return =
                :l_return
             || case when :l_return is not null then CHR (10) end
@@ -1070,18 +1090,22 @@ BEGIN
             || CAST (utl_call_stack.backtrace_line (:indx) AS VARCHAR(32000));
 indx = indx + 1;
 END
+ 
 
 RETURN l_return;
 /*EXCEPTION*/
       WHEN OTHERS
-      DOBEGIN
+      DO
+         BEGIN
 	         IF (SQLCODE = -64610)
          THEN
             /* ORA-64610: bad depth indicator */
             RETURN l_return;
 ELSE
             RAISE;
-         ENDEND  
+ 
+         END
+END  
 
    FUNCTION backtrace_to
       RETURNS VARCHAR(32000)
@@ -1094,4 +1118,4 @@ END
   END;
 
 SET TERM ; ^
-/
+

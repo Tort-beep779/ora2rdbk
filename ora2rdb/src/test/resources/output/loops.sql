@@ -1,12 +1,9 @@
 
 
------------------------------------------------------------------------------
--------------------- Metadata is used only as a syntax check ----------------
--------------------- and contains logical errors, ---------------------------
--------------------- so it cannot be executed. ------------------------------
------------------------------------------------------------------------------
 
-CREATE OR ALTER PACKAGE PACKAGE_1 AS BEGIN
+CREATE EXCEPTION NO_DATA_FOUND
+	'no data found';
+CREATE OR ALTER PACKAGE PACKAGE_1 AS BEGIN 
 
 
 -----------------------------------------------------------------------------
@@ -15,12 +12,12 @@ CREATE OR ALTER PACKAGE PACKAGE_1 AS BEGIN
 
 
 
-end ;
+  end ;
 
 
 SET TERM ^ ;
 
-RECREATE   PACKAGE BODY PACKAGE_NAME_1 AS BEGIN
+RECREATE   PACKAGE BODY PACKAGE_NAME_1 AS BEGIN 
 
 -----------------------------------------------------------------------------
 -------------------- PRIVATE DECLARATIONS -----------------------------------
@@ -42,44 +39,47 @@ RECREATE   PACKAGE BODY PACKAGE_NAME_1 AS BEGIN
 
 
 ------------------- TEST_PACKAGE_FUNCTION_1 -------------------
---todo variable iterators are not created if nothing is declared in the IS block.
---todo add tab for Lcntr = Lcntr + 1;
+
 FUNCTION TEST_PACKAGE_FUNCTION_1 (
     inputParameter_1 Public_Rec) RETURNS TYPE OF TABLE cf_rep_customer_tab
 AS
 
+
+  DECLARE VARIABLE Lcntr INTEGER;
 BEGIN
 
     Lcntr = 1;
-    WHILE ( Lcntr < 20) DO
+    WHILE ( Lcntr <= 20) DO
     BEGIN
        LCalc = :Lcntr * 31;
        dbms_output.put_line(LCalc);
     Lcntr = Lcntr + 1;
     END
 
-END 
+END /*TEST_PACKAGE_FUNCTION_1*/  
 
 
 
 
 
 ------------------- TEST_PACKAGE_FUNCTION_2 -------------------
---todo add tab Lcntr = Lcntr - 1;
+
 FUNCTION TEST_PACKAGE_FUNCTION_2 (
     inputParameter_1 Public_Rec) RETURNS TYPE OF TABLE cf_rep_customer_tab
 AS
 
+
+  DECLARE VARIABLE Lcntr INTEGER;
 BEGIN
 
     Lcntr = 15;
-    WHILE ( Lcntr  >   1) DO
+    WHILE ( Lcntr  >=   1) DO
     BEGIN
        LCalc = :Lcntr * 31;
 Lcntr = Lcntr - 1;
     END 
 
-END 
+END /*TEST_PACKAGE_FUNCTION_2*/  
 
 
 
@@ -88,7 +88,7 @@ END
 FUNCTION TEST_PACKAGE_FUNCTION_3 (
     inputParameter_1 Public_Rec) RETURNS BOOLEAN
 AS
-    DECLARE done  BOOLEAN = FALSE;
+     DECLARE done  BOOLEAN = FALSE;
 BEGIN
     WHILE (:done) DO
     BEGIN
@@ -99,18 +99,18 @@ BEGIN
 
     RETURN TRUE;
 
-END 
+END /*TEST_PACKAGE_FUNCTION_3*/  
 
 
 
 
 ------------------- TEST_PACKAGE_FUNCTION_4 -------------------
---todo solders an excess bracket
+
 PROCEDURE TEST_PACKAGE_FUNCTION_4 (
    in_outputParameter_1   Public_Rec) RETURNS (RET_VAL BOOLEAN, IN_OUTPUTPARAMETER_1_OUT Public_Rec)
- )
+
 AS
-    DECLARE param_1 Public_Rec;
+     DECLARE param_1 Public_Rec;
 BEGIN
     param_1.column1 = 'new_text';
     in_outputParameter_1 = :param_1;
@@ -119,26 +119,25 @@ BEGIN
     SUSPEND;
     EXIT;
 
-END 
+END /*TEST_PACKAGE_FUNCTION_4*/  
 
 
 
 ------------------- TEST_PACKAGE_FUNCTION_5 -------------------
---todo variables of function output parameters with out parameters are not created if nothing is declared in the IS block.
+
 FUNCTION TEST_PACKAGE_FUNCTION_5 (
     inputParameter_1 Public_Rec) RETURNS TYPE OF TABLE cf_rep_customer_tab
 AS
-    DECLARE deme boolean;
+     DECLARE deme boolean;
+  
+DECLARE TEST_PACKAGE_FUNCTION_4_RET_VAL BOOLEAN;
 BEGIN
-    WHILE (TRUE) DO
+    WHILE ((TEST_PACKAGE_FUNCTION_4(:inputParameter_1))) DO
     BEGIN
-        SELECT RET_VAL, IN_OUTPUTPARAMETER_1_OUT  FROM TEST_PACKAGE_FUNCTION_4(:inputParameter_1) INTO TEST_PACKAGE_FUNCTION_4_RET_VAL, inputParameter_1
-if(:TEST_PACKAGE_FUNCTION_4_RET_VAL)
-break;
-DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
+        DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
     END
 
-END 
+END /*TEST_PACKAGE_FUNCTION_5*/  
 
 
 ------------------- TEST_PACKAGE_FUNCTION_6 -------------------
@@ -155,7 +154,7 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE (rec_.column2);
    END
 
-END 
+END /*TEST_PACKAGE_FUNCTION_6*/  
 
 
 
@@ -164,12 +163,13 @@ END
 FUNCTION TEST_PACKAGE_FUNCTION_7 (
     inputParameter_1 Public_Rec) RETURNS TYPE OF TABLE cf_rep_customer_tab
 AS
-    DECLARE text_  VARCHAR(1000);
+     DECLARE text_  VARCHAR(1000);
     DECLARE cur1 CURSOR FOR
           (SELECT column1 column2
           FROM   table1
           WHERE  column1 = 'text');
   DECLARE VARIABLE CUR1_PKG TYPE OF TABLE CUR1;
+
 BEGIN
     OPEN CUR1;
     FETCH CUR1 INTO CUR1_PKG;
@@ -182,33 +182,33 @@ BEGIN
     CLOSE CUR1;
 
 
-END 
+END /*TEST_PACKAGE_FUNCTION_7*/  
 
 
 
 ------------------- TEST_PACKAGE_FUNCTION_8 -------------------
---todo LOOP is not converted ... END LOOP
+
 FUNCTION TEST_PACKAGE_FUNCTION_8 (
     daily_value NUMERIC(18, 4)) RETURNS TYPE OF TABLE cf_rep_customer_tab
 AS
-    DECLARE monthly_value NUMERIC(18, 4);
+     DECLARE monthly_value NUMERIC(18, 4);
 BEGIN
 
-    LOOP
+    WHILE (TRUE) DO BEGIN
        monthly_value = :daily_value * 31;
-       EXIT WHEN :monthly_value > 4000;
-    END LOOP
+         IF( :monthly_value > 4000 ) BEGIN LEAVE END;
+    END 
 
-END 
+END /*TEST_PACKAGE_FUNCTION_8*/  
 
 
 
 ------------------- TEST_PACKAGE_FUNCTION_9 -------------------
--- todo the cursor opens inside the loop, it may need to be moved outside the loop.
+
 FUNCTION TEST_PACKAGE_FUNCTION_9 (
     inputParameter_1 Public_Rec) RETURNS TYPE OF TABLE cf_rep_customer_tab
 AS
-    DECLARE text_  VARCHAR(1000);
+     DECLARE text_  VARCHAR(1000);
     DECLARE cur1 CURSOR FOR
           (SELECT column1 column2
           FROM   table1
@@ -219,7 +219,9 @@ AS
           FROM   table1
           WHERE  column3 = 'text');
   DECLARE VARIABLE CUR1_C TYPE OF TABLE CUR1;
+
   DECLARE VARIABLE CUR1_PKG TYPE OF TABLE CUR1;
+
 BEGIN
     OPEN CUR1;
     FETCH CUR1 INTO CUR1_PKG;
@@ -241,7 +243,7 @@ BEGIN
     END
     CLOSE CUR1;
 
-END 
+END /*TEST_PACKAGE_FUNCTION_9*/  
 
 
 
@@ -256,7 +258,7 @@ END
 --
 --END TEST_PACKAGE_FUNCTION_10;
 
-end ;
+  end ;
 
 SET TERM ; ^
 
@@ -276,18 +278,19 @@ SET TERM ^ ;
 CREATE FUNCTION TEST_FUNCTION_1 (
     inputParameter_1 Public_Rec ) RETURNS Public_Rec
 AS
-   DECLARE from_ NUMERIC(18, 4);
-   DECLARE to_   NUMERIC(18, 4);
+    DECLARE from_ NUMERIC(18, 4);
+    DECLARE to_   NUMERIC(18, 4);
+
   DECLARE VARIABLE Lcntr INTEGER;
 BEGIN
     Lcntr = 1;
-    WHILE ( Lcntr < 20) DO
+    WHILE ( Lcntr <= 20) DO
     BEGIN
            LCalc = :Lcntr * 31;
            dbms_output.put_line(LCalc);
     Lcntr = Lcntr + 1;
     END
-END ^
+END /*TEST_FUNCTION_1*/^
 
 SET TERM ; ^
 
@@ -301,15 +304,17 @@ CREATE FUNCTION TEST_FUNCTION_2 (
     inputParameter_1 Public_Rec ) RETURNS Public_Rec
 AS
 
+
+  DECLARE VARIABLE Lcntr INTEGER;
 BEGIN
 
     Lcntr = 15;
-    WHILE ( Lcntr  >   1) DO
+    WHILE ( Lcntr  >=   1) DO
     BEGIN
        LCalc = :Lcntr * 31;
 Lcntr = Lcntr - 1;
     END 
-END ^
+END /*TEST_FUNCTION_2*/^
 
 SET TERM ; ^
 
@@ -322,7 +327,7 @@ SET TERM ^ ;
 CREATE FUNCTION TEST_FUNCTION_3 (
     inputParameter_1 Public_Rec ) RETURNS Public_Rec
 AS
-    DECLARE done  BOOLEAN = FALSE;
+     DECLARE done  BOOLEAN = FALSE;
 BEGIN
     WHILE (:done) DO
     BEGIN
@@ -330,7 +335,7 @@ BEGIN
         done = TRUE;
     END  -- This assignment is not made.
 
-END ^
+END /*TEST_FUNCTION_3*/^
 
 SET TERM ; ^
 
@@ -343,9 +348,9 @@ SET TERM ^ ;
 
 CREATE PROCEDURE TEST_FUNCTION_4 (
     in_outputParameter_1  Public_Rec ) RETURNS (RET_VAL BOOLEAN, IN_OUTPUTPARAMETER_1_OUT Public_Rec)
- )
+
 AS
-    DECLARE param_1 Public_Rec;
+     DECLARE param_1 Public_Rec;
 BEGIN
     param_1.column1 = 'new_text';
       in_outputParameter_1 = :param_1;
@@ -354,30 +359,28 @@ BEGIN
       SUSPEND;
       EXIT;
 
-END ^
+END /*TEST_FUNCTION_4*/^
 
 SET TERM ; ^
 
 
 
 ------------------- TEST_FUNCTION_5 -------------------
---todo variables are not declared if nothing is declared in the IS block.
+
 SET TERM ^ ;
 
 CREATE FUNCTION TEST_FUNCTION_5 (
     inputParameter_1 Public_Rec ) RETURNS Public_Rec
 AS
-    DECLARE bool  BOOLEAN = FALSE;
-DECLARE TEST_FUNCTION_4_RET_VAL BOOLEAN;
+     DECLARE bool  BOOLEAN = FALSE;
+
+  DECLARE TEST_FUNCTION_4_RET_VAL BOOLEAN;
 BEGIN
-    WHILE (TRUE) DO
+    WHILE ((TEST_FUNCTION_4(:inputParameter_1))) DO
     BEGIN
-            SELECT RET_VAL, IN_OUTPUTPARAMETER_1_OUT  FROM TEST_FUNCTION_4(:inputParameter_1) INTO TEST_FUNCTION_4_RET_VAL, inputParameter_1
-if(:TEST_FUNCTION_4_RET_VAL)
-break;
-DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
+            DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
     END
-END ^
+END /*TEST_FUNCTION_5*/^
 
 SET TERM ; ^
 
@@ -398,7 +401,7 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE (rec_.column1);
         DBMS_OUTPUT.PUT_LINE (rec_.column2);
    END
-END ^
+END /*TEST_FUNCTION_6*/^
 
 SET TERM ; ^
 
@@ -411,11 +414,12 @@ SET TERM ^ ;
 CREATE FUNCTION TEST_FUNCTION_7 (
     inputParameter_1 Public_Rec ) RETURNS Public_Rec
 AS
-    DECLARE text_  VARCHAR(1000);
+     DECLARE text_  VARCHAR(1000);
     DECLARE cur1 CURSOR FOR
           (SELECT column1, column2
           FROM   table1
           WHERE  column1 = 'text');
+
   DECLARE VARIABLE CUR1_PKG TYPE OF TABLE CUR1;
 BEGIN
     OPEN CUR1;
@@ -429,7 +433,7 @@ BEGIN
     CLOSE CUR1;
 
 
-END ^
+END /*TEST_FUNCTION_7*/^
 
 SET TERM ; ^
 
@@ -445,11 +449,11 @@ CREATE FUNCTION TEST_FUNCTION_8 (
 AS
 
 BEGIN
-    LOOP
+    WHILE (TRUE) DO BEGIN
        monthly_value = daily_value * 31;
-       EXIT WHEN monthly_value > 4000;
-    END LOOP
-END ^
+         IF( monthly_value > 4000 ) BEGIN LEAVE END;
+    END 
+END /*TEST_FUNCTION_8*/^
 
 SET TERM ; ^
 
@@ -462,7 +466,7 @@ SET TERM ^ ;
 CREATE FUNCTION TEST_FUNCTION_9 (
     inputParameter_1 Public_Rec ) RETURNS Public_Rec
 AS
-    DECLARE text_  VARCHAR(1000);
+     DECLARE text_  VARCHAR(1000);
     DECLARE cur1 CURSOR FOR
           (SELECT column1 column2
           FROM   table1
@@ -472,7 +476,9 @@ AS
           (SELECT column3 column4
           FROM   table1
           WHERE  column3 = 'text');
+
   DECLARE VARIABLE CUR1_C TYPE OF TABLE CUR1;
+
   DECLARE VARIABLE CUR1_PKG TYPE OF TABLE CUR1;
 BEGIN
     OPEN CUR1;
@@ -495,7 +501,7 @@ BEGIN
     END
     CLOSE CUR1;
 
-END ^
+END /*TEST_FUNCTION_9*/^
 
 SET TERM ; ^
 
@@ -526,15 +532,17 @@ CREATE PROCEDURE TEST_PROCEDURE_1 (
     )
     AS
 
-    BEGIN
+    
+  DECLARE VARIABLE Lcntr INTEGER;
+BEGIN
        Lcntr = 1;
-       WHILE ( Lcntr < 20) DO
+       WHILE ( Lcntr <= 20) DO
        BEGIN
               LCalc = :Lcntr * 31;
               dbms_output.put_line(LCalc);
        Lcntr = Lcntr + 1;
        END
-    END ^
+    END /*TEST_PROCEDURE_1*/^
 
 SET TERM ; ^
 
@@ -551,14 +559,16 @@ CREATE PROCEDURE TEST_PROCEDURE_2 (
         )
     AS
 
-    BEGIN
+    
+  DECLARE VARIABLE Lcntr INTEGER;
+BEGIN
         Lcntr = 15;
-        WHILE ( Lcntr  >   1) DO
+        WHILE ( Lcntr  >=   1) DO
         BEGIN
            LCalc = :Lcntr * 31;
 Lcntr = Lcntr - 1;
         END 
-    END ^
+    END /*TEST_PROCEDURE_2*/^
 
 SET TERM ; ^
 
@@ -574,7 +584,7 @@ CREATE PROCEDURE TEST_PROCEDURE_3 (
         inputParameter_2 VARCHAR(32000)
     )
     AS
-        DECLARE done  BOOLEAN = FALSE;
+         DECLARE done  BOOLEAN = FALSE;
 
     BEGIN
 
@@ -585,32 +595,28 @@ CREATE PROCEDURE TEST_PROCEDURE_3 (
         END  -- This assignment is not made.
 
 
-    END ^
+    END /*TEST_PROCEDURE_3*/^
 
 SET TERM ; ^
 
 
 
     ------------------- TEST_PROCEDURE_4 -------------------
---todo variables are not declared if nothing is declared in the IS block.
     SET TERM ^ ;
 
 CREATE PROCEDURE TEST_PROCEDURE_4 (
         inputParameter_1 VARCHAR(32000),
         inputParameter_2 VARCHAR(32000),
-        :inputParameter_1 Public_Rec
+        inputParameter_1 Public_Rec
     )
     AS
 
     BEGIN
-      WHILE (TRUE) DO
+      WHILE ((TEST_FUNCTION_4(:inputParameter_1))) DO
       BEGIN
-                SELECT RET_VAL, IN_OUTPUTPARAMETER_1_OUT  FROM TEST_FUNCTION_4(:inputParameter_1) INTO TEST_FUNCTION_4_RET_VAL, inputParameter_1
-if(:TEST_FUNCTION_4_RET_VAL)
-break;
-DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
+                DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
       END
-    END ^
+    END /*TEST_PROCEDURE_4*/^
 
 SET TERM ; ^
 
@@ -633,7 +639,7 @@ CREATE PROCEDURE TEST_PROCEDURE_5 (
             DBMS_OUTPUT.PUT_LINE (rec_.column1);
             DBMS_OUTPUT.PUT_LINE (rec_.column2);
        END
-    END ^
+    END /*TEST_PROCEDURE_5*/^
 
 SET TERM ; ^
 
@@ -647,13 +653,14 @@ CREATE PROCEDURE TEST_PROCEDURE_6 (
         inputParameter_2 VARCHAR(32000)
     )
     AS
-        DECLARE text_  VARCHAR(1000);
+         DECLARE text_  VARCHAR(1000);
         DECLARE cur1 CURSOR FOR
               (SELECT column1 column2
               FROM   table1
               WHERE  column1 = 'text');
+    
   DECLARE VARIABLE CUR1_PKG TYPE OF TABLE CUR1;
-    BEGIN
+BEGIN
         OPEN CUR1;
         FETCH CUR1 INTO CUR1_PKG;
         WHILE ( ROW_COUNT != 0 ) DO
@@ -664,7 +671,7 @@ CREATE PROCEDURE TEST_PROCEDURE_6 (
         END
         CLOSE CUR1;
 
-    END ^
+    END /*TEST_PROCEDURE_6*/^
 
 SET TERM ; ^
 
@@ -681,11 +688,11 @@ CREATE PROCEDURE TEST_PROCEDURE_7 (
     AS
 
     BEGIN
-        LOOP
+        WHILE (TRUE) DO BEGIN
            monthly_value = daily_value * 31;
-           EXIT WHEN monthly_value > 4000;
-        END LOOP
-    END ^
+             IF( monthly_value > 4000 ) BEGIN LEAVE END;
+        END 
+    END /*TEST_PROCEDURE_7*/^
 
 SET TERM ; ^
 
@@ -715,7 +722,7 @@ CREATE PROCEDURE TEST_PROCEDURE_8 (
         inputParameter_2 VARCHAR(32000)
     )
     AS
-        DECLARE text_  VARCHAR(1000);
+         DECLARE text_  VARCHAR(1000);
         DECLARE cur1 CURSOR FOR
               (SELECT column1 column2
               FROM   table1
@@ -725,9 +732,11 @@ CREATE PROCEDURE TEST_PROCEDURE_8 (
               (SELECT column3 column4
               FROM   table1
               WHERE  column3 = 'text');
+    
   DECLARE VARIABLE CUR1_C TYPE OF TABLE CUR1;
+
   DECLARE VARIABLE CUR1_PKG TYPE OF TABLE CUR1;
-    BEGIN
+BEGIN
         OPEN CUR1;
         FETCH CUR1 INTO CUR1_PKG;
         WHILE ( ROW_COUNT != 0 ) DO
@@ -748,18 +757,14 @@ CREATE PROCEDURE TEST_PROCEDURE_8 (
         END
         CLOSE CUR1;
 
-    END ^
+    END /*TEST_PROCEDURE_8*/^
 
 SET TERM ; ^
 
 
------------------------------------------------------------------------------
----------------------------PACKAGE PROCEDURES -------------------------------
------------------------------------------------------------------------------
-
 SET TERM ^ ;
 
-RECREATE   PACKAGE BODY PACKAGE_NAME_2 AS BEGIN
+RECREATE   PACKAGE BODY PACKAGE_NAME_2 AS BEGIN 
 
 
 ------------------- TEST_PACKAGE_PROCEDURE_1 -------------------
@@ -770,15 +775,17 @@ RECREATE   PACKAGE BODY PACKAGE_NAME_2 AS BEGIN
    )
    AS
 
-   BEGIN
+   
+  DECLARE VARIABLE Lcntr INTEGER;
+BEGIN
       Lcntr = 1;
-      WHILE ( Lcntr < 20) DO
+      WHILE ( Lcntr <= 20) DO
       BEGIN
              LCalc = :Lcntr * 31;
              dbms_output.put_line(LCalc);
       Lcntr = Lcntr + 1;
       END
-   END 
+   END /*TEST_PACKAGE_PROCEDURE_1*/  
 
 
 
@@ -791,18 +798,19 @@ RECREATE   PACKAGE BODY PACKAGE_NAME_2 AS BEGIN
        inputParameter_2 VARCHAR(32000)
    )
    AS
-        DECLARE done  BOOLEAN = FALSE;
+         DECLARE done  BOOLEAN = FALSE;
+   
   DECLARE VARIABLE Lcntr INTEGER;
-   BEGIN
+BEGIN
 
         Lcntr = 15;
-        WHILE ( Lcntr  >   1) DO
+        WHILE ( Lcntr  >=   1) DO
         BEGIN
            LCalc = :Lcntr * 31;
 Lcntr = Lcntr - 1;
         END 
 
-   END 
+   END /*TEST_PACKAGE_PROCEDURE_2*/  
 
 
 
@@ -823,12 +831,12 @@ Lcntr = Lcntr - 1;
       END  -- This assignment is not made.
 
 
-   END 
+   END /*TEST_PACKAGE_PROCEDURE_3*/  
 
 
 
 ------------------- TEST_PACKAGE_PROCEDURE_4 -------------------
---todo variables are not declared if nothing is declared in the IS block.
+
     PROCEDURE TEST_PACKAGE_PROCEDURE_4 (
        inputParameter_1 VARCHAR(32000),
        inputParameter_2 VARCHAR(32000),
@@ -837,15 +845,12 @@ Lcntr = Lcntr - 1;
    AS
 
    BEGIN
-      WHILE (TRUE) DO
+      WHILE ((TEST_FUNCTION_4(:inputParameter_1))) DO
       BEGIN
-                SELECT RET_VAL, IN_OUTPUTPARAMETER_1_OUT  FROM TEST_FUNCTION_4(:inputParameter_1) INTO TEST_FUNCTION_4_RET_VAL, inputParameter_1
-if(:TEST_FUNCTION_4_RET_VAL)
-break;
-DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
+                DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
       END
 
-   END 
+   END /*TEST_PACKAGE_PROCEDURE_4*/  
 
 
 
@@ -865,24 +870,25 @@ DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
             DBMS_OUTPUT.PUT_LINE (rec_.column2);
        END
 
-   END 
+   END /*TEST_PACKAGE_PROCEDURE_5*/  
 
 
 
 ------------------- TEST_PACKAGE_PROCEDURE_6 -------------------
---todo add tab DECLARE VARIABLE CUR 1_PKG TYPE OF TABLE CAR 1;
+
     PROCEDURE TEST_PACKAGE_PROCEDURE_6 (
        inputParameter_1 VARCHAR(32000),
        inputParameter_2 VARCHAR(32000)
    )
    AS
-        DECLARE text_  VARCHAR(1000);
+         DECLARE text_  VARCHAR(1000);
         DECLARE cur1 CURSOR FOR
               (SELECT column1 column2
               FROM   table1
               WHERE  column1 = 'text');
+   
   DECLARE VARIABLE CUR1_PKG TYPE OF TABLE CUR1;
-   BEGIN
+BEGIN
         OPEN CUR1;
         FETCH CUR1 INTO CUR1_PKG;
         WHILE ( ROW_COUNT != 0 ) DO
@@ -894,7 +900,7 @@ DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
         CLOSE CUR1;
 
 
-   END 
+   END /*TEST_PACKAGE_PROCEDURE_6*/  
 
 
 
@@ -907,12 +913,12 @@ DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
    AS
 
    BEGIN
-        LOOP
+        WHILE (TRUE) DO BEGIN
            monthly_value = daily_value * 31;
-           EXIT WHEN monthly_value > 4000;
-        END LOOP
+             IF( monthly_value > 4000 ) BEGIN LEAVE END;
+        END 
 
-   END 
+   END /*TEST_PACKAGE_PROCEDURE_7*/  
 
 
 
@@ -923,7 +929,7 @@ DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
        inputParameter_2 VARCHAR(32000)
    )
    AS
-       DECLARE text_  VARCHAR(1000);
+        DECLARE text_  VARCHAR(1000);
        DECLARE cur1 CURSOR FOR
              (SELECT column1 column2
              FROM   table1
@@ -933,10 +939,12 @@ DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
              (SELECT column3 column4
              FROM   table1
              WHERE  column3 = 'text');
-  DECLARE VARIABLE CUR1_C TYPE OF TABLE CUR1;
-  DECLARE VARIABLE CUR1_PKG TYPE OF TABLE CUR1;
 
-   BEGIN
+   
+  DECLARE VARIABLE CUR1_C TYPE OF TABLE CUR1;
+
+  DECLARE VARIABLE CUR1_PKG TYPE OF TABLE CUR1;
+BEGIN
         OPEN CUR1;
         FETCH CUR1 INTO CUR1_PKG;
         WHILE ( ROW_COUNT != 0 ) DO
@@ -959,7 +967,7 @@ DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
 
 
 
-   END 
+   END /*TEST_PACKAGE_PROCEDURE_8*/  
 
 
 
@@ -977,6 +985,6 @@ DBMS_OUTPUT.PUT_LINE (inputParameter_1.column1);
 --
 --   END TEST_PACKAGE_PROCEDURE_9;
 
-end ;
+  end ;
 
 SET TERM ; ^

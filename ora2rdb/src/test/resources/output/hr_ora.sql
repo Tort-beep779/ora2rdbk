@@ -2,19 +2,21 @@
 --  DDL for Sequence DEPARTMENTS_SEQ
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "DEPARTMENTS_SEQ"           ;
+   CREATE EXCEPTION NO_DATA_FOUND
+	'no data found';
+CREATE SEQUENCE  "DEPARTMENTS_SEQ";
 ALTER SEQUENCE "DEPARTMENTS_SEQ" RESTART WITH 280;
 --------------------------------------------------------
 --  DDL for Sequence EMPLOYEES_SEQ
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "EMPLOYEES_SEQ"           ;
+   CREATE SEQUENCE  "EMPLOYEES_SEQ";
 ALTER SEQUENCE "EMPLOYEES_SEQ" RESTART WITH 207;
 --------------------------------------------------------
 --  DDL for Sequence LOCATIONS_SEQ
 --------------------------------------------------------
 
-   CREATE SEQUENCE  "LOCATIONS_SEQ"           ;
+   CREATE SEQUENCE  "LOCATIONS_SEQ";
 ALTER SEQUENCE "LOCATIONS_SEQ" RESTART WITH 3300;
 --------------------------------------------------------
 --  DDL for Table COUNTRIES
@@ -24,7 +26,7 @@ ALTER SEQUENCE "LOCATIONS_SEQ" RESTART WITH 3300;
    (	"COUNTRY_ID" CHAR(2 ) NOT NULL, 
 	"COUNTRY_NAME" VARCHAR(40 ), 
 	"REGION_ID" NUMERIC(18, 4)
-   )  ;
+   );
 
    COMMENT ON COLUMN "COUNTRIES"."COUNTRY_ID" IS 'Primary key of countries table.';
    COMMENT ON COLUMN "COUNTRIES"."COUNTRY_NAME" IS 'Country name';
@@ -418,7 +420,7 @@ BEGIN
   INSERT INTO job_history (employee_id, start_date, end_date,
                            job_id, department_id)
     VALUES(:p_emp_id, :p_start_date, :p_end_date, :p_job_id, :p_department_id);
-END ^
+END /*add_job_history*/^
 
 SET TERM ; ^
 
@@ -439,7 +441,7 @@ BEGIN
         OR UPPER( CAST (CURRENT_TIMESTAMP AS VARCHAR(32000) FORMAT 'DY')) IN ('SAT', 'SUN')) THEN
 	EXCEPTION CUSTOM_EXCEPTION (
 		'You may only make changes during normal office hours');
-END ^
+END /*secure_dml*/^
 
 SET TERM ; ^
 
@@ -456,7 +458,7 @@ AS
 
  BEGIN
   EXECUTE PROCEDURE secure_dml;
- END ^
+ END /*secure_employees*/^
 
 SET TERM ; ^
 

@@ -2,7 +2,9 @@
 --  DDL for View ACTUALIZATIONVIEW
 --------------------------------------------------------
 
-  CREATE OR ALTER  VIEW "ACTUALIZATIONVIEW" ("ID", "VERSION", "DOCUMENT_ID", "INSTANCE_LINK", "BUDGET_ID", "DOCUMENTCLASS_ID", "DISPSTATUS_ID", "OPERTYPE_ID", "DOC_NUMBER", "DOC_DATE", "DESCRIPTION", "REMARK", "AMOUNT", "FOREIGN_KEY", "PAYCONDITIONNAME", "DELIVERYBASISCODE", "ACTUAL_YEAR") AS 
+  CREATE EXCEPTION NO_DATA_FOUND
+	'no data found';
+CREATE OR ALTER  VIEW "ACTUALIZATIONVIEW" ("ID", "VERSION", "DOCUMENT_ID", "INSTANCE_LINK", "BUDGET_ID", "DOCUMENTCLASS_ID", "DISPSTATUS_ID", "OPERTYPE_ID", "DOC_NUMBER", "DOC_DATE", "DESCRIPTION", "REMARK", "AMOUNT", "FOREIGN_KEY", "PAYCONDITIONNAME", "DELIVERYBASISCODE", "ACTUAL_YEAR") AS 
   select dc.id,dc.version,dc.id,tb.id,tb.budget_id,tb.documentclass_id,tb.dispstatus_id,tb.opertype_id,tb.doc_number,tb.doc_date,tb.description,tb.remark,tb.amount,tb.foreign_key,tb.payconditionname,tb.deliverybasiscode,tb.actual_year
    from requestdoc tb
    join document dc on (dc.id = tb.document_id and dc.dispstatus_id <> -1)

@@ -2,7 +2,9 @@
 --  DDL for Table ABANDONEDREASON
 --------------------------------------------------------
 
-  CREATE TABLE "ABANDONEDREASON" 
+  CREATE EXCEPTION NO_DATA_FOUND
+	'no data found';
+CREATE TABLE "ABANDONEDREASON" 
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"OOSKEY" VARCHAR(100 ), 
@@ -16,7 +18,7 @@
 	"PLACINGWAYNAME" VARCHAR(500 ), 
 	"PURCHASEMODE_ID" NUMERIC(15,0), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ALTGOODSGROUP
 --------------------------------------------------------
@@ -29,7 +31,7 @@
 	"PARENT_ID" NUMERIC(15,0), 
 	"OKP" VARCHAR(16 ), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ALTGOODSGROUPLINK
 --------------------------------------------------------
@@ -38,7 +40,7 @@
    (	"TYPE_ID" NUMERIC(15,0), 
 	"GOODSGROUP_ID" NUMERIC(15,0), 
 	"ALTGOODSGROUP_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ALTGOODSGROUPTYPE
 --------------------------------------------------------
@@ -47,7 +49,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ALTUNITFACTOR
 --------------------------------------------------------
@@ -56,7 +58,7 @@
    (	"UNIT_ID" NUMERIC(15,0), 
 	"ALTGOODSGROUP_ID" NUMERIC(15,0), 
 	"FACTOR" DOUBLE PRECISION
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ANYDATA
 --------------------------------------------------------
@@ -68,8 +70,7 @@
 	"DATA_KEY" VARCHAR(120 ), 
 	"STORAGE" VARCHAR(25 ), 
 	"DEVICE" VARCHAR(25 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table APPMODULE
 --------------------------------------------------------
@@ -79,7 +80,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(32 ), 
 	"DESCRIPTION" VARCHAR(256 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table APPMODULEDEPENDENCY
 --------------------------------------------------------
@@ -87,7 +88,7 @@
   CREATE TABLE "APPMODULEDEPENDENCY" 
    (	"ID" NUMERIC(18,0), 
 	"DEPENDID" NUMERIC(18,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table APPOBJ
 --------------------------------------------------------
@@ -104,7 +105,7 @@
 	"OPENICON" VARCHAR(256 ), 
 	"STYPE" NUMERIC(18,0), 
 	"SHOWORDER" NUMERIC(15,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table APPOBJPROP
 --------------------------------------------------------
@@ -115,7 +116,7 @@
 	"APPOBJID" NUMERIC(18,0), 
 	"NAME" VARCHAR(32 ), 
 	"VAL" VARCHAR(1024 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table APPOINTMENT
 --------------------------------------------------------
@@ -124,7 +125,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ATTACHCATEGORIES
 --------------------------------------------------------
@@ -132,7 +133,7 @@
   CREATE TABLE "ATTACHCATEGORIES" 
    (	"DOCATTACHEX_ID" NUMERIC(15,0), 
 	"DOCCATEGORY_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ATTACHEDPLANDOC
 --------------------------------------------------------
@@ -141,7 +142,7 @@
    (	"DOC_ID" NUMERIC(15,0), 
 	"PURCHASEPLANDOC_ID" NUMERIC(15,0), 
 	"DOCUMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table AUCTIONBID
 --------------------------------------------------------
@@ -164,7 +165,7 @@
 	"RECEIPTTIME" DATE DEFAULT '1900-01-01', 
 	"AUCTIONSTEP" NUMERIC(15,2), 
 	"COMPETITORPOS" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table AUCTIONLOG
 --------------------------------------------------------
@@ -177,7 +178,7 @@
 	"EVENTTIME" DATE, 
 	"STATE" NUMERIC(3,0), 
 	"DEADLINE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BANK
 --------------------------------------------------------
@@ -193,7 +194,7 @@
 	"FOREIGNKEY" VARCHAR(50 ), 
 	"DESCRIPTION" VARCHAR(2000 ), 
 	"IS_ACTUAL" NUMERIC(1,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BANKGUARANTEEDOC
 --------------------------------------------------------
@@ -241,7 +242,7 @@
 	"MODIFICATIONINFO" VARCHAR(2000 ), 
 	"HREF" VARCHAR(1024 ), 
 	"PRINTFORMHREF" VARCHAR(1024 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BANKGUARANTEEREFDOC
 --------------------------------------------------------
@@ -267,7 +268,7 @@
 	"REFUSALINFODOCDATE" DATE, 
 	"REFUSALINFODOCNAME" VARCHAR(250 ), 
 	"REFUSALINFODOCNUMBER" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BANKGUARANTEEREFDOCREASON
 --------------------------------------------------------
@@ -277,7 +278,7 @@
 	"POS" NUMERIC(15,0), 
 	"CODE" NUMERIC(15,0), 
 	"NAME" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BANKGUARANTEEREFREASON
 --------------------------------------------------------
@@ -288,7 +289,7 @@
 	"OOSKEY" VARCHAR(100 ), 
 	"NAME" VARCHAR(2000 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BUDGCODE
 --------------------------------------------------------
@@ -302,7 +303,7 @@
 	"DESCRIPTION" VARCHAR(2000 ), 
 	"FOREIGNKEY" VARCHAR(50 ), 
 	"FINYEAR" NUMERIC(4,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BUDGET
 --------------------------------------------------------
@@ -318,7 +319,7 @@
 	"TERRITORY_ID" NUMERIC(15,0), 
 	"PARENT_ID" NUMERIC(15,0), 
 	"RELATIONBUDGET_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BUDGETLINE
 --------------------------------------------------------
@@ -347,7 +348,7 @@
 	"REST_ASSIGN_AMT2" NUMERIC(15,2) DEFAULT 0, 
 	"ASSIGN_AMT3" NUMERIC(15,2) DEFAULT 0, 
 	"REST_ASSIGN_AMT3" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BUDGETSTAGE
 --------------------------------------------------------
@@ -356,7 +357,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"STAGECODE" VARCHAR(2 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CACHELIST
 --------------------------------------------------------
@@ -369,7 +370,7 @@
 	"HASH_CODE" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"INDEX_HASH_CODE" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CACHEMAN
 --------------------------------------------------------
@@ -379,7 +380,7 @@
 	"LAST_ACCESS" DATE, 
 	"USERNAME" VARCHAR(30 ), 
 	"CLIENT_HOST" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CAVILDOC
 --------------------------------------------------------
@@ -407,8 +408,7 @@
 	"ANSWER" VARCHAR(2000 ), 
 	"BUDGET_ID" NUMERIC(15,0), 
 	"WEBLINK" VARCHAR(512 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CAVILTYPE
 --------------------------------------------------------
@@ -417,7 +417,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(256 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CDCAVILTYPE
 --------------------------------------------------------
@@ -427,8 +427,7 @@
 	"POS" NUMERIC(15,0), 
 	"CAVILTYPE_ID" NUMERIC(15,0), 
 	"COMMENTS" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CEEXECUTIONLINE
 --------------------------------------------------------
@@ -446,7 +445,7 @@
 	"CONTRACTEXECDOCTYPE_ID" NUMERIC(15,0), 
 	"CONTRACTEXECDOCTYPE_CODE" VARCHAR(4 ), 
 	"FACTDOC_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CEPAYMENTPENALTY
 --------------------------------------------------------
@@ -459,7 +458,7 @@
 	"DOCNUMBER" VARCHAR(100 ), 
 	"DOCDATE" DATE, 
 	"AMOUNT" NUMERIC(15,2)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CEPENALTY
 --------------------------------------------------------
@@ -483,7 +482,7 @@
 	"RETURN_DOCNUMBER" VARCHAR(100 ), 
 	"RETURN_DOCDATE" DATE, 
 	"RETURN_AMOUNT" NUMERIC(15,2)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CEREPARATIONLINE
 --------------------------------------------------------
@@ -496,7 +495,7 @@
 	"DOCUMENTDATE" DATE, 
 	"DOCUMENTNUMBER" VARCHAR(100 ), 
 	"REPARATIONAMOUNT" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CERETURNPENALTY
 --------------------------------------------------------
@@ -509,7 +508,7 @@
 	"DOCNUMBER" VARCHAR(100 ), 
 	"DOCDATE" DATE, 
 	"AMOUNT" NUMERIC(15,2)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CERTINTERCHANGEREQUEST
 --------------------------------------------------------
@@ -526,7 +525,7 @@
 	"USERCERT_ID" NUMERIC(15,0), 
 	"EXPORTABLE" NUMERIC(1,0) DEFAULT 0, 
 	"COMMENTS" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CERTREQUEST
 --------------------------------------------------------
@@ -554,7 +553,7 @@
 	"DEPARTMENT" VARCHAR(64 ), 
 	"EXPORTABLE" NUMERIC(1,0) DEFAULT 0, 
 	"COMMENTS" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CERTREQUESTOID
 --------------------------------------------------------
@@ -562,7 +561,7 @@
   CREATE TABLE "CERTREQUESTOID" 
    (	"CERTREQUEST_ID" NUMERIC(15,0), 
 	"OIDREF_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CERTREVOKEREQUEST
 --------------------------------------------------------
@@ -578,7 +577,7 @@
 	"REMARK" VARCHAR(255 ), 
 	"USERCERT_ID" NUMERIC(15,0), 
 	"COMMENTS" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CETERMINATIONLINE
 --------------------------------------------------------
@@ -594,7 +593,7 @@
 	"TERMINATIONREASONDOC_DATE" DATE, 
 	"TERMINATIONREASONDOC_NUMBER" VARCHAR(100 ), 
 	"TERMINATIONREASONDOC_REFDATE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CLAIMDOC
 --------------------------------------------------------
@@ -636,8 +635,7 @@
 	"PENALTY_DOCNUMBER" VARCHAR(100 ), 
 	"PENALTY_DOCDATE" DATE, 
 	"PENALTY_RETURN_AMOUNT" NUMERIC(15,2) DEFAULT 0
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CLAIMPAYFACT
 --------------------------------------------------------
@@ -652,7 +650,7 @@
 	"CAPTION" VARCHAR(500 ), 
 	"DOCDATE" DATE, 
 	"DOCTYPE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CLAIMPENALTYCHANGEDOCINFO
 --------------------------------------------------------
@@ -664,7 +662,7 @@
 	"DOCDATE" DATE, 
 	"DOCNUMBER" VARCHAR(100 ), 
 	"CAPTION" VARCHAR(200 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CLASSOPER
 --------------------------------------------------------
@@ -675,7 +673,7 @@
 	"DOCUMENTCLASS_ID" NUMERIC(15,0), 
 	"OPERTYPE_ID" NUMERIC(15,0) DEFAULT 0, 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CLIENTOBJECT
 --------------------------------------------------------
@@ -695,8 +693,7 @@
 	"BUDGET_REQUIRED" NUMERIC(1,0) DEFAULT 1, 
 	"HELPFILE" VARCHAR(256 ), 
 	"HELPKEYWORD" VARCHAR(256 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CLIENTOBJECTCOMMENTS
 --------------------------------------------------------
@@ -707,8 +704,7 @@
 	"CLIENTOBJECT_ID" NUMERIC(15,0), 
 	"BUDGET_ID" NUMERIC(15,0), 
 	"COMMENT_FIELD" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CLNDDAY
 --------------------------------------------------------
@@ -719,7 +715,7 @@
 	"CLNDTYPE_ID" NUMERIC(15,0), 
 	"CLNDDAYTYPE_ID" NUMERIC(15,0), 
 	"CLND_DAY" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CLNDDAYTYPE
 --------------------------------------------------------
@@ -728,7 +724,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CLNDTYPE
 --------------------------------------------------------
@@ -738,7 +734,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(255 ), 
 	"CLND_YEAR" NUMERIC(4,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPCOMMEMBER
 --------------------------------------------------------
@@ -756,7 +752,7 @@
 	"PHASEPOS" NUMERIC(15,0), 
 	"OOS_NUMBER" VARCHAR(100 ), 
 	"ISACTINGFORSECRETARY" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPCOMPETITOR
 --------------------------------------------------------
@@ -781,7 +777,7 @@
 	"DISCUSSION" VARCHAR(4000 ), 
 	"ABSENT" NUMERIC(1,0) DEFAULT 0, 
 	"EXPLANATION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPCONDEALRESP
 --------------------------------------------------------
@@ -791,7 +787,7 @@
 	"CMPCUSTOMERPOS" NUMERIC(15,0), 
 	"PERSONAL_ID" NUMERIC(15,0), 
 	"PERSONAL_NAME" VARCHAR(256 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPCRITERION
 --------------------------------------------------------
@@ -814,7 +810,7 @@
 	"FORMULA" VARCHAR(2000 ), 
 	"OOSCODE" VARCHAR(2 ) DEFAULT '0', 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPCRITERIONLINE
 --------------------------------------------------------
@@ -829,7 +825,7 @@
 	"WEIGHT" NUMERIC(15,2), 
 	"LIMITDESCRIPTION" VARCHAR(2000 ), 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPCUSTOMER
 --------------------------------------------------------
@@ -853,7 +849,7 @@
 	"CUSTOMERFAX" VARCHAR(100 ), 
 	"CUSTOMERPHONE" VARCHAR(100 ), 
 	"CUSTOMEREMAIL" VARCHAR(256 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPCUSTOMERLOT
 --------------------------------------------------------
@@ -897,8 +893,7 @@
 	"GUARANTEEAPPPERCENT" NUMERIC(5,2), 
 	"GUARANTEECONTRACTPERCENT" NUMERIC(5,2), 
 	"CUSTCANREFUSEINFO" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CMPDECISION
 --------------------------------------------------------
@@ -914,8 +909,7 @@
 	"ABSTAIN" NUMERIC(15,0), 
 	"BYCALL" NUMERIC(1,0), 
 	"COMPETITORPOS" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CMPDISCUSSION
 --------------------------------------------------------
@@ -926,8 +920,7 @@
 	"PHASEPOS" NUMERIC(15,0), 
 	"LOTPOS" NUMERIC(15,0), 
 	"DISCUSSION" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CMPDOCREQ
 --------------------------------------------------------
@@ -946,7 +939,7 @@
 	"DESCRIPTION" VARCHAR(4000 ), 
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0), 
 	"REQUIREMENTTYPE_NAME" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPEXPENSE
 --------------------------------------------------------
@@ -964,7 +957,7 @@
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0, 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPFEATURE
 --------------------------------------------------------
@@ -976,7 +969,7 @@
 	"PLACEMENTFEATURE_ID" NUMERIC(15,0), 
 	"PREFVALUE" NUMERIC(15,2) DEFAULT 0, 
 	"CONTENT" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPGOODS
 --------------------------------------------------------
@@ -1002,7 +995,7 @@
 	"OKVED" VARCHAR(20 ), 
 	"OKVED_NAME" VARCHAR(1000 ), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPGOODSPROP
 --------------------------------------------------------
@@ -1015,7 +1008,7 @@
 	"CAPTION" VARCHAR(512 ), 
 	"PROPVALUE" VARCHAR(1500 ), 
 	"OOSKEY" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPLOT
 --------------------------------------------------------
@@ -1076,8 +1069,7 @@
 	"RATIONALEPRICE" BLOB SUB_TYPE TEXT, 
 	"SUBJECT" BLOB SUB_TYPE TEXT, 
 	"ENERGYSERVICEECONOMY" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CMPOOSMODIFICATION
 --------------------------------------------------------
@@ -1099,8 +1091,7 @@
 	"PRESCRIPTION_NUMBER" VARCHAR(20 ), 
 	"CHANGE_DOCNAME" BLOB SUB_TYPE TEXT, 
 	"CHANGE_ADDITIONALINFO" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CMPPAYSHEDULE
 --------------------------------------------------------
@@ -1110,7 +1101,7 @@
 	"BUDGETLINEPOS" NUMERIC(15,0), 
 	"PAYDATE" DATE, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPPERSONAL
 --------------------------------------------------------
@@ -1125,7 +1116,7 @@
 	"PHONE" VARCHAR(100 ), 
 	"FAX" VARCHAR(100 ), 
 	"EMAIL" VARCHAR(256 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPPERSONALRESP
 --------------------------------------------------------
@@ -1134,7 +1125,7 @@
    (	"ORDER_ID" NUMERIC(15,0), 
 	"PERSONAL_ID" NUMERIC(15,0), 
 	"RESPONSIBILITY_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPPHASE
 --------------------------------------------------------
@@ -1152,7 +1143,7 @@
 	"OOS_ADDINFO" VARCHAR(2000 ), 
 	"OOS_PROTOCOLPUBLISHED" NUMERIC(1,0) DEFAULT 0, 
 	"OOS_PROTOCOL_ID" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPPLACE
 --------------------------------------------------------
@@ -1185,7 +1176,7 @@
 	"INDUSTRYCODE_ID" NUMERIC(15,0), 
 	"GRANTINVESTMENT_ID" NUMERIC(15,0), 
 	"CUSTOMER_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPQUALREQ
 --------------------------------------------------------
@@ -1202,7 +1193,7 @@
 	"CONTENT" VARCHAR(2000 ), 
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0), 
 	"REQUIREMENTTYPE_NAME" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPREPDOCUMENT
 --------------------------------------------------------
@@ -1210,7 +1201,7 @@
   CREATE TABLE "CMPREPDOCUMENT" 
    (	"ORDER_ID" NUMERIC(15,0), 
 	"REPDOCUMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPSUPPLYSHEDULE
 --------------------------------------------------------
@@ -1223,7 +1214,7 @@
 	"QTY" NUMERIC(15,4) DEFAULT 0, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0, 
 	"LOTPOS" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPVENDOR
 --------------------------------------------------------
@@ -1237,7 +1228,7 @@
 	"VENDORNAME" VARCHAR(2000 ), 
 	"REFCOUNT" NUMERIC(4,0), 
 	"PROPFORM_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPVOTERESULT
 --------------------------------------------------------
@@ -1249,7 +1240,7 @@
 	"CMPCOMMEMBERPOS" NUMERIC(15,0), 
 	"NOTE" VARCHAR(500 ), 
 	"RESULT" NUMERIC(1,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPWORKGROUP
 --------------------------------------------------------
@@ -1259,7 +1250,7 @@
 	"POS" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(250 ), 
 	"ETPKEY" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CODETYPE
 --------------------------------------------------------
@@ -1276,7 +1267,7 @@
 	"MASK" VARCHAR(200 ), 
 	"GROUPMASK" VARCHAR(100 ), 
 	"DEFVALUE" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table COMMEMBER
 --------------------------------------------------------
@@ -1291,7 +1282,7 @@
 	"COMMEMBER_ROLE" VARCHAR(255 ), 
 	"OOSKEY" VARCHAR(100 ), 
 	"ISACTINGFORSECRETARY" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table COMMISSION
 --------------------------------------------------------
@@ -1305,7 +1296,7 @@
 	"ISACTUAL" NUMERIC(1,0) DEFAULT 1, 
 	"ORG_ID" NUMERIC(15,0), 
 	"DATENUMORDERNAME" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table COMPLAINTDOC
 --------------------------------------------------------
@@ -1344,8 +1335,7 @@
 	"COMPLAINT_BODY" BLOB SUB_TYPE TEXT, 
 	"COMPLAINT_DECISION" NUMERIC(2,0), 
 	"DECISION_DIRECTIONS" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CONAGREEMENTSDOCS
 --------------------------------------------------------
@@ -1357,7 +1347,7 @@
 	"DOCDATE" DATE, 
 	"DOCNAME" VARCHAR(2000 ), 
 	"DOCINFO" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONBANKGUARANTEERETURN
 --------------------------------------------------------
@@ -1370,7 +1360,7 @@
 	"RETURNDATE" DATE, 
 	"NOTICENUMBER" VARCHAR(100 ), 
 	"REASON" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONBUDGETLINE
 --------------------------------------------------------
@@ -1404,7 +1394,7 @@
 	"REMARK" VARCHAR(2000 ), 
 	"INDUSTRYCODE_ID" NUMERIC(15,0), 
 	"GRANTINVESTMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONCONFIRMINGDOCS
 --------------------------------------------------------
@@ -1417,7 +1407,7 @@
 	"DOCDATE" DATE, 
 	"PROTOCOLNAME" VARCHAR(2000 ), 
 	"DOCINFO" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONCONTRACTOR
 --------------------------------------------------------
@@ -1450,7 +1440,7 @@
 	"ORGPATRONYMIC" VARCHAR(250 ), 
 	"ORGISCULTURE" NUMERIC(1,0) DEFAULT 0, 
 	"ORGPROPFORM_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONDAMAGEPAYMENTS
 --------------------------------------------------------
@@ -1462,7 +1452,7 @@
 	"DOCDATE" DATE, 
 	"DOCNAME" VARCHAR(1000 ), 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONEXECSTEP
 --------------------------------------------------------
@@ -1473,7 +1463,7 @@
 	"BUDGETLINEPOS" NUMERIC(15,0), 
 	"EXECDATE" DATE, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONEXECSTEP2
 --------------------------------------------------------
@@ -1493,7 +1483,7 @@
 	"FACTFINISHDATE" DATE, 
 	"REPORTPRINTDATE" DATE, 
 	"ISPAYIGNORED" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONFCONCLUSIONCONTRACT
 --------------------------------------------------------
@@ -1506,7 +1496,7 @@
 	"DOCCODE" VARCHAR(6 ), 
 	"DOCNAME" VARCHAR(1000 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONGOODS
 --------------------------------------------------------
@@ -1527,7 +1517,7 @@
 	"OKPD_NAME" VARCHAR(1000 ), 
 	"OKPD_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONGOODSPROP
 --------------------------------------------------------
@@ -1539,7 +1529,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(512 ), 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONLOT
 --------------------------------------------------------
@@ -1549,7 +1539,7 @@
 	"LOTPOS" NUMERIC(15,0), 
 	"LOTNAME" VARCHAR(2000 ), 
 	"LOTNUMBER" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONORGSTATUS
 --------------------------------------------------------
@@ -1557,7 +1547,7 @@
   CREATE TABLE "CONORGSTATUS" 
    (	"CONTRACT_ID" NUMERIC(15,0), 
 	"ORGSTATUS_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONPAYFACT
 --------------------------------------------------------
@@ -1575,7 +1565,7 @@
 	"FOREIGNKEY" VARCHAR(50 ), 
 	"DOCDATE" DATE, 
 	"ISPREPAYMENT" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONPAYSHEDULE
 --------------------------------------------------------
@@ -1586,7 +1576,7 @@
 	"BUDGETLINEPOS" NUMERIC(15,0), 
 	"PAYDATE" DATE, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONPLACE
 --------------------------------------------------------
@@ -1603,7 +1593,7 @@
 	"USEAMOUNT" NUMERIC(1,0) DEFAULT 0, 
 	"CALCPRICE" NUMERIC(1,0) DEFAULT 0, 
 	"EXECSTEP2POS" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONPRODUCTSCHANGEDOCS
 --------------------------------------------------------
@@ -1614,7 +1604,7 @@
 	"DOCNUMBER" VARCHAR(100 ), 
 	"DOCDATE" DATE, 
 	"DOCNAME" VARCHAR(1000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONREFUSALFACT
 --------------------------------------------------------
@@ -1625,7 +1615,7 @@
 	"VOUCHERENTRY" VARCHAR(4000 ), 
 	"EXPLANATION" VARCHAR(4000 ), 
 	"REFUSALFACTFOUNDATION_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONSOLIDDOC
 --------------------------------------------------------
@@ -1652,7 +1642,7 @@
 	"SUBJECT" VARCHAR(2000 ), 
 	"REMARK" VARCHAR(255 ), 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONSTRUCTION
 --------------------------------------------------------
@@ -1662,7 +1652,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"ADDRESS" VARCHAR(255 ), 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONSUPPLYSHEDULE
 --------------------------------------------------------
@@ -1674,7 +1664,7 @@
 	"SUPPLYDATE" DATE, 
 	"QTY" NUMERIC(15,4) DEFAULT 0, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTRACTCARDDOC
 --------------------------------------------------------
@@ -1713,7 +1703,7 @@
 	"WEBLINK_CONTRACT" VARCHAR(2000 ), 
 	"WEBLINK_REJECT" VARCHAR(2000 ), 
 	"WEBLINK_REVISION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTRACTDOC
 --------------------------------------------------------
@@ -1879,7 +1869,7 @@
 	"CONFIRSTNAME" VARCHAR(250 ), 
 	"CONPATRONYMIC" VARCHAR(250 ), 
 	"CONISCULTURE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTRACTEXECDOC
 --------------------------------------------------------
@@ -1949,7 +1939,7 @@
 	"BANKGRNT_LOSSNOTCOVEREDAMOUNT" NUMERIC(15,2), 
 	"BANKGRNT_WARRANTYAMOUNT" NUMERIC(15,2), 
 	"BANKGRNT_OTHERAMOUNT" NUMERIC(15,2)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTRACTOR
 --------------------------------------------------------
@@ -1957,7 +1947,7 @@
   CREATE TABLE "CONTRACTOR" 
    (	"INSPECTOR_ID" NUMERIC(15,0), 
 	"ORG_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTRACTREASON
 --------------------------------------------------------
@@ -1972,7 +1962,7 @@
 	"REFTYPE" NUMERIC(1,0), 
 	"POINTLAW" VARCHAR(1000 ), 
 	"BUDGETTYPE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTRACTREASON_DOCLINES
 --------------------------------------------------------
@@ -1984,7 +1974,7 @@
 	"CODE" VARCHAR(10 ), 
 	"NAME" VARCHAR(1000 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTRACTTEMPLATEDOC
 --------------------------------------------------------
@@ -2006,7 +1996,7 @@
 	"CMPLOTPOS" NUMERIC(15,0), 
 	"CUSTOMER_ID" NUMERIC(15,0), 
 	"CONTRACT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTYPE
 --------------------------------------------------------
@@ -2019,7 +2009,7 @@
 	"ISCONTRACT" NUMERIC(15,0) DEFAULT 1, 
 	"CONTRACTTYPE" NUMERIC(15,0) DEFAULT 0, 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTYPEATTACH
 --------------------------------------------------------
@@ -2032,7 +2022,7 @@
 	"ATTACH_NAME" VARCHAR(100 ), 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"ATTACH_TYPE" NUMERIC(1,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table COUNTRY
 --------------------------------------------------------
@@ -2041,7 +2031,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CRLFILE
 --------------------------------------------------------
@@ -2051,8 +2041,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"CRLFILE" BLOB, 
 	"CRLPOINT_ID" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CRLPOINT
 --------------------------------------------------------
@@ -2067,7 +2056,7 @@
 	"FULL_ISSUER" VARCHAR(1000 ), 
 	"ISSUER" VARCHAR(1000 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CSGOODS
 --------------------------------------------------------
@@ -2085,7 +2074,7 @@
 	"OKPD_NAME" VARCHAR(1000 ), 
 	"OKPD_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CSGOODSPROP
 --------------------------------------------------------
@@ -2097,7 +2086,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(512 ), 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CSRECIPIENT
 --------------------------------------------------------
@@ -2105,7 +2094,7 @@
   CREATE TABLE "CSRECIPIENT" 
    (	"CONSOLID_ID" NUMERIC(15,0), 
 	"ORG_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CURHISTORY
 --------------------------------------------------------
@@ -2118,7 +2107,7 @@
 	"DT" DATE, 
 	"RATE" NUMERIC(10,4), 
 	"DIVISOR" NUMERIC(10,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CURRENCY
 --------------------------------------------------------
@@ -2128,7 +2117,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"CODE" VARCHAR(3 ), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DATAOBJECTCHANGELOG
 --------------------------------------------------------
@@ -2145,8 +2134,7 @@
 	"OBJ_VERSION" NUMERIC(15,0), 
 	"REMARK" VARCHAR(255 ), 
 	"DATA" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DATASOURCE
 --------------------------------------------------------
@@ -2158,8 +2146,7 @@
 	"CAPTION" VARCHAR(128 ), 
 	"JAVACLASSNAME" VARCHAR(255 ), 
 	"DECLARATION" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DAYVERSION
 --------------------------------------------------------
@@ -2167,7 +2154,7 @@
   CREATE TABLE "DAYVERSION" 
    (	"DAY_DATE" DATE, 
 	"DAY_VERSION" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DBCONNECT
 --------------------------------------------------------
@@ -2184,7 +2171,7 @@
 	"STATUS" NUMERIC(15,0) DEFAULT 6, 
 	"DBCONNECT_TYPE" NUMERIC(15,0) DEFAULT 1, 
 	"STATUS_DATE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DBCONSTRAINT
 --------------------------------------------------------
@@ -2195,7 +2182,7 @@
 	"NAME" VARCHAR(50 ), 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DBUPDATE
 --------------------------------------------------------
@@ -2206,7 +2193,7 @@
 	"UPDATE_DATE" DATE, 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"VERSIONS" BLOB 
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DECREASON
 --------------------------------------------------------
@@ -2217,7 +2204,7 @@
 	"BUDGET_ID" NUMERIC(15,0), 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"DOCUMENTCLASS_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DELIVERYBASIS
 --------------------------------------------------------
@@ -2228,7 +2215,7 @@
 	"SYSTEM_FLAG" NUMERIC(1,0) DEFAULT 0, 
 	"CODE" VARCHAR(50 ), 
 	"CAPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DESCGROUP
 --------------------------------------------------------
@@ -2237,7 +2224,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DESCRIPTION
 --------------------------------------------------------
@@ -2248,7 +2235,7 @@
 	"BUDGET_ID" NUMERIC(15,0), 
 	"DESCGROUP_ID" NUMERIC(15,0), 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DESCRIPTIONCACHE
 --------------------------------------------------------
@@ -2257,7 +2244,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"DESCRIPTION" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DEVIATIONFACTFOUNDATION
 --------------------------------------------------------
@@ -2269,7 +2256,7 @@
 	"NAME" VARCHAR(500 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1, 
 	"BUDGETTYPE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DIGEST
 --------------------------------------------------------
@@ -2283,8 +2270,7 @@
 	"DIGESTDATA" BLOB SUB_TYPE TEXT, 
 	"ISACTIVE" NUMERIC(1,0) DEFAULT 0, 
 	"DOCCLENANERNOTIFY" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DIGESTSIGN
 --------------------------------------------------------
@@ -2310,8 +2296,7 @@
 	"SIGNVERSION" NUMERIC(15,0), 
 	"ISIMPORTED" NUMERIC(1,0) DEFAULT 0, 
 	"IMPORTUSER_ID" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DISPSTATUS
 --------------------------------------------------------
@@ -2321,7 +2306,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 ), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCACTION
 --------------------------------------------------------
@@ -2342,7 +2327,7 @@
 	"CLIENTOBJECT_NAME" VARCHAR(255 ), 
 	"SHOW_MODE" NUMERIC(15,0) DEFAULT 0, 
 	"USER_TYPE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCATTACH
 --------------------------------------------------------
@@ -2355,8 +2340,7 @@
 	"ATTACH_DATA" BLOB, 
 	"AUTHOR" NUMERIC(15,0), 
 	"ACTION_DATE" DATE
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCATTACHEX
 --------------------------------------------------------
@@ -2372,7 +2356,7 @@
 	"CONVERTER_ID" NUMERIC(15,0), 
 	"AUTHOR" NUMERIC(15,0), 
 	"ACTION_DATE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCATTACH_LINK
 --------------------------------------------------------
@@ -2382,7 +2366,7 @@
 	"STORAGE_NAME" VARCHAR(100 ), 
 	"DEVICE_NAME" VARCHAR(100 ), 
 	"REAL_FILENAME" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCCATEGORY
 --------------------------------------------------------
@@ -2393,7 +2377,7 @@
 	"NAME" VARCHAR(100 ), 
 	"CODE" VARCHAR(15 ), 
 	"SYSTEM_FLAG" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCCLASS_DISPSTATUS
 --------------------------------------------------------
@@ -2407,7 +2391,7 @@
 	"PARALLEL" NUMERIC(1,0), 
 	"CONTROL_TYPE" NUMERIC(1,0) DEFAULT 0, 
 	"REMARK" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCCOMMENT
 --------------------------------------------------------
@@ -2422,8 +2406,7 @@
 	"USERNAME" VARCHAR(30 ), 
 	"USER_ID" NUMERIC(15,0), 
 	"UPDATE_DATE" DATE
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCCUSTOMFIELDS
 --------------------------------------------------------
@@ -2438,8 +2421,7 @@
 	"REQUIRED" NUMERIC(1,0) DEFAULT 0, 
 	"FIELDPOS" NUMERIC(15,0), 
 	"METADATA" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCCUSTOMFIELDVALUES
 --------------------------------------------------------
@@ -2449,8 +2431,7 @@
 	"CUSTFIELD_ID" NUMERIC(15,0), 
 	"FIELD_VALUE" VARCHAR(255 ), 
 	"FIELD_DATA" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCDIGESTREQUISITES
 --------------------------------------------------------
@@ -2460,7 +2441,7 @@
 	"RULEREQUISITE_ID" NUMERIC(18,0), 
 	"ITEM_CONDITION" NUMERIC(1,0) DEFAULT 0, 
 	"ITEM_VALUE" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCDIGESTROLES
 --------------------------------------------------------
@@ -2470,7 +2451,7 @@
 	"USERROLE_ID" NUMERIC(18,0), 
 	"SIGN_ORDER" NUMERIC(15,0) DEFAULT 0, 
 	"DOCACTION_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCDIGESTRULE
 --------------------------------------------------------
@@ -2485,7 +2466,7 @@
 	"FGROUPHEADER_ID" NUMERIC(18,0), 
 	"PARDISPSTATUS_ID" NUMERIC(15,0), 
 	"RULESCRIPT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCEVENT
 --------------------------------------------------------
@@ -2504,7 +2485,7 @@
 	"AUTO_RPL" NUMERIC(1,0) DEFAULT 1, 
 	"ISOFFLINE" NUMERIC(1,0) DEFAULT 1, 
 	"USER_TYPE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCEVERRLOG
 --------------------------------------------------------
@@ -2518,8 +2499,7 @@
 	"EVENT_BEGIN" DATE, 
 	"EVENT_END" DATE, 
 	"EVENT_MSG" BLOB
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCEXCHANGESCHEME
 --------------------------------------------------------
@@ -2528,7 +2508,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCFLAG
 --------------------------------------------------------
@@ -2536,7 +2516,7 @@
   CREATE TABLE "DOCFLAG" 
    (	"DOCUMENT_ID" NUMERIC(15,0), 
 	"DOCFLAGTYPE_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCFLAGCATEGORY
 --------------------------------------------------------
@@ -2545,7 +2525,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCFLAGTYPE
 --------------------------------------------------------
@@ -2559,7 +2539,7 @@
 	"READONLY" NUMERIC(1,0) DEFAULT 0, 
 	"RADIO" NUMERIC(1,0) DEFAULT 0, 
 	"VISIBLE" NUMERIC(1,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCGROUP
 --------------------------------------------------------
@@ -2571,7 +2551,7 @@
 	"PARENT_ID" NUMERIC(15,0), 
 	"DOCUMENTCLASS_ID" NUMERIC(15,0), 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCJOURNAL
 --------------------------------------------------------
@@ -2589,8 +2569,7 @@
 	"WORK_DATE" DATE, 
 	"PARDISPSTATUS_ID" NUMERIC(15,0), 
 	"OLD_PARDISPSTATUS_ID" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCREQ
 --------------------------------------------------------
@@ -2604,7 +2583,7 @@
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0) DEFAULT 1, 
 	"NAME" VARCHAR(1024 ), 
 	"DESCRIPTION" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCRETENTION
 --------------------------------------------------------
@@ -2620,8 +2599,7 @@
 	"DOCSTATUS_ID" NUMERIC(15,0), 
 	"ISACTIVE" NUMERIC(1,0) DEFAULT 0, 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCRETENTIONSTATITEMS
 --------------------------------------------------------
@@ -2632,8 +2610,7 @@
 	"DOCUMENT_ID" NUMERIC(15,0), 
 	"DOCRETENTION_ID" NUMERIC(15,0), 
 	"MSG" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCRETENTIONSTATUS
 --------------------------------------------------------
@@ -2643,8 +2620,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"DOCRETENTION_ID" NUMERIC(15,0), 
 	"MSG" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCSELECT
 --------------------------------------------------------
@@ -2658,7 +2634,7 @@
 	"ISREQUIRED" NUMERIC(1,0) DEFAULT 1, 
 	"TYPE" NUMERIC(2,0) DEFAULT 0, 
 	"REMARK" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCSITELINK
 --------------------------------------------------------
@@ -2666,7 +2642,7 @@
   CREATE TABLE "DOCSITELINK" 
    (	"DOCUMENT_ID" NUMERIC(15,0), 
 	"SITE_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCSTATUS
 --------------------------------------------------------
@@ -2683,7 +2659,7 @@
 	"PARALLEL" NUMERIC(1,0) DEFAULT 0, 
 	"INITIALL" NUMERIC(1,0) DEFAULT 0, 
 	"CONTROL_TYPE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCUMENT
 --------------------------------------------------------
@@ -2713,7 +2689,7 @@
 	"AUTHOR_ID" NUMERIC(15,0), 
 	"SIGN_CNT" NUMERIC(18,0) DEFAULT 0, 
 	"APP_TYPE" NUMERIC(2,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCUMENTBLOCKINFO
 --------------------------------------------------------
@@ -2722,7 +2698,7 @@
    (	"DOCUMENT_ID" NUMERIC(15,0), 
 	"SYSUSER_ID" NUMERIC(15,0), 
 	"BLOCKTIME" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCUMENTCLASS
 --------------------------------------------------------
@@ -2745,8 +2721,7 @@
 	"NUMGENERATOR_ID" NUMERIC(15,0), 
 	"PRINTPARAMS" BLOB SUB_TYPE TEXT, 
 	"PRINTCLIENTOBJECT_ID" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCUMENTREPORTS
 --------------------------------------------------------
@@ -2764,7 +2739,7 @@
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0, 
 	"BIRT_OUTPUTFORMAT" VARCHAR(10 ), 
 	"BIRT_EMITTER" VARCHAR(128 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCWEBLINK
 --------------------------------------------------------
@@ -2774,7 +2749,7 @@
 	"POS" NUMERIC(15,0), 
 	"NAME" VARCHAR(255 ), 
 	"WEBLINK" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOMEN
 --------------------------------------------------------
@@ -2784,7 +2759,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"PARENT_ID" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table EQUALITY
 --------------------------------------------------------
@@ -2793,7 +2768,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(300 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table EQUALITYCODES
 --------------------------------------------------------
@@ -2803,7 +2778,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"EQUALITY_ID" NUMERIC(15,0), 
 	"CODE" VARCHAR(7 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ESCHECKRULE
 --------------------------------------------------------
@@ -2817,7 +2792,7 @@
 	"FGROUPHEADER_ID" NUMERIC(18,0), 
 	"PARDISPSTATUS_ID" NUMERIC(15,0), 
 	"RULESCRIPT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ESCHECKRULEREQUISITES
 --------------------------------------------------------
@@ -2827,7 +2802,7 @@
 	"RULEREQUISITE_ID" NUMERIC(18,0), 
 	"ITEM_CONDITION" NUMERIC(1,0) DEFAULT 0, 
 	"ITEM_VALUE" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ESCRROLE
 --------------------------------------------------------
@@ -2835,7 +2810,7 @@
   CREATE TABLE "ESCRROLE" 
    (	"ESCHECKRULE_ID" NUMERIC(15,0), 
 	"USERROLE_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ESTIMATE
 --------------------------------------------------------
@@ -2848,7 +2823,7 @@
 	"FOREIGNKEY" VARCHAR(50 ), 
 	"CAPTION" VARCHAR(255 ), 
 	"FINYEAR" NUMERIC(4,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ETP
 --------------------------------------------------------
@@ -2862,7 +2837,7 @@
 	"MSGSITE_ID" NUMERIC(15,0), 
 	"CLASSNAME" VARCHAR(255 ), 
 	"LINK_ADDRESS" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ETPATTACH
 --------------------------------------------------------
@@ -2875,7 +2850,7 @@
 	"ETPKEY" VARCHAR(100 ), 
 	"FILE_CRC" VARCHAR(100 ), 
 	"URL" VARCHAR(1024 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ETPTYPE
 --------------------------------------------------------
@@ -2886,7 +2861,7 @@
 	"CODE" VARCHAR(20 ), 
 	"NAME" VARCHAR(100 ), 
 	"ADDRESS" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table EXCHANGECLASSES
 --------------------------------------------------------
@@ -2894,7 +2869,7 @@
   CREATE TABLE "EXCHANGECLASSES" 
    (	"DOCEXCHANGESCHEME_ID" NUMERIC(15,0), 
 	"DOCUMENTCLASS_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FACTDOC
 --------------------------------------------------------
@@ -2936,7 +2911,7 @@
 	"EXPORT_PARENT_ID" NUMERIC(15,0), 
 	"PAYEDAMOUNT" NUMERIC(15,2) DEFAULT 0, 
 	"ACTUAL_YEAR" NUMERIC(4,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FACTDOCTYPE
 --------------------------------------------------------
@@ -2946,7 +2921,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"DOCTYPE" NUMERIC(1,0), 
 	"NAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FCTGOODS
 --------------------------------------------------------
@@ -2968,7 +2943,7 @@
 	"OKPD_NAME" VARCHAR(1000 ), 
 	"OKPD_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FCTGOODSPROP
 --------------------------------------------------------
@@ -2980,7 +2955,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(512 ), 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FETCHMODE
 --------------------------------------------------------
@@ -2992,7 +2967,7 @@
 	"PACKET_SIZE" NUMERIC(18,0), 
 	"MAX_SIZE" NUMERIC(18,0), 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FGROUP
 --------------------------------------------------------
@@ -3008,8 +2983,7 @@
 	"FG_VERSION" NUMERIC(18,0), 
 	"FG_DATE" TIMESTAMP , 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 0
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table FGROUPATTACH
 --------------------------------------------------------
@@ -3020,8 +2994,7 @@
 	"DOCATTACH_ID" NUMERIC(15,0), 
 	"FGROUP_ID" NUMERIC(15,0), 
 	"DATA" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table FGROUPHEADER
 --------------------------------------------------------
@@ -3035,7 +3008,7 @@
 	"GROUP_TYPE" NUMERIC(1,0) DEFAULT 0, 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"SUBSYSTEM" NUMERIC(18,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FILEFOLDER
 --------------------------------------------------------
@@ -3045,7 +3018,7 @@
 	"FOLDER" VARCHAR(32 ), 
 	"DEVICE_NAME" VARCHAR(25 ) DEFAULT 'defaultDevice', 
 	"STORAGE_NAME" VARCHAR(25 ) DEFAULT 'UNKNOWN'
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FINSRC
 --------------------------------------------------------
@@ -3062,7 +3035,7 @@
 	"OOSKEY" VARCHAR(100 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1, 
 	"OKTMO" VARCHAR(20 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FINSRCSATISFY
 --------------------------------------------------------
@@ -3073,7 +3046,7 @@
 	"FINYEAR" NUMERIC(4,0), 
 	"FINSRCSELECTEDYEARID" NUMERIC(15,0), 
 	"FINSRCNEXTYEARID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FORMATCONVERTER
 --------------------------------------------------------
@@ -3084,7 +3057,7 @@
 	"NAME" VARCHAR(50 ), 
 	"CLASSNAME" VARCHAR(100 ), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCAT
 --------------------------------------------------------
@@ -3094,7 +3067,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(50 ), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCDOCUMENT
 --------------------------------------------------------
@@ -3102,7 +3075,7 @@
   CREATE TABLE "FUNCDOCUMENT" 
    (	"FUNUNIT_ID" NUMERIC(15,0), 
 	"DOCUMENTCLASS_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCMODULE
 --------------------------------------------------------
@@ -3110,7 +3083,7 @@
   CREATE TABLE "FUNCMODULE" 
    (	"FUNUNIT_ID" NUMERIC(15,0), 
 	"MODULENAME" VARCHAR(20 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCOBJECT
 --------------------------------------------------------
@@ -3118,7 +3091,7 @@
   CREATE TABLE "FUNCOBJECT" 
    (	"FUNUNIT_ID" NUMERIC(15,0), 
 	"CLIENTOBJECT_NAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCPROCESSOR
 --------------------------------------------------------
@@ -3127,7 +3100,7 @@
    (	"FUNUNIT_ID" NUMERIC(15,0), 
 	"SERVERPROCESSOR_NAME" VARCHAR(50 ), 
 	"ACCESS_MODE" NUMERIC(15,0) DEFAULT 3
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCPROVIDER
 --------------------------------------------------------
@@ -3135,7 +3108,7 @@
   CREATE TABLE "FUNCPROVIDER" 
    (	"FUNUNIT_ID" NUMERIC(15,0), 
 	"SERVERPROVIDER_NAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCREFERENCE
 --------------------------------------------------------
@@ -3144,7 +3117,7 @@
    (	"FUNUNIT_ID" NUMERIC(15,0), 
 	"REF_NAME" VARCHAR(50 ), 
 	"ACCESS_MODE" NUMERIC(15,0) DEFAULT 3
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCUNIT
 --------------------------------------------------------
@@ -3153,7 +3126,7 @@
    (	"FUNUNIT_ID" NUMERIC(15,0), 
 	"FUNUNIT_NAME" VARCHAR(50 ), 
 	"ACCESS_MODE" NUMERIC(15,0) DEFAULT 3
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNUNIT
 --------------------------------------------------------
@@ -3166,7 +3139,7 @@
 	"CAPTION" VARCHAR(100 ), 
 	"SUBTYPE" NUMERIC(18,0) DEFAULT 0, 
 	"APP_ID" NUMERIC(15,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GCREGISTER
 --------------------------------------------------------
@@ -3178,8 +3151,7 @@
 	"ATTACH_NAME" VARCHAR(100 ), 
 	"ATTACH_DATA" BLOB, 
 	"CAPTION" VARCHAR(255 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table GOODS
 --------------------------------------------------------
@@ -3194,7 +3166,7 @@
 	"OKP_CODE" VARCHAR(16 ), 
 	"IS_ACTUAL" NUMERIC(1,0) DEFAULT 1, 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSBAN
 --------------------------------------------------------
@@ -3208,7 +3180,7 @@
 	"BAN_DESCRIPTION" VARCHAR(1000 ), 
 	"IS223FZ" NUMERIC(1,0) DEFAULT 0, 
 	"CONTROL_MODE" NUMERIC(1,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSBANGOODSOKPD
 --------------------------------------------------------
@@ -3218,7 +3190,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"GOODSOKPD_ID" NUMERIC(15,0), 
 	"GOODSBAN_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSBANPURCHASEMODE
 --------------------------------------------------------
@@ -3228,7 +3200,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"PURCHASEMODE_ID" NUMERIC(15,0), 
 	"GOODSBAN_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSBRANCH
 --------------------------------------------------------
@@ -3238,7 +3210,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(512 ), 
 	"BRANCHTYPE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSGROUP
 --------------------------------------------------------
@@ -3262,7 +3234,7 @@
 	"NOTFORPLAN" NUMERIC(1,0) DEFAULT 0, 
 	"OKPD_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSGROUPDOCDETAIL
 --------------------------------------------------------
@@ -3274,7 +3246,7 @@
 	"GROUPCODE" VARCHAR(20 ), 
 	"OKDP_CODE" VARCHAR(20 ), 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSGROUPPURCHASEMODE
 --------------------------------------------------------
@@ -3284,7 +3256,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"PURCHASEMODE_ID" NUMERIC(15,0), 
 	"GOODSGROUP_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSGROUP_TREE
 --------------------------------------------------------
@@ -3292,7 +3264,7 @@
   CREATE TABLE "GOODSGROUP_TREE" 
    (	"GROUP_ID" NUMERIC(15,0), 
 	"TREE" VARCHAR(252 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSOKDP
 --------------------------------------------------------
@@ -3310,7 +3282,7 @@
 	"INVALIDPREFERENCE" NUMERIC(1,0) DEFAULT 0, 
 	"OKVED_ID" NUMERIC(15,0), 
 	"PARENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSOKDPCOUNTRYPREF
 --------------------------------------------------------
@@ -3320,7 +3292,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"COUNTRY_ID" NUMERIC(15,0), 
 	"GOODSOKDP_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSOKDPPURCHASEMODE
 --------------------------------------------------------
@@ -3330,7 +3302,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"PURCHASEMODE_ID" NUMERIC(15,0), 
 	"GOODSOKDP_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSOKPD
 --------------------------------------------------------
@@ -3349,7 +3321,7 @@
 	"ONEVENDORUUIS" NUMERIC(1,0) DEFAULT 0, 
 	"PARENT_ID" NUMERIC(15,0), 
 	"CLASSIFIER" NUMERIC(1,0) DEFAULT 2
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSOKPDCOUNTRYPREF
 --------------------------------------------------------
@@ -3359,7 +3331,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"COUNTRY_ID" NUMERIC(15,0), 
 	"GOODSOKPD_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSOKPDPURCHASEMODE
 --------------------------------------------------------
@@ -3369,7 +3341,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"PURCHASEMODE_ID" NUMERIC(15,0), 
 	"GOODSOKPD_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSOKVED
 --------------------------------------------------------
@@ -3386,7 +3358,7 @@
 	"PARENT_ID" NUMERIC(15,0), 
 	"CLASSIFIER" NUMERIC(1,0) DEFAULT 2, 
 	"OOSKEY" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSPRICE
 --------------------------------------------------------
@@ -3397,7 +3369,7 @@
 	"GOODS_ID" NUMERIC(15,0), 
 	"DT" DATE, 
 	"PRICE" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSPROP
 --------------------------------------------------------
@@ -3408,7 +3380,7 @@
 	"SEQORDER" NUMERIC(2,0), 
 	"PROPTYPE" NUMERIC(1,0) DEFAULT 0, 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GRANTINVESTMENT
 --------------------------------------------------------
@@ -3423,7 +3395,7 @@
 	"GRANTTYPE" NUMERIC(4,0) DEFAULT 0, 
 	"FOREIGNKEY" VARCHAR(50 ), 
 	"FINYEAR" NUMERIC(4,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GROUPPROP
 --------------------------------------------------------
@@ -3438,7 +3410,7 @@
 	"ISREQUIRED" NUMERIC(15,0) DEFAULT 0, 
 	"DEFVALUE" VARCHAR(1500 ), 
 	"PROPTYPE_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GROUPPROPVALUE
 --------------------------------------------------------
@@ -3447,7 +3419,7 @@
    (	"GROUPPROP_ID" NUMERIC(15,0), 
 	"SEQORDER" NUMERIC(5,0), 
 	"CAPTION" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GROUPUNIT
 --------------------------------------------------------
@@ -3455,7 +3427,7 @@
   CREATE TABLE "GROUPUNIT" 
    (	"GROUP_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table HISTORYMODIFY
 --------------------------------------------------------
@@ -3469,8 +3441,7 @@
 	"modify" DATE, 
 	"REMARK" VARCHAR(255 ), 
 	"DATA" BLOB
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table INDUSTRYCODE
 --------------------------------------------------------
@@ -3485,7 +3456,7 @@
 	"CAPTION" VARCHAR(2000 ), 
 	"FOREIGNKEY" VARCHAR(50 ), 
 	"FINYEAR" NUMERIC(4,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table INSTITUTIONLINE
 --------------------------------------------------------
@@ -3505,7 +3476,7 @@
 	"PLANCHANGE_AMT2" NUMERIC(15,2) DEFAULT 0, 
 	"PLANCHANGE_AMT3" NUMERIC(15,2) DEFAULT 0, 
 	"KVR" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table INTERBUDGET
 --------------------------------------------------------
@@ -3519,7 +3490,7 @@
 	"FINYEAR" NUMERIC(4,0), 
 	"SYSTEMTYPE" NUMERIC(1,0) DEFAULT 0, 
 	"LINK_ADDRESS" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table INVBUDGETLINE
 --------------------------------------------------------
@@ -3549,7 +3520,7 @@
 	"LIABILITYEXPENSE_ID" NUMERIC(15,0), 
 	"INDUSTRYCODE_ID" NUMERIC(15,0), 
 	"GRANTINVESTMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table INVGOODS
 --------------------------------------------------------
@@ -3570,7 +3541,7 @@
 	"OKPD_NAME" VARCHAR(1000 ), 
 	"OKPD_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table INVGOODSPROP
 --------------------------------------------------------
@@ -3582,7 +3553,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(512 ), 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table INVOICEDOC
 --------------------------------------------------------
@@ -3640,7 +3611,7 @@
 	"CONFIRSTNAME" VARCHAR(250 ), 
 	"CONPATRONYMIC" VARCHAR(250 ), 
 	"CONPROPFORM_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table JAVACLASS
 --------------------------------------------------------
@@ -3652,8 +3623,7 @@
 	"STATE" NUMERIC(1,0) DEFAULT 0, 
 	"SOURCE" BLOB SUB_TYPE TEXT, 
 	"DATA" BLOB
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table KBKLINEFIT
 --------------------------------------------------------
@@ -3686,7 +3656,7 @@
 	"CODE8_TO" VARCHAR(100 ), 
 	"CODE9_TO" VARCHAR(100 ), 
 	"CODE10_TO" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table KLADR
 --------------------------------------------------------
@@ -3705,7 +3675,7 @@
 	"CODE3" VARCHAR(3 ), 
 	"CODE4" VARCHAR(3 ), 
 	"CODE5" VARCHAR(2 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table KLADRSTREET
 --------------------------------------------------------
@@ -3724,7 +3694,7 @@
 	"CODE4" VARCHAR(3 ), 
 	"CODE5" VARCHAR(4 ), 
 	"CODE6" VARCHAR(2 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table LEDGER
 --------------------------------------------------------
@@ -3772,7 +3742,7 @@
 	"FACT_Q3" NUMERIC(15,2) DEFAULT 0, 
 	"FACT_Q4" NUMERIC(15,2) DEFAULT 0, 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table LIABILITYCREDENTIAL
 --------------------------------------------------------
@@ -3785,7 +3755,7 @@
 	"CODE" VARCHAR(100 ), 
 	"CAPTION" VARCHAR(4000 ), 
 	"DESCRIPTION" VARCHAR(1024 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table LIABILITYEXPENSE
 --------------------------------------------------------
@@ -3808,7 +3778,7 @@
 	"CODE8" VARCHAR(100 ), 
 	"CODE9" VARCHAR(100 ), 
 	"CODE10" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table LIABILITYEXPENSE_DOCLINES
 --------------------------------------------------------
@@ -3828,7 +3798,7 @@
 	"CODE8" VARCHAR(100 ), 
 	"CODE9" VARCHAR(100 ), 
 	"CODE10" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table LIABILITYGROUP
 --------------------------------------------------------
@@ -3838,7 +3808,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(5 ), 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table LICTYPE
 --------------------------------------------------------
@@ -3850,7 +3820,7 @@
 	"DESCRIPTION" VARCHAR(255 ), 
 	"ISSUER" VARCHAR(255 ), 
 	"ACTIVITYKIND" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MAIL
 --------------------------------------------------------
@@ -3866,8 +3836,7 @@
 	"ARCHIVE_DATE" DATE, 
 	"READ_DATE" DATE, 
 	"STATUS" NUMERIC(1,0) DEFAULT 0
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table MAILATTACH
 --------------------------------------------------------
@@ -3881,7 +3850,7 @@
 	"DESCRIPTION" VARCHAR(255 ), 
 	"AUTHOR" NUMERIC(15,0), 
 	"ACTION_DATE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MAILRECEIVERGROUP
 --------------------------------------------------------
@@ -3891,7 +3860,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(255 ), 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MAILRECEIVERGROUP_RECEIVER
 --------------------------------------------------------
@@ -3901,7 +3870,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"MAILRECEIVERGROUP_ID" NUMERIC(15,0), 
 	"SYSUSER_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MENU
 --------------------------------------------------------
@@ -3911,7 +3880,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(50 ), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MENUITEM
 --------------------------------------------------------
@@ -3928,7 +3897,7 @@
 	"OBJECT_PARAMS" VARCHAR(300 ), 
 	"PARENT_ID" NUMERIC(15,0), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MENUITEMWEB
 --------------------------------------------------------
@@ -3945,7 +3914,7 @@
 	"OBJECT_PARAMS" VARCHAR(300 ), 
 	"PARENT_ID" NUMERIC(15,0), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table METACONSTRAINT
 --------------------------------------------------------
@@ -3958,7 +3927,7 @@
 	"CONSTRAINT_TYPE" NUMERIC(15,0), 
 	"FOREIGNOBJECT_NAME" VARCHAR(250 ), 
 	"EXPRESSION" VARCHAR(1024 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table METAOBJECT
 --------------------------------------------------------
@@ -3969,7 +3938,7 @@
 	"NAME" VARCHAR(128 ), 
 	"TABLE_NAME" VARCHAR(255 ), 
 	"SUBSYSTEM" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MSG
 --------------------------------------------------------
@@ -3997,8 +3966,7 @@
 	"BUDGET_ID" NUMERIC(15,0), 
 	"GUID" VARCHAR(100 ), 
 	"RPL_OBJ_NAME" VARCHAR(255 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table MSGLINKTYPE
 --------------------------------------------------------
@@ -4009,7 +3977,7 @@
 	"CAPTION" VARCHAR(100 ), 
 	"CLASSNAME" VARCHAR(100 ), 
 	"EXAMPLE" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MSGQUEUE
 --------------------------------------------------------
@@ -4022,7 +3990,7 @@
 	"NAME" VARCHAR(50 ), 
 	"SENT_NUMBER" NUMERIC(9,0) DEFAULT 0, 
 	"PROCESSED_NUMBER" NUMERIC(9,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MSGSITE
 --------------------------------------------------------
@@ -4037,7 +4005,7 @@
 	"REPLICATOR_VERSION" NUMERIC(15,0) DEFAULT 0, 
 	"SPLIT_QUEUES_BY_OBJECT" NUMERIC(1,0) DEFAULT 0, 
 	"SPLIT_QUEUES_BY_BUDGET" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MSGSITEEXCHANGE
 --------------------------------------------------------
@@ -4045,7 +4013,7 @@
   CREATE TABLE "MSGSITEEXCHANGE" 
    (	"MSGSITE_ID" NUMERIC(15,0), 
 	"DOCEXCHANGESCHEME_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NECESSITY
 --------------------------------------------------------
@@ -4058,7 +4026,7 @@
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1, 
 	"CODE2" VARCHAR(100 ), 
 	"NECTYPE" NUMERIC(1,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NOTICEDOC
 --------------------------------------------------------
@@ -4093,8 +4061,7 @@
 	"ETP_ID" NUMERIC(15,0), 
 	"OOSKEY" VARCHAR(100 ), 
 	"SEND_DATE" DATE
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table NOTICEEMAILORG
 --------------------------------------------------------
@@ -4106,7 +4073,7 @@
 	"ORG_ID" NUMERIC(15,0), 
 	"ORGNAME" VARCHAR(2000 ), 
 	"EMAIL" VARCHAR(256 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NOTICEORG
 --------------------------------------------------------
@@ -4114,7 +4081,7 @@
   CREATE TABLE "NOTICEORG" 
    (	"NOTICEDOC_ID" NUMERIC(15,0), 
 	"ORG_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NOTIFYMSG
 --------------------------------------------------------
@@ -4134,8 +4101,7 @@
 	"DOCUMENT_ID" NUMERIC(15,0), 
 	"QUICKLY" NUMERIC(1,0) DEFAULT 0, 
 	"READED" NUMERIC(1,0) DEFAULT 0
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table NOTIFYMSGDOC
 --------------------------------------------------------
@@ -4146,7 +4112,7 @@
 	"CREATETIME" DATE, 
 	"NOTIFYMSGKIND" NUMERIC(15,0) DEFAULT 0, 
 	"PARAMHASH" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NOTIFYMSGEVENT
 --------------------------------------------------------
@@ -4155,7 +4121,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NOTIFYMSGGROUP
 --------------------------------------------------------
@@ -4164,7 +4130,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NOTIFYMSGRULE
 --------------------------------------------------------
@@ -4183,8 +4149,7 @@
 	"DOCFILTER" VARCHAR(255 ), 
 	"RECEIVERSFROMDOCFIELD" VARCHAR(255 ), 
 	"QUICKLY" NUMERIC(1,0) DEFAULT 0
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table NOTIFYMSGRULE_RECEIVER
 --------------------------------------------------------
@@ -4192,7 +4157,7 @@
   CREATE TABLE "NOTIFYMSGRULE_RECEIVER" 
    (	"NOTIFYMSGRULE_ID" NUMERIC(15,0), 
 	"PERSON_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NUMGENERATOR
 --------------------------------------------------------
@@ -4205,7 +4170,7 @@
 	"JAVACLASS_NAME" VARCHAR(100 ), 
 	"PARAMS" VARCHAR(255 ), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NUMPREFIX
 --------------------------------------------------------
@@ -4216,7 +4181,7 @@
 	"NUMGENERATOR_ID" NUMERIC(15,0), 
 	"SYSUSER_ID" NUMERIC(15,0), 
 	"PREFIX" VARCHAR(3 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NUMSEQUENCE
 --------------------------------------------------------
@@ -4229,7 +4194,7 @@
 	"CAPTION" VARCHAR(100 ), 
 	"TERM_KIND" NUMERIC(1,0) DEFAULT 0, 
 	"BUDGET_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NUMUSAGE
 --------------------------------------------------------
@@ -4239,7 +4204,7 @@
 	"PERIOD_START" DATE, 
 	"NUM_VALUE" NUMERIC(18,0), 
 	"USE_COUNT" NUMERIC(9,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFFERDOC
 --------------------------------------------------------
@@ -4306,8 +4271,7 @@
 	"VENDORLASTNAME" VARCHAR(250 ), 
 	"VENDORFIRSTNAME" VARCHAR(250 ), 
 	"VENDORPATRONYMIC" VARCHAR(250 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table OFRCRITERIONLINEVAL
 --------------------------------------------------------
@@ -4319,7 +4283,7 @@
 	"CAPTION" VARCHAR(2000 ), 
 	"VAL" VARCHAR(2000 ), 
 	"ISFINALOFFER" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRCRITERIONVAL
 --------------------------------------------------------
@@ -4336,7 +4300,7 @@
 	"CALCMODE" NUMERIC(1,0), 
 	"ISFINALOFFER" NUMERIC(1,0) DEFAULT 0, 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRDECREASON
 --------------------------------------------------------
@@ -4349,7 +4313,7 @@
 	"OFRRETREASONCODE" VARCHAR(20 ), 
 	"OFRRETREASON_ID" NUMERIC(15,0), 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRDOCREQVAL
 --------------------------------------------------------
@@ -4364,7 +4328,7 @@
 	"ISREQUIRED" NUMERIC(1,0) DEFAULT 1, 
 	"REMARK" VARCHAR(2000 ), 
 	"TYPE" NUMERIC(2,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRGOODS
 --------------------------------------------------------
@@ -4385,7 +4349,7 @@
 	"OKPD_NAME" VARCHAR(1000 ), 
 	"OKPD_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRGOODSPROP
 --------------------------------------------------------
@@ -4397,7 +4361,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(512 ), 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRGROUPPROP
 --------------------------------------------------------
@@ -4413,7 +4377,7 @@
 	"DEFVALUE" VARCHAR(1500 ), 
 	"PROPTYPE_ID" NUMERIC(15,0), 
 	"GROUPPROP_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRGROUPPROPVALUE
 --------------------------------------------------------
@@ -4423,7 +4387,7 @@
 	"GROUPPROPPOS" NUMERIC(15,0), 
 	"SEQORDER" NUMERIC(5,0), 
 	"CAPTION" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRLOT
 --------------------------------------------------------
@@ -4444,7 +4408,7 @@
 	"ISLOTDECLINED" NUMERIC(1,0) DEFAULT 0, 
 	"ISLOTREREGISTERED" NUMERIC(1,0) DEFAULT 0, 
 	"OOS_DOC_NUMBER" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRORGSTATUS
 --------------------------------------------------------
@@ -4452,7 +4416,7 @@
   CREATE TABLE "OFRORGSTATUS" 
    (	"OFFER_ID" NUMERIC(15,0), 
 	"ORGSTATUS_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRPLACE
 --------------------------------------------------------
@@ -4470,7 +4434,7 @@
 	"SUPPLYAMOUNT" NUMERIC(15,2) DEFAULT 0, 
 	"USEAMOUNT" NUMERIC(1,0) DEFAULT 0, 
 	"CALCPRICE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRQUALREQVAL
 --------------------------------------------------------
@@ -4485,7 +4449,7 @@
 	"QMINVALUE" NUMERIC(15,4), 
 	"QMAXVALUE" NUMERIC(15,4), 
 	"ISSATISFY" NUMERIC(1,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRREQREASON
 --------------------------------------------------------
@@ -4497,7 +4461,7 @@
 	"DESCRIPTION" VARCHAR(2000 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1, 
 	"BUDGETTYPE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRRETREASON
 --------------------------------------------------------
@@ -4511,7 +4475,7 @@
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1, 
 	"PURCHASEMODE_ID" NUMERIC(15,0), 
 	"OOSKEY" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRSUPPLYSHEDULE
 --------------------------------------------------------
@@ -4524,7 +4488,7 @@
 	"QTY" NUMERIC(15,4) DEFAULT 0, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0, 
 	"LOTPOS" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OIDREF
 --------------------------------------------------------
@@ -4534,7 +4498,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"OID" VARCHAR(100 ), 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OKTMO
 --------------------------------------------------------
@@ -4547,7 +4511,7 @@
 	"NAME" VARCHAR(500 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 0, 
 	"PARENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OLAPQUERY
 --------------------------------------------------------
@@ -4556,7 +4520,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSAPPLICATION
 --------------------------------------------------------
@@ -4599,7 +4563,7 @@
 	"GENERALPREFS" NUMERIC(15,2), 
 	"GOODSDELIVERED" VARCHAR(4000 ), 
 	"EXPENSESINFO" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSCONTRACT
 --------------------------------------------------------
@@ -4632,7 +4596,7 @@
 	"BUDGETNAME" VARCHAR(2000 ), 
 	"BUDGETLEVEL" VARCHAR(2 ), 
 	"PLACINGTYPE" NUMERIC(1,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSCONTRACTPRODUCTS
 --------------------------------------------------------
@@ -4650,8 +4614,7 @@
 	"QUANTITY" NUMERIC(15,4) DEFAULT 0, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0, 
 	"NAME" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table OOSCONTRACTSUPPLIER
 --------------------------------------------------------
@@ -4677,8 +4640,7 @@
 	"ADDITIONALINFO" VARCHAR(4000 ), 
 	"STATUS" VARCHAR(2 ), 
 	"FACTUALADDRESS" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table OOSCUSTOMERREQUIREMENT
 --------------------------------------------------------
@@ -4708,7 +4670,7 @@
 	"QUANTITYCONTRACTSPNIR" NUMERIC(15,0), 
 	"FINANCESOURCE" VARCHAR(2000 ), 
 	"PAYMENTCONDITION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSNOTIFICATION
 --------------------------------------------------------
@@ -4769,7 +4731,7 @@
 	"SIGNTERM" NUMERIC(15,0), 
 	"ISACTUAL" NUMERIC(1,0) DEFAULT 0, 
 	"NOTIFICATIONTYPE" VARCHAR(2 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSNOTIFICATIONLOT
 --------------------------------------------------------
@@ -4781,7 +4743,7 @@
 	"CUSTOMERCOUNT" NUMERIC(15,0), 
 	"SUBJECT" VARCHAR(2000 ), 
 	"ISENTERPRISE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSORGANIZATION
 --------------------------------------------------------
@@ -4840,7 +4802,7 @@
 	"SUBORDINATIONTYPEDESCRIPTION" VARCHAR(200 ), 
 	"URL" VARCHAR(40 ), 
 	"TIMEZONE" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSORGANIZATIONROLE
 --------------------------------------------------------
@@ -4848,7 +4810,7 @@
   CREATE TABLE "OOSORGANIZATIONROLE" 
    (	"REGNUMBER" VARCHAR(11 ), 
 	"ORGROLE" VARCHAR(2 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSORGROLE
 --------------------------------------------------------
@@ -4858,7 +4820,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"CODE" VARCHAR(10 ), 
 	"CAPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSORGROLES
 --------------------------------------------------------
@@ -4866,7 +4828,7 @@
   CREATE TABLE "OOSORGROLES" 
    (	"ORG_ID" NUMERIC(15,0), 
 	"ROLECODE" VARCHAR(10 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSPRODUCTS
 --------------------------------------------------------
@@ -4876,7 +4838,7 @@
 	"LOT_ID" NUMERIC(15,0), 
 	"CODE" VARCHAR(20 ), 
 	"NAME" VARCHAR(1024 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSPROTOCOL
 --------------------------------------------------------
@@ -4896,7 +4858,7 @@
 	"COMMISSIONNAME" VARCHAR(2000 ), 
 	"LOTCOUNT" NUMERIC(15,0), 
 	"ISACTUAL" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSPROTOCOLLOT
 --------------------------------------------------------
@@ -4909,7 +4871,7 @@
 	"LOTNUMBER" NUMERIC(15,0), 
 	"APPLICATIONCOUNT" NUMERIC(15,0), 
 	"ALLABSENT" NUMERIC(1,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOS223PURCHASENOTICEINFO
 --------------------------------------------------------
@@ -4919,7 +4881,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"GUID" VARCHAR(36 ), 
 	"REGISTRATIONNUMBER" NUMERIC(11,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOS223PURCHNOTICELOTINFO
 --------------------------------------------------------
@@ -4930,7 +4892,7 @@
 	"OOS223PURCHASENOTICEINFO_ID" NUMERIC(15,0), 
 	"GUID" VARCHAR(36 ), 
 	"ORDINALNUMBER" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OPERTYPE
 --------------------------------------------------------
@@ -4939,7 +4901,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORDERDOC
 --------------------------------------------------------
@@ -5141,8 +5103,7 @@
 	"RECIPIENT_ID" NUMERIC(15,0), 
 	"RECIPIENTNAME" BLOB SUB_TYPE TEXT, 
 	"PARENTLOTNUMBER" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table ORDERSUMMARY
 --------------------------------------------------------
@@ -5161,7 +5122,7 @@
 	"RESULT" NUMERIC(15,0) DEFAULT 0, 
 	"LASTPHASECODE" NUMERIC(1,0) DEFAULT 0, 
 	"LASTPHASEDATE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORG
 --------------------------------------------------------
@@ -5274,8 +5235,7 @@
 	"KLARD_LOCALITYSOCR" VARCHAR(10 ), 
 	"KLARD_STREETSOCR" VARCHAR(10 ), 
 	"OKVED_ID" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table ORGACCOUNT
 --------------------------------------------------------
@@ -5301,7 +5261,7 @@
 	"OOSFLAG" NUMERIC(1,0) DEFAULT 0, 
 	"RECIPIENT_DESCRIPTION" VARCHAR(2000 ), 
 	"ISCONTRACTOR" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGACCTYPE
 --------------------------------------------------------
@@ -5310,7 +5270,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGADDKPP
 --------------------------------------------------------
@@ -5324,7 +5284,7 @@
 	"EXCLUDE_DATE" DATE, 
 	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGATTACH
 --------------------------------------------------------
@@ -5334,8 +5294,7 @@
 	"ORG_ID" NUMERIC(15,0), 
 	"ATTACH_NAME" VARCHAR(100 ), 
 	"ATTACH_DATA" BLOB
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table ORGCHILD
 --------------------------------------------------------
@@ -5343,7 +5302,7 @@
   CREATE TABLE "ORGCHILD" 
    (	"ORG_ID" NUMERIC(15,0), 
 	"CHILD_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGCONCCONT
 --------------------------------------------------------
@@ -5354,7 +5313,7 @@
 	"ORG_ID" NUMERIC(15,0), 
 	"CONTRACT_YEAR" NUMERIC(4,0), 
 	"CONTRACT_COUNT" NUMERIC(15,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGETP
 --------------------------------------------------------
@@ -5371,7 +5330,7 @@
 	"ETPUSERNAME" VARCHAR(100 ), 
 	"ETPPASSWORD" VARCHAR(100 ), 
 	"SYSUSER_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGFORM
 --------------------------------------------------------
@@ -5383,7 +5342,7 @@
 	"DESCRIPTION" VARCHAR(2000 ), 
 	"OOSCODE" VARCHAR(10 ), 
 	"ISACTUAL" NUMERIC(1,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGGOODSGROUP
 --------------------------------------------------------
@@ -5400,7 +5359,7 @@
 	"SECOND_IGNORED" NUMERIC(1,0), 
 	"SECOND_DOC_NUMBER" VARCHAR(20 ), 
 	"SECOND_DATE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGHEARING
 --------------------------------------------------------
@@ -5414,7 +5373,7 @@
 	"CAUSE" VARCHAR(255 ), 
 	"SUBJECT" VARCHAR(255 ), 
 	"AMOUNT" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGLICENCE
 --------------------------------------------------------
@@ -5428,7 +5387,7 @@
 	"LICENCE_NUMBER" VARCHAR(30 ), 
 	"HASHARDCOPY" NUMERIC(15,0) DEFAULT 0, 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGOOS223FZUSER
 --------------------------------------------------------
@@ -5440,7 +5399,7 @@
 	"SYSUSER_ID" NUMERIC(15,0), 
 	"LOGIN" VARCHAR(100 ), 
 	"PSWD" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGPERSONAL
 --------------------------------------------------------
@@ -5448,7 +5407,7 @@
   CREATE TABLE "ORGPERSONAL" 
    (	"ORG_ID" NUMERIC(15,0), 
 	"PERSONAL_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGPERSONALRESP
 --------------------------------------------------------
@@ -5457,7 +5416,7 @@
    (	"ORG_ID" NUMERIC(15,0), 
 	"PERSONAL_ID" NUMERIC(15,0), 
 	"RESPONSIBILITY_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGROLE
 --------------------------------------------------------
@@ -5466,7 +5425,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGROLES
 --------------------------------------------------------
@@ -5474,7 +5433,7 @@
   CREATE TABLE "ORGROLES" 
    (	"ORG_ID" NUMERIC(15,0), 
 	"ORGROLE_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGSELSTATUS
 --------------------------------------------------------
@@ -5482,7 +5441,7 @@
   CREATE TABLE "ORGSELSTATUS" 
    (	"ORG_ID" NUMERIC(15,0), 
 	"ORGSTATUS_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGSTATUS
 --------------------------------------------------------
@@ -5491,7 +5450,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(300 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGTITLE
 --------------------------------------------------------
@@ -5501,7 +5460,7 @@
 	"DTBEGIN" DATE, 
 	"DTEND" DATE, 
 	"DESCRIPTION" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGTURNOVER
 --------------------------------------------------------
@@ -5511,7 +5470,7 @@
 	"YR" NUMERIC(4,0), 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0, 
 	"CURRENCY_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGUNFAIR
 --------------------------------------------------------
@@ -5533,8 +5492,7 @@
 	"UNFAIRDATE" DATE, 
 	"CONTRACTDOCNUMBER" VARCHAR(30 ), 
 	"PURCHASEMODE_ID" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table PACKTYPE
 --------------------------------------------------------
@@ -5543,7 +5501,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PANEL
 --------------------------------------------------------
@@ -5553,7 +5511,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(50 ), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PANELITEM
 --------------------------------------------------------
@@ -5570,8 +5528,7 @@
 	"OBJECT_PARAMS" VARCHAR(300 ), 
 	"IMAGE" BLOB, 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table PAYCONDITION
 --------------------------------------------------------
@@ -5583,7 +5540,7 @@
 	"DESCRIPTION" VARCHAR(2000 ), 
 	"SYSTEM_FLAG" NUMERIC(1,0) DEFAULT 0, 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PERSON
 --------------------------------------------------------
@@ -5594,7 +5551,7 @@
 	"FIO" VARCHAR(255 ), 
 	"PHONE" VARCHAR(255 ), 
 	"EMAIL" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PERSONAL
 --------------------------------------------------------
@@ -5617,7 +5574,7 @@
 	"FAXCITYCODE" VARCHAR(15 ), 
 	"FAXEXTENSION" VARCHAR(15 ), 
 	"IS_ACTUAL" NUMERIC(1,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLACEMENTFEATURE
 --------------------------------------------------------
@@ -5633,7 +5590,7 @@
 	"ACTUAL" NUMERIC(1,0) DEFAULT 0, 
 	"USETENDERPLANS" NUMERIC(1,0) DEFAULT 1, 
 	"BUDGETTYPE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLACEMENTFEATUREPM
 --------------------------------------------------------
@@ -5643,7 +5600,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"PLACEMENTFEATURE_ID" NUMERIC(15,0), 
 	"PURCHASEMODE_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLACINGWAY
 --------------------------------------------------------
@@ -5656,7 +5613,7 @@
 	"CODE" VARCHAR(50 ), 
 	"PURCHASEMODE_ID" NUMERIC(15,0), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLANDOC
 --------------------------------------------------------
@@ -5685,7 +5642,7 @@
 	"RECIPIENT_NAME" VARCHAR(2000 ), 
 	"NECESSITY_ID" NUMERIC(15,0) DEFAULT 0, 
 	"NECESSITY_DESCRIPTION" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLANPOSITIONCHANGEREASON
 --------------------------------------------------------
@@ -5697,7 +5654,7 @@
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1, 
 	"BUDGETTYPE" NUMERIC(1,0) DEFAULT 0, 
 	"OOSKEY" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLANPOSITIONNUMBERERROR
 --------------------------------------------------------
@@ -5705,8 +5662,7 @@
   CREATE TABLE "PLANPOSITIONNUMBERERROR" 
    (	"DOCUMENT_ID" NUMERIC(15,0), 
 	"TEXT" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table PLANREQUEST
 --------------------------------------------------------
@@ -5715,7 +5671,7 @@
    (	"REQUEST_ID" NUMERIC(15,0), 
 	"DOC_ID" NUMERIC(15,0), 
 	"DOCUMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2ARRANGEMENT
 --------------------------------------------------------
@@ -5768,7 +5724,7 @@
 	"QUANTITYUNDEFINED" NUMERIC(1,0) DEFAULT 0, 
 	"PUBLICDISCUSSCACHE_ID" NUMERIC(15,0), 
 	"PREFERENCEGROUP_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2CHANGEREASON
 --------------------------------------------------------
@@ -5778,7 +5734,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(1000 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2DAILYTOTALS
 --------------------------------------------------------
@@ -5797,7 +5753,7 @@
 	"CONTRACTEXECDATE" DATE, 
 	"ISENTERPRISE" NUMERIC(1,0) DEFAULT 0, 
 	"ISSMALL" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2DOC
 --------------------------------------------------------
@@ -5833,7 +5789,7 @@
 	"OWNERNAME" VARCHAR(2000 ), 
 	"RECIPIENT_ID" NUMERIC(15,0), 
 	"RESPPERSONAL_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2DOCCHILD
 --------------------------------------------------------
@@ -5842,7 +5798,7 @@
    (	"PLAN2DOC_ID" NUMERIC(15,0), 
 	"DOC_ID" NUMERIC(15,0), 
 	"DOCUMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2GOODS
 --------------------------------------------------------
@@ -5901,7 +5857,7 @@
 	"OKPD_ID" NUMERIC(15,0), 
 	"OKVED_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2LEDGER
 --------------------------------------------------------
@@ -5944,7 +5900,7 @@
 	"AMOUNT_Q3" NUMERIC(15,2) DEFAULT 0, 
 	"AMOUNT_Q4" NUMERIC(15,2) DEFAULT 0, 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2OOSEXTNUMBER
 --------------------------------------------------------
@@ -5956,7 +5912,7 @@
 	"PLANPOSITIONNUMBER" VARCHAR(100 ), 
 	"POSITIONNUMBER" VARCHAR(30 ), 
 	"EXTNUMBER" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2OOSFEATURE
 --------------------------------------------------------
@@ -5971,7 +5927,7 @@
 	"TYPE" VARCHAR(1 ), 
 	"PREFVALUE" NUMERIC(15,2) DEFAULT 0, 
 	"CONTENT" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2OOSKBK
 --------------------------------------------------------
@@ -5987,7 +5943,7 @@
 	"CODE5" VARCHAR(100 ), 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0, 
 	"FUTUREAMOUNT" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2OOSKBKYEAR
 --------------------------------------------------------
@@ -5998,7 +5954,7 @@
 	"PLAN2OOSKBK_ID" NUMERIC(15,0), 
 	"PLANYEAR" NUMERIC(4,0), 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2OOSOKVED
 --------------------------------------------------------
@@ -6010,7 +5966,7 @@
 	"CODE" VARCHAR(20 ), 
 	"NAME" VARCHAR(1000 ), 
 	"OKVED_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2OOSPOSITION
 --------------------------------------------------------
@@ -6058,8 +6014,7 @@
 	"LEGALACTREQUISITES" VARCHAR(2000 ), 
 	"CONTRACTPRICEFEATURES" VARCHAR(2000 ), 
 	"FEATURES111" NUMERIC(1,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table PLAN2OOSPRODUCT
 --------------------------------------------------------
@@ -6082,7 +6037,7 @@
 	"UNITNAME" VARCHAR(50 ), 
 	"OKVED" VARCHAR(20 ), 
 	"OKVED_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3DOC
 --------------------------------------------------------
@@ -6155,7 +6110,7 @@
 	"SGOZENTERPRISEPERCENT" NUMERIC(15,2) DEFAULT NULL, 
 	"SGOZENTMANUALAMOUNT" NUMERIC(15,2), 
 	"SGOZQUOTMANUALAMOUNT" NUMERIC(15,2)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3DOCCHILD
 --------------------------------------------------------
@@ -6164,7 +6119,7 @@
    (	"PLAN3DOC_ID" NUMERIC(15,0), 
 	"DOC_ID" NUMERIC(15,0), 
 	"DOCUMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3PURCHASEDOC
 --------------------------------------------------------
@@ -6264,7 +6219,7 @@
 	"LEGALACTREQUISITES" VARCHAR(2000 ), 
 	"CONTRACTPRICEFEATURES" VARCHAR(2000 ), 
 	"PARENT_PURCHASECODE" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3PURCHASEFEATURE
 --------------------------------------------------------
@@ -6275,7 +6230,7 @@
 	"PLACEMENTFEATURE_ID" NUMERIC(15,0), 
 	"PREFVALUE" NUMERIC(15,2) DEFAULT 0, 
 	"CONTENT" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3PURCHASEGOODS
 --------------------------------------------------------
@@ -6309,7 +6264,7 @@
 	"OKPD_ID" NUMERIC(15,0), 
 	"OKVED_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3PURCHASEGOODSOKVED
 --------------------------------------------------------
@@ -6320,7 +6275,7 @@
 	"OKVED" VARCHAR(20 ), 
 	"OKVED_NAME" VARCHAR(1000 ), 
 	"OKVED_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3PURCHASEGOODSPROP
 --------------------------------------------------------
@@ -6332,7 +6287,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(512 ), 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3PURCHASELINE
 --------------------------------------------------------
@@ -6364,7 +6319,7 @@
 	"AMOUNT_2YEAR" NUMERIC(15,2) DEFAULT 0, 
 	"AMOUNT_3YEAR" NUMERIC(15,2) DEFAULT 0, 
 	"AMOUNT_FUTURE" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3PURCHASELINESHEDULE
 --------------------------------------------------------
@@ -6374,7 +6329,7 @@
 	"PLAN3PURCHASELINEPOS" NUMERIC(15,0), 
 	"FINYEAR" NUMERIC(4,0), 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLGOODS
 --------------------------------------------------------
@@ -6387,7 +6342,7 @@
 	"NAME" VARCHAR(512 ), 
 	"GROUPCODE" VARCHAR(20 ), 
 	"ORGID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLGOODSPROP
 --------------------------------------------------------
@@ -6398,7 +6353,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(512 ), 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLNBUDGETLINE
 --------------------------------------------------------
@@ -6428,7 +6383,7 @@
 	"AMOUNT2" NUMERIC(15,2) DEFAULT 0, 
 	"AMOUNT3" NUMERIC(15,2) DEFAULT 0, 
 	"AMOUNT4" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLNGOODS
 --------------------------------------------------------
@@ -6461,7 +6416,7 @@
 	"OKPD_ID" NUMERIC(15,0), 
 	"OKVED_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLNSHEDULE
 --------------------------------------------------------
@@ -6478,7 +6433,7 @@
 	"AMOUNT2" NUMERIC(15,2) DEFAULT 0, 
 	"AMOUNT3" NUMERIC(15,2) DEFAULT 0, 
 	"AMOUNT4" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PREFERENCEGROUP
 --------------------------------------------------------
@@ -6490,7 +6445,7 @@
 	"CAPTION" VARCHAR(1000 ), 
 	"PURCHASEMODE_ID" NUMERIC(15,0), 
 	"BUDGETTYPE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PREFERENCEGROUPFEATURE
 --------------------------------------------------------
@@ -6502,7 +6457,7 @@
 	"PLACEMENTFEATURE_ID" NUMERIC(15,0), 
 	"PREFVALUE" NUMERIC(15,2) DEFAULT 0, 
 	"CONTENT" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PROCTREE
 --------------------------------------------------------
@@ -6517,7 +6472,7 @@
 	"SCHEMA_ACT" VARCHAR(30 ), 
 	"PARAMS" VARCHAR(300 ), 
 	"PARAMS_ONLY" NUMERIC(1,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PROCUREMENT
 --------------------------------------------------------
@@ -6533,7 +6488,7 @@
 	"REMARKS" VARCHAR(1000 ), 
 	"RESPPERSONAL_ID" NUMERIC(15,0), 
 	"COMMISSION_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PROPTYPE
 --------------------------------------------------------
@@ -6542,7 +6497,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(512 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PURCHASECARRY
 --------------------------------------------------------
@@ -6593,7 +6548,7 @@
 	"ISSMALL" NUMERIC(1,0) DEFAULT 0, 
 	"PLANVERSION" NUMERIC(1,0) DEFAULT 1, 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PURCHASEMETHOD
 --------------------------------------------------------
@@ -6607,7 +6562,7 @@
 	"NAME" VARCHAR(3000 ), 
 	"ELECTRONIC" NUMERIC(1,0), 
 	"CREATORORG_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PURCHASEMODE
 --------------------------------------------------------
@@ -6626,7 +6581,7 @@
 	"CODE_MINFIN_142N" NUMERIC(2,0), 
 	"OOS_CODE" VARCHAR(15 ), 
 	"OOS_TYPE" VARCHAR(15 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PURCHASEPLAN
 --------------------------------------------------------
@@ -6668,7 +6623,7 @@
 	"ENTAMOUNT10" NUMERIC(15,2) DEFAULT 0, 
 	"ENTAMOUNT11" NUMERIC(15,2) DEFAULT 0, 
 	"ENTAMOUNT12" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PURCHASEPLANDOC
 --------------------------------------------------------
@@ -6689,7 +6644,7 @@
 	"FOREIGN_KEY" VARCHAR(50 ), 
 	"CUSTOMER_ID" NUMERIC(15,0), 
 	"PLANYEAR" NUMERIC(4,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table QUALIFYSELECT
 --------------------------------------------------------
@@ -6700,7 +6655,7 @@
 	"QUALIFYREQPOS" NUMERIC(15,0), 
 	"COMPETITORPOS" NUMERIC(15,0), 
 	"SCORE" NUMERIC(15,4)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table QUALREQ
 --------------------------------------------------------
@@ -6712,7 +6667,7 @@
 	"DESCRIPTION" VARCHAR(1000 ), 
 	"PURCHASEMODE_ID" NUMERIC(15,0) DEFAULT 1, 
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RECOILDOC
 --------------------------------------------------------
@@ -6739,7 +6694,7 @@
 	"ISSMALL" NUMERIC(1,0) DEFAULT 0, 
 	"INVITATIONDATE" DATE, 
 	"DEALDATE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RECOILLINES
 --------------------------------------------------------
@@ -6770,7 +6725,7 @@
 	"RESERVEDAMOUNT" NUMERIC(15,2) DEFAULT 0, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0, 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REFATTACH
 --------------------------------------------------------
@@ -6784,8 +6739,7 @@
 	"ATTACH_DATA" BLOB, 
 	"AUTHOR" NUMERIC(15,0), 
 	"ACTION_DATE" DATE
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table REFDOC
 --------------------------------------------------------
@@ -6793,7 +6747,7 @@
   CREATE TABLE "REFDOC" 
    (	"DOCUMENT_ID" NUMERIC(15,0), 
 	"REF_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REFERENCECLASS
 --------------------------------------------------------
@@ -6808,7 +6762,7 @@
 	"TABLE_NAME" VARCHAR(255 ), 
 	"CONTROL_CLASS_NAME" VARCHAR(255 ), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REFINANCINGRATE
 --------------------------------------------------------
@@ -6819,7 +6773,7 @@
 	"START_DATE" DATE, 
 	"RATE" NUMERIC(15,2) DEFAULT 0, 
 	"LAW_ACT" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REFJOURNAL
 --------------------------------------------------------
@@ -6832,8 +6786,7 @@
 	"TASKJOURNAL_ID" NUMERIC(15,0), 
 	"ACTION_DATA" BLOB SUB_TYPE TEXT, 
 	"WORK_DATE" DATE
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table REFUSALFACTFOUNDATION
 --------------------------------------------------------
@@ -6844,7 +6797,7 @@
 	"OOSKEY" VARCHAR(100 ), 
 	"NAME" VARCHAR(1000 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REPDOCFRAGMENT
 --------------------------------------------------------
@@ -6853,7 +6806,7 @@
    (	"REPDOCUMENT_ID" NUMERIC(15,0), 
 	"REPFRAGMENT_ID" NUMERIC(15,0), 
 	"BOOKMARK" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REPDOCUMENT
 --------------------------------------------------------
@@ -6864,7 +6817,7 @@
 	"DOCUMENTTYPE" NUMERIC(1,0) DEFAULT 0, 
 	"NAME" VARCHAR(100 ), 
 	"CAPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REPFIELD
 --------------------------------------------------------
@@ -6891,8 +6844,7 @@
 	"NEWLINE_FLAG" NUMERIC(1,0) DEFAULT 0, 
 	"DEF_VALUE" BLOB SUB_TYPE TEXT, 
 	"PARAMS" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table REPFORM
 --------------------------------------------------------
@@ -6908,7 +6860,7 @@
 	"XLT_FILENAME" VARCHAR(100 ), 
 	"REPORT_CODE" NUMERIC(4,0) DEFAULT 0, 
 	"SUBSYSTEM" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REPFRAGMENT
 --------------------------------------------------------
@@ -6923,8 +6875,7 @@
 	"DIVIDER" VARCHAR(255 ), 
 	"ISNOTICE" NUMERIC(1,0) DEFAULT 0, 
 	"BODY" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table REPFRAGMENTCHILD
 --------------------------------------------------------
@@ -6936,7 +6887,7 @@
 	"CHILD_ID" NUMERIC(15,0), 
 	"SOURCEFIELDNAME" VARCHAR(255 ), 
 	"SOURCEFIELDVALUE" VARCHAR(1000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REPORT
 --------------------------------------------------------
@@ -6948,8 +6899,7 @@
 	"CAPTION" VARCHAR(128 ), 
 	"DECLARATION" BLOB SUB_TYPE TEXT, 
 	"EXCELTEMPLATENAME" VARCHAR(255 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table REPPROFILE
 --------------------------------------------------------
@@ -6962,8 +6912,7 @@
 	"LOCAL_FLAG" NUMERIC(18,0), 
 	"NAME" VARCHAR(100 ), 
 	"PROFILE_DATA" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table REPSOURCE
 --------------------------------------------------------
@@ -6975,7 +6924,7 @@
 	"NAME" VARCHAR(100 ), 
 	"CAPTION" VARCHAR(255 ), 
 	"CLASSNAME" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REPTEMPLATEATTACH
 --------------------------------------------------------
@@ -6987,7 +6936,7 @@
 	"DEVICE_NAME" VARCHAR(100 ), 
 	"ATTACH_NAME" VARCHAR(100 ), 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REQUESTDOC
 --------------------------------------------------------
@@ -7094,8 +7043,7 @@
 	"DATENUMORDERNAME" VARCHAR(2000 ), 
 	"ETPKEY" VARCHAR(100 ), 
 	"DECLINECOUNTER" NUMERIC(15,0) DEFAULT 0
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table REQUESTORDER
 --------------------------------------------------------
@@ -7104,7 +7052,7 @@
    (	"ORDER_ID" NUMERIC(15,0), 
 	"DOC_ID" NUMERIC(15,0), 
 	"DOCUMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REQUIREMENTTYPE
 --------------------------------------------------------
@@ -7117,7 +7065,7 @@
 	"NAME" VARCHAR(500 ), 
 	"IS_ACTUAL" NUMERIC(1,0), 
 	"VISIBLE" NUMERIC(1,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REQUIREMENTTYPEPM
 --------------------------------------------------------
@@ -7127,7 +7075,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0), 
 	"PURCHASEMODE_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RESERVEDBUDGETLINE
 --------------------------------------------------------
@@ -7160,7 +7108,7 @@
 	"PARENT_ID" NUMERIC(15,0), 
 	"INDUSTRYCODE_ID" NUMERIC(15,0), 
 	"GRANTINVESTMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RESPONSIBILITY
 --------------------------------------------------------
@@ -7170,7 +7118,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(100 ), 
 	"CAPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RNP
 --------------------------------------------------------
@@ -7198,8 +7146,7 @@
 	"STATE" NUMERIC(1,0) DEFAULT 0, 
 	"CONTRACT_EXCLUDEDATE" DATE, 
 	"REGISTRY_FLAG" NUMERIC(1,0) DEFAULT 0
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table ROLEAPPOBJ
 --------------------------------------------------------
@@ -7208,7 +7155,7 @@
    (	"USERROLE_ID" NUMERIC(15,0), 
 	"APPOBJNAME" VARCHAR(128 ), 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLEATTACH
 --------------------------------------------------------
@@ -7219,7 +7166,7 @@
 	"DISPSTATUS_ID" NUMERIC(15,0), 
 	"CATEGORY_ID" NUMERIC(15,0), 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLEBUDGET
 --------------------------------------------------------
@@ -7228,7 +7175,7 @@
    (	"USERROLE_ID" NUMERIC(15,0), 
 	"BUDGET_ID" NUMERIC(15,0), 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLECLASS
 --------------------------------------------------------
@@ -7237,7 +7184,7 @@
    (	"USERROLE_ID" NUMERIC(15,0), 
 	"DOCUMENTCLASS_ID" NUMERIC(15,0), 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLEEVENT
 --------------------------------------------------------
@@ -7247,7 +7194,7 @@
 	"DOCUMENTCLASS_ID" NUMERIC(15,0), 
 	"DISPSTATUS_ID" NUMERIC(15,0), 
 	"EVENT_NAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLEFUNC
 --------------------------------------------------------
@@ -7256,7 +7203,7 @@
    (	"USERROLE_ID" NUMERIC(15,0), 
 	"FUNUNIT_NAME" VARCHAR(50 ), 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLEORG
 --------------------------------------------------------
@@ -7265,7 +7212,7 @@
    (	"USERROLE_ID" NUMERIC(15,0), 
 	"ORG_ID" NUMERIC(15,0), 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLEREFCLASS
 --------------------------------------------------------
@@ -7274,7 +7221,7 @@
    (	"USERROLE_ID" NUMERIC(15,0), 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0, 
 	"REF_NAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLEREGISTER
 --------------------------------------------------------
@@ -7299,8 +7246,7 @@
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0, 
 	"FOREIGN_KEY" VARCHAR(50 ), 
 	"OPERATION" NUMERIC(2,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table ROLERIGHT
 --------------------------------------------------------
@@ -7308,7 +7254,7 @@
   CREATE TABLE "ROLERIGHT" 
    (	"USERROLE_ID" NUMERIC(15,0), 
 	"SYSRIGHT_NAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPL
 --------------------------------------------------------
@@ -7334,7 +7280,7 @@
 	"FILTER_CONDITION" VARCHAR(2000 ), 
 	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPL$CONSTRAINTFIELDS
 --------------------------------------------------------
@@ -7345,7 +7291,7 @@
 	"ENUM_ORDER" NUMERIC(18,0), 
 	"FIELDNAME" VARCHAR(50 ), 
 	"TARGET_FIELDNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPL$CONSTRAINTS
 --------------------------------------------------------
@@ -7359,7 +7305,7 @@
 	"UPDATE_RULE" VARCHAR(11 ) DEFAULT 'RESTRICT', 
 	"DELETE_RULE" VARCHAR(11 ) DEFAULT 'RESTRICT', 
 	"DEFFERABLE" NUMERIC(18,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLLOG
 --------------------------------------------------------
@@ -7374,7 +7320,7 @@
 	"FIELD4_VALUE" NUMERIC(15,0), 
 	"FIELD5_VALUE" NUMERIC(15,0), 
 	"TRANSACTION_ID" VARCHAR(16 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLOBJECT
 --------------------------------------------------------
@@ -7387,7 +7333,7 @@
 	"FLTR" VARCHAR(255 ), 
 	"CLASSNAME" VARCHAR(255 ), 
 	"SEQORDER" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLRULE
 --------------------------------------------------------
@@ -7396,7 +7342,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLRULEOBJ
 --------------------------------------------------------
@@ -7404,7 +7350,7 @@
   CREATE TABLE "RPLRULEOBJ" 
    (	"RPLRULE_ID" NUMERIC(15,0), 
 	"RPLOBJECT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLSITE
 --------------------------------------------------------
@@ -7415,7 +7361,7 @@
 	"MASTER_ID" NUMERIC(15,0), 
 	"CLIENT_ID" NUMERIC(15,0), 
 	"RPLRULE_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLTABLE
 --------------------------------------------------------
@@ -7433,7 +7379,7 @@
 	"ISPLUGIN" NUMERIC(1,0) DEFAULT 0, 
 	"OLD_VALUE" NUMERIC(18,0), 
 	"GENERATION_GROUP" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLTABLEPLUGIN
 --------------------------------------------------------
@@ -7444,7 +7390,7 @@
 	"RPLTABLE_ID" NUMERIC(15,0), 
 	"PLUGIN_RPLTABLE_ID" NUMERIC(15,0), 
 	"JOIN_FRAGMENT" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLTABLINK
 --------------------------------------------------------
@@ -7452,7 +7398,7 @@
   CREATE TABLE "RPLTABLINK" 
    (	"RPLTABLE_ID" NUMERIC(15,0), 
 	"FIELD_NAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLTRANSACTMODE
 --------------------------------------------------------
@@ -7460,7 +7406,7 @@
   CREATE TABLE "RPLTRANSACTMODE" 
    (	"NUM_TRANSACTION" VARCHAR(50 ), 
 	"RPL_MODE" NUMERIC(18,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLVERSIONLOG
 --------------------------------------------------------
@@ -7472,7 +7418,7 @@
 	"TASKJOURNAL_ID" NUMERIC(15,0), 
 	"RECORD_ID" NUMERIC(15,0), 
 	"RECORD_ACTION" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQBUDGETLINE
 --------------------------------------------------------
@@ -7504,7 +7450,7 @@
 	"CALCPRICE" NUMERIC(1,0) DEFAULT 0, 
 	"INDUSTRYCODE_ID" NUMERIC(15,0), 
 	"GRANTINVESTMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQCOMMEMBER
 --------------------------------------------------------
@@ -7519,7 +7465,7 @@
 	"ABSENT" NUMERIC(1,0), 
 	"NOTE" VARCHAR(100 ), 
 	"ISACTINGFORSECRETARY" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQCONDEALRESP
 --------------------------------------------------------
@@ -7530,7 +7476,7 @@
 	"LOTPOS" NUMERIC(15,0), 
 	"PERSONAL_ID" NUMERIC(15,0), 
 	"PERSONAL_NAME" VARCHAR(256 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQCRITERION
 --------------------------------------------------------
@@ -7552,7 +7498,7 @@
 	"FORMULA" VARCHAR(2000 ), 
 	"OOSCODE" VARCHAR(2 ) DEFAULT '0', 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQCRITERIONLINE
 --------------------------------------------------------
@@ -7567,7 +7513,7 @@
 	"WEIGHT" NUMERIC(15,2), 
 	"LIMITDESCRIPTION" VARCHAR(2000 ), 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQDOCCHILD
 --------------------------------------------------------
@@ -7576,7 +7522,7 @@
    (	"REQUEST_ID" NUMERIC(15,0), 
 	"DOC_ID" NUMERIC(15,0), 
 	"DOCUMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQDOCREQ
 --------------------------------------------------------
@@ -7593,7 +7539,7 @@
 	"DESCRIPTION" VARCHAR(4000 ), 
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0), 
 	"REQUIREMENTTYPE_NAME" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQFEATURE
 --------------------------------------------------------
@@ -7605,7 +7551,7 @@
 	"PLACEMENTFEATURE_ID" NUMERIC(15,0), 
 	"PREFVALUE" NUMERIC(15,2) DEFAULT 0, 
 	"CONTENT" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQGOODS
 --------------------------------------------------------
@@ -7629,7 +7575,7 @@
 	"OKVED" VARCHAR(20 ), 
 	"OKVED_NAME" VARCHAR(1000 ), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQGOODSPROP
 --------------------------------------------------------
@@ -7641,7 +7587,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(512 ), 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQLOT
 --------------------------------------------------------
@@ -7701,8 +7647,7 @@
 	"ALLOWMULTIPLECONTRACTS" NUMERIC(1,0) DEFAULT 0, 
 	"GUARANTEEAPPPERCENT" NUMERIC(5,2), 
 	"GUARANTEECONTRACTPERCENT" NUMERIC(5,2)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table RQOPTIMIZEDPRICE
 --------------------------------------------------------
@@ -7713,7 +7658,7 @@
 	"PLANPOSITIONNUMBER" VARCHAR(100 ), 
 	"PERCENT" NUMERIC(5,2) DEFAULT 0, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQPAYSHEDULE
 --------------------------------------------------------
@@ -7723,7 +7668,7 @@
 	"BUDGETLINEPOS" NUMERIC(15,0), 
 	"PAYDATE" DATE, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQQUALREQ
 --------------------------------------------------------
@@ -7740,7 +7685,7 @@
 	"CONTENT" VARCHAR(2000 ), 
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0), 
 	"REQUIREMENTTYPE_NAME" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQSUPPLYSHEDULE
 --------------------------------------------------------
@@ -7753,7 +7698,7 @@
 	"QTY" NUMERIC(15,4) DEFAULT 0, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0, 
 	"LOTPOS" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQVENDOR
 --------------------------------------------------------
@@ -7767,7 +7712,7 @@
 	"VENDORNAME" VARCHAR(2000 ), 
 	"REFCOUNT" NUMERIC(4,0), 
 	"PROPFORM_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RULEREQUISITE
 --------------------------------------------------------
@@ -7780,7 +7725,7 @@
 	"FIELD_NAME" VARCHAR(50 ), 
 	"REF_PARAM" VARCHAR(255 ), 
 	"EXPR" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RULESCRIPT
 --------------------------------------------------------
@@ -7792,8 +7737,7 @@
 	"BODY" BLOB SUB_TYPE TEXT, 
 	"CAPTION" VARCHAR(256 ), 
 	"LANG" VARCHAR(50 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table SCHEXPDOCS
 --------------------------------------------------------
@@ -7805,7 +7749,7 @@
 	"STATUSES" VARCHAR(255 ), 
 	"ROLES" VARCHAR(255 ), 
 	"REMARK" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SCHPLAN
 --------------------------------------------------------
@@ -7826,8 +7770,7 @@
 	"LAST_FINISH_TIME" DATE, 
 	"LAST_RESULT" BLOB SUB_TYPE TEXT, 
 	"RUN_AFTER_SYS_START" NUMERIC(1,0) DEFAULT 0
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table SCHTASK
 --------------------------------------------------------
@@ -7841,8 +7784,7 @@
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0, 
 	"EXAMPLE" BLOB SUB_TYPE TEXT, 
 	"PROCESSOR_XML" VARCHAR(255 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table SERVERACTION
 --------------------------------------------------------
@@ -7857,7 +7799,7 @@
 	"CAPTION" VARCHAR(100 ), 
 	"JAVACLASS_NAME" VARCHAR(100 ), 
 	"SERIALIZABLE_FLAG" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SERVERERROR
 --------------------------------------------------------
@@ -7867,7 +7809,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SERVERPROCESSOR
 --------------------------------------------------------
@@ -7883,7 +7825,7 @@
 	"DATA_CLASSNAME" VARCHAR(100 ), 
 	"PARAMS" VARCHAR(255 ), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SERVERPROVIDER
 --------------------------------------------------------
@@ -7898,8 +7840,7 @@
 	"REPORT_FLAG" NUMERIC(1,0) DEFAULT 0, 
 	"PARAMS" BLOB SUB_TYPE TEXT, 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table SIGNEXPORTLOG
 --------------------------------------------------------
@@ -7913,7 +7854,7 @@
 	"DISPSTATUS_ID" NUMERIC(15,0), 
 	"SIGNTYPE" NUMERIC(1,0) DEFAULT 0, 
 	"DOCATTACHEX_ID" NUMERIC(18,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SIGNFORMAT
 --------------------------------------------------------
@@ -7922,7 +7863,7 @@
    (	"ID" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SIGNTYPE
 --------------------------------------------------------
@@ -7932,7 +7873,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(255 ), 
 	"SIGNFORMAT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table STATISTICSSOURCE
 --------------------------------------------------------
@@ -7943,7 +7884,7 @@
 	"NAME" VARCHAR(100 ), 
 	"CAPTION" VARCHAR(255 ), 
 	"CLASSNAME" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table STOREDDOCUMENTS
 --------------------------------------------------------
@@ -7954,8 +7895,7 @@
 	"DOCUMENT_ID" NUMERIC(15,0), 
 	"STORE_DATE" DATE, 
 	"DATA" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table STOREPLACE
 --------------------------------------------------------
@@ -7966,7 +7906,7 @@
 	"QUANTITY" NUMERIC(15,4), 
 	"TERRITORYCODE" VARCHAR(20 ), 
 	"ADDRESS" VARCHAR(300 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SUPPLYPLACE
 --------------------------------------------------------
@@ -7979,7 +7919,7 @@
 	"TERRITORYCODE" VARCHAR(20 ), 
 	"ADDRESS" VARCHAR(300 ), 
 	"REMARK" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SUPPORTCRYPTOLIB
 --------------------------------------------------------
@@ -7990,7 +7930,7 @@
 	"NAME" VARCHAR(100 ), 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"LIBTYPE" VARCHAR(20 ) DEFAULT 'WIN_CSP'
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SUPPORTCRYPTOLIBFORMAT
 --------------------------------------------------------
@@ -8000,7 +7940,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"SUPPORTCRYPTOLIB_ID" NUMERIC(15,0), 
 	"SIGNFORMAT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SUPPORTCRYPTOLIBPARAM
 --------------------------------------------------------
@@ -8011,7 +7951,7 @@
 	"SUPPORTCRYPTOLIB_ID" NUMERIC(15,0), 
 	"NAME" VARCHAR(50 ), 
 	"VAL" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SYSEVENT
 --------------------------------------------------------
@@ -8027,8 +7967,7 @@
 	"REPORT" VARCHAR(2000 ), 
 	"OBJECTID" NUMERIC(15,0), 
 	"EXTRA" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table SYSPARAM
 --------------------------------------------------------
@@ -8040,8 +7979,7 @@
 	"CAPTION" VARCHAR(100 ), 
 	"PARAM_VALUE" BLOB SUB_TYPE TEXT, 
 	"SYSUSER_ID" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table SYSRIGHT
 --------------------------------------------------------
@@ -8052,7 +7990,7 @@
 	"NAME" VARCHAR(50 ), 
 	"FUNCAT_NAME" VARCHAR(50 ), 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SYSTEMSITE
 --------------------------------------------------------
@@ -8066,7 +8004,7 @@
 	"CLEAN_GENERATION_3" NUMERIC(15,0), 
 	"AS" NUMERIC(18,0), 
 	"LAST_GENERATION" NUMERIC(15,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SYSUSER
 --------------------------------------------------------
@@ -8097,8 +8035,7 @@
 	"USER_LOCK_REASON" VARCHAR(255 ), 
 	"OOS_LOGIN" VARCHAR(100 ), 
 	"OOS_PASSWORD" VARCHAR(100 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table SYSUSEREXT
 --------------------------------------------------------
@@ -8108,7 +8045,7 @@
 	"BADATTEMPT_COUNT" NUMERIC(5,0), 
 	"LAST_BADATTEMPT_TIME" DATE, 
 	"LAST_LOGIN_TIME" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TASKJOURNAL
 --------------------------------------------------------
@@ -8130,7 +8067,7 @@
 	"SERVER_PORT" NUMERIC(5,0), 
 	"CLIENT_HOST" VARCHAR(100 ), 
 	"CLIENT_PORT" NUMERIC(5,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TENDER
 --------------------------------------------------------
@@ -8146,7 +8083,7 @@
 	"OFFERVAL" VARCHAR(255 ), 
 	"TENDERCRITERION_ID" NUMERIC(15,0), 
 	"ISFINALOFFER" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TENDERCRITERION
 --------------------------------------------------------
@@ -8171,7 +8108,7 @@
 	"ISCANCELLABLE" NUMERIC(1,0) DEFAULT 0, 
 	"FORMULA" VARCHAR(2000 ), 
 	"OOSCODE" VARCHAR(2 ) DEFAULT '0'
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TENDERCRITERIONCHILD
 --------------------------------------------------------
@@ -8181,7 +8118,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"TENDERCRITERION_ID" NUMERIC(15,0), 
 	"CHILD_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TENDERCRITERIONPM
 --------------------------------------------------------
@@ -8191,7 +8128,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"TENDERCRITERION_ID" NUMERIC(15,0), 
 	"PURCHASEMODE_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TENDERLINE
 --------------------------------------------------------
@@ -8206,7 +8143,7 @@
 	"RATE" NUMERIC(17,4), 
 	"SCORE" NUMERIC(10,4), 
 	"OFFERVAL" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TENDERLINECOMM
 --------------------------------------------------------
@@ -8218,7 +8155,7 @@
 	"TENDERLINE_ID" NUMERIC(15,0), 
 	"COMMEMBERPOS" NUMERIC(15,0), 
 	"SCORE" NUMERIC(10,4)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TERRITORY
 --------------------------------------------------------
@@ -8231,7 +8168,7 @@
 	"CODE" VARCHAR(20 ), 
 	"TERTYPE_ID" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TER_TREE
 --------------------------------------------------------
@@ -8240,7 +8177,7 @@
    (	"TER_ID" NUMERIC(15,0), 
 	"TREE" VARCHAR(252 ), 
 	"PATH" VARCHAR(512 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TERTYPE
 --------------------------------------------------------
@@ -8250,7 +8187,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(20 ), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TYPECRIT
 --------------------------------------------------------
@@ -8270,7 +8207,7 @@
 	"DESCRIPTION" VARCHAR(2000 ), 
 	"FORMULA" VARCHAR(2000 ), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TYPECRITLINE
 --------------------------------------------------------
@@ -8285,7 +8222,7 @@
 	"WEIGHT" NUMERIC(15,2), 
 	"LIMITDESCRIPTION" VARCHAR(2000 ), 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TYPEDOCREQ
 --------------------------------------------------------
@@ -8299,7 +8236,7 @@
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0) DEFAULT 1, 
 	"NAME" VARCHAR(1024 ), 
 	"DESCRIPTION" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TYPEDOCREQGROUP
 --------------------------------------------------------
@@ -8310,7 +8247,7 @@
 	"PURCHASEMODE_ID" NUMERIC(15,0) DEFAULT 1, 
 	"NAME" VARCHAR(1024 ), 
 	"DESCRIPTION" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TYPEREQ
 --------------------------------------------------------
@@ -8322,7 +8259,7 @@
 	"PURCHASEMODE_ID" NUMERIC(15,0) DEFAULT 1, 
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0) DEFAULT 1, 
 	"DESCRIPTION" VARCHAR(1000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TYPEREQCRIT
 --------------------------------------------------------
@@ -8333,7 +8270,7 @@
 	"NAME" VARCHAR(2000 ), 
 	"DESCRIPTION" VARCHAR(500 ), 
 	"PURCHASEMODE_ID" NUMERIC(15,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table UNIT
 --------------------------------------------------------
@@ -8345,7 +8282,7 @@
 	"OKEI" VARCHAR(4 ), 
 	"IS_ACTUAL" NUMERIC(1,0) DEFAULT 1, 
 	"NAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table UPDPACKAGE
 --------------------------------------------------------
@@ -8365,8 +8302,7 @@
 	"UPDATE_LOG" BLOB SUB_TYPE TEXT, 
 	"DESCRIPTION" VARCHAR(1024 ), 
 	"UPDATE_STARTUP_FILE" NUMERIC(1,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table USERBUDGET
 --------------------------------------------------------
@@ -8377,7 +8313,7 @@
 	"SYSUSER_ID" NUMERIC(15,0), 
 	"BUDGET_ID" NUMERIC(15,0), 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table USERCERT
 --------------------------------------------------------
@@ -8412,8 +8348,7 @@
 	"SUBJECT_SNILS" VARCHAR(100 ), 
 	"CA_NAME" VARCHAR(255 ), 
 	"CA_CONTACT_INFO" VARCHAR(1024 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table USERCERTSYSUSER
 --------------------------------------------------------
@@ -8421,7 +8356,7 @@
   CREATE TABLE "USERCERTSYSUSER" 
    (	"SYSUSER_ID" NUMERIC(15,0), 
 	"USERCERT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table USERORG
 --------------------------------------------------------
@@ -8432,7 +8367,7 @@
 	"SYSUSER_ID" NUMERIC(15,0), 
 	"ORG_ID" NUMERIC(15,0), 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 1
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table USERPROFILE
 --------------------------------------------------------
@@ -8440,8 +8375,7 @@
   CREATE TABLE "USERPROFILE" 
    (	"SYSUSER_ID" NUMERIC(15,0), 
 	"PVALUE" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table USERROLE
 --------------------------------------------------------
@@ -8456,7 +8390,7 @@
 	"ISBLOCKED" NUMERIC(1,0) DEFAULT 0, 
 	"ISPRIVATEORG" NUMERIC(1,0) DEFAULT 0, 
 	"HASCHILDORGS" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table USERSESSION
 --------------------------------------------------------
@@ -8473,7 +8407,7 @@
 	"OPEN_TIME" DATE, 
 	"CLOSE_TIME" DATE, 
 	"VERSION" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table USERSESSIONACCESS
 --------------------------------------------------------
@@ -8482,7 +8416,7 @@
    (	"ID" NUMERIC(15,0), 
 	"ACCESS_TIME" DATE, 
 	"REQUEST_COUNT" NUMERIC(9,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table USESCRYPTOLIB
 --------------------------------------------------------
@@ -8493,7 +8427,7 @@
 	"SUPPORTCRYPTOLIB_ID" NUMERIC(15,0), 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"REQUESTERTYPE" NUMERIC(1,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table USESCRYPTOLIBPARAM
 --------------------------------------------------------
@@ -8504,7 +8438,7 @@
 	"USESCRYPTOLIB_ID" NUMERIC(15,0), 
 	"NAME" VARCHAR(50 ), 
 	"VAL" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table WEBSTATCACHE
 --------------------------------------------------------
@@ -8518,7 +8452,7 @@
 	"PURNAME" VARCHAR(100 ), 
 	"KEYTYPE" VARCHAR(100 ), 
 	"INSTANCE" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table WEBSTATCACHEVAL
 --------------------------------------------------------
@@ -8530,4 +8464,4 @@
 	"WEBSTAT_ID" NUMERIC(15,0), 
 	"PURCOUNT" NUMERIC(15,0) DEFAULT 0, 
 	"PURAMOUNT" NUMERIC(15,2) DEFAULT 0
-   )  ;
+   );

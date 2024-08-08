@@ -1,6 +1,8 @@
 --------------------------------------------------------
 --  DDL for Procedure CREATE_FK_INDEXES
 --------------------------------------------------------
+CREATE EXCEPTION NO_DATA_FOUND
+	'no data found';
 
 
   SET TERM ^ ;
@@ -122,10 +124,12 @@ SET TERM ; ^
 
 CREATE OR ALTER PROCEDURE "RPL$ACTIVATE_RPL" 
 AS
-  DECLARE stmt varchar(2000);
+   DECLARE stmt varchar(2000);
   DECLARE s CURSOR FOR (SELECT TRIGGER_NAME from USER_TRIGGERS where (TRIGGER_NAME like 'RPL$%'));
   DECLARE r CURSOR FOR (SELECT id, name FROM rpltable) ;
+
   DECLARE VARIABLE R_R_REC TYPE OF TABLE R;
+
   DECLARE VARIABLE S_S_REC TYPE OF TABLE S;
 BEGIN
   OPEN S;
@@ -161,11 +165,11 @@ SET TERM ; ^
 
 CREATE OR ALTER PROCEDURE "RPL$ASSIGN_GENERATION" 
     AS
-    DECLARE GNRTN NUMERIC(15,0);
-    DECLARE OLD_GEN NUMERIC(15,0);
-    DECLARE OLD_GEN1 NUMERIC(15,0);
-    DECLARE OLD_GEN2 NUMERIC(15,0);
-    DECLARE ldaydate date;
+     DECLARE GNRTN NUMERIC(15,0);
+     DECLARE OLD_GEN NUMERIC(15,0);
+     DECLARE OLD_GEN1 NUMERIC(15,0);
+     DECLARE OLD_GEN2 NUMERIC(15,0);
+     DECLARE ldaydate date;
 begin
   -- THIS PROCEDURE MUST BE EXECUTED AT SNAPSHOT ISOLATION LEVEL
   -- lock some table for a singleton execution of this procedure
@@ -173,9 +177,13 @@ begin
   select generation_seq.nextval
   from dual
   into :gnrtn;
+  IF (ROW_COUNT = 0) THEN
+  	EXCEPTION NO_DATA_FOUND;
   select max(day_date)
   from dayversion
   into :ldaydate;
+  IF (ROW_COUNT = 0) THEN
+  	EXCEPTION NO_DATA_FOUND;
   update rpllog set generation = :GNRTN, transaction_id = current_transaction_id where
     generation=999999999999999;
   old_gen = null;
@@ -185,6 +193,8 @@ begin
     select min(sent_version)
     from rpl where master_id = (select site_id from systemsite) and sent_version > 0
     into :old_gen;
+    IF (ROW_COUNT = 0) THEN
+    	EXCEPTION NO_DATA_FOUND;
     if ((:old_gen is null)) then
       old_gen = 999999999999999;
   -- We have three differen ranges of 'living time' for records in log, depending on rpltable generation_group
@@ -192,6 +202,8 @@ begin
     select max(day_version)
     from dayversion where day_date < cast(CURRENT_TIMESTAMP as date) - 10
     into :old_gen1;
+    IF (ROW_COUNT = 0) THEN
+    	EXCEPTION NO_DATA_FOUND;
     if ((:old_gen1 is null)) then
       old_gen1 = 0;
     if ((:old_gen1 < :old_gen)) then
@@ -206,6 +218,8 @@ begin
     select max(day_version)
     from dayversion where day_date < cast(CURRENT_TIMESTAMP as date) - 1
     into :old_gen1;
+    IF (ROW_COUNT = 0) THEN
+    	EXCEPTION NO_DATA_FOUND;
     if ((:old_gen1 is null)) then
       old_gen1 = 0;
     if ((:old_gen1 < :old_gen)) then
@@ -220,6 +234,8 @@ begin
     select max(day_version)
     from dayversion where day_date < cast(CURRENT_TIMESTAMP as date) - 1/24
     into :old_gen1;
+    IF (ROW_COUNT = 0) THEN
+    	EXCEPTION NO_DATA_FOUND;
     if ((:old_gen1 is null)) then
       old_gen1 = 0;
     if ((:old_gen1 < :old_gen)) then
@@ -245,29 +261,33 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "RPL$CREATE_TRIGGER" (constr_name varchar(250))
+CREATE OR ALTER PROCEDURE "RPL$CREATE_TRIGGER" (constr_name varchar(32000))
 AS
-  DECLARE CHILD_WHERE VARCHAR(250);
-  DECLARE CHILD_CONDITION VARCHAR(250);
-  DECLARE CHILD_IF VARCHAR(250);
-  DECLARE CHILD_STATEMENT VARCHAR(2000);
-  DECLARE PARENT_CONDITION VARCHAR(250);
-  DECLARE PARENT_WHERE VARCHAR(250);
-  DECLARE PARENT_SET VARCHAR(250);
-  DECLARE FCOUNT INTEGER;
-  DECLARE BODY VARCHAR(4000);
-  DECLARE VARIABLE rc TYPE OF TABLE rpl$constraints;
+   DECLARE CHILD_WHERE VARCHAR(250);
+   DECLARE CHILD_CONDITION VARCHAR(250);
+   DECLARE CHILD_IF VARCHAR(250);
+   DECLARE CHILD_STATEMENT VARCHAR(2000);
+   DECLARE PARENT_CONDITION VARCHAR(250);
+   DECLARE PARENT_WHERE VARCHAR(250);
+   DECLARE PARENT_SET VARCHAR(250);
+   DECLARE FCOUNT INTEGER;
+   DECLARE BODY VARCHAR(4000);
+   DECLARE VARIABLE rc TYPE OF TABLE rpl$constraints;
   DECLARE getFields(constr_id TYPE OF COLUMN rpl$constraintfields.rpl$constraints_id) CURSOR FOR
     (select fieldname, target_fieldname from rpl$constraintfields where rpl$constraints_id = constr_id);
 BEGIN
   select *
   from rpl$constraints where name = :constr_name
   into :rc;
+  IF (ROW_COUNT = 0) THEN
+  	EXCEPTION NO_DATA_FOUND;
   child_where = ''; child_condition = ''; child_if = 'numrows = 0 and ';
   parent_where = ''; parent_condition = ''; parent_set = '';
   select count(*)
   from rpl$constraintfields where rpl$constraints_id = rc.id
   into :fcount;
+  IF (ROW_COUNT = 0) THEN
+  	EXCEPTION NO_DATA_FOUND;
   for getFields_Rec in getFields(rc.id)
   DO
   BEGIN
@@ -349,6 +369,7 @@ CREATE OR ALTER PROCEDURE "RPL$CREATE_TRIGGERS"
 AS
   DECLARE getConstraints CURSOR FOR
     (select name from rpl$constraints);
+
   DECLARE VARIABLE GETCONSTRAINTS_GETCONSTRAINTS_REC TYPE OF TABLE GETCONSTRAINTS;
 BEGIN
   OPEN GETCONSTRAINTS;
@@ -374,8 +395,9 @@ SET TERM ; ^
 
 CREATE OR ALTER PROCEDURE "RPL$DEACTIVATE_RPL" 
 AS
-  DECLARE stmt varchar(2000);
+   DECLARE stmt varchar(2000);
   DECLARE s CURSOR FOR (SELECT TRIGGER_NAME from USER_TRIGGERS where (TRIGGER_NAME like 'RPL$%'));
+
   DECLARE VARIABLE S_S_REC TYPE OF TABLE S;
 BEGIN
   OPEN S;
@@ -400,10 +422,11 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "RPL$DISABLE_RPL_TABLE" (tablename varchar(250))
+CREATE OR ALTER PROCEDURE "RPL$DISABLE_RPL_TABLE" (tablename varchar(32000))
 AS
    DECLARE s CURSOR FOR (select trigger_name name from user_triggers where (trigger_name like 'RPL$'||:tablename)) ;
-   DECLARE stmt VARCHAR(2000);
+    DECLARE stmt VARCHAR(2000);
+
   DECLARE VARIABLE S_S_REC TYPE OF TABLE S;
 BEGIN
   OPEN S;
@@ -429,18 +452,18 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "RPL$ENABLE_RPL_TABLE" (tablename varchar(250))
+CREATE OR ALTER PROCEDURE "RPL$ENABLE_RPL_TABLE" (tablename varchar(32000))
 AS
-   DECLARE stmt            VARCHAR (20000);
-   DECLARE fieldlist       VARCHAR (500);
-   DECLARE fieldvalue      VARCHAR (500);
-   DECLARE oldfieldvalue   VARCHAR (500);
-   DECLARE condition       VARCHAR (500);
-   DECLARE mut_fieldvalue      VARCHAR (500);
-   DECLARE mut_oldfieldvalue   VARCHAR (500);
-   DECLARE mut_condition       VARCHAR (500);
-   DECLARE table_id        NUMERIC (15);
-   DECLARE plugin_count    NUMERIC (15);
+    DECLARE stmt            VARCHAR (20000);
+    DECLARE fieldlist       VARCHAR (500);
+    DECLARE fieldvalue      VARCHAR (500);
+    DECLARE oldfieldvalue   VARCHAR (500);
+    DECLARE condition       VARCHAR (500);
+    DECLARE mut_fieldvalue      VARCHAR (500);
+    DECLARE mut_oldfieldvalue   VARCHAR (500);
+    DECLARE mut_condition       VARCHAR (500);
+    DECLARE table_id        NUMERIC (15);
+    DECLARE plugin_count    NUMERIC (15);
    DECLARE s
    CURSOR FOR
       (SELECT ID, rplfield1, rplfield2, rplfield3, rplfield4, rplfield5
@@ -454,7 +477,9 @@ AS
            AND UPPER (rt.NAME) = UPPER (:tablename)
            AND rt.isplugin = 0)
              ;
+
   DECLARE VARIABLE C_PLUGIN_PLUGIN_REC TYPE OF TABLE C_PLUGIN;
+
   DECLARE VARIABLE S_S_REC TYPE OF TABLE S;
 BEGIN
    select count(rtp.ID)
@@ -463,6 +488,8 @@ BEGIN
                              AND UPPER (rt.NAME) = UPPER (:tablename)
                              AND rt.isplugin = 0
    into :plugin_count;
+   IF (ROW_COUNT = 0) THEN
+   	EXCEPTION NO_DATA_FOUND;
    OPEN S;
    FETCH S INTO S_S_REC;
    WHILE ( ROW_COUNT != 0 ) DO
@@ -795,7 +822,7 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "RPL$REENABLE_RPL_TABLE" (tablename varchar(250))
+CREATE OR ALTER PROCEDURE "RPL$REENABLE_RPL_TABLE" (tablename varchar(32000))
 AS
 BEGIN
   EXECUTE PROCEDURE RPL$DISABLE_RPL_TABLE(:tablename);
@@ -812,17 +839,20 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "SEQUENCE_ADJ" (tablename VARCHAR(250))
+CREATE OR ALTER PROCEDURE "SEQUENCE_ADJ" (tablename VARCHAR(32000))
 AS
-   DECLARE maxval     NUMERIC (15);
-   DECLARE sitemult   NUMERIC (15);
-   DECLARE curval     NUMERIC (15);
-   DECLARE i          NUMERIC (15);
+    DECLARE maxval     NUMERIC (15);
+    DECLARE sitemult   NUMERIC (15);
+    DECLARE curval     NUMERIC (15);
+    DECLARE i          NUMERIC (15);
+
   DECLARE VARIABLE i INTEGER;
 BEGIN
    SELECT MAX (site_id * 1000000000)
    FROM systemsite
    INTO :sitemult;
+   IF (ROW_COUNT = 0) THEN
+   	EXCEPTION NO_DATA_FOUND;
    EXECUTE STATEMENT    ('select coalesce(max(id),'
                      || :sitemult
                      || '+1)-'
@@ -837,7 +867,7 @@ BEGIN
                  INTO :curval;
    -- ������� ������, � �� �������������. ��� ��������
    i = curval;
-   WHILE ( i < :maxval - 1) DO
+   WHILE ( i <= :maxval - 1) DO
    BEGIN
       EXECUTE STATEMENT ('select ' || :tablename || '_seq.nextval from dual')
                     INTO :sitemult;
@@ -881,3 +911,5 @@ begin
 end^
 
 SET TERM ; ^
+
+

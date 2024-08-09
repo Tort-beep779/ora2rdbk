@@ -192,7 +192,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
             int tokenIndex = token.getTokenIndex();
             if (tokens.size() <= tokenIndex) return null;
             return tokens.get(tokenIndex + 1);
-        }return null;
+        }
+        return null;
     }
 
     void deleteSPACESRight(ParserRuleContext ctx) {
@@ -1495,11 +1496,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
             replace(ctx.IS(), "AS");
             insertAfter(ctx.IS(), " BEGIN");
         }
+
         if (!ctx.package_name().isEmpty()) {
-            if (ctx.package_name(ctx.package_name().size() - 1) != null) {
+            if (ctx.package_name().size() > 1) {
                 delete(ctx.package_name(ctx.package_name().size() - 1));
             }
         }
+
         popScope();
     }
 
@@ -1530,8 +1533,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
             replace(ctx.IS(), "AS");
             insertAfter(ctx.IS(), " BEGIN");
         }
+
         if (!ctx.package_name().isEmpty()) {
-            if (ctx.package_name(ctx.package_name().size() - 1) != null) {
+            if (ctx.package_name().size() > 1) {
                 delete(ctx.package_name(ctx.package_name().size() - 1));
             }
         }

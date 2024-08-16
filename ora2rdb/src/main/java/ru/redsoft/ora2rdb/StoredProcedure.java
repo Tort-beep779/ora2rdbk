@@ -66,7 +66,7 @@ public class StoredProcedure implements StoredBlock{
     @Override
     public boolean containOutParameters() {
         return parameters.values().stream()
-                .anyMatch(Parameter::getOut);
+                .anyMatch(Parameter::isOut);
     }
 
 

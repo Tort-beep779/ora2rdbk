@@ -2250,13 +2250,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
         String indentation = getIndentation(ctx);
         replace(ctx.FOR(), indentation + "WHILE (");
         insertAfter(ctx.cursor_loop_param(), ") DO" + '\n' + indentation + "BEGIN");
-        insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
         replace(ctx.cursor_loop_param().IN(), " >= ");
         delete(ctx.cursor_loop_param().REVERSE());
         delete(ctx.cursor_loop_param().upper_bound());
         delete(ctx.cursor_loop_param().DOUBLE_PERIOD());
 
-        insertAfter(ctx.seq_of_statements(), '\n' + index_name + " = " + index_name + " - 1;");
+        insertAfter(ctx.seq_of_statements(), '\n' + indentation + index_name + " = " + index_name + " - 1;\n" + indentation + "END");
 
 
         delete(ctx.LOOP(0));

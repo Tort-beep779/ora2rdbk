@@ -1382,6 +1382,26 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitFunction_spec(Function_specContext ctx) {
         replace(ctx.RETURN(), "RETURNS");
+        deleteSpacesLeft(ctx.SEMICOLON());
+        StringBuilder return_parameters = new StringBuilder();
+        ArrayList<ParameterContext> parameters = (ArrayList<ParameterContext>) ctx.parameter().stream()
+                .filter(e -> !e.OUT().isEmpty())
+                .collect(Collectors.toList());
+        if (!parameters.isEmpty()) {
+            replace(ctx.FUNCTION(), "PROCEDURE");
+            replace(ctx.RETURN(), "\nRETURNS ( RET_VAL");
+            return_parameters.append(",\n");
+            for (ParameterContext parameter : parameters) {
+                String parameterType = getRewriterText(parameter.type_spec());
+                String parameterName = Ora2rdb.getRealParameterName(parameter.parameter_name().getText());
+                return_parameters.append(parameterName).append("_OUT ").append(parameterType);
+                if (!parameters.get(parameters.size() - 1).equals(parameter))
+                    return_parameters.append(", \n");
+                else
+                    return_parameters.append(" )");
+            }
+            insertAfter(ctx.type_spec(), return_parameters.toString());
+        }
     }
 
     @Override
@@ -1629,7 +1649,32 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
     }
 
-    //    todo part233
+
+    @Override
+    public void exitProcedure_spec(Procedure_specContext ctx) {
+        StringBuilder return_parameters = new StringBuilder();
+        return_parameters.append("RETURNS ( ");
+
+        ArrayList<ParameterContext> parameters = (ArrayList<ParameterContext>) ctx.parameter().stream()
+                .filter(e -> !e.OUT().isEmpty())
+                .collect(Collectors.toList());
+        if (!parameters.isEmpty()) {
+            deleteSpacesLeft(ctx.SEMICOLON());
+            delete(ctx.SEMICOLON());
+            for (ParameterContext parameter : parameters) {
+                String parameterType = getRewriterText(parameter.type_spec());
+                String parameterName = Ora2rdb.getRealParameterName(parameter.parameter_name().getText());
+                return_parameters.append(parameterName).append("_OUT ").append(parameterType);
+                if (!parameters.get(parameters.size() - 1).equals(parameter))
+                    return_parameters.append(", \n");
+                else {
+                    return_parameters.append(" );\n");
+                }
+            }
+            insertAfter(ctx.RIGHT_PAREN(), '\n' + return_parameters.toString() + '\n');
+        }
+    }
+
     @Override
     public void enterCreate_procedure_body(Create_procedure_bodyContext ctx) {
         pushScope();

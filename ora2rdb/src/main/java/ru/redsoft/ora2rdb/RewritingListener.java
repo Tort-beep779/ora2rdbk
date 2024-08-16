@@ -1225,12 +1225,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
         StoredFunction currentFunction = (StoredFunction) storedBlocksStack.peek();
         if (currentFunction.containOutParameters()) {
             replace(ctx.FUNCTION(), "PROCEDURE");
-            replace(ctx.RETURN(), "RETURNS (RET_VAL");
+            replace(ctx.RETURN(), "\nRETURNS ( RET_VAL");
 
+            ArrayList<Parameter> out_parameters = (ArrayList<Parameter>) currentFunction.getParameters().values().stream()
+                    .filter(Parameter::isOut).collect(Collectors.toList());
             StringBuilder return_parameters = new StringBuilder();
-            return_parameters.append(", ");
-            for(int i = 0; i < currentFunction.getParameters().keySet().size(); i++){
-                Parameter parameter = currentFunction.getParameters().get(i);
+            return_parameters.append(",\n");
+            for (Parameter parameter : out_parameters){
                 String type = null;
                 ParameterContext parameterContext = ctx.parameter().stream()
                         .filter(e -> Ora2rdb.getRealName(e.parameter_name().getText()).equals(parameter.getName()))
@@ -1238,15 +1239,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 if(parameterContext != null){
                     type = getRewriterText(parameterContext.type_spec());
                 }
-                if(parameter.getOut()) {
-                    if (!currentFunction.getParameters().lastKey().equals(i))
-                        return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(", \n");
-                    else
-                        return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(")\n");
-                }
+                if(!out_parameters.get(out_parameters.size() - 1).equals(parameter))
+                    return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(", \n");
+                else
+                    return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(")\n");
             }
             insertAfter(ctx.type_spec(), return_parameters);
-
         } else {
             replace(ctx.RETURN(), "RETURNS");
         }
@@ -1316,25 +1314,24 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
             if (currentFunction.containOutParameters()) {
                 replace(ctx.FUNCTION(), "PROCEDURE");
-                replace(ctx.RETURN(), "RETURNS (RET_VAL");
+                replace(ctx.RETURN(), "\nRETURNS ( RET_VAL");
 
+                ArrayList<Parameter> out_parameters = (ArrayList<Parameter>) currentFunction.getParameters().values().stream()
+                        .filter(Parameter::isOut).collect(Collectors.toList());
                 StringBuilder return_parameters = new StringBuilder();
-                return_parameters.append(", ");
-                for (int i = 0; i < currentFunction.getParameters().keySet().size(); i++) {
-                    Parameter parameter = currentFunction.getParameters().get(i);
+                return_parameters.append(",\n");
+                for (Parameter parameter : out_parameters){
                     String type = null;
                     ParameterContext parameterContext = ctx.parameter().stream()
                             .filter(e -> Ora2rdb.getRealName(e.parameter_name().getText()).equals(parameter.getName()))
                             .findFirst().orElse(null);
-                    if (parameterContext != null) {
+                    if(parameterContext != null){
                         type = getRewriterText(parameterContext.type_spec());
                     }
-                    if (parameter.getOut()) {
-                        if (!currentFunction.getParameters().lastKey().equals(i))
-                            return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(", \n");
-                        else
-                            return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(")\n");
-                    }
+                    if(!out_parameters.get(out_parameters.size() - 1).equals(parameter))
+                        return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(", \n");
+                    else
+                        return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(")\n");
                 }
                 insertAfter(ctx.type_spec(), return_parameters);
             } else {
@@ -1642,16 +1639,16 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.IS(), "AS");
         replace(ctx.SEMICOLON(), "^");
 
-        String procedure_name = Ora2rdb.getRealName(ctx.procedure_name().identifier().id_expression().getText());
-
         StoredProcedure currentProcedure = (StoredProcedure) storedBlocksStack.peek();
         if (currentProcedure.containOutParameters()) {
             StringBuilder return_parameters = new StringBuilder();
             StringBuilder equating_parameters = new StringBuilder("\n");
-            return_parameters.append("RETURNS( ");
+            return_parameters.append("RETURNS ( ");
 
-            for (int i = 0; i < currentProcedure.getParameters().size(); i++) {
-                Parameter parameter = currentProcedure.getParameters().get(i);
+            ArrayList<Parameter> out_parameters = (ArrayList<Parameter>) currentProcedure.getParameters().values().
+                    stream().filter(Parameter::isOut).collect(Collectors.toList());
+
+            for (Parameter parameter : out_parameters) {
                 String type = null;
                 ParameterContext parameterContext = ctx.parameter().stream()
                         .filter(e -> Ora2rdb.getRealName(e.parameter_name().getText()).equals(parameter.getName()))
@@ -1659,15 +1656,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 if (parameterContext != null) {
                     type = getRewriterText(parameterContext.type_spec());
                 }
-
-                if (parameter.getOut()) {
-                    if (!currentProcedure.getParameters().lastKey().equals(i))
-                        return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(", \n");
-                    else
-                        return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(")\n");
-                    equating_parameters.append(parameter.getName()).append("_OUT = ").append(parameter.getName()).append(";\n");
-
-                }
+                if (!out_parameters.get(out_parameters.size() - 1).equals(parameter))
+                    return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(", \n");
+                else
+                    return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(")\n");
+                equating_parameters.append(parameter.getName()).append("_OUT = ").append(parameter.getName()).append(";\n");
             }
             if (ctx.IS() != null) {
                 insertBefore(ctx.IS(), return_parameters.toString() + '\n');
@@ -1738,31 +1731,30 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitProcedure_body(Procedure_bodyContext ctx) {
         replace(ctx.IS(), "AS");
         delete(ctx.SEMICOLON());
-
         StoredProcedure currentProcedure = (StoredProcedure) storedBlocksStack.peek();
-        String procedure_name = currentProcedure.getName();//todo
         if(currentProcedure.containOutParameters()){
             StringBuilder return_parameters = new StringBuilder();
             StringBuilder equating_parameters = new StringBuilder('\n');
-            return_parameters.append("RETURNS( ");
+            return_parameters.append("RETURNS ( ");
 
-            for (int i = 0; i < currentProcedure.getParameters().size(); i++) {
-                Parameter parameter = currentProcedure.getParameters().get(i);
+            ArrayList<Parameter> out_parameters = (ArrayList<Parameter>) currentProcedure.getParameters().values().
+                    stream().filter(Parameter::isOut).collect(Collectors.toList());
+
+            for (Parameter parameter : out_parameters) {
                 String type = null;
                 ParameterContext parameterContext = ctx.parameter().stream()
                         .filter(e -> Ora2rdb.getRealName(e.parameter_name().getText()).equals(parameter.getName()))
                         .findFirst().orElse(null);
-                if (parameterContext != null)
+                if (parameterContext != null) {
                     type = getRewriterText(parameterContext.type_spec());
-
-                if (parameter.getOut()) {
-                    if (!currentProcedure.getParameters().lastKey().equals(i))
-                        return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(", \n");
-                    else
-                        return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(")\n");
-                    equating_parameters.append(parameter.getName()).append("_OUT = ").append(parameter.getName()).append(";\n");
                 }
+                if (!out_parameters.get(out_parameters.size() - 1).equals(parameter))
+                    return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(", \n");
+                else
+                    return_parameters.append(parameter.getName()).append("_OUT ").append(type).append(")\n");
+                equating_parameters.append(parameter.getName()).append("_OUT = ").append(parameter.getName()).append(";\n");
             }
+
             if (ctx.IS() != null) {
                 insertBefore(ctx.IS(), return_parameters.toString() + '\n');
             } else {

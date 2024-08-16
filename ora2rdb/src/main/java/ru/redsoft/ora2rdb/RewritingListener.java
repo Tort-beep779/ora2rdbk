@@ -419,6 +419,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
             replace(ctx, "CHAR");
         else if (ctx.BINARY_INTEGER() != null)
             replace(ctx, "INTEGER");
+        else if(ctx.ROWID() != null){
+            replace(ctx, "BINARY(8)");
+        }
     }
 
     @Override
@@ -2407,6 +2410,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void enterSelection_directive(Selection_directiveContext ctx) {
         commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
     }
+
+    @Override
+    public void exitSelect_list_elements(Select_list_elementsContext ctx) {
+        if(Ora2rdb.getRealName(ctx.getText()).equals("ROWID"))
+            replace(ctx, "RDB$DB_KEY");
+    }
+
     @Override
     public void exitException_handler(Exception_handlerContext ctx) {
         String indentation = getIndentation(ctx.seq_of_statements());

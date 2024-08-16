@@ -1422,6 +1422,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitVariable_declaration(Variable_declarationContext ctx) {
+        if (getRewriterText(ctx).startsWith(":"))
+            replace(ctx, getRewriterText(ctx).substring(1));
+
         if (current_plsql_block != null && ctx.CONSTANT() != null
                 && ctx.parent.getClass().equals(PlSqlParser.Package_obj_specContext.class)
                 || ctx.parent.getClass().equals(PlSqlParser.Package_obj_bodyContext.class)) {

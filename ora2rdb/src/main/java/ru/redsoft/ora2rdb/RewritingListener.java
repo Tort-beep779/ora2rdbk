@@ -74,8 +74,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 !create_procedures.isEmpty() ||
                 !create_triggers.isEmpty();
 
-        if (plsql)
-            out.append("SET TERM ^ ;\n\n");
+//        if (plsql)
+//            out.append("SET TERM ^ ;\n\n");
 
         for (Create_function_bodyContext create_function : create_functions)
             out.append(getRewriterText(create_function)).append("\n\n");
@@ -86,8 +86,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         for (Create_triggerContext create_trigger : create_triggers)
             out.append(getRewriterText(create_trigger)).append("\n\n");
 
-        if (plsql)
-            out.append("SET TERM ; ^\n\n");
+//        if (plsql)
+//            out.append("SET TERM ; ^\n\n");
 
         for (Alter_triggerContext alter_trigger : alter_triggers)
             out.append(getRewriterText(alter_trigger)).append("\n\n");
@@ -1224,7 +1224,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitCreate_function_body(Create_function_bodyContext ctx) {
         replace(ctx.REPLACE(), "ALTER");
         replace(ctx.IS(), "AS");
-        replace(ctx.SEMICOLON(), "^");
+//        replace(ctx.SEMICOLON(), "^");
         StoredFunction currentFunction = (StoredFunction) storedBlocksStack.peek();
         if (currentFunction.containOutParameters()) {
             replace(ctx.FUNCTION(), "PROCEDURE");
@@ -1291,7 +1291,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             temp_tables_ddl.append(table_ddl).append("\n\n");
 
         if (!Ora2rdb.reorder)
-            replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
+            replace(ctx, temp_tables_ddl + "\n" + getRewriterText(ctx) + "\n");
         else
             create_temporary_tables.add(temp_tables_ddl.toString());
 
@@ -1310,7 +1310,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitFunction_body(Function_bodyContext ctx) {
         replace(ctx.IS(), "AS");
-        replace(ctx.SEMICOLON(), "^");
+//        replace(ctx.SEMICOLON(), "^");
 
         if(storedBlocksStack.peek() instanceof StoredFunction) {
             StoredFunction currentFunction = (StoredFunction) storedBlocksStack.peek();
@@ -1638,7 +1638,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             temp_tables_ddl.append(table_ddl).append("\n\n");
 
         if (!Ora2rdb.reorder)
-            replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
+            replace(ctx, temp_tables_ddl + "\n" + getRewriterText(ctx) + "\n");
         else
             create_temporary_tables.add(temp_tables_ddl.toString());
         popScope();
@@ -1688,7 +1688,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitCreate_procedure_body(Create_procedure_bodyContext ctx) {
         replace(ctx.REPLACE(), "ALTER");
         replace(ctx.IS(), "AS");
-        replace(ctx.SEMICOLON(), "^");
+//        replace(ctx.SEMICOLON(), "^");
 
         StoredProcedure currentProcedure = (StoredProcedure) storedBlocksStack.peek();
         if (currentProcedure.containOutParameters()) {
@@ -1762,7 +1762,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             temp_tables_ddl.append(table_ddl).append("\n\n");
 
         if (!Ora2rdb.reorder)
-            replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
+            replace(ctx, temp_tables_ddl + "\n" + getRewriterText(ctx) + "\n");
         else
             create_temporary_tables.add(temp_tables_ddl.toString());
 
@@ -1927,7 +1927,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.REPLACE(), "ALTER");
         deleteSpacesLeft(ctx.trigger_body());
         insertBefore(ctx.trigger_body(), indentation + "\nAS\n");
-        replace(ctx.SEMICOLON(), "^");
+//        replace(ctx.SEMICOLON(), "^");
 
         StringBuilder temp_tables_ddl = new StringBuilder();
 
@@ -1935,7 +1935,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             temp_tables_ddl.append(table_ddl).append("\n\n");
 
         if (!Ora2rdb.reorder)
-            replace(ctx, temp_tables_ddl + "SET TERM ^ ;\n\n" + getRewriterText(ctx) + "\n\nSET TERM ; ^");
+            replace(ctx, temp_tables_ddl + "\n" + getRewriterText(ctx) + "\n");
         else
             create_temporary_tables.add(temp_tables_ddl.toString());
 

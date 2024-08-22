@@ -1410,6 +1410,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 replace(ctx, replaceRecordName.new_record_name);
             }
         }
+        String getSystemTableName = convertSystemTable(id_expression);
+        if (getSystemTableName != null){
+            replace(ctx, getSystemTableName);
+        }
     }
 
     @Override
@@ -1430,7 +1434,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
         } catch (Exception e) {
             System.err.println(e.fillInStackTrace() + rewriter.getText());
         }
-
     }
 
     @Override
@@ -1462,7 +1465,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
             replace(ctx.IS(), "AS");
             insertAfter(ctx.IS(), " BEGIN");
         }
-
         if (!ctx.package_name().isEmpty()) {
             if (ctx.package_name().size() > 1) {
                 delete(ctx.package_name(ctx.package_name().size() - 1));
@@ -2293,6 +2295,16 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 return "GDSCODE EXCEPTION_INTEGER_DIVIDE_BY_ZERO, EXCEPTION_FLOAT_DIVIDE_BY_ZERO";
         }
         return exceptionName;
+    }
+
+    private String convertSystemTable(String id_expr){
+        switch (id_expr){
+            case "DUAL":
+                return "RDB$DATABASE";
+            // TODO : добавить конвертацию других системных таблиц
+            default:
+                return null;
+        }
     }
 
 }

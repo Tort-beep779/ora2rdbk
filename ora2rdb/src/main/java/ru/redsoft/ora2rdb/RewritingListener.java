@@ -266,13 +266,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
 
     @Override
-    public void exitSql_script(Sql_scriptContext ctx) {   // TODO : check
+    public void exitSql_script(Sql_scriptContext ctx) {
         insertBefore(ctx, "CREATE EXCEPTION NO_DATA_FOUND\n" +
                 "\t'no data found';\n");
     }
 
     @Override
-    public void exitUnit_statement(Unit_statementContext ctx) {  // TODO : check
+    public void exitUnit_statement(Unit_statementContext ctx) {
         if (!exceptionExist & containsException) {
             String exception = "CREATE EXCEPTION CUSTOM_EXCEPTION 'error';";
             insertBefore(ctx, exception + "\n\n");
@@ -288,7 +288,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitCreate_table(Create_tableContext ctx) {  // TODO: check
+    public void exitCreate_table(Create_tableContext ctx) {
         String table_name;
         table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().schema_and_name().name));
 
@@ -356,7 +356,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitDatatype(DatatypeContext ctx) {  // TODO : check
+    public void exitDatatype(DatatypeContext ctx) {
         if (ctx.native_datatype_element() != null) {
             if (ctx.native_datatype_element().NUMBER() != null) {
                 if (ctx.precision_part() != null)
@@ -386,7 +386,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitNative_datatype_element(Native_datatype_elementContext ctx) {  // TODO : check
+    public void exitNative_datatype_element(Native_datatype_elementContext ctx) {
         if (ctx.VARCHAR2() != null || ctx.NVARCHAR2() != null)
             replace(ctx, "VARCHAR");
         else if (ctx.CLOB() != null)
@@ -425,7 +425,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitAlter_table(Alter_tableContext ctx) {  // TODO: check
+    public void exitAlter_table(Alter_tableContext ctx) {
         Constraint_clausesContext constraint_clauses_ctx = ctx.constraint_clauses();
         Column_clausesContext column_clauses_ctx = ctx.column_clauses();
 
@@ -457,7 +457,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitString_function(String_functionContext ctx) {  // TODO : check
+    public void exitString_function(String_functionContext ctx) {
         if (ctx.SUBSTR() != null) {
             replace(ctx.SUBSTR(), "SUBSTRING");
             replace(ctx.COMMA(0), " FROM ");
@@ -468,7 +468,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitSchema_and_name(Schema_and_nameContext ctx) {   // TODO : check
+    public void exitSchema_and_name(Schema_and_nameContext ctx) {
         delete(ctx.schema);
         delete(ctx.PERIOD());
     }
@@ -636,7 +636,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 .findFirst().orElse(null);
     }
 
-    private StoredProcedure findStorageProcedure(Create_procedure_bodyContext ctx){
+    private StoredProcedure findStorageProcedure(Create_procedure_bodyContext ctx) {
         StoredProcedure storedProcedure = new StoredProcedure();
         String name;
         name = Ora2rdb.getRealName(ctx.procedure_name().schema_and_name().name.getText());
@@ -652,7 +652,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 .findFirst().orElse(null);
     }
 
-    private StoredProcedure findStorageProcedure(Procedure_bodyContext ctx){
+    private StoredProcedure findStorageProcedure(Procedure_bodyContext ctx) {
         StoredProcedure storedProcedure = new StoredProcedure();
         String name;
         name = Ora2rdb.getRealName(ctx.identifier().getText());
@@ -855,7 +855,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitFunction_call(Function_callContext ctx) {   // TODO : check
+    public void exitFunction_call(Function_callContext ctx) {
         if (Ora2rdb.getRealName(getRuleText(ctx.routine_name())).equals("RAISE_APPLICATION_ERROR")) {
             containsException = true;
             replace(ctx.routine_name(), "EXCEPTION CUSTOM_EXCEPTION");
@@ -968,7 +968,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitCreate_index(Create_indexContext ctx) {  // TODO: check
+    public void exitCreate_index(Create_indexContext ctx) {
         String index_name;
         index_name = Ora2rdb.getRealName(getRuleText(ctx.index_name().schema_and_name().name));
         if (StorageInfo.index_names.contains(index_name)) {
@@ -992,7 +992,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitCreate_sequence(Create_sequenceContext ctx) {  // TODO: check
+    public void exitCreate_sequence(Create_sequenceContext ctx) {
         Sequence_nameContext sequence_name_ctx = ctx.sequence_name();
         String sequence_name;
 
@@ -1030,7 +1030,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitCreate_view(Create_viewContext ctx) {  // TODO: check
+    public void exitCreate_view(Create_viewContext ctx) {
         replace(ctx.REPLACE(), "ALTER");
         delete(ctx.FORCE());
 
@@ -1042,7 +1042,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitEditioning_clause(Editioning_clauseContext ctx) {  // TODO : check
+    public void exitEditioning_clause(Editioning_clauseContext ctx) {
         delete(ctx);
         deleteSPACESLeft(ctx);
     }
@@ -1063,12 +1063,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitComment_on_table(Comment_on_tableContext ctx) {  // TODO : check
+    public void exitComment_on_table(Comment_on_tableContext ctx) {
         comments.add(ctx);
     }
 
     @Override
-    public void exitQuery_block(Query_blockContext ctx) {  // TODO : check
+    public void exitQuery_block(Query_blockContext ctx) {
         if (ctx.into_clause() != null) {
             String indentation = getIndentation(ctx);
             String into_clause = getRewriterText(ctx.into_clause());
@@ -1085,7 +1085,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitRegular_id(Regular_idContext ctx) {  // TODO : check
+    public void exitRegular_id(Regular_idContext ctx) {
         if (ctx.non_reserved_keywords_pre12c() != null) {
             switch (getRuleText(ctx.non_reserved_keywords_pre12c()).toUpperCase()) {
                 case "SYSTIMESTAMP":
@@ -1111,7 +1111,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitCreate_function_body(Create_function_bodyContext ctx) {  // TODO: check
+    public void exitCreate_function_body(Create_function_bodyContext ctx) {
         replace(ctx.REPLACE(), "ALTER");
         replace(ctx.IS(), "AS");
         replace(ctx.SEMICOLON(), "^");
@@ -1201,7 +1201,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitFunction_body(Function_bodyContext ctx) {  // TODO:
+    public void exitFunction_body(Function_bodyContext ctx) {
         replace(ctx.IS(), "AS");
         replace(ctx.SEMICOLON(), "^");
         String getWhiteSpace = getIndentation(ctx) + "  ";
@@ -1277,12 +1277,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitFunction_spec(Function_specContext ctx) {  // TODO : check
+    public void exitFunction_spec(Function_specContext ctx) {
         replace(ctx.RETURN(), "RETURNS");
     }
 
     @Override
-    public void exitParameter(ParameterContext ctx) {  // TODO : check
+    public void exitParameter(ParameterContext ctx) {
         for (TerminalNode in_node : ctx.IN())
             delete(in_node);
         for (TerminalNode out_node : ctx.OUT())
@@ -1300,7 +1300,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitExecute_immediate(Execute_immediateContext ctx) {  // TODO : check
+    public void exitExecute_immediate(Execute_immediateContext ctx) {
         replace(ctx.IMMEDIATE(), "STATEMENT");
         insertBefore(ctx.expression(), "(");
         insertAfter(ctx.expression(), ")");
@@ -1312,13 +1312,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitPragma_declaration(Pragma_declarationContext ctx) {   // TODO : check
+    public void exitPragma_declaration(Pragma_declarationContext ctx) {
         delete(ctx);
         deleteSPACESLeft(ctx);
     }
 
     @Override
-    public void exitVariable_declaration(Variable_declarationContext ctx) {  // TODO : check
+    public void exitVariable_declaration(Variable_declarationContext ctx) {
         if (current_plsql_block != null && ctx.CONSTANT() != null
                 && ctx.parent.getClass().equals(PlSqlParser.Package_obj_specContext.class)
                 || ctx.parent.getClass().equals(PlSqlParser.Package_obj_bodyContext.class)) {
@@ -1352,14 +1352,14 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitDefault_value_part(Default_value_partContext ctx) { // TODO : check
+    public void exitDefault_value_part(Default_value_partContext ctx) {
         if(ctx.ASSIGN_OP() != null){
             replace(ctx.ASSIGN_OP(), "=");
         }
     }
 
     @Override
-    public void exitType_declaration(Type_declarationContext ctx) {  // TODO : check
+    public void exitType_declaration(Type_declarationContext ctx) {
         if (ctx.record_type_def() != null) {
             insertBefore(ctx.TYPE(), "DECLARE ");
             delete(ctx.IS());
@@ -1379,7 +1379,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitCursor_declaration(Cursor_declarationContext ctx) { // TODO : check
+    public void exitCursor_declaration(Cursor_declarationContext ctx) {
         replace(ctx.CURSOR(), "DECLARE");
         replace(ctx.IS(), "CURSOR FOR");
         insertBefore(ctx.select_statement(), "(");
@@ -1387,7 +1387,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitOther_function(Other_functionContext ctx) {  // TODO : check
+    public void exitOther_function(Other_functionContext ctx) {
         if (ctx.cursor_name() != null) {
             if (ctx.PERCENT_FOUND() != null) {
                 replace(ctx, "ROW_COUNT != 0");
@@ -1410,11 +1410,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 replace(ctx, replaceRecordName.new_record_name);
             }
         }
-
     }
 
     @Override
-    public void exitBind_variable(Bind_variableContext ctx) {  // TODO : check
+    public void exitBind_variable(Bind_variableContext ctx) {
         String var = getRuleText(ctx);
         String upper = var.toUpperCase();
         if (upper.startsWith(":OLD.") || upper.startsWith(":NEW."))
@@ -1435,7 +1434,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitSql_plus_command_wrapper(Sql_plus_command_wrapperContext ctx) { // TODO : check
+    public void exitSql_plus_command_wrapper(Sql_plus_command_wrapperContext ctx) {
         if(ctx.PROMPT_MESSAGE() != null)
             commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
         else
@@ -1448,7 +1447,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitCreate_package(Create_packageContext ctx) {  // TODO : check
+    public void exitCreate_package(Create_packageContext ctx) {
         if (ctx.REPLACE() != null) {
             replace(ctx.REPLACE(), "ALTER");
         }
@@ -1480,7 +1479,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitCreate_package_body(Create_package_bodyContext ctx) {  // TODO : check
+    public void exitCreate_package_body(Create_package_bodyContext ctx) {
         current_package_name = null;
         if (ctx.OR() != null) {
             if (ctx.REPLACE() != null) {
@@ -1531,7 +1530,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitCreate_procedure_body(Create_procedure_bodyContext ctx) {  // TODO: check
+    public void exitCreate_procedure_body(Create_procedure_bodyContext ctx) {
         replace(ctx.REPLACE(), "ALTER");
         replace(ctx.IS(), "AS");
         replace(ctx.SEMICOLON(), "^");
@@ -1632,7 +1631,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitProcedure_body(Procedure_bodyContext ctx) {  //TODO : check
+    public void exitProcedure_body(Procedure_bodyContext ctx) {
         replace(ctx.IS(), "AS");
         delete(ctx.SEMICOLON());
 
@@ -1710,7 +1709,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
         storedBlocksStack.pop();
     }
 
-    // TODO : check
     private void autonomousTransactionBlockConvert(Procedure_bodyContext ctx) {
         if (checkAndDeleteAutonomousTransaction(ctx.seq_of_declare_specs())) {
             insertBefore(ctx.body().seq_of_statements(), "IN AUTONOMOUS TRANSACTION DO BEGIN\n");
@@ -1756,7 +1754,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
 
     @Override
-    public void exitType_spec(Type_specContext ctx) {  // TODO : check
+    public void exitType_spec(Type_specContext ctx) {
         if (ctx.PERCENT_TYPE() != null)
             replace(ctx, "TYPE OF COLUMN " + getRuleText(ctx.type_name()));
         if (ctx.PERCENT_ROWTYPE() != null) {
@@ -1776,7 +1774,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitCreate_trigger(Create_triggerContext ctx) {   // TODO: check
+    public void exitCreate_trigger(Create_triggerContext ctx) {
         String indentation = getIndentation(ctx);
         replace(ctx.REPLACE(), "ALTER");
         deleteSPACESLeft(ctx.trigger_body());
@@ -1800,18 +1798,18 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitReferencing_clause(Referencing_clauseContext ctx) {  // TODO : check
+    public void exitReferencing_clause(Referencing_clauseContext ctx) {
         commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
     }
 
     @Override
-    public void exitFor_each_row(For_each_rowContext ctx) {  // TODO: check
+    public void exitFor_each_row(For_each_rowContext ctx) {
         delete(ctx);
         deleteSPACESAbut(ctx);
     }
 
     @Override
-    public void exitTrigger_when_clause(Trigger_when_clauseContext ctx) { // TODO : check
+    public void exitTrigger_when_clause(Trigger_when_clauseContext ctx) {
         if (current_plsql_block != null)
             current_plsql_block.trigger_when_condition = getRewriterText(ctx.condition());
         delete(ctx);
@@ -1844,7 +1842,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitBody(BodyContext ctx) {  // TODO : check
+    public void exitBody(BodyContext ctx) {
         if(ctx.EXCEPTION() != null)
             replace(ctx.EXCEPTION(), "/*EXCEPTION*/");
         if (current_plsql_block != null &&
@@ -1878,7 +1876,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitTrigger_block(Trigger_blockContext ctx) {  // TODO: check
+    public void exitTrigger_block(Trigger_blockContext ctx) {
         delete(ctx.DECLARE());
         deleteSPACESLeft(ctx.DECLARE());
         if(ctx.body() != null){
@@ -1891,7 +1889,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitAlter_trigger(Alter_triggerContext ctx) {  // TODO: check
+    public void exitAlter_trigger(Alter_triggerContext ctx) {
         replace(ctx.ENABLE(), "ACTIVE");
         replace(ctx.DISABLE(), "INACTIVE");
 
@@ -1904,7 +1902,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitStandard_function(Standard_functionContext ctx) {  // TODO : check
+    public void exitStandard_function(Standard_functionContext ctx) {
         if (ctx.string_function() != null) {
             if (ctx.string_function().NVL() != null)
                 replace(ctx.string_function().NVL(), "COALESCE");
@@ -1937,7 +1935,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitAssignment_statement(Assignment_statementContext ctx) {  // TODO: check
+    public void exitAssignment_statement(Assignment_statementContext ctx) {
         if (ctx.general_element() != null) {
             if (ctx.general_element().general_element_part().size() == 1) {
                 General_element_partContext gen_elem_part_ctx = ctx.general_element().general_element_part(0);
@@ -1978,7 +1976,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitIf_statement(If_statementContext ctx) {  // TODO : check
+    public void exitIf_statement(If_statementContext ctx) {
         insertBefore(ctx.condition(), "(");
         insertAfter(ctx.condition(), ")");
 
@@ -1993,7 +1991,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitElsif_part(Elsif_partContext ctx) { // TODO : check
+    public void exitElsif_part(Elsif_partContext ctx) {
         replace(ctx.ELSIF(), "ELSE IF");
         insertBefore(ctx.condition(), "(");
         insertAfter(ctx.condition(), ")");
@@ -2006,7 +2004,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitElse_part(Else_partContext ctx) {  // TODO :check
+    public void exitElse_part(Else_partContext ctx) {
         if (ctx.seq_of_statements().statement().size() > 1) {
             String indentation = getIndentation(ctx);
             insertAfter(ctx.ELSE(), "\n" + indentation + "BEGIN");
@@ -2036,7 +2034,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitLoop_statement(Loop_statementContext ctx) {  // TODO : check
+    public void exitLoop_statement(Loop_statementContext ctx) {
 
         if (ctx.FOR() != null)
             convertLoopFor(ctx);
@@ -2049,7 +2047,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitExit_statement(Exit_statementContext ctx) {  // TODO : check
+    public void exitExit_statement(Exit_statementContext ctx) {
         delete(ctx.EXIT());
         if(ctx.WHEN() != null) {
             delete(ctx.WHEN());
@@ -2073,7 +2071,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         return false;
     }
 
-    private void convertLoopForRecordInCursor(Loop_statementContext ctx) {  // TODO : check
+    private void convertLoopForRecordInCursor(Loop_statementContext ctx) {
         String cursorName = Ora2rdb.getRealName(ctx.cursor_loop_param().cursor_name().getText());
         String recName = cursorName + "_" + Ora2rdb.getRealName(ctx.cursor_loop_param().record_name().getText());
         loop_rec_name_and_cursor_name.put(recName, cursorName);
@@ -2104,7 +2102,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         deleteSPACESAbut(ctx.LOOP(1));
     }
 
-    private void convertLoopForInRange(Loop_statementContext ctx) { // TODO : check
+    private void convertLoopForInRange(Loop_statementContext ctx) {
         String index_name = ctx.cursor_loop_param().index_name().getText();
 
         if (!loop_index_names.contains(index_name))
@@ -2136,7 +2134,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         deleteSPACESLeft(ctx.END());
     }
 
-    private void convertLoopForInRangeReverse(Loop_statementContext ctx) {  // TODO : check
+    private void convertLoopForInRangeReverse(Loop_statementContext ctx) {
         String index_name = ctx.cursor_loop_param().index_name().getText();
 
         if (!loop_index_names.contains(index_name))
@@ -2167,7 +2165,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         deleteSPACESLeft(ctx.END());
     }
 
-    private void convertLoopFor(Loop_statementContext ctx) {  // TODO : check
+    private void convertLoopFor(Loop_statementContext ctx) {
         if (ctx.cursor_loop_param().REVERSE() != null && ctx.cursor_loop_param().DOUBLE_PERIOD() != null) {
             convertLoopForInRangeReverse(ctx);
         } else if (ctx.cursor_loop_param().DOUBLE_PERIOD() != null) {
@@ -2176,8 +2174,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             convertLoopForRecordInCursor(ctx);
             current_plsql_block.popReplaceRecordName();
             current_plsql_block.popScope();
-        }
-        else{
+        } else {
 
             String indentation = getIndentation(ctx);
 
@@ -2196,7 +2193,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
     }
 
-    public void convertLoopWhile(Loop_statementContext ctx) {   // TODO : check
+    public void convertLoopWhile(Loop_statementContext ctx) {
         insertBefore(ctx.condition(), "(");
         insertAfter(ctx.condition(), ") DO");
         deleteSPACESRight(ctx.condition());
@@ -2211,7 +2208,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitReturn_statement(Return_statementContext ctx) { // TODO : check
+    public void exitReturn_statement(Return_statementContext ctx) {
         String returnVal = getRewriterText(ctx.expression());
 
         if (returnVal.startsWith(":"))
@@ -2260,12 +2257,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void enterSelection_directive(Selection_directiveContext ctx) {  // TODO : check
+    public void enterSelection_directive(Selection_directiveContext ctx) {
         commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
     }
 
     @Override
-    public void exitException_handler(Exception_handlerContext ctx) { //TODO : check
+    public void exitException_handler(Exception_handlerContext ctx) {
         String indentation = getIndentation(ctx.seq_of_statements());
         replace(ctx.THEN(), "DO");
         deleteSPACESRight(ctx.seq_of_statements());
@@ -2279,7 +2276,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     }
 
-    private String convertException_name(Exception_nameContext ctx){ // TODO : check
+    private String convertException_name(Exception_nameContext ctx){
         String exceptionName = Ora2rdb.getRealName(ctx.getText());
         switch (exceptionName) {
             case "TOO_MANY_ROWS":
@@ -2297,6 +2294,5 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         return exceptionName;
     }
-
 
 }

@@ -417,6 +417,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitTableview_name(Tableview_nameContext ctx) {
         deleteSPACESLeft(ctx.start);
+        String getSystemTableName = convertSystemTable(Ora2rdb.getRealName(ctx.schema_and_name().name.getText()));
+        if (getSystemTableName != null){
+            replace (ctx, getSystemTableName);
+        }
     }
 
     @Override
@@ -1409,10 +1413,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
             if (id_expression.equals(replaceRecordName.old_record_name)) {
                 replace(ctx, replaceRecordName.new_record_name);
             }
-        }
-        String getSystemTableName = convertSystemTable(id_expression);
-        if (getSystemTableName != null){
-            replace(ctx, getSystemTableName);
         }
     }
 

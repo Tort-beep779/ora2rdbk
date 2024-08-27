@@ -358,6 +358,7 @@ public class SqlCodeParser {
 
     private List<String> fromStreamToString(InputStream is) {
         StringBuilder result = new StringBuilder();
+//        List<String> words = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line;
             while ((line = reader.readLine()) != null) {

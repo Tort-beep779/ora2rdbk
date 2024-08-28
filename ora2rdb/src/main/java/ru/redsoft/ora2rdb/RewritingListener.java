@@ -1594,7 +1594,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         if (!ctx.package_name().isEmpty()) {
             if (ctx.package_name(ctx.package_name().size() - 1) != null) {
-                delete(ctx.package_name(ctx.package_name().size() - 1));
+                replace(ctx.package_name(ctx.package_name().size() - 1),
+                        "/*"+Ora2rdb.getRealName(ctx.package_name(ctx.package_name().size() - 1).getText())+"*/");
             }
         }
         popScope();

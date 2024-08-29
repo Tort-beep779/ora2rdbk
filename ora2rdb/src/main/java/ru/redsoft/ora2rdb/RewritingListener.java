@@ -47,6 +47,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public String getText() {
         StringBuilder out = new StringBuilder();
 
+        out.append("CREATE EXCEPTION NO_DATA_FOUND\n" +
+                "\t'no data found';\n");
+
         for (Create_sequenceContext sequence : sequences)
             out.append(getRewriterText(sequence)).append("\n\n");
 
@@ -56,10 +59,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
         ArrayList<View> views = View.sort(StorageInfo.views.values());
 
         for (View view : views)
-            out.append(getRewriterText(view.ctx)).append("\n\n");
+            out.append(getRewriterText(view.ctx)).append(";").append("\n\n");
 
         for (Comment_on_tableContext comment : comments)
-            out.append(getRewriterText(comment)).append("\n\n");
+            out.append(getRewriterText(comment)).append(";").append("\n\n");
 
         for (Alter_tableContext alter_table : alter_tables)
             out.append(getRewriterText(alter_table)).append("\n\n");
@@ -276,8 +279,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitSql_script(Sql_scriptContext ctx) {
-        insertBefore(ctx, "CREATE EXCEPTION NO_DATA_FOUND\n" +
-                "\t'no data found';\n");
+        if (!Ora2rdb.reorder) {
+            insertBefore(ctx, "CREATE EXCEPTION NO_DATA_FOUND\n" +
+                    "\t'no data found';\n");
+        }
     }
 
     @Override

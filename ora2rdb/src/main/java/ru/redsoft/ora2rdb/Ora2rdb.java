@@ -67,7 +67,7 @@ public class Ora2rdb {
         walker.walk(converter, tree);
 
 
-        StorageInfo.clearInfo();
+//        StorageInfo.clearInfo();
         return converter;
     }
 
@@ -141,7 +141,7 @@ public class Ora2rdb {
             ps.print(converter.getText());
         else
             ps.print(converter.rewriter.getText());
-
+        StorageInfo.clearInfo();
 
         ps.close();
     }

@@ -378,9 +378,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (ctx.native_datatype_element() != null) {
             if (ctx.native_datatype_element().NUMBER() != null) {
                 if (ctx.precision_part() != null)
-                    replace(ctx.precision_part().ASTERISK(), "18");
+                    replace(ctx.precision_part().ASTERISK(), "34");
                 else
-                    replace(ctx, getRewriterText(ctx) + "(18, 4)");
+                    replace(ctx, getRewriterText(ctx) + "(34, 8)");
             } else if (ctx.native_datatype_element().FLOAT() != null) {
                 if (ctx.precision_part() != null)
                     replace(ctx, "DOUBLE PRECISION");
@@ -389,10 +389,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
             } else if (ctx.native_datatype_element().VARCHAR2() != null ||
                     ctx.native_datatype_element().VARCHAR() != null) {
                 if (ctx.precision_part() == null)
-                    replace(ctx, getRewriterText(ctx) + "(32000)");
+                    replace(ctx, getRewriterText(ctx) + "(32765)");
             } else if (ctx.native_datatype_element().NUMERIC() != null) {
                 if (ctx.precision_part() == null)
-                    replace(ctx, getRewriterText(ctx) + "(18, 4)");
+                    replace(ctx, getRewriterText(ctx) + "(34, 8)");
             }
         }
     }
@@ -2060,10 +2060,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 replace(ctx.string_function().TO_CHAR(), "CAST");
                 if (ctx.string_function().COMMA(0) != null) {
                     insertBefore(ctx, "UPPER( ");
-                    replace(ctx.string_function().COMMA(0), " AS VARCHAR(32000) FORMAT");
+                    replace(ctx.string_function().COMMA(0), " AS VARCHAR(32765) FORMAT");
                     replace(ctx, getRewriterText(ctx) + ")");
                 } else {
-                    insertAfter(ctx.string_function().expression(0), " AS VARCHAR(32000)");
+                    insertAfter(ctx.string_function().expression(0), " AS VARCHAR(32765)");
                 }
             }
             if (ctx.string_function().TO_DATE() != null) {

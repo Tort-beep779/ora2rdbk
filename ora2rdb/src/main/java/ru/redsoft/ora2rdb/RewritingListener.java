@@ -2446,7 +2446,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
              case "VALUE_ERROR":
                  return "GDSCODE SING_SELECT_ERR";
              case "ZERO_DIVIDE":
-                 return "GDSCODE EXCEPTION_INTEGER_DIVIDE_BY_ZERO, EXCEPTION_FLOAT_DIVIDE_BY_ZERO";
+                 return "GDSCODE EXCEPTION_INTEGER_DIVIDE_BY_ZERO, GDSCODE EXCEPTION_FLOAT_DIVIDE_BY_ZERO";
          }
          return exceptionName;
     }

@@ -88,7 +88,7 @@ public class StoredAnonymousBlock implements StoredBlock {
         parameter.setType(type);
         parameter.setName(name);
         parameter.setOut(false);
-        this.declaredVariables.add(parameter) ;
+        this.declaredVariables.add(parameter);
     }
 
     public void setIsNested(boolean isNested){

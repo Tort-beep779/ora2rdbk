@@ -1,16 +1,15 @@
 package ru.redsoft.ora2rdb;
 
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.*;
 
 public class Ora2rdb {
     public static boolean reorder = false;
@@ -141,6 +140,7 @@ public class Ora2rdb {
             ps.print(converter.getText());
         else
             ps.print(converter.rewriter.getText());
+
         StorageInfo.clearInfo();
 
         ps.close();

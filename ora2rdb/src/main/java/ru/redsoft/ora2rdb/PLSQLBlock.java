@@ -91,9 +91,9 @@ public class PLSQLBlock {
             new_arr_type.data_type = type;
             new_arr_type.index_types.add(index_type);
         }
-
         array_types.put(name, new_arr_type);
     }
+
 
     void declareArray(String name, String type) {
         if (array_types.containsKey(type)) {

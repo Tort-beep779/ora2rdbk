@@ -2307,7 +2307,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         delete(ctx.EXIT());
         if(ctx.WHEN() != null)
             delete(ctx.WHEN());
-        replace(ctx.condition(), "IF( " + getRewriterText(ctx.condition()) + " ) BEGIN LEAVE END");
+        replace(ctx.condition(), "IF( " + getRewriterText(ctx.condition()) + " ) THEN LEAVE");
     }
 
     private boolean cursorNameIsFunction (Loop_statementContext ctx) {

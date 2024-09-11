@@ -95,7 +95,7 @@ public class StoredAnonymousBlock implements StoredBlock {
         this.isNested = isNested;
     }
 
-    public boolean getIsNested(){
+    public boolean getIsNested() {
         return this.isNested;
     }
 
@@ -143,6 +143,5 @@ public class StoredAnonymousBlock implements StoredBlock {
     public void setCalledStorageBlocks(StoredBlock calledStorageBlocks) {
 
     }
-
 
 }

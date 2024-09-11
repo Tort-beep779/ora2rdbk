@@ -386,7 +386,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 else
                     replace(ctx, getRewriterText(ctx) + "(18, 4)");
             } else if (ctx.native_datatype_element().FLOAT() != null) {
-                if (ctx.precision_part() != null)
+//                if (ctx.precision_part() != null)
                     replace(ctx, "DOUBLE PRECISION");
             } else if (ctx.native_datatype_element().TIMESTAMP() != null) {
                 delete(ctx.precision_part());

@@ -34,6 +34,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
     ArrayList<String> create_temporary_tables = new ArrayList<String>();
     ArrayList<String> loop_index_names = new ArrayList<String>();
     TreeMap<String, String> loop_rec_name_and_cursor_name = new TreeMap<>();
+    TreeMap<String, String> rowtype_rec_name_and_select_statement = new TreeMap<>();
+
 
 
     boolean containsException = false;
@@ -1284,6 +1286,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         loop_rec_name_and_cursor_name.clear();
 
+        createTempCursorAndRowtypeVariable(ctx.body());
+
         autonomousTransactionBlockConvert(ctx);
 
         StringBuilder temp_tables_ddl = new StringBuilder();
@@ -1375,6 +1379,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         loop_rec_name_and_cursor_name.clear();
 
+        createTempCursorAndRowtypeVariable(ctx.body());
         autonomousTransactionBlockConvert(ctx);
 
 
@@ -1755,6 +1760,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         loop_rec_name_and_cursor_name.clear();
 
+        createTempCursorAndRowtypeVariable(ctx.body());
         autonomousTransactionBlockConvert(ctx);
 
         StringBuilder temp_tables_ddl = new StringBuilder();
@@ -1848,6 +1854,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         loop_rec_name_and_cursor_name.clear();
 
+        createTempCursorAndRowtypeVariable(ctx.body());
         autonomousTransactionBlockConvert(ctx);
         popScope();
         storedBlocksStack.pop();
@@ -2252,6 +2259,69 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     }
 
+
+
+
+    private void convertLoopForRecordInSelect(Loop_statementContext ctx){
+        String rowRecName = getRewriterText(ctx.cursor_loop_param().record_name());
+        String indentation = getIndentation(ctx);
+        rowtype_rec_name_and_select_statement.put(rowRecName,
+                getRewriterText(ctx.cursor_loop_param().select_statement())
+        );
+        Cursor_loop_paramContext cursorLoopParam = ctx.cursor_loop_param();
+        deleteSpacesLeft(cursorLoopParam.record_name());
+        delete(cursorLoopParam.record_name());
+
+        deleteSpacesLeft(cursorLoopParam.IN());
+        delete(cursorLoopParam.IN());
+
+        if(cursorLoopParam.select_statement() != null) {
+            Select_statementContext selectStatement = cursorLoopParam.select_statement();
+            if (selectStatement.select_only_statement() != null) {
+                Select_only_statementContext selectOnlyStatement = selectStatement.select_only_statement();
+                if (selectOnlyStatement.subquery() != null) {
+                    SubqueryContext subquery = selectOnlyStatement.subquery();
+                    if (subquery.subquery_basic_elements() != null) {
+                        Subquery_basic_elementsContext subqueryBasicElements = subquery.subquery_basic_elements();
+                        if (subqueryBasicElements.query_block() != null) {
+                            Query_blockContext queryBlock = subqueryBasicElements.query_block();
+                            if (queryBlock.selected_list().ASTERISK() == null
+                                    && queryBlock.selected_list().select_list_elements().size() < 2) {
+                                insertBefore(queryBlock.selected_list(), "ROW( ");
+                                insertAfter(queryBlock.selected_list(), " )");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        insertAfter(cursorLoopParam.RIGHT_PAREN(), " INTO " + rowRecName + " DO\n"
+        + indentation + "BEGIN\n");
+
+        delete(ctx.LOOP(0));
+        deleteSpacesLeft(ctx.LOOP(0));
+
+        delete(ctx.LOOP(1));
+        deleteSpacesLeft(ctx.LOOP(1));
+    }
+
+    private void createTempCursorAndRowtypeVariable(BodyContext ctx){
+        StringBuilder declare_cursor_and_rowtype = new StringBuilder();
+        if(!rowtype_rec_name_and_select_statement.isEmpty()){
+            for (String rec : rowtype_rec_name_and_select_statement.keySet()) {
+                String cursor_name = rec + "_TEMP_CURSOR";
+                declare_cursor_and_rowtype.append("\n  DECLARE VARIABLE ").append(cursor_name).
+                        append(" CURSOR FOR (").append(rowtype_rec_name_and_select_statement.get(rec)).append(");\n");
+
+                declare_cursor_and_rowtype.append("\n  DECLARE VARIABLE ").append(rec).
+                        append(" TYPE OF TABLE ").append(cursor_name).append(";\n");
+            }
+            insertBefore(ctx, declare_cursor_and_rowtype);
+        }
+    }
+
     private void convertLoopForInRange(Loop_statementContext ctx) {
         String index_name = ctx.cursor_loop_param().index_name().getText();
 
@@ -2323,6 +2393,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
             convertLoopForRecordInCursor(ctx);
             current_plsql_block.popReplaceRecordName();
             current_plsql_block.popScope();
+        }
+        else if(ctx.cursor_loop_param().record_name() != null && ctx.cursor_loop_param().select_statement() != null){
+            convertLoopForRecordInSelect(ctx);
         }
         else{
 

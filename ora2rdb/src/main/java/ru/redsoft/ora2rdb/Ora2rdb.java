@@ -31,7 +31,7 @@ public class Ora2rdb {
     static String getRealParameterName(String str) {
         return str.toUpperCase()
                 .substring(str.lastIndexOf(".") + 1,
-                        str.length()
+                           str.length()
                 );
     }
 
@@ -73,7 +73,7 @@ public class Ora2rdb {
         walker.walk(converter, tree);
 
 
-        StorageInfo.clearInfo();
+//        StorageInfo.clearInfo();
         return converter;
     }
 
@@ -212,6 +212,7 @@ public class Ora2rdb {
         else
             ps.print(converter.rewriter.getText());
 
+        StorageInfo.clearInfo();
 
         ps.close();
     }

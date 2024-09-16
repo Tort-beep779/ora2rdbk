@@ -8,7 +8,6 @@ public class Parameter {
     private String name;
     private String type;
     private boolean out;
-//    private String convertType_spec;
 
     public Parameter(){
         this.name = null;
@@ -29,7 +28,7 @@ public class Parameter {
     public void setType(String type) {
         this.type = type;
     }
-    public boolean getOut() {
+    public boolean isOut() {
         return out;
     }
     public void setOut(boolean out) {

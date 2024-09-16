@@ -322,7 +322,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                 tempList.stream().filter(e -> e.equalsIgnoreParent(finder, false))
                         .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
             else if(!tempList.isEmpty())
-                finder.setParent(tempList.get(0));
+                finder.setParent(tempList.get(0).getParent());
         }
         StoredBlock storedBlock;
         List<StoredBlock> tempList =
@@ -391,7 +391,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                     tempList.stream().filter(e -> e.equalsIgnoreParent(finder, false))
                             .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
                 else if(!tempList.isEmpty())
-                    finder.setParent(tempList.get(0));
+                    finder.setParent(tempList.get(0).getParent());
             }
 
             StoredBlock storedBlock;
@@ -450,9 +450,9 @@ public class ScanListener extends PlSqlParserBaseListener {
                 Native_datatype_elementContext nde = datatype.native_datatype_element();
 
                 if (nde.VARCHAR2() != null || nde.NVARCHAR2() != null)
-                    type = "VARCHAR (32000)";
+                    type = "VARCHAR (32765)";
                 else if (nde.NUMBER() != null)
-                    type = "NUMERIC (18, 4)";
+                    type = "NUMERIC (34, 8)";
                 else if (nde.BINARY_FLOAT() != null)
                     type = "FLOAT";
                 else if (nde.BINARY_DOUBLE() != null)

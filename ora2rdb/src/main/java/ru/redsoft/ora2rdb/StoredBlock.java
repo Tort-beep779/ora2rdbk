@@ -40,10 +40,4 @@ public interface StoredBlock {
      void setCalledStorageBlocks(StoredBlock calledStorageBlocks);
 
 
-
-
-
-
-
-
 }

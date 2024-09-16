@@ -1,12 +1,7 @@
 package ru.redsoft.ora2rdb;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.TerminalNode;
-
 import ru.redsoft.ora2rdb.PlSqlParser.*;
 
 import java.util.*;
@@ -1368,7 +1363,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitFunction_spec(Function_specContext ctx) {
         replace(ctx.RETURN(), "RETURNS");
-        deleteSpacesLeft(ctx.SEMICOLON());
+        deleteSPACESLeft(ctx.SEMICOLON());
         StringBuilder return_parameters = new StringBuilder();
         ArrayList<ParameterContext> parameters = (ArrayList<ParameterContext>) ctx.parameter().stream()
                 .filter(e -> !e.OUT().isEmpty())
@@ -1643,7 +1638,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 .filter(e -> !e.OUT().isEmpty())
                 .collect(Collectors.toList());
         if (!parameters.isEmpty()) {
-            deleteSpacesLeft(ctx.SEMICOLON());
+            deleteSPACESLeft(ctx.SEMICOLON());
             delete(ctx.SEMICOLON());
             for (ParameterContext parameter : parameters) {
                 String parameterType = getRewriterText(parameter.type_spec());
@@ -2256,13 +2251,15 @@ public class RewritingListener extends PlSqlParserBaseListener {
             delete(ctx.LOOP(1));
         }
     }
+
     @Override
     public void exitExit_statement(Exit_statementContext ctx) {
         delete(ctx.EXIT());
-        if(ctx.WHEN() != null) {
+            if(ctx.WHEN() != null) {
             delete(ctx.WHEN());
-        replace(ctx.condition(), "IF( " + getRewriterText(ctx.condition()) + " ) THEN LEAVE");
-    }
+            replace(ctx.condition(), "IF( " + getRewriterText(ctx.condition()) + " ) THEN LEAVE");
+        }
+
     }
 
     private boolean cursorNameIsFunction (Loop_statementContext ctx) {
@@ -2322,10 +2319,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 getRewriterText(ctx.cursor_loop_param().select_statement())
         );
         Cursor_loop_paramContext cursorLoopParam = ctx.cursor_loop_param();
-        deleteSpacesLeft(cursorLoopParam.record_name());
+        deleteSPACESLeft(cursorLoopParam.record_name());
         delete(cursorLoopParam.record_name());
 
-        deleteSpacesLeft(cursorLoopParam.IN());
+        deleteSPACESLeft(cursorLoopParam.IN());
         delete(cursorLoopParam.IN());
 
         if(cursorLoopParam.select_statement() != null) {
@@ -2354,10 +2351,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
         + indentation + "BEGIN\n");
 
         delete(ctx.LOOP(0));
-        deleteSpacesLeft(ctx.LOOP(0));
+        deleteSPACESLeft(ctx.LOOP(0));
 
         delete(ctx.LOOP(1));
-        deleteSpacesLeft(ctx.LOOP(1));
+        deleteSPACESLeft(ctx.LOOP(1));
     }
 
     private void createTempCursorAndRowtypeVariable(BodyContext ctx){

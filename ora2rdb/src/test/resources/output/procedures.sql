@@ -1,6 +1,8 @@
 --------------------------------------------------------
 --  DDL for Procedure CREATE_FK_INDEXES
 --------------------------------------------------------
+CREATE EXCEPTION NO_DATA_FOUND
+	'no data found';
 
 
   SET TERM ^ ;
@@ -40,10 +42,11 @@ begin
                                     cname5, cname6, cname7, cname8)
               and i.column_position <= cons.col_cnt
             Group by i.index_name) 
-            Order by table_name, constraint_name, colum) t ) 
+            Order by table_name, constraint_name, colum) t )
   DO
-    execute STATEMENT 'create index j_' || SUBSTRING(cur.constraint_name FROM 1 FOR 28) || ' on ' || cur.table_name || ' (' || cur.colum || ')';
-   
+  BEGIN
+    execute STATEMENT ('create index j_' || SUBSTRING(cur.constraint_name FROM 1 FOR 28) || ' on ' || cur.table_name || ' (' || cur.colum || ')');
+  END
 end^
 
 SET TERM ; ^
@@ -107,7 +110,6 @@ BEGIN
       SELECT org_id, id FROM orgchild, org
         WHERE child_id = parent_id AND child_id = cur.id;
   END
-   
 END^
 
 SET TERM ; ^
@@ -122,19 +124,33 @@ SET TERM ; ^
 
 CREATE OR ALTER PROCEDURE "RPL$ACTIVATE_RPL" 
 AS
-  DECLARE stmt varchar(2000);
+   DECLARE stmt varchar(2000);
   DECLARE s CURSOR FOR (SELECT TRIGGER_NAME from USER_TRIGGERS where (TRIGGER_NAME like 'RPL$%'));
   DECLARE r CURSOR FOR (SELECT id, name FROM rpltable) ;
+
+  DECLARE VARIABLE R_R_REC TYPE OF TABLE R;
+
+  DECLARE VARIABLE S_S_REC TYPE OF TABLE S;
 BEGIN
-  FOR s_rec in s DO
+  OPEN S;
+  FETCH S INTO S_S_REC;
+  WHILE ( ROW_COUNT != 0 ) DO
   BEGIN
-    stmt = 'DROP TRIGGER ' || s_rec.trigger_name;
-    execute STATEMENT :stmt;
+    stmt = 'DROP TRIGGER ' || S_S_REC.trigger_name;
+    execute STATEMENT (:stmt);
+  	FETCH S INTO S_S_REC;
   END
-   
-  FOR r_rec in r DO
-    EXECUTE PROCEDURE RPL$REENABLE_RPL_TABLE(r_rec.name);
-   
+  CLOSE S;
+
+  OPEN R;
+  FETCH R INTO R_R_REC;
+  WHILE ( ROW_COUNT != 0 ) DO
+  BEGIN
+    EXECUTE PROCEDURE RPL$REENABLE_RPL_TABLE(R_R_REC.name);
+  	FETCH R INTO R_R_REC;
+  END
+  CLOSE R;
+
 END^
 
 SET TERM ; ^
@@ -149,75 +165,88 @@ SET TERM ; ^
 
 CREATE OR ALTER PROCEDURE "RPL$ASSIGN_GENERATION" 
     AS
-    DECLARE GNRTN NUMERIC(15,0);
-    DECLARE OLD_GEN NUMERIC(15,0);
-    DECLARE OLD_GEN1 NUMERIC(15,0);
-    DECLARE OLD_GEN2 NUMERIC(15,0);
-    DECLARE ldaydate date;
+     DECLARE GNRTN NUMERIC(15,0);
+     DECLARE OLD_GEN NUMERIC(15,0);
+     DECLARE OLD_GEN1 NUMERIC(15,0);
+     DECLARE OLD_GEN2 NUMERIC(15,0);
+     DECLARE ldaydate date;
 begin
   -- THIS PROCEDURE MUST BE EXECUTED AT SNAPSHOT ISOLATION LEVEL
   -- lock some table for a singleton execution of this procedure
   lock table rpltable in exclusive mode;
-  select generation_seq.nextval  from dual into :gnrtn;
-  select max(day_date)  from dayversion into :ldaydate;
+  select generation_seq.nextval
+  from dual
+  into :gnrtn;
+  IF (ROW_COUNT = 0) THEN
+  	EXCEPTION NO_DATA_FOUND;
+  select max(day_date)
+  from dayversion
+  into :ldaydate;
+  IF (ROW_COUNT = 0) THEN
+  	EXCEPTION NO_DATA_FOUND;
   update rpllog set generation = :GNRTN, transaction_id = current_transaction_id where
     generation=999999999999999;
   old_gen = null;
-  if (((CURRENT_DATE - :ldaydate) * 24 > 1)) then
+  if (((CURRENT_TIMESTAMP - :ldaydate) * 24 > 1)) then
   BEGIN
-    insert into dayversion(day_date, day_version) values (CURRENT_DATE, :GNRTN);
-    select min(sent_version)  from rpl where master_id = (select site_id from systemsite) and sent_version > 0 into :old_gen;
+    insert into dayversion(day_date, day_version) values (CURRENT_TIMESTAMP, :GNRTN);
+    select min(sent_version)
+    from rpl where master_id = (select site_id from systemsite) and sent_version > 0
+    into :old_gen;
+    IF (ROW_COUNT = 0) THEN
+    	EXCEPTION NO_DATA_FOUND;
     if ((:old_gen is null)) then
       old_gen = 999999999999999;
-     
   -- We have three differen ranges of 'living time' for records in log, depending on rpltable generation_group
   -- 10 days
-    select max(day_version)  from dayversion where day_date < cast(CURRENT_DATE as date) - 10 into :old_gen1;
+    select max(day_version)
+    from dayversion where day_date < cast(CURRENT_TIMESTAMP as date) - 10
+    into :old_gen1;
+    IF (ROW_COUNT = 0) THEN
+    	EXCEPTION NO_DATA_FOUND;
     if ((:old_gen1 is null)) then
       old_gen1 = 0;
-     
     if ((:old_gen1 < :old_gen)) then
       old_gen2 = :old_gen1;
     else
       old_gen2 = :old_gen;
-     
     if ((:old_gen2 > 0)) then
       begin
         update systemsite set clean_generation_1 = :old_gen2 ;
       end
-     
   -- 1 day
-    select max(day_version)  from dayversion where day_date < cast(CURRENT_DATE as date) - 1 into :old_gen1;
+    select max(day_version)
+    from dayversion where day_date < cast(CURRENT_TIMESTAMP as date) - 1
+    into :old_gen1;
+    IF (ROW_COUNT = 0) THEN
+    	EXCEPTION NO_DATA_FOUND;
     if ((:old_gen1 is null)) then
       old_gen1 = 0;
-     
     if ((:old_gen1 < :old_gen)) then
       old_gen2 = :old_gen1;
     else
       old_gen2 = :old_gen;
-     
     if ((:old_gen2 > 0)) then
       begin
         update systemsite set clean_generation_2 = :old_gen2 ;
       end
-     
   -- 1 hour
-    select max(day_version)  from dayversion where day_date < cast(CURRENT_DATE as date) - 1/24 into :old_gen1;
+    select max(day_version)
+    from dayversion where day_date < cast(CURRENT_TIMESTAMP as date) - 1/24
+    into :old_gen1;
+    IF (ROW_COUNT = 0) THEN
+    	EXCEPTION NO_DATA_FOUND;
     if ((:old_gen1 is null)) then
       old_gen1 = 0;
-     
     if ((:old_gen1 < :old_gen)) then
       old_gen2 = :old_gen1;
     else
       old_gen2 = :old_gen;
-     
     if ((:old_gen2 > 0)) then
       begin
         update systemsite set clean_generation_3 = :old_gen2 ;
       end
-     
   END
-   
   update systemsite set last_generation = :gnrtn;
   commit;
 end^
@@ -232,26 +261,35 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "RPL$CREATE_TRIGGER" (constr_name varchar(250))
+CREATE OR ALTER PROCEDURE "RPL$CREATE_TRIGGER" (constr_name varchar(32000))
 AS
-  DECLARE CHILD_WHERE VARCHAR(250);
-  DECLARE CHILD_CONDITION VARCHAR(250);
-  DECLARE CHILD_IF VARCHAR(250);
-  DECLARE CHILD_STATEMENT VARCHAR(2000);
-  DECLARE PARENT_CONDITION VARCHAR(250);
-  DECLARE PARENT_WHERE VARCHAR(250);
-  DECLARE PARENT_SET VARCHAR(250);
-  DECLARE FCOUNT INTEGER;
-  DECLARE BODY VARCHAR(4000);
-  DECLARE rc rpl$constraints%ROWTYPE;
+   DECLARE CHILD_WHERE VARCHAR(250);
+   DECLARE CHILD_CONDITION VARCHAR(250);
+   DECLARE CHILD_IF VARCHAR(250);
+   DECLARE CHILD_STATEMENT VARCHAR(2000);
+   DECLARE PARENT_CONDITION VARCHAR(250);
+   DECLARE PARENT_WHERE VARCHAR(250);
+   DECLARE PARENT_SET VARCHAR(250);
+   DECLARE FCOUNT INTEGER;
+   DECLARE BODY VARCHAR(4000);
+   DECLARE VARIABLE rc TYPE OF TABLE rpl$constraints;
   DECLARE getFields(constr_id TYPE OF COLUMN rpl$constraintfields.rpl$constraints_id) CURSOR FOR
     (select fieldname, target_fieldname from rpl$constraintfields where rpl$constraints_id = constr_id);
 BEGIN
-  select *  from rpl$constraints where name = :constr_name into :rc;
+  select *
+  from rpl$constraints where name = :constr_name
+  into :rc;
+  IF (ROW_COUNT = 0) THEN
+  	EXCEPTION NO_DATA_FOUND;
   child_where = ''; child_condition = ''; child_if = 'numrows = 0 and ';
   parent_where = ''; parent_condition = ''; parent_set = '';
-  select count(*)  from rpl$constraintfields where rpl$constraints_id = rc.id into :fcount;
-  for getFields_Rec in getFields(rc.id) DO
+  select count(*)
+  from rpl$constraintfields where rpl$constraints_id = rc.id
+  into :fcount;
+  IF (ROW_COUNT = 0) THEN
+  	EXCEPTION NO_DATA_FOUND;
+  for getFields_Rec in getFields(rc.id)
+  DO
   BEGIN
     child_where = :child_where || ':NEW.'||getFields_Rec.fieldname||' = '||rc.target_tablename||'.'||getFields_Rec.target_fieldname;
     child_if = :child_if || ':NEW.'||getFields_Rec.fieldname||' is not null';
@@ -269,9 +307,7 @@ BEGIN
       parent_condition = :parent_condition || ' or ';
       parent_set = :parent_set || ', ';
     END
-     
   END
-   
   body =
     'CREATE or REPLACE TRIGGER RPL$TRIG_' || rc.triggername ||
     ' BEFORE INSERT OR UPDATE ON ' || rc.tablename || ' FOR EACH ROW' ||
@@ -287,7 +323,7 @@ BEGIN
   body = :body || 'if (inserting) then ' || :child_statement || ' ';
   body = :body || 'elsif (' || :child_condition || ') then ' || :child_statement || ' end if;';
   body = :body || ' end if; END;';
-  execute STATEMENT :body;
+  execute STATEMENT (:body);
   body =
     'CREATE or REPLACE TRIGGER RPL$TRIGT_' || rc.triggername ||
     ' BEFORE UPDATE OR DELETE ON ' || rc.target_tablename || ' FOR EACH ROW' ||
@@ -306,7 +342,6 @@ BEGIN
         ||'if(numrows > 0) then '
         ||'raise_application_error(-20001, ''violation of FOREIGN KEY constraint "'||rc.name
         ||'" on table "'||rc.target_tablename||'". Foreign key references are present for the record.''); end if;';
-   
   body = :body || ' elsif(' || :parent_condition || ') then '; /* update_rule ��������� ��������: RESTRICT, SET NULL */
   if ((rc.update_rule = 'SET NULL')) then /* UPDATE SET NULL */
     body = :body ||' update '||rc.tablename||' set '||:parent_set||' where '||:parent_where||';';
@@ -315,10 +350,9 @@ BEGIN
         ||'if(numrows > 0) then '
         ||'raise_application_error(-20001, ''violation of FOREIGN KEY constraint "'||rc.name
         ||'" on table "'||rc.target_tablename||'". Foreign key references are present for the record.''); end if;';
-   
   body = :body || ' end if;';
   body = :body || '  end if; END;';
-  execute STATEMENT :body;
+  execute STATEMENT (:body);
 END^
 
 SET TERM ; ^
@@ -335,10 +369,18 @@ CREATE OR ALTER PROCEDURE "RPL$CREATE_TRIGGERS"
 AS
   DECLARE getConstraints CURSOR FOR
     (select name from rpl$constraints);
+
+  DECLARE VARIABLE GETCONSTRAINTS_GETCONSTRAINTS_REC TYPE OF TABLE GETCONSTRAINTS;
 BEGIN
-  FOR getConstraints_Rec in getConstraints DO
-    EXECUTE PROCEDURE RPL$CREATE_TRIGGER(getConstraints_Rec.name);
-   
+  OPEN GETCONSTRAINTS;
+  FETCH GETCONSTRAINTS INTO GETCONSTRAINTS_GETCONSTRAINTS_REC;
+  WHILE ( ROW_COUNT != 0 ) DO
+  BEGIN
+    EXECUTE PROCEDURE RPL$CREATE_TRIGGER(GETCONSTRAINTS_GETCONSTRAINTS_REC.name);
+  	FETCH GETCONSTRAINTS INTO GETCONSTRAINTS_GETCONSTRAINTS_REC;
+  END
+  CLOSE GETCONSTRAINTS;
+
 END^
 
 SET TERM ; ^
@@ -353,15 +395,21 @@ SET TERM ; ^
 
 CREATE OR ALTER PROCEDURE "RPL$DEACTIVATE_RPL" 
 AS
-  DECLARE stmt varchar(2000);
+   DECLARE stmt varchar(2000);
   DECLARE s CURSOR FOR (SELECT TRIGGER_NAME from USER_TRIGGERS where (TRIGGER_NAME like 'RPL$%'));
+
+  DECLARE VARIABLE S_S_REC TYPE OF TABLE S;
 BEGIN
-  FOR s_rec in s DO
+  OPEN S;
+  FETCH S INTO S_S_REC;
+  WHILE ( ROW_COUNT != 0 ) DO
   BEGIN
-    stmt = 'DROP TRIGGER ' || s_rec.trigger_name;
-    execute STATEMENT :stmt;
+    stmt = 'DROP TRIGGER ' || S_S_REC.trigger_name;
+    execute STATEMENT (:stmt);
+  	FETCH S INTO S_S_REC;
   END
-   
+  CLOSE S;
+
 END^
 
 SET TERM ; ^
@@ -374,18 +422,24 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "RPL$DISABLE_RPL_TABLE" (tablename varchar(250))
+CREATE OR ALTER PROCEDURE "RPL$DISABLE_RPL_TABLE" (tablename varchar(32000))
 AS
    DECLARE s CURSOR FOR (select trigger_name name from user_triggers where (trigger_name like 'RPL$'||:tablename)) ;
-   DECLARE stmt VARCHAR(2000);
+    DECLARE stmt VARCHAR(2000);
+
+  DECLARE VARIABLE S_S_REC TYPE OF TABLE S;
 BEGIN
-  FOR s_rec in s DO
+  OPEN S;
+  FETCH S INTO S_S_REC;
+  WHILE ( ROW_COUNT != 0 ) DO
   BEGIN
     stmt =
-      'drop trigger '||s_rec.NAME;
-    EXECUTE STATEMENT :stmt;
+      'drop trigger '||S_S_REC.NAME;
+    EXECUTE STATEMENT (:stmt);
+  	FETCH S INTO S_S_REC;
   END
-   
+  CLOSE S;
+
 END^
 
 SET TERM ; ^
@@ -398,18 +452,18 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "RPL$ENABLE_RPL_TABLE" (tablename varchar(250))
+CREATE OR ALTER PROCEDURE "RPL$ENABLE_RPL_TABLE" (tablename varchar(32000))
 AS
-   DECLARE stmt            VARCHAR (20000);
-   DECLARE fieldlist       VARCHAR (500);
-   DECLARE fieldvalue      VARCHAR (500);
-   DECLARE oldfieldvalue   VARCHAR (500);
-   DECLARE condition       VARCHAR (500);
-   DECLARE mut_fieldvalue      VARCHAR (500);
-   DECLARE mut_oldfieldvalue   VARCHAR (500);
-   DECLARE mut_condition       VARCHAR (500);
-   DECLARE table_id        NUMERIC (15);
-   DECLARE plugin_count    NUMERIC (15);
+    DECLARE stmt            VARCHAR (20000);
+    DECLARE fieldlist       VARCHAR (500);
+    DECLARE fieldvalue      VARCHAR (500);
+    DECLARE oldfieldvalue   VARCHAR (500);
+    DECLARE condition       VARCHAR (500);
+    DECLARE mut_fieldvalue      VARCHAR (500);
+    DECLARE mut_oldfieldvalue   VARCHAR (500);
+    DECLARE mut_condition       VARCHAR (500);
+    DECLARE table_id        NUMERIC (15);
+    DECLARE plugin_count    NUMERIC (15);
    DECLARE s
    CURSOR FOR
       (SELECT ID, rplfield1, rplfield2, rplfield3, rplfield4, rplfield5
@@ -423,14 +477,22 @@ AS
            AND UPPER (rt.NAME) = UPPER (:tablename)
            AND rt.isplugin = 0)
              ;
+
+  DECLARE VARIABLE C_PLUGIN_PLUGIN_REC TYPE OF TABLE C_PLUGIN;
+
+  DECLARE VARIABLE S_S_REC TYPE OF TABLE S;
 BEGIN
-   select count(rtp.ID)  
-       from rpltableplugin rtp 
+   select count(rtp.ID)
+   from rpltableplugin rtp 
             JOIN rpltable rt ON rt.ID = rtp.rpltable_id
                              AND UPPER (rt.NAME) = UPPER (:tablename)
-                             AND rt.isplugin = 0 into :plugin_count;
-   FOR s_rec IN s
-   DO
+                             AND rt.isplugin = 0
+   into :plugin_count;
+   IF (ROW_COUNT = 0) THEN
+   	EXCEPTION NO_DATA_FOUND;
+   OPEN S;
+   FETCH S INTO S_S_REC;
+   WHILE ( ROW_COUNT != 0 ) DO
    BEGIN
       fieldlist = 'generation';
       fieldvalue = '999999999999999';
@@ -440,18 +502,18 @@ BEGIN
       condition = '(updating and not(1=1 ';
       mut_condition = '1=1 ';      
       fieldlist = :fieldlist || ', FIELD1_VALUE';
-      table_id = s_rec.ID;
-      IF ((s_rec.rplfield1 IS NOT NULL))
+      table_id = S_S_REC.ID;
+      IF ((S_S_REC.rplfield1 IS NOT NULL))
       THEN
          BEGIN
-           fieldvalue = :fieldvalue || ', :new.' || s_rec.rplfield1;
-           oldfieldvalue = :oldfieldvalue || ', :old.' || s_rec.rplfield1;
+           fieldvalue = :fieldvalue || ', :new.' || S_S_REC.rplfield1;
+           oldfieldvalue = :oldfieldvalue || ', :old.' || S_S_REC.rplfield1;
            condition = :condition
             || 'and (:new.'
-            || s_rec.rplfield1
+            || S_S_REC.rplfield1
             || '='
             || ':old.'
-            || s_rec.rplfield1
+            || S_S_REC.rplfield1
             || ')';
            if ((:plugin_count > 0)) then
            BEGIN   
@@ -459,7 +521,6 @@ BEGIN
                 mut_oldfieldvalue = :mut_oldfieldvalue || ', mutating.old_slave_rpls(i).field_value1';
                 mut_condition = :mut_condition || 'and (mutating.new_slave_rpls(i).field_value1 = mutating.old_slave_rpls(i).field_value1';
            END
-            
          END
       ELSE
          BEGIN
@@ -468,20 +529,19 @@ BEGIN
             mut_fieldvalue = :mut_fieldvalue || ', 0';
             mut_oldfieldvalue = :mut_oldfieldvalue || ', 0';
          END
-       
       fieldlist = :fieldlist || ', FIELD2_VALUE';
-      IF ((s_rec.rplfield2 IS NOT NULL))
+      IF ((S_S_REC.rplfield2 IS NOT NULL))
       THEN
          BEGIN
-            fieldvalue = :fieldvalue || ', :new.' || s_rec.rplfield2;
-            oldfieldvalue = :oldfieldvalue || ', :old.' || s_rec.rplfield2;
+            fieldvalue = :fieldvalue || ', :new.' || S_S_REC.rplfield2;
+            oldfieldvalue = :oldfieldvalue || ', :old.' || S_S_REC.rplfield2;
             condition =
                   :condition
                || 'and (:new.'
-               || s_rec.rplfield2
+               || S_S_REC.rplfield2
                || '='
                || ':old.'
-               || s_rec.rplfield2
+               || S_S_REC.rplfield2
                || ')';
            if ((:plugin_count > 0)) then
            BEGIN   
@@ -489,7 +549,6 @@ BEGIN
                 mut_oldfieldvalue = :mut_oldfieldvalue || ', mutating.old_slave_rpls(i).field_value2';
                 mut_condition = :mut_condition || 'and (mutating.new_slave_rpls(i).field_value2 = mutating.old_slave_rpls(i).field_value2';
            END
-            
          END
       ELSE
          BEGIN
@@ -498,20 +557,19 @@ BEGIN
             mut_fieldvalue = :mut_fieldvalue || ', 0';
             mut_oldfieldvalue = :mut_oldfieldvalue || ', 0';
          END
-       
       fieldlist = :fieldlist || ', FIELD3_VALUE';
-      IF ((s_rec.rplfield3 IS NOT NULL))
+      IF ((S_S_REC.rplfield3 IS NOT NULL))
       THEN
          BEGIN
-            fieldvalue = :fieldvalue || ', :new.' || s_rec.rplfield3;
-            oldfieldvalue = :oldfieldvalue || ', :old.' || s_rec.rplfield3;
+            fieldvalue = :fieldvalue || ', :new.' || S_S_REC.rplfield3;
+            oldfieldvalue = :oldfieldvalue || ', :old.' || S_S_REC.rplfield3;
             condition =
                   :condition
                || 'and (:new.'
-               || s_rec.rplfield3
+               || S_S_REC.rplfield3
                || '='
                || ':old.'
-               || s_rec.rplfield3
+               || S_S_REC.rplfield3
                || ')';
            if ((:plugin_count > 0)) then
            BEGIN   
@@ -519,7 +577,6 @@ BEGIN
                 mut_oldfieldvalue = :mut_oldfieldvalue || ', mutating.old_slave_rpls(i).field_value3';
                 mut_condition = :mut_condition || 'and (mutating.new_slave_rpls(i).field_value3 = mutating.old_slave_rpls(i).field_value3';
            END
-            
          END
       ELSE
          BEGIN
@@ -528,20 +585,19 @@ BEGIN
             mut_fieldvalue = :mut_fieldvalue || ', 0';
             mut_oldfieldvalue = :mut_oldfieldvalue || ', 0';
          END
-       
       fieldlist = :fieldlist || ', FIELD4_VALUE';
-      IF ((s_rec.rplfield4 IS NOT NULL))
+      IF ((S_S_REC.rplfield4 IS NOT NULL))
       THEN
          BEGIN
-            fieldvalue = :fieldvalue || ', :new.' || s_rec.rplfield4;
-            oldfieldvalue = :oldfieldvalue || ', :old.' || s_rec.rplfield4;
+            fieldvalue = :fieldvalue || ', :new.' || S_S_REC.rplfield4;
+            oldfieldvalue = :oldfieldvalue || ', :old.' || S_S_REC.rplfield4;
             condition =
                   :condition
                || 'and (:new.'
-               || s_rec.rplfield4
+               || S_S_REC.rplfield4
                || '='
                || ':old.'
-               || s_rec.rplfield4
+               || S_S_REC.rplfield4
                || ')';
            if ((:plugin_count > 0)) then
            BEGIN   
@@ -549,7 +605,6 @@ BEGIN
                 mut_oldfieldvalue = :mut_oldfieldvalue || ', mutating.old_slave_rpls(i).field_value4';
                 mut_condition = :mut_condition || 'and (mutating.new_slave_rpls(i).field_value4 = mutating.old_slave_rpls(i).field_value4';
            END
-            
          END
       ELSE
          BEGIN
@@ -558,20 +613,19 @@ BEGIN
             mut_fieldvalue = :mut_fieldvalue || ', 0';
             mut_oldfieldvalue = :mut_oldfieldvalue || ', 0';
          END
-       
       fieldlist = :fieldlist || ', FIELD5_VALUE';
-      IF ((s_rec.rplfield5 IS NOT NULL))
+      IF ((S_S_REC.rplfield5 IS NOT NULL))
       THEN
          BEGIN
-            fieldvalue = :fieldvalue || ', :new.' || s_rec.rplfield5;
-            oldfieldvalue = :oldfieldvalue || ', :old.' || s_rec.rplfield5;
+            fieldvalue = :fieldvalue || ', :new.' || S_S_REC.rplfield5;
+            oldfieldvalue = :oldfieldvalue || ', :old.' || S_S_REC.rplfield5;
             condition =
                   :condition
                || 'and (:new.'
-               || s_rec.rplfield5
+               || S_S_REC.rplfield5
                || '='
                || ':old.'
-               || s_rec.rplfield5
+               || S_S_REC.rplfield5
                || ')';
            if ((:plugin_count > 0)) then
            BEGIN   
@@ -579,7 +633,6 @@ BEGIN
                 mut_oldfieldvalue = :mut_oldfieldvalue || ', mutating.old_slave_rpls(i).field_value5';
                 mut_condition = :mut_condition || 'and (mutating.new_slave_rpls(i).field_value5 = mutating.old_slave_rpls(i).field_value5';
            END
-            
          END
       ELSE
          BEGIN
@@ -588,7 +641,6 @@ BEGIN
             mut_fieldvalue = :mut_fieldvalue || ', 0';
             mut_oldfieldvalue = :mut_oldfieldvalue || ', 0';
          END
-       
       -- create trigger for each row
       stmt =
              'CREATE or REPLACE TRIGGER RPL$'
@@ -610,38 +662,32 @@ BEGIN
           || '  mutating.new_slave_rpls(mutation_index).id := :new.id;' 
           || '  mutating.old_slave_rpls(mutation_index).id := :old.id;' 
           ;
-       if ((s_rec.rplfield1 IS NOT NULL)) then
+       if ((S_S_REC.rplfield1 IS NOT NULL)) then
        stmt = :stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value1 := :new.' || s_rec.rplfield1 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value1 := :old.' || s_rec.rplfield1 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value1 := :new.' || S_S_REC.rplfield1 || ';' 
+          || '  mutating.old_slave_rpls(mutation_index).field_value1 := :old.' || S_S_REC.rplfield1 || ';' 
           ;
-        
-       if ((s_rec.rplfield2 IS NOT NULL)) then
+       if ((S_S_REC.rplfield2 IS NOT NULL)) then
        stmt = :stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value2 := :new.' || s_rec.rplfield2 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value2 := :old.' || s_rec.rplfield2 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value2 := :new.' || S_S_REC.rplfield2 || ';' 
+          || '  mutating.old_slave_rpls(mutation_index).field_value2 := :old.' || S_S_REC.rplfield2 || ';' 
           ;
-        
-       if ((s_rec.rplfield3 IS NOT NULL)) then
+       if ((S_S_REC.rplfield3 IS NOT NULL)) then
        stmt = :stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value3 := :new.' || s_rec.rplfield3 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value3 := :old.' || s_rec.rplfield3 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value3 := :new.' || S_S_REC.rplfield3 || ';' 
+          || '  mutating.old_slave_rpls(mutation_index).field_value3 := :old.' || S_S_REC.rplfield3 || ';' 
           ;
-        
-       if ((s_rec.rplfield4 IS NOT NULL)) then
+       if ((S_S_REC.rplfield4 IS NOT NULL)) then
        stmt = :stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value4 := :new.' || s_rec.rplfield4 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value4 := :old.' || s_rec.rplfield4 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value4 := :new.' || S_S_REC.rplfield4 || ';' 
+          || '  mutating.old_slave_rpls(mutation_index).field_value4 := :old.' || S_S_REC.rplfield4 || ';' 
           ;
-        
-       if ((s_rec.rplfield5 IS NOT NULL)) then
+       if ((S_S_REC.rplfield5 IS NOT NULL)) then
        stmt = :stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value5 := :new.' || s_rec.rplfield5 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value5 := :old.' || s_rec.rplfield5 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value5 := :new.' || S_S_REC.rplfield5 || ';' 
+          || '  mutating.old_slave_rpls(mutation_index).field_value5 := :old.' || S_S_REC.rplfield5 || ';' 
           ;
-        
      END
-      
      stmt = :stmt 
           || '  if (deleting) then ' 
           || '    insert into RPLLOG (rpltable_id, record_id, transaction_id,'
@@ -675,7 +721,7 @@ BEGIN
        || '  end; ' 
        || ' end if;' 
        || 'end;';
-     EXECUTE STATEMENT :stmt;
+     EXECUTE STATEMENT (:stmt);
      if ((:plugin_count > 0)) then
      BEGIN
        -- create statement trigger
@@ -688,15 +734,20 @@ BEGIN
           || '     if mutating.old_slave_rpls.FIRST is not null then'
           || '       for i in mutating.old_slave_rpls.FIRST..mutating.old_slave_rpls.LAST'
           || '         loop';
-       FOR plugin_rec IN c_plugin
-       DO
+       OPEN C_PLUGIN;
+       FETCH C_PLUGIN INTO C_PLUGIN_PLUGIN_REC;
+       WHILE ( ROW_COUNT != 0 ) DO
+       BEGIN
          stmt = :stmt
-          || '           lplugin_table_id := ' || plugin_rec.plugin_rpltable_id || ';'
+          || '           lplugin_table_id := ' || C_PLUGIN_PLUGIN_REC.plugin_rpltable_id || ';'
           || '           insert into RPLLOG (rpltable_id, record_id, transaction_id,' || :fieldlist || ') '
           || '             select lplugin_table_id, master.id, current_transaction_id,' || :mut_oldfieldvalue
-          || '               from ' || plugin_rec.join_fragment 
+          || '               from ' || C_PLUGIN_PLUGIN_REC.join_fragment 
           || '               where slave.id=mutating.old_slave_rpls(i).id;';
-        
+       	FETCH C_PLUGIN INTO C_PLUGIN_PLUGIN_REC;
+       END
+       CLOSE C_PLUGIN;
+
        stmt = :stmt 
           || '         end loop;' 
           || '     end if;';-- end if mutation
@@ -706,15 +757,20 @@ BEGIN
           || '       if mutating.new_slave_rpls.FIRST is not null then'
           || '         for i in mutating.new_slave_rpls.FIRST..mutating.new_slave_rpls.LAST'
           || '           loop';
-       FOR plugin_rec IN c_plugin
-       DO
+       OPEN C_PLUGIN;
+       FETCH C_PLUGIN INTO C_PLUGIN_PLUGIN_REC;
+       WHILE ( ROW_COUNT != 0 ) DO
+       BEGIN
          stmt = :stmt
-          || '             lplugin_table_id := ' || plugin_rec.plugin_rpltable_id || ';'
+          || '             lplugin_table_id := ' || C_PLUGIN_PLUGIN_REC.plugin_rpltable_id || ';'
           || '             insert into RPLLOG (rpltable_id, record_id, transaction_id,' || :fieldlist || ') '
           || '               select lplugin_table_id, master.id, current_transaction_id,' || :mut_fieldvalue 
-          || '                 from ' || plugin_rec.join_fragment
+          || '                 from ' || C_PLUGIN_PLUGIN_REC.join_fragment
           || '                 where slave.id = mutating.new_slave_rpls(i).id;';
-        
+       	FETCH C_PLUGIN INTO C_PLUGIN_PLUGIN_REC;
+       END
+       CLOSE C_PLUGIN;
+
        stmt = :stmt 
           || '           end loop;' 
           || '       end if;';-- end if mutation
@@ -723,17 +779,22 @@ BEGIN
           || '         if mutating.old_slave_rpls.FIRST is not null then'
           || '           for i in mutating.old_slave_rpls.FIRST..mutating.old_slave_rpls.LAST'
           || '             loop';
-       FOR plugin_rec IN c_plugin
-       DO
+       OPEN C_PLUGIN;
+       FETCH C_PLUGIN INTO C_PLUGIN_PLUGIN_REC;
+       WHILE ( ROW_COUNT != 0 ) DO
+       BEGIN
            stmt = :stmt
           || '               if (' || :mut_condition ||')) then '
-          || '                 lplugin_table_id := ' || plugin_rec.plugin_rpltable_id || ';'
+          || '                 lplugin_table_id := ' || C_PLUGIN_PLUGIN_REC.plugin_rpltable_id || ';'
           || '                 insert into RPLLOG (rpltable_id, record_id, transaction_id,' || :fieldlist || ') '
           || '                   select lplugin_table_id, master.id, current_transaction_id,' || :mut_oldfieldvalue 
-          || '                     from ' || plugin_rec.join_fragment
+          || '                     from ' || C_PLUGIN_PLUGIN_REC.join_fragment
           || '                     where slave.id = mutating.old_slave_rpls(i).id;'
-          || '               end if;';          
-        
+          || '               end if;';
+       	FETCH C_PLUGIN INTO C_PLUGIN_PLUGIN_REC;
+       END
+       CLOSE C_PLUGIN;
+
        stmt = :stmt 
           || '             end loop;' 
           || '         end if;'-- end if mutation
@@ -743,11 +804,12 @@ BEGIN
           || '  mutating.new_slave_rpls.delete;' 
           || '  mutating.old_slave_rpls.delete;' 
           || 'end;';--end of trigger
-       EXECUTE STATEMENT :stmt;
+       EXECUTE STATEMENT (:stmt);
      END
-      
+   	FETCH S INTO S_S_REC;
    END
-    
+   CLOSE S;
+
 END^
 
 SET TERM ; ^
@@ -760,7 +822,7 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "RPL$REENABLE_RPL_TABLE" (tablename varchar(250))
+CREATE OR ALTER PROCEDURE "RPL$REENABLE_RPL_TABLE" (tablename varchar(32000))
 AS
 BEGIN
   EXECUTE PROCEDURE RPL$DISABLE_RPL_TABLE(:tablename);
@@ -777,17 +839,21 @@ SET TERM ; ^
 
   SET TERM ^ ;
 
-CREATE OR ALTER PROCEDURE "SEQUENCE_ADJ" (tablename VARCHAR(250))
+CREATE OR ALTER PROCEDURE "SEQUENCE_ADJ" (tablename VARCHAR(32000))
 AS
-   DECLARE maxval     NUMERIC (15);
-   DECLARE sitemult   NUMERIC (15);
-   DECLARE curval     NUMERIC (15);
-   DECLARE i          NUMERIC (15);
+    DECLARE maxval     NUMERIC (15);
+    DECLARE sitemult   NUMERIC (15);
+    DECLARE curval     NUMERIC (15);
+    DECLARE i          NUMERIC (15);
+
+  DECLARE VARIABLE i INTEGER;
 BEGIN
    SELECT MAX (site_id * 1000000000)
-     
-     FROM systemsite INTO :sitemult;
-   EXECUTE STATEMENT    'select coalesce(max(id),'
+   FROM systemsite
+   INTO :sitemult;
+   IF (ROW_COUNT = 0) THEN
+   	EXCEPTION NO_DATA_FOUND;
+   EXECUTE STATEMENT    ('select coalesce(max(id),'
                      || :sitemult
                      || '+1)-'
                      || :sitemult
@@ -795,16 +861,18 @@ BEGIN
                      || :tablename
                      || ' where id-'
                      || :sitemult
-                     || '<999999999'
-                INTO :maxval;
-   EXECUTE STATEMENT 'select ' || :tablename || '_seq.nextval from dual'
-                INTO :curval;
+                     || '<999999999')
+                 INTO :maxval;
+   EXECUTE STATEMENT ('select ' || :tablename || '_seq.nextval from dual')
+                 INTO :curval;
    -- ������� ������, � �� �������������. ��� ��������
-   FOR :i IN :curval .. :maxval - 1
-   DO
-      EXECUTE STATEMENT 'select ' || :tablename || '_seq.nextval from dual'
-                   INTO :sitemult;
-    
+   i = curval;
+   WHILE ( i <= :maxval - 1) DO
+   BEGIN
+      EXECUTE STATEMENT ('select ' || :tablename || '_seq.nextval from dual')
+                    INTO :sitemult;
+   i = i + 1;
+   END
 END^
 
 SET TERM ; ^

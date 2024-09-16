@@ -2,7 +2,9 @@
 --  DDL for Table ABANDONEDREASON
 --------------------------------------------------------
 
-  CREATE TABLE "ABANDONEDREASON" 
+  CREATE EXCEPTION NO_DATA_FOUND
+	'no data found';
+CREATE TABLE "ABANDONEDREASON" 
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"OOSKEY" VARCHAR(100 ), 
@@ -16,7 +18,7 @@
 	"PLACINGWAYNAME" VARCHAR(500 ), 
 	"PURCHASEMODE_ID" NUMERIC(15,0), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ALTGOODSGROUP
 --------------------------------------------------------
@@ -29,7 +31,7 @@
 	"PARENT_ID" NUMERIC(15,0), 
 	"OKP" VARCHAR(16 ), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ALTGOODSGROUPLINK
 --------------------------------------------------------
@@ -38,7 +40,7 @@
    (	"TYPE_ID" NUMERIC(15,0) NOT NULL, 
 	"GOODSGROUP_ID" NUMERIC(15,0) NOT NULL, 
 	"ALTGOODSGROUP_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ALTGOODSGROUPTYPE
 --------------------------------------------------------
@@ -47,7 +49,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0) NOT NULL, 
 	"CAPTION" VARCHAR(100 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ALTUNITFACTOR
 --------------------------------------------------------
@@ -56,7 +58,7 @@
    (	"UNIT_ID" NUMERIC(15,0) NOT NULL, 
 	"ALTGOODSGROUP_ID" NUMERIC(15,0) NOT NULL, 
 	"FACTOR" DOUBLE PRECISION NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ANYDATA
 --------------------------------------------------------
@@ -68,8 +70,7 @@
 	"DATA_KEY" VARCHAR(120 ) NOT NULL, 
 	"STORAGE" VARCHAR(25 ) NOT NULL, 
 	"DEVICE" VARCHAR(25 ) NOT NULL
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table APPMODULE
 --------------------------------------------------------
@@ -79,7 +80,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(32 ) NOT NULL, 
 	"DESCRIPTION" VARCHAR(256 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table APPMODULEDEPENDENCY
 --------------------------------------------------------
@@ -87,7 +88,7 @@
   CREATE TABLE "APPMODULEDEPENDENCY" 
    (	"ID" NUMERIC(18,0) NOT NULL, 
 	"DEPENDID" NUMERIC(18,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table APPOBJ
 --------------------------------------------------------
@@ -104,7 +105,7 @@
 	"OPENICON" VARCHAR(256 ), 
 	"STYPE" NUMERIC(18,0), 
 	"SHOWORDER" NUMERIC(15,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table APPOBJPROP
 --------------------------------------------------------
@@ -115,7 +116,7 @@
 	"APPOBJID" NUMERIC(18,0), 
 	"NAME" VARCHAR(32 ) NOT NULL, 
 	"VAL" VARCHAR(1024 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table APPOINTMENT
 --------------------------------------------------------
@@ -124,7 +125,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ATTACHCATEGORIES
 --------------------------------------------------------
@@ -132,7 +133,7 @@
   CREATE TABLE "ATTACHCATEGORIES" 
    (	"DOCATTACHEX_ID" NUMERIC(15,0) NOT NULL, 
 	"DOCCATEGORY_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ATTACHEDPLANDOC
 --------------------------------------------------------
@@ -141,7 +142,7 @@
    (	"DOC_ID" NUMERIC(15,0) NOT NULL, 
 	"PURCHASEPLANDOC_ID" NUMERIC(15,0) NOT NULL, 
 	"DOCUMENT_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table AUCTIONBID
 --------------------------------------------------------
@@ -164,7 +165,7 @@
 	"RECEIPTTIME" DATE DEFAULT '1900-01-01' NOT NULL, 
 	"AUCTIONSTEP" NUMERIC(15,2), 
 	"COMPETITORPOS" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table AUCTIONLOG
 --------------------------------------------------------
@@ -177,7 +178,7 @@
 	"EVENTTIME" DATE NOT NULL, 
 	"STATE" NUMERIC(3,0) NOT NULL, 
 	"DEADLINE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BANK
 --------------------------------------------------------
@@ -193,7 +194,7 @@
 	"FOREIGNKEY" VARCHAR(50 ), 
 	"DESCRIPTION" VARCHAR(2000 ), 
 	"IS_ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BANKGUARANTEEDOC
 --------------------------------------------------------
@@ -241,7 +242,7 @@
 	"MODIFICATIONINFO" VARCHAR(2000 ), 
 	"HREF" VARCHAR(1024 ), 
 	"PRINTFORMHREF" VARCHAR(1024 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BANKGUARANTEEREFDOC
 --------------------------------------------------------
@@ -267,7 +268,7 @@
 	"REFUSALINFODOCDATE" DATE, 
 	"REFUSALINFODOCNAME" VARCHAR(250 ), 
 	"REFUSALINFODOCNUMBER" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BANKGUARANTEEREFDOCREASON
 --------------------------------------------------------
@@ -277,7 +278,7 @@
 	"POS" NUMERIC(15,0) NOT NULL, 
 	"CODE" NUMERIC(15,0), 
 	"NAME" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BANKGUARANTEEREFREASON
 --------------------------------------------------------
@@ -288,7 +289,7 @@
 	"OOSKEY" VARCHAR(100 ), 
 	"NAME" VARCHAR(2000 ) NOT NULL, 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BUDGCODE
 --------------------------------------------------------
@@ -302,7 +303,7 @@
 	"DESCRIPTION" VARCHAR(2000 ), 
 	"FOREIGNKEY" VARCHAR(50 ), 
 	"FINYEAR" NUMERIC(4,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BUDGET
 --------------------------------------------------------
@@ -318,7 +319,7 @@
 	"TERRITORY_ID" NUMERIC(15,0), 
 	"PARENT_ID" NUMERIC(15,0), 
 	"RELATIONBUDGET_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BUDGETLINE
 --------------------------------------------------------
@@ -347,7 +348,7 @@
 	"REST_ASSIGN_AMT2" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"ASSIGN_AMT3" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"REST_ASSIGN_AMT3" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table BUDGETSTAGE
 --------------------------------------------------------
@@ -356,7 +357,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"STAGECODE" VARCHAR(2 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CACHELIST
 --------------------------------------------------------
@@ -369,7 +370,7 @@
 	"HASH_CODE" NUMERIC(15,0), 
 	"VERSION" NUMERIC(15,0), 
 	"INDEX_HASH_CODE" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CACHEMAN
 --------------------------------------------------------
@@ -379,7 +380,7 @@
 	"LAST_ACCESS" DATE, 
 	"USERNAME" VARCHAR(30 ), 
 	"CLIENT_HOST" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CAVILDOC
 --------------------------------------------------------
@@ -407,8 +408,7 @@
 	"ANSWER" VARCHAR(2000 ), 
 	"BUDGET_ID" NUMERIC(15,0), 
 	"WEBLINK" VARCHAR(512 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CAVILTYPE
 --------------------------------------------------------
@@ -417,7 +417,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(256 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CDCAVILTYPE
 --------------------------------------------------------
@@ -427,8 +427,7 @@
 	"POS" NUMERIC(15,0) NOT NULL, 
 	"CAVILTYPE_ID" NUMERIC(15,0), 
 	"COMMENTS" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CEEXECUTIONLINE
 --------------------------------------------------------
@@ -446,7 +445,7 @@
 	"CONTRACTEXECDOCTYPE_ID" NUMERIC(15,0), 
 	"CONTRACTEXECDOCTYPE_CODE" VARCHAR(4 ), 
 	"FACTDOC_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CEPAYMENTPENALTY
 --------------------------------------------------------
@@ -459,7 +458,7 @@
 	"DOCNUMBER" VARCHAR(100 ), 
 	"DOCDATE" DATE, 
 	"AMOUNT" NUMERIC(15,2)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CEPENALTY
 --------------------------------------------------------
@@ -483,7 +482,7 @@
 	"RETURN_DOCNUMBER" VARCHAR(100 ), 
 	"RETURN_DOCDATE" DATE, 
 	"RETURN_AMOUNT" NUMERIC(15,2)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CEREPARATIONLINE
 --------------------------------------------------------
@@ -496,7 +495,7 @@
 	"DOCUMENTDATE" DATE NOT NULL, 
 	"DOCUMENTNUMBER" VARCHAR(100 ), 
 	"REPARATIONAMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CERETURNPENALTY
 --------------------------------------------------------
@@ -509,7 +508,7 @@
 	"DOCNUMBER" VARCHAR(100 ), 
 	"DOCDATE" DATE, 
 	"AMOUNT" NUMERIC(15,2)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CERTINTERCHANGEREQUEST
 --------------------------------------------------------
@@ -526,7 +525,7 @@
 	"USERCERT_ID" NUMERIC(15,0) NOT NULL, 
 	"EXPORTABLE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"COMMENTS" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CERTREQUEST
 --------------------------------------------------------
@@ -554,7 +553,7 @@
 	"DEPARTMENT" VARCHAR(64 ), 
 	"EXPORTABLE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"COMMENTS" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CERTREQUESTOID
 --------------------------------------------------------
@@ -562,7 +561,7 @@
   CREATE TABLE "CERTREQUESTOID" 
    (	"CERTREQUEST_ID" NUMERIC(15,0) NOT NULL, 
 	"OIDREF_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CERTREVOKEREQUEST
 --------------------------------------------------------
@@ -578,7 +577,7 @@
 	"REMARK" VARCHAR(255 ), 
 	"USERCERT_ID" NUMERIC(15,0) NOT NULL, 
 	"COMMENTS" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CETERMINATIONLINE
 --------------------------------------------------------
@@ -594,7 +593,7 @@
 	"TERMINATIONREASONDOC_DATE" DATE, 
 	"TERMINATIONREASONDOC_NUMBER" VARCHAR(100 ), 
 	"TERMINATIONREASONDOC_REFDATE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CLAIMDOC
 --------------------------------------------------------
@@ -636,8 +635,7 @@
 	"PENALTY_DOCNUMBER" VARCHAR(100 ), 
 	"PENALTY_DOCDATE" DATE, 
 	"PENALTY_RETURN_AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CLAIMPAYFACT
 --------------------------------------------------------
@@ -652,7 +650,7 @@
 	"CAPTION" VARCHAR(500 ) NOT NULL, 
 	"DOCDATE" DATE NOT NULL, 
 	"DOCTYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CLAIMPENALTYCHANGEDOCINFO
 --------------------------------------------------------
@@ -664,7 +662,7 @@
 	"DOCDATE" DATE NOT NULL, 
 	"DOCNUMBER" VARCHAR(100 ), 
 	"CAPTION" VARCHAR(200 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CLASSOPER
 --------------------------------------------------------
@@ -675,7 +673,7 @@
 	"DOCUMENTCLASS_ID" NUMERIC(15,0) NOT NULL, 
 	"OPERTYPE_ID" NUMERIC(15,0) DEFAULT 0 NOT NULL, 
 	"CAPTION" VARCHAR(100 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CLIENTOBJECT
 --------------------------------------------------------
@@ -695,8 +693,7 @@
 	"BUDGET_REQUIRED" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"HELPFILE" VARCHAR(256 ), 
 	"HELPKEYWORD" VARCHAR(256 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CLIENTOBJECTCOMMENTS
 --------------------------------------------------------
@@ -707,8 +704,7 @@
 	"CLIENTOBJECT_ID" NUMERIC(15,0) NOT NULL, 
 	"BUDGET_ID" NUMERIC(15,0), 
 	"COMMENT_FIELD" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CLNDDAY
 --------------------------------------------------------
@@ -719,7 +715,7 @@
 	"CLNDTYPE_ID" NUMERIC(15,0) NOT NULL, 
 	"CLNDDAYTYPE_ID" NUMERIC(15,0) NOT NULL, 
 	"CLND_DAY" DATE NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CLNDDAYTYPE
 --------------------------------------------------------
@@ -728,7 +724,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(255 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CLNDTYPE
 --------------------------------------------------------
@@ -738,7 +734,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(255 ) NOT NULL, 
 	"CLND_YEAR" NUMERIC(4,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPCOMMEMBER
 --------------------------------------------------------
@@ -756,7 +752,7 @@
 	"PHASEPOS" NUMERIC(15,0), 
 	"OOS_NUMBER" VARCHAR(100 ), 
 	"ISACTINGFORSECRETARY" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPCOMPETITOR
 --------------------------------------------------------
@@ -781,7 +777,7 @@
 	"DISCUSSION" VARCHAR(4000 ), 
 	"ABSENT" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"EXPLANATION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPCONDEALRESP
 --------------------------------------------------------
@@ -791,7 +787,7 @@
 	"CMPCUSTOMERPOS" NUMERIC(15,0), 
 	"PERSONAL_ID" NUMERIC(15,0) NOT NULL, 
 	"PERSONAL_NAME" VARCHAR(256 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPCRITERION
 --------------------------------------------------------
@@ -814,7 +810,7 @@
 	"FORMULA" VARCHAR(2000 ), 
 	"OOSCODE" VARCHAR(2 ) DEFAULT '0' NOT NULL, 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPCRITERIONLINE
 --------------------------------------------------------
@@ -829,7 +825,7 @@
 	"WEIGHT" NUMERIC(15,2), 
 	"LIMITDESCRIPTION" VARCHAR(2000 ), 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPCUSTOMER
 --------------------------------------------------------
@@ -853,7 +849,7 @@
 	"CUSTOMERFAX" VARCHAR(100 ), 
 	"CUSTOMERPHONE" VARCHAR(100 ), 
 	"CUSTOMEREMAIL" VARCHAR(256 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPCUSTOMERLOT
 --------------------------------------------------------
@@ -897,8 +893,7 @@
 	"GUARANTEEAPPPERCENT" NUMERIC(5,2), 
 	"GUARANTEECONTRACTPERCENT" NUMERIC(5,2), 
 	"CUSTCANREFUSEINFO" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CMPDECISION
 --------------------------------------------------------
@@ -914,8 +909,7 @@
 	"ABSTAIN" NUMERIC(15,0), 
 	"BYCALL" NUMERIC(1,0), 
 	"COMPETITORPOS" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CMPDISCUSSION
 --------------------------------------------------------
@@ -926,8 +920,7 @@
 	"PHASEPOS" NUMERIC(15,0) NOT NULL, 
 	"LOTPOS" NUMERIC(15,0), 
 	"DISCUSSION" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CMPDOCREQ
 --------------------------------------------------------
@@ -946,7 +939,7 @@
 	"DESCRIPTION" VARCHAR(4000 ), 
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0), 
 	"REQUIREMENTTYPE_NAME" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPEXPENSE
 --------------------------------------------------------
@@ -964,7 +957,7 @@
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"UNITNAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPFEATURE
 --------------------------------------------------------
@@ -976,7 +969,7 @@
 	"PLACEMENTFEATURE_ID" NUMERIC(15,0) NOT NULL, 
 	"PREFVALUE" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"CONTENT" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPGOODS
 --------------------------------------------------------
@@ -1002,7 +995,7 @@
 	"OKVED" VARCHAR(20 ), 
 	"OKVED_NAME" VARCHAR(1000 ), 
 	"UNITNAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPGOODSPROP
 --------------------------------------------------------
@@ -1015,7 +1008,7 @@
 	"CAPTION" VARCHAR(512 ) NOT NULL, 
 	"PROPVALUE" VARCHAR(1500 ), 
 	"OOSKEY" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPLOT
 --------------------------------------------------------
@@ -1076,8 +1069,7 @@
 	"RATIONALEPRICE" BLOB SUB_TYPE TEXT, 
 	"SUBJECT" BLOB SUB_TYPE TEXT, 
 	"ENERGYSERVICEECONOMY" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CMPOOSMODIFICATION
 --------------------------------------------------------
@@ -1099,8 +1091,7 @@
 	"PRESCRIPTION_NUMBER" VARCHAR(20 ), 
 	"CHANGE_DOCNAME" BLOB SUB_TYPE TEXT, 
 	"CHANGE_ADDITIONALINFO" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CMPPAYSHEDULE
 --------------------------------------------------------
@@ -1110,7 +1101,7 @@
 	"BUDGETLINEPOS" NUMERIC(15,0) NOT NULL, 
 	"PAYDATE" DATE NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPPERSONAL
 --------------------------------------------------------
@@ -1125,7 +1116,7 @@
 	"PHONE" VARCHAR(100 ), 
 	"FAX" VARCHAR(100 ), 
 	"EMAIL" VARCHAR(256 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPPERSONALRESP
 --------------------------------------------------------
@@ -1134,7 +1125,7 @@
    (	"ORDER_ID" NUMERIC(15,0) NOT NULL, 
 	"PERSONAL_ID" NUMERIC(15,0) NOT NULL, 
 	"RESPONSIBILITY_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPPHASE
 --------------------------------------------------------
@@ -1152,7 +1143,7 @@
 	"OOS_ADDINFO" VARCHAR(2000 ), 
 	"OOS_PROTOCOLPUBLISHED" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"OOS_PROTOCOL_ID" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPPLACE
 --------------------------------------------------------
@@ -1185,7 +1176,7 @@
 	"INDUSTRYCODE_ID" NUMERIC(15,0), 
 	"GRANTINVESTMENT_ID" NUMERIC(15,0), 
 	"CUSTOMER_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPQUALREQ
 --------------------------------------------------------
@@ -1202,7 +1193,7 @@
 	"CONTENT" VARCHAR(2000 ), 
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0), 
 	"REQUIREMENTTYPE_NAME" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPREPDOCUMENT
 --------------------------------------------------------
@@ -1210,7 +1201,7 @@
   CREATE TABLE "CMPREPDOCUMENT" 
    (	"ORDER_ID" NUMERIC(15,0) NOT NULL, 
 	"REPDOCUMENT_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPSUPPLYSHEDULE
 --------------------------------------------------------
@@ -1223,7 +1214,7 @@
 	"QTY" NUMERIC(15,4) DEFAULT 0 NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"LOTPOS" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPVENDOR
 --------------------------------------------------------
@@ -1237,7 +1228,7 @@
 	"VENDORNAME" VARCHAR(2000 ), 
 	"REFCOUNT" NUMERIC(4,0), 
 	"PROPFORM_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPVOTERESULT
 --------------------------------------------------------
@@ -1249,7 +1240,7 @@
 	"CMPCOMMEMBERPOS" NUMERIC(15,0) NOT NULL, 
 	"NOTE" VARCHAR(500 ), 
 	"RESULT" NUMERIC(1,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CMPWORKGROUP
 --------------------------------------------------------
@@ -1259,7 +1250,7 @@
 	"POS" NUMERIC(15,0) NOT NULL, 
 	"CAPTION" VARCHAR(250 ), 
 	"ETPKEY" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CODETYPE
 --------------------------------------------------------
@@ -1276,7 +1267,7 @@
 	"MASK" VARCHAR(200 ), 
 	"GROUPMASK" VARCHAR(100 ), 
 	"DEFVALUE" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table COMMEMBER
 --------------------------------------------------------
@@ -1291,7 +1282,7 @@
 	"COMMEMBER_ROLE" VARCHAR(255 ), 
 	"OOSKEY" VARCHAR(100 ), 
 	"ISACTINGFORSECRETARY" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table COMMISSION
 --------------------------------------------------------
@@ -1305,7 +1296,7 @@
 	"ISACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"ORG_ID" NUMERIC(15,0), 
 	"DATENUMORDERNAME" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table COMPLAINTDOC
 --------------------------------------------------------
@@ -1344,8 +1335,7 @@
 	"COMPLAINT_BODY" BLOB SUB_TYPE TEXT, 
 	"COMPLAINT_DECISION" NUMERIC(2,0), 
 	"DECISION_DIRECTIONS" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CONAGREEMENTSDOCS
 --------------------------------------------------------
@@ -1357,7 +1347,7 @@
 	"DOCDATE" DATE NOT NULL, 
 	"DOCNAME" VARCHAR(2000 ), 
 	"DOCINFO" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONBANKGUARANTEERETURN
 --------------------------------------------------------
@@ -1370,7 +1360,7 @@
 	"RETURNDATE" DATE NOT NULL, 
 	"NOTICENUMBER" VARCHAR(100 ), 
 	"REASON" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONBUDGETLINE
 --------------------------------------------------------
@@ -1404,7 +1394,7 @@
 	"REMARK" VARCHAR(2000 ), 
 	"INDUSTRYCODE_ID" NUMERIC(15,0), 
 	"GRANTINVESTMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONCONFIRMINGDOCS
 --------------------------------------------------------
@@ -1417,7 +1407,7 @@
 	"DOCDATE" DATE NOT NULL, 
 	"PROTOCOLNAME" VARCHAR(2000 ), 
 	"DOCINFO" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONCONTRACTOR
 --------------------------------------------------------
@@ -1450,7 +1440,7 @@
 	"ORGPATRONYMIC" VARCHAR(250 ), 
 	"ORGISCULTURE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"ORGPROPFORM_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONDAMAGEPAYMENTS
 --------------------------------------------------------
@@ -1462,7 +1452,7 @@
 	"DOCDATE" DATE NOT NULL, 
 	"DOCNAME" VARCHAR(1000 ) NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONEXECSTEP
 --------------------------------------------------------
@@ -1473,7 +1463,7 @@
 	"BUDGETLINEPOS" NUMERIC(15,0) NOT NULL, 
 	"EXECDATE" DATE NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONEXECSTEP2
 --------------------------------------------------------
@@ -1493,7 +1483,7 @@
 	"FACTFINISHDATE" DATE, 
 	"REPORTPRINTDATE" DATE, 
 	"ISPAYIGNORED" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONFCONCLUSIONCONTRACT
 --------------------------------------------------------
@@ -1506,7 +1496,7 @@
 	"DOCCODE" VARCHAR(6 ), 
 	"DOCNAME" VARCHAR(1000 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONGOODS
 --------------------------------------------------------
@@ -1527,7 +1517,7 @@
 	"OKPD_NAME" VARCHAR(1000 ), 
 	"OKPD_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONGOODSPROP
 --------------------------------------------------------
@@ -1539,7 +1529,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0) NOT NULL, 
 	"CAPTION" VARCHAR(512 ) NOT NULL, 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONLOT
 --------------------------------------------------------
@@ -1549,7 +1539,7 @@
 	"LOTPOS" NUMERIC(15,0) NOT NULL, 
 	"LOTNAME" VARCHAR(2000 ), 
 	"LOTNUMBER" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONORGSTATUS
 --------------------------------------------------------
@@ -1557,7 +1547,7 @@
   CREATE TABLE "CONORGSTATUS" 
    (	"CONTRACT_ID" NUMERIC(15,0) NOT NULL, 
 	"ORGSTATUS_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONPAYFACT
 --------------------------------------------------------
@@ -1575,7 +1565,7 @@
 	"FOREIGNKEY" VARCHAR(50 ), 
 	"DOCDATE" DATE, 
 	"ISPREPAYMENT" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONPAYSHEDULE
 --------------------------------------------------------
@@ -1586,7 +1576,7 @@
 	"BUDGETLINEPOS" NUMERIC(15,0) NOT NULL, 
 	"PAYDATE" DATE NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONPLACE
 --------------------------------------------------------
@@ -1603,7 +1593,7 @@
 	"USEAMOUNT" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"CALCPRICE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"EXECSTEP2POS" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONPRODUCTSCHANGEDOCS
 --------------------------------------------------------
@@ -1614,7 +1604,7 @@
 	"DOCNUMBER" VARCHAR(100 ), 
 	"DOCDATE" DATE NOT NULL, 
 	"DOCNAME" VARCHAR(1000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONREFUSALFACT
 --------------------------------------------------------
@@ -1625,7 +1615,7 @@
 	"VOUCHERENTRY" VARCHAR(4000 ), 
 	"EXPLANATION" VARCHAR(4000 ), 
 	"REFUSALFACTFOUNDATION_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONSOLIDDOC
 --------------------------------------------------------
@@ -1652,7 +1642,7 @@
 	"SUBJECT" VARCHAR(2000 ), 
 	"REMARK" VARCHAR(255 ), 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONSTRUCTION
 --------------------------------------------------------
@@ -1662,7 +1652,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"ADDRESS" VARCHAR(255 ), 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONSUPPLYSHEDULE
 --------------------------------------------------------
@@ -1674,7 +1664,7 @@
 	"SUPPLYDATE" DATE NOT NULL, 
 	"QTY" NUMERIC(15,4) DEFAULT 0 NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTRACTCARDDOC
 --------------------------------------------------------
@@ -1713,7 +1703,7 @@
 	"WEBLINK_CONTRACT" VARCHAR(2000 ), 
 	"WEBLINK_REJECT" VARCHAR(2000 ), 
 	"WEBLINK_REVISION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTRACTDOC
 --------------------------------------------------------
@@ -1879,7 +1869,7 @@
 	"CONFIRSTNAME" VARCHAR(250 ), 
 	"CONPATRONYMIC" VARCHAR(250 ), 
 	"CONISCULTURE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTRACTEXECDOC
 --------------------------------------------------------
@@ -1949,7 +1939,7 @@
 	"BANKGRNT_LOSSNOTCOVEREDAMOUNT" NUMERIC(15,2), 
 	"BANKGRNT_WARRANTYAMOUNT" NUMERIC(15,2), 
 	"BANKGRNT_OTHERAMOUNT" NUMERIC(15,2)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTRACTOR
 --------------------------------------------------------
@@ -1957,7 +1947,7 @@
   CREATE TABLE "CONTRACTOR" 
    (	"INSPECTOR_ID" NUMERIC(15,0) NOT NULL, 
 	"ORG_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTRACTREASON
 --------------------------------------------------------
@@ -1972,7 +1962,7 @@
 	"REFTYPE" NUMERIC(1,0), 
 	"POINTLAW" VARCHAR(1000 ), 
 	"BUDGETTYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTRACTREASON_DOCLINES
 --------------------------------------------------------
@@ -1984,7 +1974,7 @@
 	"CODE" VARCHAR(10 ), 
 	"NAME" VARCHAR(1000 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTRACTTEMPLATEDOC
 --------------------------------------------------------
@@ -2006,7 +1996,7 @@
 	"CMPLOTPOS" NUMERIC(15,0), 
 	"CUSTOMER_ID" NUMERIC(15,0) NOT NULL, 
 	"CONTRACT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTYPE
 --------------------------------------------------------
@@ -2019,7 +2009,7 @@
 	"ISCONTRACT" NUMERIC(15,0) DEFAULT 1 NOT NULL, 
 	"CONTRACTTYPE" NUMERIC(15,0) DEFAULT 0 NOT NULL, 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CONTYPEATTACH
 --------------------------------------------------------
@@ -2032,7 +2022,7 @@
 	"ATTACH_NAME" VARCHAR(100 ) NOT NULL, 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"ATTACH_TYPE" NUMERIC(1,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table COUNTRY
 --------------------------------------------------------
@@ -2041,7 +2031,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CRLFILE
 --------------------------------------------------------
@@ -2051,8 +2041,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"CRLFILE" BLOB, 
 	"CRLPOINT_ID" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CRLPOINT
 --------------------------------------------------------
@@ -2067,7 +2056,7 @@
 	"FULL_ISSUER" VARCHAR(1000 ), 
 	"ISSUER" VARCHAR(1000 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CSGOODS
 --------------------------------------------------------
@@ -2085,7 +2074,7 @@
 	"OKPD_NAME" VARCHAR(1000 ), 
 	"OKPD_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CSGOODSPROP
 --------------------------------------------------------
@@ -2097,7 +2086,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0) NOT NULL, 
 	"CAPTION" VARCHAR(512 ) NOT NULL, 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CSRECIPIENT
 --------------------------------------------------------
@@ -2105,7 +2094,7 @@
   CREATE TABLE "CSRECIPIENT" 
    (	"CONSOLID_ID" NUMERIC(15,0) NOT NULL, 
 	"ORG_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CURHISTORY
 --------------------------------------------------------
@@ -2118,7 +2107,7 @@
 	"DT" DATE NOT NULL, 
 	"RATE" NUMERIC(10,4), 
 	"DIVISOR" NUMERIC(10,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table CURRENCY
 --------------------------------------------------------
@@ -2128,7 +2117,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"CODE" VARCHAR(3 ) NOT NULL, 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DATAOBJECTCHANGELOG
 --------------------------------------------------------
@@ -2145,8 +2134,7 @@
 	"OBJ_VERSION" NUMERIC(15,0) NOT NULL, 
 	"REMARK" VARCHAR(255 ), 
 	"DATA" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DATASOURCE
 --------------------------------------------------------
@@ -2158,8 +2146,7 @@
 	"CAPTION" VARCHAR(128 ), 
 	"JAVACLASSNAME" VARCHAR(255 ), 
 	"DECLARATION" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DAYVERSION
 --------------------------------------------------------
@@ -2167,7 +2154,7 @@
   CREATE TABLE "DAYVERSION" 
    (	"DAY_DATE" DATE NOT NULL, 
 	"DAY_VERSION" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DBCONNECT
 --------------------------------------------------------
@@ -2184,7 +2171,7 @@
 	"STATUS" NUMERIC(15,0) DEFAULT 6 NOT NULL, 
 	"DBCONNECT_TYPE" NUMERIC(15,0) DEFAULT 1 NOT NULL, 
 	"STATUS_DATE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DBCONSTRAINT
 --------------------------------------------------------
@@ -2195,7 +2182,7 @@
 	"NAME" VARCHAR(50 ), 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DBUPDATE
 --------------------------------------------------------
@@ -2206,7 +2193,7 @@
 	"UPDATE_DATE" DATE, 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"VERSIONS" BLOB 
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DECREASON
 --------------------------------------------------------
@@ -2217,7 +2204,7 @@
 	"BUDGET_ID" NUMERIC(15,0), 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"DOCUMENTCLASS_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DELIVERYBASIS
 --------------------------------------------------------
@@ -2228,7 +2215,7 @@
 	"SYSTEM_FLAG" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"CODE" VARCHAR(50 ) NOT NULL, 
 	"CAPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DESCGROUP
 --------------------------------------------------------
@@ -2237,7 +2224,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DESCRIPTION
 --------------------------------------------------------
@@ -2248,7 +2235,7 @@
 	"BUDGET_ID" NUMERIC(15,0), 
 	"DESCGROUP_ID" NUMERIC(15,0), 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DESCRIPTIONCACHE
 --------------------------------------------------------
@@ -2257,7 +2244,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"DESCRIPTION" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DEVIATIONFACTFOUNDATION
 --------------------------------------------------------
@@ -2269,7 +2256,7 @@
 	"NAME" VARCHAR(500 ) NOT NULL, 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"BUDGETTYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DIGEST
 --------------------------------------------------------
@@ -2283,8 +2270,7 @@
 	"DIGESTDATA" BLOB SUB_TYPE TEXT, 
 	"ISACTIVE" NUMERIC(1,0) DEFAULT 0, 
 	"DOCCLENANERNOTIFY" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DIGESTSIGN
 --------------------------------------------------------
@@ -2310,8 +2296,7 @@
 	"SIGNVERSION" NUMERIC(15,0) NOT NULL, 
 	"ISIMPORTED" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"IMPORTUSER_ID" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DISPSTATUS
 --------------------------------------------------------
@@ -2321,7 +2306,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 ), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCACTION
 --------------------------------------------------------
@@ -2342,7 +2327,7 @@
 	"CLIENTOBJECT_NAME" VARCHAR(255 ), 
 	"SHOW_MODE" NUMERIC(15,0) DEFAULT 0 NOT NULL, 
 	"USER_TYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCATTACH
 --------------------------------------------------------
@@ -2355,8 +2340,7 @@
 	"ATTACH_DATA" BLOB, 
 	"AUTHOR" NUMERIC(15,0), 
 	"ACTION_DATE" DATE
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCATTACHEX
 --------------------------------------------------------
@@ -2372,7 +2356,7 @@
 	"CONVERTER_ID" NUMERIC(15,0), 
 	"AUTHOR" NUMERIC(15,0), 
 	"ACTION_DATE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCATTACH_LINK
 --------------------------------------------------------
@@ -2382,7 +2366,7 @@
 	"STORAGE_NAME" VARCHAR(100 ), 
 	"DEVICE_NAME" VARCHAR(100 ), 
 	"REAL_FILENAME" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCCATEGORY
 --------------------------------------------------------
@@ -2393,7 +2377,7 @@
 	"NAME" VARCHAR(100 ) NOT NULL, 
 	"CODE" VARCHAR(15 ) NOT NULL, 
 	"SYSTEM_FLAG" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCCLASS_DISPSTATUS
 --------------------------------------------------------
@@ -2407,7 +2391,7 @@
 	"PARALLEL" NUMERIC(1,0) NOT NULL, 
 	"CONTROL_TYPE" NUMERIC(1,0) DEFAULT 0, 
 	"REMARK" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCCOMMENT
 --------------------------------------------------------
@@ -2422,8 +2406,7 @@
 	"USERNAME" VARCHAR(30 ) NOT NULL, 
 	"USER_ID" NUMERIC(15,0), 
 	"UPDATE_DATE" DATE
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCCUSTOMFIELDS
 --------------------------------------------------------
@@ -2438,8 +2421,7 @@
 	"REQUIRED" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"FIELDPOS" NUMERIC(15,0) NOT NULL, 
 	"METADATA" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCCUSTOMFIELDVALUES
 --------------------------------------------------------
@@ -2449,8 +2431,7 @@
 	"CUSTFIELD_ID" NUMERIC(15,0) NOT NULL, 
 	"FIELD_VALUE" VARCHAR(255 ), 
 	"FIELD_DATA" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCDIGESTREQUISITES
 --------------------------------------------------------
@@ -2460,7 +2441,7 @@
 	"RULEREQUISITE_ID" NUMERIC(18,0) NOT NULL, 
 	"ITEM_CONDITION" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"ITEM_VALUE" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCDIGESTROLES
 --------------------------------------------------------
@@ -2470,7 +2451,7 @@
 	"USERROLE_ID" NUMERIC(18,0) NOT NULL, 
 	"SIGN_ORDER" NUMERIC(15,0) DEFAULT 0 NOT NULL, 
 	"DOCACTION_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCDIGESTRULE
 --------------------------------------------------------
@@ -2485,7 +2466,7 @@
 	"FGROUPHEADER_ID" NUMERIC(18,0) NOT NULL, 
 	"PARDISPSTATUS_ID" NUMERIC(15,0), 
 	"RULESCRIPT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCEVENT
 --------------------------------------------------------
@@ -2504,7 +2485,7 @@
 	"AUTO_RPL" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"ISOFFLINE" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"USER_TYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCEVERRLOG
 --------------------------------------------------------
@@ -2518,8 +2499,7 @@
 	"EVENT_BEGIN" DATE, 
 	"EVENT_END" DATE, 
 	"EVENT_MSG" BLOB
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCEXCHANGESCHEME
 --------------------------------------------------------
@@ -2528,7 +2508,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCFLAG
 --------------------------------------------------------
@@ -2536,7 +2516,7 @@
   CREATE TABLE "DOCFLAG" 
    (	"DOCUMENT_ID" NUMERIC(15,0), 
 	"DOCFLAGTYPE_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCFLAGCATEGORY
 --------------------------------------------------------
@@ -2545,7 +2525,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCFLAGTYPE
 --------------------------------------------------------
@@ -2559,7 +2539,7 @@
 	"READONLY" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"RADIO" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"VISIBLE" NUMERIC(1,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCGROUP
 --------------------------------------------------------
@@ -2571,7 +2551,7 @@
 	"PARENT_ID" NUMERIC(15,0), 
 	"DOCUMENTCLASS_ID" NUMERIC(15,0) NOT NULL, 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCJOURNAL
 --------------------------------------------------------
@@ -2589,8 +2569,7 @@
 	"WORK_DATE" DATE, 
 	"PARDISPSTATUS_ID" NUMERIC(15,0), 
 	"OLD_PARDISPSTATUS_ID" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCREQ
 --------------------------------------------------------
@@ -2604,7 +2583,7 @@
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0) DEFAULT 1 NOT NULL, 
 	"NAME" VARCHAR(1024 ) NOT NULL, 
 	"DESCRIPTION" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCRETENTION
 --------------------------------------------------------
@@ -2620,8 +2599,7 @@
 	"DOCSTATUS_ID" NUMERIC(15,0) NOT NULL, 
 	"ISACTIVE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0 NOT NULL
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCRETENTIONSTATITEMS
 --------------------------------------------------------
@@ -2632,8 +2610,7 @@
 	"DOCUMENT_ID" NUMERIC(15,0) NOT NULL, 
 	"DOCRETENTION_ID" NUMERIC(15,0) NOT NULL, 
 	"MSG" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCRETENTIONSTATUS
 --------------------------------------------------------
@@ -2643,8 +2620,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"DOCRETENTION_ID" NUMERIC(15,0) NOT NULL, 
 	"MSG" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCSELECT
 --------------------------------------------------------
@@ -2658,7 +2634,7 @@
 	"ISREQUIRED" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"TYPE" NUMERIC(2,0) DEFAULT 0 NOT NULL, 
 	"REMARK" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCSITELINK
 --------------------------------------------------------
@@ -2666,7 +2642,7 @@
   CREATE TABLE "DOCSITELINK" 
    (	"DOCUMENT_ID" NUMERIC(15,0) NOT NULL, 
 	"SITE_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCSTATUS
 --------------------------------------------------------
@@ -2683,7 +2659,7 @@
 	"PARALLEL" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"INITIALL" NUMERIC(1,0) DEFAULT 0, 
 	"CONTROL_TYPE" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCUMENT
 --------------------------------------------------------
@@ -2713,7 +2689,7 @@
 	"AUTHOR_ID" NUMERIC(15,0), 
 	"SIGN_CNT" NUMERIC(18,0) DEFAULT 0 NOT NULL, 
 	"APP_TYPE" NUMERIC(2,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCUMENTBLOCKINFO
 --------------------------------------------------------
@@ -2722,7 +2698,7 @@
    (	"DOCUMENT_ID" NUMERIC(15,0) NOT NULL, 
 	"SYSUSER_ID" NUMERIC(15,0) NOT NULL, 
 	"BLOCKTIME" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCUMENTCLASS
 --------------------------------------------------------
@@ -2745,8 +2721,7 @@
 	"NUMGENERATOR_ID" NUMERIC(15,0), 
 	"PRINTPARAMS" BLOB SUB_TYPE TEXT, 
 	"PRINTCLIENTOBJECT_ID" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table DOCUMENTREPORTS
 --------------------------------------------------------
@@ -2764,7 +2739,7 @@
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0 NOT NULL, 
 	"BIRT_OUTPUTFORMAT" VARCHAR(10 ), 
 	"BIRT_EMITTER" VARCHAR(128 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOCWEBLINK
 --------------------------------------------------------
@@ -2774,7 +2749,7 @@
 	"POS" NUMERIC(15,0) NOT NULL, 
 	"NAME" VARCHAR(255 ), 
 	"WEBLINK" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table DOMEN
 --------------------------------------------------------
@@ -2784,7 +2759,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"PARENT_ID" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table EQUALITY
 --------------------------------------------------------
@@ -2793,7 +2768,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(300 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table EQUALITYCODES
 --------------------------------------------------------
@@ -2803,7 +2778,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"EQUALITY_ID" NUMERIC(15,0) NOT NULL, 
 	"CODE" VARCHAR(7 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ESCHECKRULE
 --------------------------------------------------------
@@ -2817,7 +2792,7 @@
 	"FGROUPHEADER_ID" NUMERIC(18,0) NOT NULL, 
 	"PARDISPSTATUS_ID" NUMERIC(15,0), 
 	"RULESCRIPT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ESCHECKRULEREQUISITES
 --------------------------------------------------------
@@ -2827,7 +2802,7 @@
 	"RULEREQUISITE_ID" NUMERIC(18,0) NOT NULL, 
 	"ITEM_CONDITION" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"ITEM_VALUE" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ESCRROLE
 --------------------------------------------------------
@@ -2835,7 +2810,7 @@
   CREATE TABLE "ESCRROLE" 
    (	"ESCHECKRULE_ID" NUMERIC(15,0) NOT NULL, 
 	"USERROLE_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ESTIMATE
 --------------------------------------------------------
@@ -2848,7 +2823,7 @@
 	"FOREIGNKEY" VARCHAR(50 ), 
 	"CAPTION" VARCHAR(255 ) NOT NULL, 
 	"FINYEAR" NUMERIC(4,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ETP
 --------------------------------------------------------
@@ -2862,7 +2837,7 @@
 	"MSGSITE_ID" NUMERIC(15,0), 
 	"CLASSNAME" VARCHAR(255 ), 
 	"LINK_ADDRESS" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ETPATTACH
 --------------------------------------------------------
@@ -2875,7 +2850,7 @@
 	"ETPKEY" VARCHAR(100 ), 
 	"FILE_CRC" VARCHAR(100 ), 
 	"URL" VARCHAR(1024 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ETPTYPE
 --------------------------------------------------------
@@ -2886,7 +2861,7 @@
 	"CODE" VARCHAR(20 ) NOT NULL, 
 	"NAME" VARCHAR(100 ) NOT NULL, 
 	"ADDRESS" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table EXCHANGECLASSES
 --------------------------------------------------------
@@ -2894,7 +2869,7 @@
   CREATE TABLE "EXCHANGECLASSES" 
    (	"DOCEXCHANGESCHEME_ID" NUMERIC(15,0), 
 	"DOCUMENTCLASS_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FACTDOC
 --------------------------------------------------------
@@ -2936,7 +2911,7 @@
 	"EXPORT_PARENT_ID" NUMERIC(15,0), 
 	"PAYEDAMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"ACTUAL_YEAR" NUMERIC(4,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FACTDOCTYPE
 --------------------------------------------------------
@@ -2946,7 +2921,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"DOCTYPE" NUMERIC(1,0), 
 	"NAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FCTGOODS
 --------------------------------------------------------
@@ -2968,7 +2943,7 @@
 	"OKPD_NAME" VARCHAR(1000 ), 
 	"OKPD_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FCTGOODSPROP
 --------------------------------------------------------
@@ -2980,7 +2955,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0) NOT NULL, 
 	"CAPTION" VARCHAR(512 ) NOT NULL, 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FETCHMODE
 --------------------------------------------------------
@@ -2992,7 +2967,7 @@
 	"PACKET_SIZE" NUMERIC(18,0), 
 	"MAX_SIZE" NUMERIC(18,0), 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FGROUP
 --------------------------------------------------------
@@ -3008,8 +2983,7 @@
 	"FG_VERSION" NUMERIC(18,0) NOT NULL, 
 	"FG_DATE" TIMESTAMP  NOT NULL, 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table FGROUPATTACH
 --------------------------------------------------------
@@ -3020,8 +2994,7 @@
 	"DOCATTACH_ID" NUMERIC(15,0) NOT NULL, 
 	"FGROUP_ID" NUMERIC(15,0) NOT NULL, 
 	"DATA" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table FGROUPHEADER
 --------------------------------------------------------
@@ -3035,7 +3008,7 @@
 	"GROUP_TYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"SUBSYSTEM" NUMERIC(18,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FILEFOLDER
 --------------------------------------------------------
@@ -3045,7 +3018,7 @@
 	"FOLDER" VARCHAR(32 ) NOT NULL, 
 	"DEVICE_NAME" VARCHAR(25 ) DEFAULT 'defaultDevice' NOT NULL, 
 	"STORAGE_NAME" VARCHAR(25 ) DEFAULT 'UNKNOWN' NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FINSRC
 --------------------------------------------------------
@@ -3062,7 +3035,7 @@
 	"OOSKEY" VARCHAR(100 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"OKTMO" VARCHAR(20 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FINSRCSATISFY
 --------------------------------------------------------
@@ -3073,7 +3046,7 @@
 	"FINYEAR" NUMERIC(4,0) NOT NULL, 
 	"FINSRCSELECTEDYEARID" NUMERIC(15,0), 
 	"FINSRCNEXTYEARID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FORMATCONVERTER
 --------------------------------------------------------
@@ -3084,7 +3057,7 @@
 	"NAME" VARCHAR(50 ) NOT NULL, 
 	"CLASSNAME" VARCHAR(100 ), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCAT
 --------------------------------------------------------
@@ -3094,7 +3067,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(50 ) NOT NULL, 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCDOCUMENT
 --------------------------------------------------------
@@ -3102,7 +3075,7 @@
   CREATE TABLE "FUNCDOCUMENT" 
    (	"FUNUNIT_ID" NUMERIC(15,0) NOT NULL, 
 	"DOCUMENTCLASS_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCMODULE
 --------------------------------------------------------
@@ -3110,7 +3083,7 @@
   CREATE TABLE "FUNCMODULE" 
    (	"FUNUNIT_ID" NUMERIC(15,0) NOT NULL, 
 	"MODULENAME" VARCHAR(20 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCOBJECT
 --------------------------------------------------------
@@ -3118,7 +3091,7 @@
   CREATE TABLE "FUNCOBJECT" 
    (	"FUNUNIT_ID" NUMERIC(15,0) NOT NULL, 
 	"CLIENTOBJECT_NAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCPROCESSOR
 --------------------------------------------------------
@@ -3127,7 +3100,7 @@
    (	"FUNUNIT_ID" NUMERIC(15,0) NOT NULL, 
 	"SERVERPROCESSOR_NAME" VARCHAR(50 ) NOT NULL, 
 	"ACCESS_MODE" NUMERIC(15,0) DEFAULT 3 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCPROVIDER
 --------------------------------------------------------
@@ -3135,7 +3108,7 @@
   CREATE TABLE "FUNCPROVIDER" 
    (	"FUNUNIT_ID" NUMERIC(15,0) NOT NULL, 
 	"SERVERPROVIDER_NAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCREFERENCE
 --------------------------------------------------------
@@ -3144,7 +3117,7 @@
    (	"FUNUNIT_ID" NUMERIC(15,0) NOT NULL, 
 	"REF_NAME" VARCHAR(50 ) NOT NULL, 
 	"ACCESS_MODE" NUMERIC(15,0) DEFAULT 3 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNCUNIT
 --------------------------------------------------------
@@ -3153,7 +3126,7 @@
    (	"FUNUNIT_ID" NUMERIC(15,0) NOT NULL, 
 	"FUNUNIT_NAME" VARCHAR(50 ) NOT NULL, 
 	"ACCESS_MODE" NUMERIC(15,0) DEFAULT 3 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table FUNUNIT
 --------------------------------------------------------
@@ -3166,7 +3139,7 @@
 	"CAPTION" VARCHAR(100 ), 
 	"SUBTYPE" NUMERIC(18,0) DEFAULT 0, 
 	"APP_ID" NUMERIC(15,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GCREGISTER
 --------------------------------------------------------
@@ -3178,8 +3151,7 @@
 	"ATTACH_NAME" VARCHAR(100 ) NOT NULL, 
 	"ATTACH_DATA" BLOB, 
 	"CAPTION" VARCHAR(255 ) NOT NULL
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table GOODS
 --------------------------------------------------------
@@ -3194,7 +3166,7 @@
 	"OKP_CODE" VARCHAR(16 ), 
 	"IS_ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSBAN
 --------------------------------------------------------
@@ -3208,7 +3180,7 @@
 	"BAN_DESCRIPTION" VARCHAR(1000 ), 
 	"IS223FZ" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"CONTROL_MODE" NUMERIC(1,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSBANGOODSOKPD
 --------------------------------------------------------
@@ -3218,7 +3190,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"GOODSOKPD_ID" NUMERIC(15,0), 
 	"GOODSBAN_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSBANPURCHASEMODE
 --------------------------------------------------------
@@ -3228,7 +3200,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"PURCHASEMODE_ID" NUMERIC(15,0), 
 	"GOODSBAN_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSBRANCH
 --------------------------------------------------------
@@ -3238,7 +3210,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(512 ) NOT NULL, 
 	"BRANCHTYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSGROUP
 --------------------------------------------------------
@@ -3262,7 +3234,7 @@
 	"NOTFORPLAN" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"OKPD_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSGROUPDOCDETAIL
 --------------------------------------------------------
@@ -3274,7 +3246,7 @@
 	"GROUPCODE" VARCHAR(20 ), 
 	"OKDP_CODE" VARCHAR(20 ), 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSGROUPPURCHASEMODE
 --------------------------------------------------------
@@ -3284,7 +3256,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"PURCHASEMODE_ID" NUMERIC(15,0) NOT NULL, 
 	"GOODSGROUP_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSGROUP_TREE
 --------------------------------------------------------
@@ -3292,7 +3264,7 @@
   CREATE TABLE "GOODSGROUP_TREE" 
    (	"GROUP_ID" NUMERIC(15,0) NOT NULL, 
 	"TREE" VARCHAR(252 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSOKDP
 --------------------------------------------------------
@@ -3310,7 +3282,7 @@
 	"INVALIDPREFERENCE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"OKVED_ID" NUMERIC(15,0), 
 	"PARENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSOKDPCOUNTRYPREF
 --------------------------------------------------------
@@ -3320,7 +3292,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"COUNTRY_ID" NUMERIC(15,0) NOT NULL, 
 	"GOODSOKDP_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSOKDPPURCHASEMODE
 --------------------------------------------------------
@@ -3330,7 +3302,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"PURCHASEMODE_ID" NUMERIC(15,0) NOT NULL, 
 	"GOODSOKDP_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSOKPD
 --------------------------------------------------------
@@ -3349,7 +3321,7 @@
 	"ONEVENDORUUIS" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"PARENT_ID" NUMERIC(15,0), 
 	"CLASSIFIER" NUMERIC(1,0) DEFAULT 2 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSOKPDCOUNTRYPREF
 --------------------------------------------------------
@@ -3359,7 +3331,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"COUNTRY_ID" NUMERIC(15,0) NOT NULL, 
 	"GOODSOKPD_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSOKPDPURCHASEMODE
 --------------------------------------------------------
@@ -3369,7 +3341,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"PURCHASEMODE_ID" NUMERIC(15,0) NOT NULL, 
 	"GOODSOKPD_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSOKVED
 --------------------------------------------------------
@@ -3386,7 +3358,7 @@
 	"PARENT_ID" NUMERIC(15,0), 
 	"CLASSIFIER" NUMERIC(1,0) DEFAULT 2 NOT NULL, 
 	"OOSKEY" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSPRICE
 --------------------------------------------------------
@@ -3397,7 +3369,7 @@
 	"GOODS_ID" NUMERIC(15,0) NOT NULL, 
 	"DT" DATE NOT NULL, 
 	"PRICE" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GOODSPROP
 --------------------------------------------------------
@@ -3408,7 +3380,7 @@
 	"SEQORDER" NUMERIC(2,0) NOT NULL, 
 	"PROPTYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GRANTINVESTMENT
 --------------------------------------------------------
@@ -3423,7 +3395,7 @@
 	"GRANTTYPE" NUMERIC(4,0) DEFAULT 0 NOT NULL, 
 	"FOREIGNKEY" VARCHAR(50 ), 
 	"FINYEAR" NUMERIC(4,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GROUPPROP
 --------------------------------------------------------
@@ -3438,7 +3410,7 @@
 	"ISREQUIRED" NUMERIC(15,0) DEFAULT 0 NOT NULL, 
 	"DEFVALUE" VARCHAR(1500 ), 
 	"PROPTYPE_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GROUPPROPVALUE
 --------------------------------------------------------
@@ -3447,7 +3419,7 @@
    (	"GROUPPROP_ID" NUMERIC(15,0) NOT NULL, 
 	"SEQORDER" NUMERIC(5,0) NOT NULL, 
 	"CAPTION" VARCHAR(1500 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table GROUPUNIT
 --------------------------------------------------------
@@ -3455,7 +3427,7 @@
   CREATE TABLE "GROUPUNIT" 
    (	"GROUP_ID" NUMERIC(15,0) NOT NULL, 
 	"UNITNAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table HISTORYMODIFY
 --------------------------------------------------------
@@ -3469,8 +3441,7 @@
 	"modify" DATE, 
 	"REMARK" VARCHAR(255 ), 
 	"DATA" BLOB
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table INDUSTRYCODE
 --------------------------------------------------------
@@ -3485,7 +3456,7 @@
 	"CAPTION" VARCHAR(2000 ), 
 	"FOREIGNKEY" VARCHAR(50 ), 
 	"FINYEAR" NUMERIC(4,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table INSTITUTIONLINE
 --------------------------------------------------------
@@ -3505,7 +3476,7 @@
 	"PLANCHANGE_AMT2" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"PLANCHANGE_AMT3" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"KVR" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table INTERBUDGET
 --------------------------------------------------------
@@ -3519,7 +3490,7 @@
 	"FINYEAR" NUMERIC(4,0) NOT NULL, 
 	"SYSTEMTYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"LINK_ADDRESS" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table INVBUDGETLINE
 --------------------------------------------------------
@@ -3549,7 +3520,7 @@
 	"LIABILITYEXPENSE_ID" NUMERIC(15,0), 
 	"INDUSTRYCODE_ID" NUMERIC(15,0), 
 	"GRANTINVESTMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table INVGOODS
 --------------------------------------------------------
@@ -3570,7 +3541,7 @@
 	"OKPD_NAME" VARCHAR(1000 ), 
 	"OKPD_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table INVGOODSPROP
 --------------------------------------------------------
@@ -3582,7 +3553,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0) NOT NULL, 
 	"CAPTION" VARCHAR(512 ) NOT NULL, 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table INVOICEDOC
 --------------------------------------------------------
@@ -3640,7 +3611,7 @@
 	"CONFIRSTNAME" VARCHAR(250 ), 
 	"CONPATRONYMIC" VARCHAR(250 ), 
 	"CONPROPFORM_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table JAVACLASS
 --------------------------------------------------------
@@ -3652,8 +3623,7 @@
 	"STATE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"SOURCE" BLOB SUB_TYPE TEXT, 
 	"DATA" BLOB
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table KBKLINEFIT
 --------------------------------------------------------
@@ -3686,7 +3656,7 @@
 	"CODE8_TO" VARCHAR(100 ), 
 	"CODE9_TO" VARCHAR(100 ), 
 	"CODE10_TO" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table KLADR
 --------------------------------------------------------
@@ -3705,7 +3675,7 @@
 	"CODE3" VARCHAR(3 ), 
 	"CODE4" VARCHAR(3 ), 
 	"CODE5" VARCHAR(2 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table KLADRSTREET
 --------------------------------------------------------
@@ -3724,7 +3694,7 @@
 	"CODE4" VARCHAR(3 ), 
 	"CODE5" VARCHAR(4 ), 
 	"CODE6" VARCHAR(2 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table LEDGER
 --------------------------------------------------------
@@ -3772,7 +3742,7 @@
 	"FACT_Q3" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"FACT_Q4" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table LIABILITYCREDENTIAL
 --------------------------------------------------------
@@ -3785,7 +3755,7 @@
 	"CODE" VARCHAR(100 ), 
 	"CAPTION" VARCHAR(4000 ), 
 	"DESCRIPTION" VARCHAR(1024 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table LIABILITYEXPENSE
 --------------------------------------------------------
@@ -3808,7 +3778,7 @@
 	"CODE8" VARCHAR(100 ), 
 	"CODE9" VARCHAR(100 ), 
 	"CODE10" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table LIABILITYEXPENSE_DOCLINES
 --------------------------------------------------------
@@ -3828,7 +3798,7 @@
 	"CODE8" VARCHAR(100 ), 
 	"CODE9" VARCHAR(100 ), 
 	"CODE10" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table LIABILITYGROUP
 --------------------------------------------------------
@@ -3838,7 +3808,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(5 ) NOT NULL, 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table LICTYPE
 --------------------------------------------------------
@@ -3850,7 +3820,7 @@
 	"DESCRIPTION" VARCHAR(255 ), 
 	"ISSUER" VARCHAR(255 ), 
 	"ACTIVITYKIND" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MAIL
 --------------------------------------------------------
@@ -3866,8 +3836,7 @@
 	"ARCHIVE_DATE" DATE NOT NULL, 
 	"READ_DATE" DATE NOT NULL, 
 	"STATUS" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table MAILATTACH
 --------------------------------------------------------
@@ -3881,7 +3850,7 @@
 	"DESCRIPTION" VARCHAR(255 ), 
 	"AUTHOR" NUMERIC(15,0), 
 	"ACTION_DATE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MAILRECEIVERGROUP
 --------------------------------------------------------
@@ -3891,7 +3860,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(255 ) NOT NULL, 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MAILRECEIVERGROUP_RECEIVER
 --------------------------------------------------------
@@ -3901,7 +3870,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"MAILRECEIVERGROUP_ID" NUMERIC(15,0) NOT NULL, 
 	"SYSUSER_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MENU
 --------------------------------------------------------
@@ -3911,7 +3880,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(50 ) NOT NULL, 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MENUITEM
 --------------------------------------------------------
@@ -3928,7 +3897,7 @@
 	"OBJECT_PARAMS" VARCHAR(300 ), 
 	"PARENT_ID" NUMERIC(15,0), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MENUITEMWEB
 --------------------------------------------------------
@@ -3945,7 +3914,7 @@
 	"OBJECT_PARAMS" VARCHAR(300 ), 
 	"PARENT_ID" NUMERIC(15,0), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table METACONSTRAINT
 --------------------------------------------------------
@@ -3958,7 +3927,7 @@
 	"CONSTRAINT_TYPE" NUMERIC(15,0), 
 	"FOREIGNOBJECT_NAME" VARCHAR(250 ), 
 	"EXPRESSION" VARCHAR(1024 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table METAOBJECT
 --------------------------------------------------------
@@ -3969,7 +3938,7 @@
 	"NAME" VARCHAR(128 ), 
 	"TABLE_NAME" VARCHAR(255 ), 
 	"SUBSYSTEM" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MSG
 --------------------------------------------------------
@@ -3997,8 +3966,7 @@
 	"BUDGET_ID" NUMERIC(15,0), 
 	"GUID" VARCHAR(100 ), 
 	"RPL_OBJ_NAME" VARCHAR(255 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table MSGLINKTYPE
 --------------------------------------------------------
@@ -4009,7 +3977,7 @@
 	"CAPTION" VARCHAR(100 ), 
 	"CLASSNAME" VARCHAR(100 ), 
 	"EXAMPLE" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MSGQUEUE
 --------------------------------------------------------
@@ -4022,7 +3990,7 @@
 	"NAME" VARCHAR(50 ) NOT NULL, 
 	"SENT_NUMBER" NUMERIC(9,0) DEFAULT 0 NOT NULL, 
 	"PROCESSED_NUMBER" NUMERIC(9,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MSGSITE
 --------------------------------------------------------
@@ -4037,7 +4005,7 @@
 	"REPLICATOR_VERSION" NUMERIC(15,0) DEFAULT 0 NOT NULL, 
 	"SPLIT_QUEUES_BY_OBJECT" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"SPLIT_QUEUES_BY_BUDGET" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table MSGSITEEXCHANGE
 --------------------------------------------------------
@@ -4045,7 +4013,7 @@
   CREATE TABLE "MSGSITEEXCHANGE" 
    (	"MSGSITE_ID" NUMERIC(15,0) NOT NULL, 
 	"DOCEXCHANGESCHEME_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NECESSITY
 --------------------------------------------------------
@@ -4058,7 +4026,7 @@
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"CODE2" VARCHAR(100 ), 
 	"NECTYPE" NUMERIC(1,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NOTICEDOC
 --------------------------------------------------------
@@ -4093,8 +4061,7 @@
 	"ETP_ID" NUMERIC(15,0), 
 	"OOSKEY" VARCHAR(100 ), 
 	"SEND_DATE" DATE
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table NOTICEEMAILORG
 --------------------------------------------------------
@@ -4106,7 +4073,7 @@
 	"ORG_ID" NUMERIC(15,0), 
 	"ORGNAME" VARCHAR(2000 ), 
 	"EMAIL" VARCHAR(256 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NOTICEORG
 --------------------------------------------------------
@@ -4114,7 +4081,7 @@
   CREATE TABLE "NOTICEORG" 
    (	"NOTICEDOC_ID" NUMERIC(15,0) NOT NULL, 
 	"ORG_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NOTIFYMSG
 --------------------------------------------------------
@@ -4134,8 +4101,7 @@
 	"DOCUMENT_ID" NUMERIC(15,0), 
 	"QUICKLY" NUMERIC(1,0) DEFAULT 0, 
 	"READED" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table NOTIFYMSGDOC
 --------------------------------------------------------
@@ -4146,7 +4112,7 @@
 	"CREATETIME" DATE, 
 	"NOTIFYMSGKIND" NUMERIC(15,0) DEFAULT 0 NOT NULL, 
 	"PARAMHASH" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NOTIFYMSGEVENT
 --------------------------------------------------------
@@ -4155,7 +4121,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NOTIFYMSGGROUP
 --------------------------------------------------------
@@ -4164,7 +4130,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NOTIFYMSGRULE
 --------------------------------------------------------
@@ -4183,8 +4149,7 @@
 	"DOCFILTER" VARCHAR(255 ), 
 	"RECEIVERSFROMDOCFIELD" VARCHAR(255 ), 
 	"QUICKLY" NUMERIC(1,0) DEFAULT 0
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table NOTIFYMSGRULE_RECEIVER
 --------------------------------------------------------
@@ -4192,7 +4157,7 @@
   CREATE TABLE "NOTIFYMSGRULE_RECEIVER" 
    (	"NOTIFYMSGRULE_ID" NUMERIC(15,0) NOT NULL, 
 	"PERSON_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NUMGENERATOR
 --------------------------------------------------------
@@ -4205,7 +4170,7 @@
 	"JAVACLASS_NAME" VARCHAR(100 ), 
 	"PARAMS" VARCHAR(255 ), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NUMPREFIX
 --------------------------------------------------------
@@ -4216,7 +4181,7 @@
 	"NUMGENERATOR_ID" NUMERIC(15,0) NOT NULL, 
 	"SYSUSER_ID" NUMERIC(15,0) NOT NULL, 
 	"PREFIX" VARCHAR(3 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NUMSEQUENCE
 --------------------------------------------------------
@@ -4229,7 +4194,7 @@
 	"CAPTION" VARCHAR(100 ), 
 	"TERM_KIND" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"BUDGET_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table NUMUSAGE
 --------------------------------------------------------
@@ -4239,7 +4204,7 @@
 	"PERIOD_START" DATE NOT NULL, 
 	"NUM_VALUE" NUMERIC(18,0) NOT NULL, 
 	"USE_COUNT" NUMERIC(9,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFFERDOC
 --------------------------------------------------------
@@ -4306,8 +4271,7 @@
 	"VENDORLASTNAME" VARCHAR(250 ), 
 	"VENDORFIRSTNAME" VARCHAR(250 ), 
 	"VENDORPATRONYMIC" VARCHAR(250 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table OFRCRITERIONLINEVAL
 --------------------------------------------------------
@@ -4319,7 +4283,7 @@
 	"CAPTION" VARCHAR(2000 ) NOT NULL, 
 	"VAL" VARCHAR(2000 ), 
 	"ISFINALOFFER" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRCRITERIONVAL
 --------------------------------------------------------
@@ -4336,7 +4300,7 @@
 	"CALCMODE" NUMERIC(1,0), 
 	"ISFINALOFFER" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRDECREASON
 --------------------------------------------------------
@@ -4349,7 +4313,7 @@
 	"OFRRETREASONCODE" VARCHAR(20 ), 
 	"OFRRETREASON_ID" NUMERIC(15,0), 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRDOCREQVAL
 --------------------------------------------------------
@@ -4364,7 +4328,7 @@
 	"ISREQUIRED" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"REMARK" VARCHAR(2000 ), 
 	"TYPE" NUMERIC(2,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRGOODS
 --------------------------------------------------------
@@ -4385,7 +4349,7 @@
 	"OKPD_NAME" VARCHAR(1000 ), 
 	"OKPD_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRGOODSPROP
 --------------------------------------------------------
@@ -4397,7 +4361,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0) NOT NULL, 
 	"CAPTION" VARCHAR(512 ) NOT NULL, 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRGROUPPROP
 --------------------------------------------------------
@@ -4413,7 +4377,7 @@
 	"DEFVALUE" VARCHAR(1500 ), 
 	"PROPTYPE_ID" NUMERIC(15,0) NOT NULL, 
 	"GROUPPROP_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRGROUPPROPVALUE
 --------------------------------------------------------
@@ -4423,7 +4387,7 @@
 	"GROUPPROPPOS" NUMERIC(15,0) NOT NULL, 
 	"SEQORDER" NUMERIC(5,0) NOT NULL, 
 	"CAPTION" VARCHAR(1500 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRLOT
 --------------------------------------------------------
@@ -4444,7 +4408,7 @@
 	"ISLOTDECLINED" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"ISLOTREREGISTERED" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"OOS_DOC_NUMBER" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRORGSTATUS
 --------------------------------------------------------
@@ -4452,7 +4416,7 @@
   CREATE TABLE "OFRORGSTATUS" 
    (	"OFFER_ID" NUMERIC(15,0) NOT NULL, 
 	"ORGSTATUS_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRPLACE
 --------------------------------------------------------
@@ -4470,7 +4434,7 @@
 	"SUPPLYAMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"USEAMOUNT" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"CALCPRICE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRQUALREQVAL
 --------------------------------------------------------
@@ -4485,7 +4449,7 @@
 	"QMINVALUE" NUMERIC(15,4), 
 	"QMAXVALUE" NUMERIC(15,4), 
 	"ISSATISFY" NUMERIC(1,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRREQREASON
 --------------------------------------------------------
@@ -4497,7 +4461,7 @@
 	"DESCRIPTION" VARCHAR(2000 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"BUDGETTYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRRETREASON
 --------------------------------------------------------
@@ -4511,7 +4475,7 @@
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"PURCHASEMODE_ID" NUMERIC(15,0), 
 	"OOSKEY" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OFRSUPPLYSHEDULE
 --------------------------------------------------------
@@ -4524,7 +4488,7 @@
 	"QTY" NUMERIC(15,4) DEFAULT 0 NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0, 
 	"LOTPOS" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OIDREF
 --------------------------------------------------------
@@ -4534,7 +4498,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"OID" VARCHAR(100 ) NOT NULL, 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OKTMO
 --------------------------------------------------------
@@ -4547,7 +4511,7 @@
 	"NAME" VARCHAR(500 ) NOT NULL, 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"PARENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OLAPQUERY
 --------------------------------------------------------
@@ -4556,7 +4520,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(100 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSAPPLICATION
 --------------------------------------------------------
@@ -4599,7 +4563,7 @@
 	"GENERALPREFS" NUMERIC(15,2), 
 	"GOODSDELIVERED" VARCHAR(4000 ), 
 	"EXPENSESINFO" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSCONTRACT
 --------------------------------------------------------
@@ -4632,7 +4596,7 @@
 	"BUDGETNAME" VARCHAR(2000 ), 
 	"BUDGETLEVEL" VARCHAR(2 ), 
 	"PLACINGTYPE" NUMERIC(1,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSCONTRACTPRODUCTS
 --------------------------------------------------------
@@ -4650,8 +4614,7 @@
 	"QUANTITY" NUMERIC(15,4) DEFAULT 0 NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"NAME" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table OOSCONTRACTSUPPLIER
 --------------------------------------------------------
@@ -4677,8 +4640,7 @@
 	"ADDITIONALINFO" VARCHAR(4000 ), 
 	"STATUS" VARCHAR(2 ), 
 	"FACTUALADDRESS" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table OOSCUSTOMERREQUIREMENT
 --------------------------------------------------------
@@ -4708,7 +4670,7 @@
 	"QUANTITYCONTRACTSPNIR" NUMERIC(15,0), 
 	"FINANCESOURCE" VARCHAR(2000 ), 
 	"PAYMENTCONDITION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSNOTIFICATION
 --------------------------------------------------------
@@ -4769,7 +4731,7 @@
 	"SIGNTERM" NUMERIC(15,0), 
 	"ISACTUAL" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"NOTIFICATIONTYPE" VARCHAR(2 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSNOTIFICATIONLOT
 --------------------------------------------------------
@@ -4781,7 +4743,7 @@
 	"CUSTOMERCOUNT" NUMERIC(15,0) NOT NULL, 
 	"SUBJECT" VARCHAR(2000 ), 
 	"ISENTERPRISE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSORGANIZATION
 --------------------------------------------------------
@@ -4840,7 +4802,7 @@
 	"SUBORDINATIONTYPEDESCRIPTION" VARCHAR(200 ), 
 	"URL" VARCHAR(40 ), 
 	"TIMEZONE" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSORGANIZATIONROLE
 --------------------------------------------------------
@@ -4848,7 +4810,7 @@
   CREATE TABLE "OOSORGANIZATIONROLE" 
    (	"REGNUMBER" VARCHAR(11 ) NOT NULL, 
 	"ORGROLE" VARCHAR(2 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSORGROLE
 --------------------------------------------------------
@@ -4858,7 +4820,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"CODE" VARCHAR(10 ) NOT NULL, 
 	"CAPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSORGROLES
 --------------------------------------------------------
@@ -4866,7 +4828,7 @@
   CREATE TABLE "OOSORGROLES" 
    (	"ORG_ID" NUMERIC(15,0) NOT NULL, 
 	"ROLECODE" VARCHAR(10 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSPRODUCTS
 --------------------------------------------------------
@@ -4876,7 +4838,7 @@
 	"LOT_ID" NUMERIC(15,0) NOT NULL, 
 	"CODE" VARCHAR(20 ) NOT NULL, 
 	"NAME" VARCHAR(1024 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSPROTOCOL
 --------------------------------------------------------
@@ -4896,7 +4858,7 @@
 	"COMMISSIONNAME" VARCHAR(2000 ), 
 	"LOTCOUNT" NUMERIC(15,0) NOT NULL, 
 	"ISACTUAL" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOSPROTOCOLLOT
 --------------------------------------------------------
@@ -4909,7 +4871,7 @@
 	"LOTNUMBER" NUMERIC(15,0) NOT NULL, 
 	"APPLICATIONCOUNT" NUMERIC(15,0) NOT NULL, 
 	"ALLABSENT" NUMERIC(1,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOS223PURCHASENOTICEINFO
 --------------------------------------------------------
@@ -4919,7 +4881,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"GUID" VARCHAR(36 ), 
 	"REGISTRATIONNUMBER" NUMERIC(11,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OOS223PURCHNOTICELOTINFO
 --------------------------------------------------------
@@ -4930,7 +4892,7 @@
 	"OOS223PURCHASENOTICEINFO_ID" NUMERIC(15,0) NOT NULL, 
 	"GUID" VARCHAR(36 ), 
 	"ORDINALNUMBER" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table OPERTYPE
 --------------------------------------------------------
@@ -4939,7 +4901,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORDERDOC
 --------------------------------------------------------
@@ -5141,8 +5103,7 @@
 	"RECIPIENT_ID" NUMERIC(15,0), 
 	"RECIPIENTNAME" BLOB SUB_TYPE TEXT, 
 	"PARENTLOTNUMBER" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table ORDERSUMMARY
 --------------------------------------------------------
@@ -5161,7 +5122,7 @@
 	"RESULT" NUMERIC(15,0) DEFAULT 0 NOT NULL, 
 	"LASTPHASECODE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"LASTPHASEDATE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORG
 --------------------------------------------------------
@@ -5274,8 +5235,7 @@
 	"KLARD_LOCALITYSOCR" VARCHAR(10 ), 
 	"KLARD_STREETSOCR" VARCHAR(10 ), 
 	"OKVED_ID" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table ORGACCOUNT
 --------------------------------------------------------
@@ -5301,7 +5261,7 @@
 	"OOSFLAG" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"RECIPIENT_DESCRIPTION" VARCHAR(2000 ), 
 	"ISCONTRACTOR" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGACCTYPE
 --------------------------------------------------------
@@ -5310,7 +5270,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGADDKPP
 --------------------------------------------------------
@@ -5324,7 +5284,7 @@
 	"EXCLUDE_DATE" DATE, 
 	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGATTACH
 --------------------------------------------------------
@@ -5334,8 +5294,7 @@
 	"ORG_ID" NUMERIC(15,0) NOT NULL, 
 	"ATTACH_NAME" VARCHAR(100 ) NOT NULL, 
 	"ATTACH_DATA" BLOB
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table ORGCHILD
 --------------------------------------------------------
@@ -5343,7 +5302,7 @@
   CREATE TABLE "ORGCHILD" 
    (	"ORG_ID" NUMERIC(15,0) NOT NULL, 
 	"CHILD_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGCONCCONT
 --------------------------------------------------------
@@ -5354,7 +5313,7 @@
 	"ORG_ID" NUMERIC(15,0) NOT NULL, 
 	"CONTRACT_YEAR" NUMERIC(4,0) NOT NULL, 
 	"CONTRACT_COUNT" NUMERIC(15,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGETP
 --------------------------------------------------------
@@ -5371,7 +5330,7 @@
 	"ETPUSERNAME" VARCHAR(100 ), 
 	"ETPPASSWORD" VARCHAR(100 ), 
 	"SYSUSER_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGFORM
 --------------------------------------------------------
@@ -5383,7 +5342,7 @@
 	"DESCRIPTION" VARCHAR(2000 ) NOT NULL, 
 	"OOSCODE" VARCHAR(10 ), 
 	"ISACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGGOODSGROUP
 --------------------------------------------------------
@@ -5400,7 +5359,7 @@
 	"SECOND_IGNORED" NUMERIC(1,0), 
 	"SECOND_DOC_NUMBER" VARCHAR(20 ), 
 	"SECOND_DATE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGHEARING
 --------------------------------------------------------
@@ -5414,7 +5373,7 @@
 	"CAUSE" VARCHAR(255 ), 
 	"SUBJECT" VARCHAR(255 ), 
 	"AMOUNT" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGLICENCE
 --------------------------------------------------------
@@ -5428,7 +5387,7 @@
 	"LICENCE_NUMBER" VARCHAR(30 ) NOT NULL, 
 	"HASHARDCOPY" NUMERIC(15,0) DEFAULT 0 NOT NULL, 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGOOS223FZUSER
 --------------------------------------------------------
@@ -5440,7 +5399,7 @@
 	"SYSUSER_ID" NUMERIC(15,0) NOT NULL, 
 	"LOGIN" VARCHAR(100 ) NOT NULL, 
 	"PSWD" VARCHAR(100 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGPERSONAL
 --------------------------------------------------------
@@ -5448,7 +5407,7 @@
   CREATE TABLE "ORGPERSONAL" 
    (	"ORG_ID" NUMERIC(15,0) NOT NULL, 
 	"PERSONAL_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGPERSONALRESP
 --------------------------------------------------------
@@ -5457,7 +5416,7 @@
    (	"ORG_ID" NUMERIC(15,0) NOT NULL, 
 	"PERSONAL_ID" NUMERIC(15,0) NOT NULL, 
 	"RESPONSIBILITY_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGROLE
 --------------------------------------------------------
@@ -5466,7 +5425,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGROLES
 --------------------------------------------------------
@@ -5474,7 +5433,7 @@
   CREATE TABLE "ORGROLES" 
    (	"ORG_ID" NUMERIC(15,0) NOT NULL, 
 	"ORGROLE_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGSELSTATUS
 --------------------------------------------------------
@@ -5482,7 +5441,7 @@
   CREATE TABLE "ORGSELSTATUS" 
    (	"ORG_ID" NUMERIC(15,0) NOT NULL, 
 	"ORGSTATUS_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGSTATUS
 --------------------------------------------------------
@@ -5491,7 +5450,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(300 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGTITLE
 --------------------------------------------------------
@@ -5501,7 +5460,7 @@
 	"DTBEGIN" DATE NOT NULL, 
 	"DTEND" DATE, 
 	"DESCRIPTION" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGTURNOVER
 --------------------------------------------------------
@@ -5511,7 +5470,7 @@
 	"YR" NUMERIC(4,0) NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"CURRENCY_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ORGUNFAIR
 --------------------------------------------------------
@@ -5533,8 +5492,7 @@
 	"UNFAIRDATE" DATE, 
 	"CONTRACTDOCNUMBER" VARCHAR(30 ), 
 	"PURCHASEMODE_ID" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table PACKTYPE
 --------------------------------------------------------
@@ -5543,7 +5501,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PANEL
 --------------------------------------------------------
@@ -5553,7 +5511,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(50 ) NOT NULL, 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PANELITEM
 --------------------------------------------------------
@@ -5570,8 +5528,7 @@
 	"OBJECT_PARAMS" VARCHAR(300 ), 
 	"IMAGE" BLOB, 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0 NOT NULL
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table PAYCONDITION
 --------------------------------------------------------
@@ -5583,7 +5540,7 @@
 	"DESCRIPTION" VARCHAR(2000 ), 
 	"SYSTEM_FLAG" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PERSON
 --------------------------------------------------------
@@ -5594,7 +5551,7 @@
 	"FIO" VARCHAR(255 ), 
 	"PHONE" VARCHAR(255 ), 
 	"EMAIL" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PERSONAL
 --------------------------------------------------------
@@ -5617,7 +5574,7 @@
 	"FAXCITYCODE" VARCHAR(15 ), 
 	"FAXEXTENSION" VARCHAR(15 ), 
 	"IS_ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLACEMENTFEATURE
 --------------------------------------------------------
@@ -5633,7 +5590,7 @@
 	"ACTUAL" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"USETENDERPLANS" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"BUDGETTYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLACEMENTFEATUREPM
 --------------------------------------------------------
@@ -5643,7 +5600,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"PLACEMENTFEATURE_ID" NUMERIC(15,0) NOT NULL, 
 	"PURCHASEMODE_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLACINGWAY
 --------------------------------------------------------
@@ -5656,7 +5613,7 @@
 	"CODE" VARCHAR(50 ) NOT NULL, 
 	"PURCHASEMODE_ID" NUMERIC(15,0), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLANDOC
 --------------------------------------------------------
@@ -5685,7 +5642,7 @@
 	"RECIPIENT_NAME" VARCHAR(2000 ), 
 	"NECESSITY_ID" NUMERIC(15,0) DEFAULT 0 NOT NULL, 
 	"NECESSITY_DESCRIPTION" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLANPOSITIONCHANGEREASON
 --------------------------------------------------------
@@ -5697,7 +5654,7 @@
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"BUDGETTYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"OOSKEY" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLANPOSITIONNUMBERERROR
 --------------------------------------------------------
@@ -5705,8 +5662,7 @@
   CREATE TABLE "PLANPOSITIONNUMBERERROR" 
    (	"DOCUMENT_ID" NUMERIC(15,0) NOT NULL, 
 	"TEXT" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table PLANREQUEST
 --------------------------------------------------------
@@ -5715,7 +5671,7 @@
    (	"REQUEST_ID" NUMERIC(15,0) NOT NULL, 
 	"DOC_ID" NUMERIC(15,0) NOT NULL, 
 	"DOCUMENT_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2ARRANGEMENT
 --------------------------------------------------------
@@ -5768,7 +5724,7 @@
 	"QUANTITYUNDEFINED" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"PUBLICDISCUSSCACHE_ID" NUMERIC(15,0), 
 	"PREFERENCEGROUP_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2CHANGEREASON
 --------------------------------------------------------
@@ -5778,7 +5734,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(1000 ), 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2DAILYTOTALS
 --------------------------------------------------------
@@ -5797,7 +5753,7 @@
 	"CONTRACTEXECDATE" DATE, 
 	"ISENTERPRISE" NUMERIC(1,0) DEFAULT 0, 
 	"ISSMALL" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2DOC
 --------------------------------------------------------
@@ -5833,7 +5789,7 @@
 	"OWNERNAME" VARCHAR(2000 ), 
 	"RECIPIENT_ID" NUMERIC(15,0), 
 	"RESPPERSONAL_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2DOCCHILD
 --------------------------------------------------------
@@ -5842,7 +5798,7 @@
    (	"PLAN2DOC_ID" NUMERIC(15,0) NOT NULL, 
 	"DOC_ID" NUMERIC(15,0) NOT NULL, 
 	"DOCUMENT_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2GOODS
 --------------------------------------------------------
@@ -5901,7 +5857,7 @@
 	"OKPD_ID" NUMERIC(15,0), 
 	"OKVED_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2LEDGER
 --------------------------------------------------------
@@ -5944,7 +5900,7 @@
 	"AMOUNT_Q3" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"AMOUNT_Q4" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2OOSEXTNUMBER
 --------------------------------------------------------
@@ -5956,7 +5912,7 @@
 	"PLANPOSITIONNUMBER" VARCHAR(100 ), 
 	"POSITIONNUMBER" VARCHAR(30 ), 
 	"EXTNUMBER" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2OOSFEATURE
 --------------------------------------------------------
@@ -5971,7 +5927,7 @@
 	"TYPE" VARCHAR(1 ) NOT NULL, 
 	"PREFVALUE" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"CONTENT" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2OOSKBK
 --------------------------------------------------------
@@ -5987,7 +5943,7 @@
 	"CODE5" VARCHAR(100 ), 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"FUTUREAMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2OOSKBKYEAR
 --------------------------------------------------------
@@ -5998,7 +5954,7 @@
 	"PLAN2OOSKBK_ID" NUMERIC(15,0) NOT NULL, 
 	"PLANYEAR" NUMERIC(4,0) NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2OOSOKVED
 --------------------------------------------------------
@@ -6010,7 +5966,7 @@
 	"CODE" VARCHAR(20 ) NOT NULL, 
 	"NAME" VARCHAR(1000 ), 
 	"OKVED_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN2OOSPOSITION
 --------------------------------------------------------
@@ -6058,8 +6014,7 @@
 	"LEGALACTREQUISITES" VARCHAR(2000 ), 
 	"CONTRACTPRICEFEATURES" VARCHAR(2000 ), 
 	"FEATURES111" NUMERIC(1,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table PLAN2OOSPRODUCT
 --------------------------------------------------------
@@ -6082,7 +6037,7 @@
 	"UNITNAME" VARCHAR(50 ), 
 	"OKVED" VARCHAR(20 ), 
 	"OKVED_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3DOC
 --------------------------------------------------------
@@ -6155,7 +6110,7 @@
 	"SGOZENTERPRISEPERCENT" NUMERIC(15,2) DEFAULT NULL, 
 	"SGOZENTMANUALAMOUNT" NUMERIC(15,2), 
 	"SGOZQUOTMANUALAMOUNT" NUMERIC(15,2)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3DOCCHILD
 --------------------------------------------------------
@@ -6164,7 +6119,7 @@
    (	"PLAN3DOC_ID" NUMERIC(15,0) NOT NULL, 
 	"DOC_ID" NUMERIC(15,0) NOT NULL, 
 	"DOCUMENT_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3PURCHASEDOC
 --------------------------------------------------------
@@ -6264,7 +6219,7 @@
 	"LEGALACTREQUISITES" VARCHAR(2000 ), 
 	"CONTRACTPRICEFEATURES" VARCHAR(2000 ), 
 	"PARENT_PURCHASECODE" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3PURCHASEFEATURE
 --------------------------------------------------------
@@ -6275,7 +6230,7 @@
 	"PLACEMENTFEATURE_ID" NUMERIC(15,0) NOT NULL, 
 	"PREFVALUE" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"CONTENT" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3PURCHASEGOODS
 --------------------------------------------------------
@@ -6309,7 +6264,7 @@
 	"OKPD_ID" NUMERIC(15,0), 
 	"OKVED_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3PURCHASEGOODSOKVED
 --------------------------------------------------------
@@ -6320,7 +6275,7 @@
 	"OKVED" VARCHAR(20 ) NOT NULL, 
 	"OKVED_NAME" VARCHAR(1000 ), 
 	"OKVED_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3PURCHASEGOODSPROP
 --------------------------------------------------------
@@ -6332,7 +6287,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0) NOT NULL, 
 	"CAPTION" VARCHAR(512 ) NOT NULL, 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3PURCHASELINE
 --------------------------------------------------------
@@ -6364,7 +6319,7 @@
 	"AMOUNT_2YEAR" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"AMOUNT_3YEAR" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"AMOUNT_FUTURE" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLAN3PURCHASELINESHEDULE
 --------------------------------------------------------
@@ -6374,7 +6329,7 @@
 	"PLAN3PURCHASELINEPOS" NUMERIC(15,0) NOT NULL, 
 	"FINYEAR" NUMERIC(4,0) NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLGOODS
 --------------------------------------------------------
@@ -6387,7 +6342,7 @@
 	"NAME" VARCHAR(512 ) NOT NULL, 
 	"GROUPCODE" VARCHAR(20 ) NOT NULL, 
 	"ORGID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLGOODSPROP
 --------------------------------------------------------
@@ -6398,7 +6353,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0) NOT NULL, 
 	"CAPTION" VARCHAR(512 ) NOT NULL, 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLNBUDGETLINE
 --------------------------------------------------------
@@ -6428,7 +6383,7 @@
 	"AMOUNT2" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"AMOUNT3" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"AMOUNT4" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLNGOODS
 --------------------------------------------------------
@@ -6461,7 +6416,7 @@
 	"OKPD_ID" NUMERIC(15,0), 
 	"OKVED_ID" NUMERIC(15,0), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PLNSHEDULE
 --------------------------------------------------------
@@ -6478,7 +6433,7 @@
 	"AMOUNT2" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"AMOUNT3" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"AMOUNT4" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PREFERENCEGROUP
 --------------------------------------------------------
@@ -6490,7 +6445,7 @@
 	"CAPTION" VARCHAR(1000 ) NOT NULL, 
 	"PURCHASEMODE_ID" NUMERIC(15,0) NOT NULL, 
 	"BUDGETTYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PREFERENCEGROUPFEATURE
 --------------------------------------------------------
@@ -6502,7 +6457,7 @@
 	"PLACEMENTFEATURE_ID" NUMERIC(15,0) NOT NULL, 
 	"PREFVALUE" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"CONTENT" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PROCTREE
 --------------------------------------------------------
@@ -6517,7 +6472,7 @@
 	"SCHEMA_ACT" VARCHAR(30 ), 
 	"PARAMS" VARCHAR(300 ), 
 	"PARAMS_ONLY" NUMERIC(1,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PROCUREMENT
 --------------------------------------------------------
@@ -6533,7 +6488,7 @@
 	"REMARKS" VARCHAR(1000 ), 
 	"RESPPERSONAL_ID" NUMERIC(15,0), 
 	"COMMISSION_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PROPTYPE
 --------------------------------------------------------
@@ -6542,7 +6497,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"CAPTION" VARCHAR(512 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PURCHASECARRY
 --------------------------------------------------------
@@ -6593,7 +6548,7 @@
 	"ISSMALL" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"PLANVERSION" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PURCHASEMETHOD
 --------------------------------------------------------
@@ -6607,7 +6562,7 @@
 	"NAME" VARCHAR(3000 ) NOT NULL, 
 	"ELECTRONIC" NUMERIC(1,0) NOT NULL, 
 	"CREATORORG_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PURCHASEMODE
 --------------------------------------------------------
@@ -6626,7 +6581,7 @@
 	"CODE_MINFIN_142N" NUMERIC(2,0), 
 	"OOS_CODE" VARCHAR(15 ), 
 	"OOS_TYPE" VARCHAR(15 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PURCHASEPLAN
 --------------------------------------------------------
@@ -6668,7 +6623,7 @@
 	"ENTAMOUNT10" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"ENTAMOUNT11" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"ENTAMOUNT12" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table PURCHASEPLANDOC
 --------------------------------------------------------
@@ -6689,7 +6644,7 @@
 	"FOREIGN_KEY" VARCHAR(50 ), 
 	"CUSTOMER_ID" NUMERIC(15,0) NOT NULL, 
 	"PLANYEAR" NUMERIC(4,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table QUALIFYSELECT
 --------------------------------------------------------
@@ -6700,7 +6655,7 @@
 	"QUALIFYREQPOS" NUMERIC(15,0) NOT NULL, 
 	"COMPETITORPOS" NUMERIC(15,0) NOT NULL, 
 	"SCORE" NUMERIC(15,4)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table QUALREQ
 --------------------------------------------------------
@@ -6712,7 +6667,7 @@
 	"DESCRIPTION" VARCHAR(1000 ), 
 	"PURCHASEMODE_ID" NUMERIC(15,0) DEFAULT 1 NOT NULL, 
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RECOILDOC
 --------------------------------------------------------
@@ -6739,7 +6694,7 @@
 	"ISSMALL" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"INVITATIONDATE" DATE, 
 	"DEALDATE" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RECOILLINES
 --------------------------------------------------------
@@ -6770,7 +6725,7 @@
 	"RESERVEDAMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REFATTACH
 --------------------------------------------------------
@@ -6784,8 +6739,7 @@
 	"ATTACH_DATA" BLOB, 
 	"AUTHOR" NUMERIC(15,0), 
 	"ACTION_DATE" DATE
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table REFDOC
 --------------------------------------------------------
@@ -6793,7 +6747,7 @@
   CREATE TABLE "REFDOC" 
    (	"DOCUMENT_ID" NUMERIC(15,0) NOT NULL, 
 	"REF_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REFERENCECLASS
 --------------------------------------------------------
@@ -6808,7 +6762,7 @@
 	"TABLE_NAME" VARCHAR(255 ), 
 	"CONTROL_CLASS_NAME" VARCHAR(255 ), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REFINANCINGRATE
 --------------------------------------------------------
@@ -6819,7 +6773,7 @@
 	"START_DATE" DATE NOT NULL, 
 	"RATE" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"LAW_ACT" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REFJOURNAL
 --------------------------------------------------------
@@ -6832,8 +6786,7 @@
 	"TASKJOURNAL_ID" NUMERIC(15,0), 
 	"ACTION_DATA" BLOB SUB_TYPE TEXT, 
 	"WORK_DATE" DATE
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table REFUSALFACTFOUNDATION
 --------------------------------------------------------
@@ -6844,7 +6797,7 @@
 	"OOSKEY" VARCHAR(100 ), 
 	"NAME" VARCHAR(1000 ) NOT NULL, 
 	"ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REPDOCFRAGMENT
 --------------------------------------------------------
@@ -6853,7 +6806,7 @@
    (	"REPDOCUMENT_ID" NUMERIC(15,0) NOT NULL, 
 	"REPFRAGMENT_ID" NUMERIC(15,0) NOT NULL, 
 	"BOOKMARK" VARCHAR(100 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REPDOCUMENT
 --------------------------------------------------------
@@ -6864,7 +6817,7 @@
 	"DOCUMENTTYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"NAME" VARCHAR(100 ) NOT NULL, 
 	"CAPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REPFIELD
 --------------------------------------------------------
@@ -6891,8 +6844,7 @@
 	"NEWLINE_FLAG" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"DEF_VALUE" BLOB SUB_TYPE TEXT, 
 	"PARAMS" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table REPFORM
 --------------------------------------------------------
@@ -6908,7 +6860,7 @@
 	"XLT_FILENAME" VARCHAR(100 ), 
 	"REPORT_CODE" NUMERIC(4,0) DEFAULT 0 NOT NULL, 
 	"SUBSYSTEM" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REPFRAGMENT
 --------------------------------------------------------
@@ -6923,8 +6875,7 @@
 	"DIVIDER" VARCHAR(255 ), 
 	"ISNOTICE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"BODY" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table REPFRAGMENTCHILD
 --------------------------------------------------------
@@ -6936,7 +6887,7 @@
 	"CHILD_ID" NUMERIC(15,0) NOT NULL, 
 	"SOURCEFIELDNAME" VARCHAR(255 ), 
 	"SOURCEFIELDVALUE" VARCHAR(1000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REPORT
 --------------------------------------------------------
@@ -6948,8 +6899,7 @@
 	"CAPTION" VARCHAR(128 ), 
 	"DECLARATION" BLOB SUB_TYPE TEXT, 
 	"EXCELTEMPLATENAME" VARCHAR(255 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table REPPROFILE
 --------------------------------------------------------
@@ -6962,8 +6912,7 @@
 	"LOCAL_FLAG" NUMERIC(18,0), 
 	"NAME" VARCHAR(100 ) NOT NULL, 
 	"PROFILE_DATA" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table REPSOURCE
 --------------------------------------------------------
@@ -6975,7 +6924,7 @@
 	"NAME" VARCHAR(100 ) NOT NULL, 
 	"CAPTION" VARCHAR(255 ), 
 	"CLASSNAME" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REPTEMPLATEATTACH
 --------------------------------------------------------
@@ -6987,7 +6936,7 @@
 	"DEVICE_NAME" VARCHAR(100 ) NOT NULL, 
 	"ATTACH_NAME" VARCHAR(100 ) NOT NULL, 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REQUESTDOC
 --------------------------------------------------------
@@ -7094,8 +7043,7 @@
 	"DATENUMORDERNAME" VARCHAR(2000 ), 
 	"ETPKEY" VARCHAR(100 ), 
 	"DECLINECOUNTER" NUMERIC(15,0) DEFAULT 0
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table REQUESTORDER
 --------------------------------------------------------
@@ -7104,7 +7052,7 @@
    (	"ORDER_ID" NUMERIC(15,0) NOT NULL, 
 	"DOC_ID" NUMERIC(15,0) NOT NULL, 
 	"DOCUMENT_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REQUIREMENTTYPE
 --------------------------------------------------------
@@ -7117,7 +7065,7 @@
 	"NAME" VARCHAR(500 ) NOT NULL, 
 	"IS_ACTUAL" NUMERIC(1,0) NOT NULL, 
 	"VISIBLE" NUMERIC(1,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table REQUIREMENTTYPEPM
 --------------------------------------------------------
@@ -7127,7 +7075,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0) NOT NULL, 
 	"PURCHASEMODE_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RESERVEDBUDGETLINE
 --------------------------------------------------------
@@ -7160,7 +7108,7 @@
 	"PARENT_ID" NUMERIC(15,0), 
 	"INDUSTRYCODE_ID" NUMERIC(15,0), 
 	"GRANTINVESTMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RESPONSIBILITY
 --------------------------------------------------------
@@ -7170,7 +7118,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(100 ) NOT NULL, 
 	"CAPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RNP
 --------------------------------------------------------
@@ -7198,8 +7146,7 @@
 	"STATE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"CONTRACT_EXCLUDEDATE" DATE, 
 	"REGISTRY_FLAG" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table ROLEAPPOBJ
 --------------------------------------------------------
@@ -7208,7 +7155,7 @@
    (	"USERROLE_ID" NUMERIC(15,0) NOT NULL, 
 	"APPOBJNAME" VARCHAR(128 ) NOT NULL, 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLEATTACH
 --------------------------------------------------------
@@ -7219,7 +7166,7 @@
 	"DISPSTATUS_ID" NUMERIC(15,0) NOT NULL, 
 	"CATEGORY_ID" NUMERIC(15,0) NOT NULL, 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLEBUDGET
 --------------------------------------------------------
@@ -7228,7 +7175,7 @@
    (	"USERROLE_ID" NUMERIC(15,0) NOT NULL, 
 	"BUDGET_ID" NUMERIC(15,0) NOT NULL, 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLECLASS
 --------------------------------------------------------
@@ -7237,7 +7184,7 @@
    (	"USERROLE_ID" NUMERIC(15,0) NOT NULL, 
 	"DOCUMENTCLASS_ID" NUMERIC(15,0) NOT NULL, 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLEEVENT
 --------------------------------------------------------
@@ -7247,7 +7194,7 @@
 	"DOCUMENTCLASS_ID" NUMERIC(15,0) NOT NULL, 
 	"DISPSTATUS_ID" NUMERIC(15,0) NOT NULL, 
 	"EVENT_NAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLEFUNC
 --------------------------------------------------------
@@ -7256,7 +7203,7 @@
    (	"USERROLE_ID" NUMERIC(15,0) NOT NULL, 
 	"FUNUNIT_NAME" VARCHAR(50 ) NOT NULL, 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLEORG
 --------------------------------------------------------
@@ -7265,7 +7212,7 @@
    (	"USERROLE_ID" NUMERIC(15,0) NOT NULL, 
 	"ORG_ID" NUMERIC(15,0) NOT NULL, 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLEREFCLASS
 --------------------------------------------------------
@@ -7274,7 +7221,7 @@
    (	"USERROLE_ID" NUMERIC(15,0) NOT NULL, 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"REF_NAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table ROLEREGISTER
 --------------------------------------------------------
@@ -7299,8 +7246,7 @@
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"FOREIGN_KEY" VARCHAR(50 ), 
 	"OPERATION" NUMERIC(2,0) NOT NULL
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table ROLERIGHT
 --------------------------------------------------------
@@ -7308,7 +7254,7 @@
   CREATE TABLE "ROLERIGHT" 
    (	"USERROLE_ID" NUMERIC(15,0) NOT NULL, 
 	"SYSRIGHT_NAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPL
 --------------------------------------------------------
@@ -7334,7 +7280,7 @@
 	"FILTER_CONDITION" VARCHAR(2000 ), 
 	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPL$CONSTRAINTFIELDS
 --------------------------------------------------------
@@ -7345,7 +7291,7 @@
 	"ENUM_ORDER" NUMERIC(18,0) NOT NULL, 
 	"FIELDNAME" VARCHAR(50 ) NOT NULL, 
 	"TARGET_FIELDNAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPL$CONSTRAINTS
 --------------------------------------------------------
@@ -7359,7 +7305,7 @@
 	"UPDATE_RULE" VARCHAR(11 ) DEFAULT 'RESTRICT', 
 	"DELETE_RULE" VARCHAR(11 ) DEFAULT 'RESTRICT', 
 	"DEFFERABLE" NUMERIC(18,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLLOG
 --------------------------------------------------------
@@ -7374,7 +7320,7 @@
 	"FIELD4_VALUE" NUMERIC(15,0), 
 	"FIELD5_VALUE" NUMERIC(15,0), 
 	"TRANSACTION_ID" VARCHAR(16 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLOBJECT
 --------------------------------------------------------
@@ -7387,7 +7333,7 @@
 	"FLTR" VARCHAR(255 ), 
 	"CLASSNAME" VARCHAR(255 ) NOT NULL, 
 	"SEQORDER" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLRULE
 --------------------------------------------------------
@@ -7396,7 +7342,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLRULEOBJ
 --------------------------------------------------------
@@ -7404,7 +7350,7 @@
   CREATE TABLE "RPLRULEOBJ" 
    (	"RPLRULE_ID" NUMERIC(15,0) NOT NULL, 
 	"RPLOBJECT_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLSITE
 --------------------------------------------------------
@@ -7415,7 +7361,7 @@
 	"MASTER_ID" NUMERIC(15,0) NOT NULL, 
 	"CLIENT_ID" NUMERIC(15,0) NOT NULL, 
 	"RPLRULE_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLTABLE
 --------------------------------------------------------
@@ -7433,7 +7379,7 @@
 	"ISPLUGIN" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"OLD_VALUE" NUMERIC(18,0), 
 	"GENERATION_GROUP" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLTABLEPLUGIN
 --------------------------------------------------------
@@ -7444,7 +7390,7 @@
 	"RPLTABLE_ID" NUMERIC(15,0), 
 	"PLUGIN_RPLTABLE_ID" NUMERIC(15,0), 
 	"JOIN_FRAGMENT" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLTABLINK
 --------------------------------------------------------
@@ -7452,7 +7398,7 @@
   CREATE TABLE "RPLTABLINK" 
    (	"RPLTABLE_ID" NUMERIC(15,0) NOT NULL, 
 	"FIELD_NAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLTRANSACTMODE
 --------------------------------------------------------
@@ -7460,7 +7406,7 @@
   CREATE TABLE "RPLTRANSACTMODE" 
    (	"NUM_TRANSACTION" VARCHAR(50 ) NOT NULL, 
 	"RPL_MODE" NUMERIC(18,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RPLVERSIONLOG
 --------------------------------------------------------
@@ -7472,7 +7418,7 @@
 	"TASKJOURNAL_ID" NUMERIC(15,0) NOT NULL, 
 	"RECORD_ID" NUMERIC(15,0), 
 	"RECORD_ACTION" NUMERIC(1,0) DEFAULT 0
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQBUDGETLINE
 --------------------------------------------------------
@@ -7504,7 +7450,7 @@
 	"CALCPRICE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"INDUSTRYCODE_ID" NUMERIC(15,0), 
 	"GRANTINVESTMENT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQCOMMEMBER
 --------------------------------------------------------
@@ -7519,7 +7465,7 @@
 	"ABSENT" NUMERIC(1,0) NOT NULL, 
 	"NOTE" VARCHAR(100 ), 
 	"ISACTINGFORSECRETARY" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQCONDEALRESP
 --------------------------------------------------------
@@ -7530,7 +7476,7 @@
 	"LOTPOS" NUMERIC(15,0), 
 	"PERSONAL_ID" NUMERIC(15,0) NOT NULL, 
 	"PERSONAL_NAME" VARCHAR(256 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQCRITERION
 --------------------------------------------------------
@@ -7552,7 +7498,7 @@
 	"FORMULA" VARCHAR(2000 ), 
 	"OOSCODE" VARCHAR(2 ) DEFAULT '0' NOT NULL, 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQCRITERIONLINE
 --------------------------------------------------------
@@ -7567,7 +7513,7 @@
 	"WEIGHT" NUMERIC(15,2), 
 	"LIMITDESCRIPTION" VARCHAR(2000 ), 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQDOCCHILD
 --------------------------------------------------------
@@ -7576,7 +7522,7 @@
    (	"REQUEST_ID" NUMERIC(15,0) NOT NULL, 
 	"DOC_ID" NUMERIC(15,0) NOT NULL, 
 	"DOCUMENT_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQDOCREQ
 --------------------------------------------------------
@@ -7593,7 +7539,7 @@
 	"DESCRIPTION" VARCHAR(4000 ), 
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0), 
 	"REQUIREMENTTYPE_NAME" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQFEATURE
 --------------------------------------------------------
@@ -7605,7 +7551,7 @@
 	"PLACEMENTFEATURE_ID" NUMERIC(15,0) NOT NULL, 
 	"PREFVALUE" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"CONTENT" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQGOODS
 --------------------------------------------------------
@@ -7629,7 +7575,7 @@
 	"OKVED" VARCHAR(20 ), 
 	"OKVED_NAME" VARCHAR(1000 ), 
 	"UNITNAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQGOODSPROP
 --------------------------------------------------------
@@ -7641,7 +7587,7 @@
 	"PROPTYPE_ID" NUMERIC(15,0) NOT NULL, 
 	"CAPTION" VARCHAR(512 ) NOT NULL, 
 	"PROPVALUE" VARCHAR(1500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQLOT
 --------------------------------------------------------
@@ -7701,8 +7647,7 @@
 	"ALLOWMULTIPLECONTRACTS" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"GUARANTEEAPPPERCENT" NUMERIC(5,2), 
 	"GUARANTEECONTRACTPERCENT" NUMERIC(5,2)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table RQOPTIMIZEDPRICE
 --------------------------------------------------------
@@ -7713,7 +7658,7 @@
 	"PLANPOSITIONNUMBER" VARCHAR(100 ), 
 	"PERCENT" NUMERIC(5,2) DEFAULT 0 NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQPAYSHEDULE
 --------------------------------------------------------
@@ -7723,7 +7668,7 @@
 	"BUDGETLINEPOS" NUMERIC(15,0) NOT NULL, 
 	"PAYDATE" DATE NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQQUALREQ
 --------------------------------------------------------
@@ -7740,7 +7685,7 @@
 	"CONTENT" VARCHAR(2000 ), 
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0), 
 	"REQUIREMENTTYPE_NAME" VARCHAR(500 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQSUPPLYSHEDULE
 --------------------------------------------------------
@@ -7753,7 +7698,7 @@
 	"QTY" NUMERIC(15,4) DEFAULT 0 NOT NULL, 
 	"AMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL, 
 	"LOTPOS" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RQVENDOR
 --------------------------------------------------------
@@ -7767,7 +7712,7 @@
 	"VENDORNAME" VARCHAR(2000 ), 
 	"REFCOUNT" NUMERIC(4,0), 
 	"PROPFORM_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RULEREQUISITE
 --------------------------------------------------------
@@ -7780,7 +7725,7 @@
 	"FIELD_NAME" VARCHAR(50 ) NOT NULL, 
 	"REF_PARAM" VARCHAR(255 ), 
 	"EXPR" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table RULESCRIPT
 --------------------------------------------------------
@@ -7792,8 +7737,7 @@
 	"BODY" BLOB SUB_TYPE TEXT, 
 	"CAPTION" VARCHAR(256 ), 
 	"LANG" VARCHAR(50 ) NOT NULL
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table SCHEXPDOCS
 --------------------------------------------------------
@@ -7805,7 +7749,7 @@
 	"STATUSES" VARCHAR(255 ) NOT NULL, 
 	"ROLES" VARCHAR(255 ) NOT NULL, 
 	"REMARK" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SCHPLAN
 --------------------------------------------------------
@@ -7826,8 +7770,7 @@
 	"LAST_FINISH_TIME" DATE, 
 	"LAST_RESULT" BLOB SUB_TYPE TEXT, 
 	"RUN_AFTER_SYS_START" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table SCHTASK
 --------------------------------------------------------
@@ -7841,8 +7784,7 @@
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0 NOT NULL, 
 	"EXAMPLE" BLOB SUB_TYPE TEXT, 
 	"PROCESSOR_XML" VARCHAR(255 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table SERVERACTION
 --------------------------------------------------------
@@ -7857,7 +7799,7 @@
 	"CAPTION" VARCHAR(100 ), 
 	"JAVACLASS_NAME" VARCHAR(100 ), 
 	"SERIALIZABLE_FLAG" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SERVERERROR
 --------------------------------------------------------
@@ -7867,7 +7809,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SERVERPROCESSOR
 --------------------------------------------------------
@@ -7883,7 +7825,7 @@
 	"DATA_CLASSNAME" VARCHAR(100 ), 
 	"PARAMS" VARCHAR(255 ), 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SERVERPROVIDER
 --------------------------------------------------------
@@ -7898,8 +7840,7 @@
 	"REPORT_FLAG" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"PARAMS" BLOB SUB_TYPE TEXT, 
 	"SUBSYSTEM" NUMERIC(15,0) DEFAULT 0 NOT NULL
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table SIGNEXPORTLOG
 --------------------------------------------------------
@@ -7913,7 +7854,7 @@
 	"DISPSTATUS_ID" NUMERIC(15,0) NOT NULL, 
 	"SIGNTYPE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"DOCATTACHEX_ID" NUMERIC(18,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SIGNFORMAT
 --------------------------------------------------------
@@ -7922,7 +7863,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(255 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SIGNTYPE
 --------------------------------------------------------
@@ -7932,7 +7873,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(255 ) NOT NULL, 
 	"SIGNFORMAT_ID" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table STATISTICSSOURCE
 --------------------------------------------------------
@@ -7943,7 +7884,7 @@
 	"NAME" VARCHAR(100 ) NOT NULL, 
 	"CAPTION" VARCHAR(255 ), 
 	"CLASSNAME" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table STOREDDOCUMENTS
 --------------------------------------------------------
@@ -7954,8 +7895,7 @@
 	"DOCUMENT_ID" NUMERIC(15,0) NOT NULL, 
 	"STORE_DATE" DATE, 
 	"DATA" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table STOREPLACE
 --------------------------------------------------------
@@ -7966,7 +7906,7 @@
 	"QUANTITY" NUMERIC(15,4), 
 	"TERRITORYCODE" VARCHAR(20 ) NOT NULL, 
 	"ADDRESS" VARCHAR(300 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SUPPLYPLACE
 --------------------------------------------------------
@@ -7979,7 +7919,7 @@
 	"TERRITORYCODE" VARCHAR(20 ) NOT NULL, 
 	"ADDRESS" VARCHAR(300 ), 
 	"REMARK" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SUPPORTCRYPTOLIB
 --------------------------------------------------------
@@ -7990,7 +7930,7 @@
 	"NAME" VARCHAR(100 ) NOT NULL, 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"LIBTYPE" VARCHAR(20 ) DEFAULT 'WIN_CSP' NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SUPPORTCRYPTOLIBFORMAT
 --------------------------------------------------------
@@ -8000,7 +7940,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"SUPPORTCRYPTOLIB_ID" NUMERIC(15,0) NOT NULL, 
 	"SIGNFORMAT_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SUPPORTCRYPTOLIBPARAM
 --------------------------------------------------------
@@ -8011,7 +7951,7 @@
 	"SUPPORTCRYPTOLIB_ID" NUMERIC(15,0) NOT NULL, 
 	"NAME" VARCHAR(50 ) NOT NULL, 
 	"VAL" VARCHAR(255 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SYSEVENT
 --------------------------------------------------------
@@ -8027,8 +7967,7 @@
 	"REPORT" VARCHAR(2000 ) NOT NULL, 
 	"OBJECTID" NUMERIC(15,0), 
 	"EXTRA" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table SYSPARAM
 --------------------------------------------------------
@@ -8040,8 +7979,7 @@
 	"CAPTION" VARCHAR(100 ), 
 	"PARAM_VALUE" BLOB SUB_TYPE TEXT, 
 	"SYSUSER_ID" NUMERIC(15,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table SYSRIGHT
 --------------------------------------------------------
@@ -8052,7 +7990,7 @@
 	"NAME" VARCHAR(50 ) NOT NULL, 
 	"FUNCAT_NAME" VARCHAR(50 ), 
 	"DESCRIPTION" VARCHAR(255 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SYSTEMSITE
 --------------------------------------------------------
@@ -8066,7 +8004,7 @@
 	"CLEAN_GENERATION_3" NUMERIC(15,0), 
 	"AS" NUMERIC(18,0), 
 	"LAST_GENERATION" NUMERIC(15,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table SYSUSER
 --------------------------------------------------------
@@ -8097,8 +8035,7 @@
 	"USER_LOCK_REASON" VARCHAR(255 ), 
 	"OOS_LOGIN" VARCHAR(100 ), 
 	"OOS_PASSWORD" VARCHAR(100 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table SYSUSEREXT
 --------------------------------------------------------
@@ -8108,7 +8045,7 @@
 	"BADATTEMPT_COUNT" NUMERIC(5,0), 
 	"LAST_BADATTEMPT_TIME" DATE, 
 	"LAST_LOGIN_TIME" DATE
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TASKJOURNAL
 --------------------------------------------------------
@@ -8130,7 +8067,7 @@
 	"SERVER_PORT" NUMERIC(5,0), 
 	"CLIENT_HOST" VARCHAR(100 ), 
 	"CLIENT_PORT" NUMERIC(5,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TENDER
 --------------------------------------------------------
@@ -8146,7 +8083,7 @@
 	"OFFERVAL" VARCHAR(255 ), 
 	"TENDERCRITERION_ID" NUMERIC(15,0), 
 	"ISFINALOFFER" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TENDERCRITERION
 --------------------------------------------------------
@@ -8171,7 +8108,7 @@
 	"ISCANCELLABLE" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"FORMULA" VARCHAR(2000 ), 
 	"OOSCODE" VARCHAR(2 ) DEFAULT '0' NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TENDERCRITERIONCHILD
 --------------------------------------------------------
@@ -8181,7 +8118,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"TENDERCRITERION_ID" NUMERIC(15,0) NOT NULL, 
 	"CHILD_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TENDERCRITERIONPM
 --------------------------------------------------------
@@ -8191,7 +8128,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"TENDERCRITERION_ID" NUMERIC(15,0) NOT NULL, 
 	"PURCHASEMODE_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TENDERLINE
 --------------------------------------------------------
@@ -8206,7 +8143,7 @@
 	"RATE" NUMERIC(17,4), 
 	"SCORE" NUMERIC(10,4), 
 	"OFFERVAL" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TENDERLINECOMM
 --------------------------------------------------------
@@ -8218,7 +8155,7 @@
 	"TENDERLINE_ID" NUMERIC(15,0) NOT NULL, 
 	"COMMEMBERPOS" NUMERIC(15,0) NOT NULL, 
 	"SCORE" NUMERIC(10,4)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TERRITORY
 --------------------------------------------------------
@@ -8231,7 +8168,7 @@
 	"CODE" VARCHAR(20 ) NOT NULL, 
 	"TERTYPE_ID" NUMERIC(15,0) NOT NULL, 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TER_TREE
 --------------------------------------------------------
@@ -8240,7 +8177,7 @@
    (	"TER_ID" NUMERIC(15,0) NOT NULL, 
 	"TREE" VARCHAR(252 ) NOT NULL, 
 	"PATH" VARCHAR(512 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TERTYPE
 --------------------------------------------------------
@@ -8250,7 +8187,7 @@
 	"VERSION" NUMERIC(15,0), 
 	"NAME" VARCHAR(20 ) NOT NULL, 
 	"CAPTION" VARCHAR(100 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TYPECRIT
 --------------------------------------------------------
@@ -8270,7 +8207,7 @@
 	"DESCRIPTION" VARCHAR(2000 ), 
 	"FORMULA" VARCHAR(2000 ), 
 	"UNITNAME" VARCHAR(50 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TYPECRITLINE
 --------------------------------------------------------
@@ -8285,7 +8222,7 @@
 	"WEIGHT" NUMERIC(15,2), 
 	"LIMITDESCRIPTION" VARCHAR(2000 ), 
 	"DESCRIPTION" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TYPEDOCREQ
 --------------------------------------------------------
@@ -8299,7 +8236,7 @@
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0) DEFAULT 1 NOT NULL, 
 	"NAME" VARCHAR(1024 ) NOT NULL, 
 	"DESCRIPTION" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TYPEDOCREQGROUP
 --------------------------------------------------------
@@ -8310,7 +8247,7 @@
 	"PURCHASEMODE_ID" NUMERIC(15,0) DEFAULT 1 NOT NULL, 
 	"NAME" VARCHAR(1024 ) NOT NULL, 
 	"DESCRIPTION" VARCHAR(4000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TYPEREQ
 --------------------------------------------------------
@@ -8322,7 +8259,7 @@
 	"PURCHASEMODE_ID" NUMERIC(15,0) DEFAULT 1 NOT NULL, 
 	"REQUIREMENTTYPE_ID" NUMERIC(15,0) DEFAULT 1 NOT NULL, 
 	"DESCRIPTION" VARCHAR(1000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table TYPEREQCRIT
 --------------------------------------------------------
@@ -8333,7 +8270,7 @@
 	"NAME" VARCHAR(2000 ) NOT NULL, 
 	"DESCRIPTION" VARCHAR(500 ), 
 	"PURCHASEMODE_ID" NUMERIC(15,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table UNIT
 --------------------------------------------------------
@@ -8345,7 +8282,7 @@
 	"OKEI" VARCHAR(4 ), 
 	"IS_ACTUAL" NUMERIC(1,0) DEFAULT 1 NOT NULL, 
 	"NAME" VARCHAR(50 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table UPDPACKAGE
 --------------------------------------------------------
@@ -8365,8 +8302,7 @@
 	"UPDATE_LOG" BLOB SUB_TYPE TEXT, 
 	"DESCRIPTION" VARCHAR(1024 ), 
 	"UPDATE_STARTUP_FILE" NUMERIC(1,0)
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table USERBUDGET
 --------------------------------------------------------
@@ -8377,7 +8313,7 @@
 	"SYSUSER_ID" NUMERIC(15,0) NOT NULL, 
 	"BUDGET_ID" NUMERIC(15,0) NOT NULL, 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table USERCERT
 --------------------------------------------------------
@@ -8412,8 +8348,7 @@
 	"SUBJECT_SNILS" VARCHAR(100 ), 
 	"CA_NAME" VARCHAR(255 ), 
 	"CA_CONTACT_INFO" VARCHAR(1024 )
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table USERCERTSYSUSER
 --------------------------------------------------------
@@ -8421,7 +8356,7 @@
   CREATE TABLE "USERCERTSYSUSER" 
    (	"SYSUSER_ID" NUMERIC(15,0) NOT NULL, 
 	"USERCERT_ID" NUMERIC(15,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table USERORG
 --------------------------------------------------------
@@ -8432,7 +8367,7 @@
 	"SYSUSER_ID" NUMERIC(15,0) NOT NULL, 
 	"ORG_ID" NUMERIC(15,0) NOT NULL, 
 	"ACCESS_MODE" NUMERIC(1,0) DEFAULT 1 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table USERPROFILE
 --------------------------------------------------------
@@ -8440,8 +8375,7 @@
   CREATE TABLE "USERPROFILE" 
    (	"SYSUSER_ID" NUMERIC(15,0) NOT NULL, 
 	"PVALUE" BLOB SUB_TYPE TEXT
-   )  
-  ;
+   ) ;
 --------------------------------------------------------
 --  DDL for Table USERROLE
 --------------------------------------------------------
@@ -8456,7 +8390,7 @@
 	"ISBLOCKED" NUMERIC(1,0) DEFAULT 0, 
 	"ISPRIVATEORG" NUMERIC(1,0) DEFAULT 0 NOT NULL, 
 	"HASCHILDORGS" NUMERIC(1,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table USERSESSION
 --------------------------------------------------------
@@ -8473,7 +8407,7 @@
 	"OPEN_TIME" DATE NOT NULL, 
 	"CLOSE_TIME" DATE, 
 	"VERSION" NUMERIC(15,0)
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table USERSESSIONACCESS
 --------------------------------------------------------
@@ -8482,7 +8416,7 @@
    (	"ID" NUMERIC(15,0) NOT NULL, 
 	"ACCESS_TIME" DATE, 
 	"REQUEST_COUNT" NUMERIC(9,0) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table USESCRYPTOLIB
 --------------------------------------------------------
@@ -8493,7 +8427,7 @@
 	"SUPPORTCRYPTOLIB_ID" NUMERIC(15,0) NOT NULL, 
 	"DESCRIPTION" VARCHAR(255 ), 
 	"REQUESTERTYPE" NUMERIC(1,0) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table USESCRYPTOLIBPARAM
 --------------------------------------------------------
@@ -8504,7 +8438,7 @@
 	"USESCRYPTOLIB_ID" NUMERIC(15,0) NOT NULL, 
 	"NAME" VARCHAR(50 ) NOT NULL, 
 	"VAL" VARCHAR(255 ) NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table WEBSTATCACHE
 --------------------------------------------------------
@@ -8518,7 +8452,7 @@
 	"PURNAME" VARCHAR(100 ), 
 	"KEYTYPE" VARCHAR(100 ), 
 	"INSTANCE" VARCHAR(2000 )
-   )  ;
+   );
 --------------------------------------------------------
 --  DDL for Table WEBSTATCACHEVAL
 --------------------------------------------------------
@@ -8530,7 +8464,7 @@
 	"WEBSTAT_ID" NUMERIC(15,0) NOT NULL, 
 	"PURCOUNT" NUMERIC(15,0) DEFAULT 0 NOT NULL, 
 	"PURAMOUNT" NUMERIC(15,2) DEFAULT 0 NOT NULL
-   )  ;
+   );
 --------------------------------------------------------
 --  Constraints for Table GROUPUNIT
 --------------------------------------------------------
@@ -21778,14 +21712,12 @@
 --  DDL for Index J_FK_PLAN2LEDGER_PAYCONDITION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_PAYCONDITION" ON "PLAN2LEDGER" ("PAYCONDITIONCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_PAYCONDITION" ON "PLAN2LEDGER" ("PAYCONDITIONCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCUMENTCLASS_NUMGENERATO
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCUMENTCLASS_NUMGENERATO" ON "DOCUMENTCLASS" ("NUMGENERATOR_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCUMENTCLASS_NUMGENERATO" ON "DOCUMENTCLASS" ("NUMGENERATOR_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RQCRITERION
 --------------------------------------------------------
@@ -21800,8 +21732,7 @@
 --  DDL for Index IFK_RQDOCREQ_LOTPOSREQUEST_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RQDOCREQ_LOTPOSREQUEST_ID" ON "RQDOCREQ" ("REQUEST_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_RQDOCREQ_LOTPOSREQUEST_ID" ON "RQDOCREQ" ("REQUEST_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index PK_NOTICEORG
 --------------------------------------------------------
@@ -21816,8 +21747,7 @@
 --  DDL for Index IFK_INVBUDGE_RECIPIENTACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_INVBUDGE_RECIPIENTACC_ID" ON "INVBUDGETLINE" ("RECIPIENTACC_ID") 
-   ;
+  CREATE INDEX "IFK_INVBUDGE_RECIPIENTACC_ID" ON "INVBUDGETLINE" ("RECIPIENTACC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_SIGNEXPORTLOG
 --------------------------------------------------------
@@ -21832,8 +21762,7 @@
 --  DDL for Index J_FK_SYSUSER_MENU
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SYSUSER_MENU" ON "SYSUSER" ("MENU_ID") 
-   ;
+  CREATE INDEX "J_FK_SYSUSER_MENU" ON "SYSUSER" ("MENU_ID");
 --------------------------------------------------------
 --  DDL for Index PK_INTERBUDGET
 --------------------------------------------------------
@@ -21843,8 +21772,7 @@
 --  DDL for Index IDX_CLAIMDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CLAIMDOC_DISPSTATUS" ON "CLAIMDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_CLAIMDOC_DISPSTATUS" ON "CLAIMDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONSTRAINTS
 --------------------------------------------------------
@@ -21854,8 +21782,7 @@
 --  DDL for Index J_FK_GBGO_GOODSBAN_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GBGO_GOODSBAN_ID" ON "GOODSBANGOODSOKPD" ("GOODSBAN_ID") 
-   ;
+  CREATE INDEX "J_FK_GBGO_GOODSBAN_ID" ON "GOODSBANGOODSOKPD" ("GOODSBAN_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_PLAN2LEDGER
 --------------------------------------------------------
@@ -21885,8 +21812,7 @@
 --  DDL for Index IFK_OFFERDOC_CMPORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_OFFERDOC_CMPORG_ID" ON "OFFERDOC" ("CMPORG_ID") 
-   ;
+  CREATE INDEX "IFK_OFFERDOC_CMPORG_ID" ON "OFFERDOC" ("CMPORG_ID");
 --------------------------------------------------------
 --  DDL for Index PK_NUMUSAGE
 --------------------------------------------------------
@@ -21896,20 +21822,17 @@
 --  DDL for Index IFK_CMPVOTER_CMPCOMMEMBERPOSO
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPVOTER_CMPCOMMEMBERPOSO" ON "CMPVOTERESULT" ("ORDER_ID", "CMPCOMMEMBERPOS") 
-   ;
+  CREATE INDEX "IFK_CMPVOTER_CMPCOMMEMBERPOSO" ON "CMPVOTERESULT" ("ORDER_ID", "CMPCOMMEMBERPOS");
 --------------------------------------------------------
 --  DDL for Index IDX_OOSAPPLICATION_NUMBER
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_OOSAPPLICATION_NUMBER" ON "OOSAPPLICATION" ("JOURNALNUMBER") 
-   ;
+  CREATE INDEX "IDX_OOSAPPLICATION_NUMBER" ON "OOSAPPLICATION" ("JOURNALNUMBER");
 --------------------------------------------------------
 --  DDL for Index J_FK_REQUESTDOC_PLACINGWAY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_PLACINGWAY" ON "REQUESTDOC" ("PLACINGWAY_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_PLACINGWAY" ON "REQUESTDOC" ("PLACINGWAY_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CMPWORKGROUP
 --------------------------------------------------------
@@ -21924,8 +21847,7 @@
 --  DDL for Index J_FK_LEDGER_ORG_CONTRACTOR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_ORG_CONTRACTOR" ON "LEDGER" ("CONTRACTOR_ID") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_ORG_CONTRACTOR" ON "LEDGER" ("CONTRACTOR_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CMPPHASE
 --------------------------------------------------------
@@ -21935,8 +21857,7 @@
 --  DDL for Index J_FK_DOCUMENTCLASS_MODULE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCUMENTCLASS_MODULE" ON "DOCUMENTCLASS" ("CLIENTMODULE_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCUMENTCLASS_MODULE" ON "DOCUMENTCLASS" ("CLIENTMODULE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PURCHASEMETHOD
 --------------------------------------------------------
@@ -21946,8 +21867,7 @@
 --  DDL for Index J_FK_COMMISSION_ORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_COMMISSION_ORG" ON "COMMISSION" ("ORG_ID") 
-   ;
+  CREATE INDEX "J_FK_COMMISSION_ORG" ON "COMMISSION" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_CURRENCY_CODE
 --------------------------------------------------------
@@ -21957,8 +21877,7 @@
 --  DDL for Index J_FK_PLAN2DOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DOC_DOCUMENT" ON "PLAN2DOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DOC_DOCUMENT" ON "PLAN2DOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_USSU
 --------------------------------------------------------
@@ -21978,32 +21897,27 @@
 --  DDL for Index IFK_ORGACCOU_KEEPERACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORGACCOU_KEEPERACC_ID" ON "ORGACCOUNT" ("KEEPERACC_ID") 
-   ;
+  CREATE INDEX "IFK_ORGACCOU_KEEPERACC_ID" ON "ORGACCOUNT" ("KEEPERACC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRCARDDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRCARDDOC_BUDGET" ON "CONTRACTCARDDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRCARDDOC_BUDGET" ON "CONTRACTCARDDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_LEDGER_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_BUDGET" ON "LEDGER" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_BUDGET" ON "LEDGER" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RESERVEDLINE_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RESERVEDLINE_DISPSTATUS" ON "RESERVEDBUDGETLINE" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_RESERVEDLINE_DISPSTATUS" ON "RESERVEDBUDGETLINE" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CAVILDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CAVILDOC_DISPSTATUS" ON "CAVILDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_CAVILDOC_DISPSTATUS" ON "CAVILDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONCONFIRMINGDOCS
 --------------------------------------------------------
@@ -22033,32 +21947,27 @@
 --  DDL for Index J_FK_RECOILDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILDOC_DISPSTATUS" ON "RECOILDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_RECOILDOC_DISPSTATUS" ON "RECOILDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_ORGACCOU_EXECUTERACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORGACCOU_EXECUTERACC_ID" ON "ORGACCOUNT" ("EXECUTERACC_ID") 
-   ;
+  CREATE INDEX "IFK_ORGACCOU_EXECUTERACC_ID" ON "ORGACCOUNT" ("EXECUTERACC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_NMSG_SENDER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NMSG_SENDER" ON "NOTIFYMSG" ("SENDER_ID") 
-   ;
+  CREATE INDEX "J_FK_NMSG_SENDER" ON "NOTIFYMSG" ("SENDER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORGETP_ETP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORGETP_ETP" ON "ORGETP" ("ETP_ID") 
-   ;
+  CREATE INDEX "J_FK_ORGETP_ETP" ON "ORGETP" ("ETP_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPPLACE_CUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPPLACE_CUSTOMER" ON "CMPPLACE" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPPLACE_CUSTOMER" ON "CMPPLACE" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DATASOURCE
 --------------------------------------------------------
@@ -22068,20 +21977,17 @@
 --  DDL for Index J_FK_GOODSGROUP_OKPD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSGROUP_OKPD" ON "GOODSGROUP" ("OKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_GOODSGROUP_OKPD" ON "GOODSGROUP" ("OKPD_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RBL_GRANTINVESTMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RBL_GRANTINVESTMENT" ON "RESERVEDBUDGETLINE" ("GRANTINVESTMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_RBL_GRANTINVESTMENT" ON "RESERVEDBUDGETLINE" ("GRANTINVESTMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFRGOODS_OKPD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFRGOODS_OKPD" ON "OFRGOODS" ("OKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_OFRGOODS_OKPD" ON "OFRGOODS" ("OKPD_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DOCCOMMENT
 --------------------------------------------------------
@@ -22091,8 +21997,7 @@
 --  DDL for Index IDX_REPPROFILE_FORM_NAME
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_REPPROFILE_FORM_NAME" ON "REPPROFILE" ("FORM_NAME") 
-   ;
+  CREATE INDEX "IDX_REPPROFILE_FORM_NAME" ON "REPPROFILE" ("FORM_NAME");
 --------------------------------------------------------
 --  DDL for Index UQ_GROUPPROP
 --------------------------------------------------------
@@ -22102,14 +22007,12 @@
 --  DDL for Index J_FK_ORDERDOC_CMPORGPOSTCOUNTR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_CMPORGPOSTCOUNTR" ON "ORDERDOC" ("CMPORGPOSTCOUNTRY_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_CMPORGPOSTCOUNTR" ON "ORDERDOC" ("CMPORGPOSTCOUNTRY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P2ARRANGEMENT_CURRENCY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_CURRENCY" ON "PLAN2ARRANGEMENT" ("CURRENCY_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_CURRENCY" ON "PLAN2ARRANGEMENT" ("CURRENCY_ID");
 --------------------------------------------------------
 --  DDL for Index PK_APPMODULE
 --------------------------------------------------------
@@ -22124,56 +22027,47 @@
 --  DDL for Index J_FK_ROLEREGISTER_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEREGISTER_DOCUMENT" ON "ROLEREGISTER" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_ROLEREGISTER_DOCUMENT" ON "ROLEREGISTER" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPOOSMODIF_CMPPHASE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPOOSMODIF_CMPPHASE" ON "CMPOOSMODIFICATION" ("ORDER_ID", "PHASEPOS") 
-   ;
+  CREATE INDEX "J_FK_CMPOOSMODIF_CMPPHASE" ON "CMPOOSMODIFICATION" ("ORDER_ID", "PHASEPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_APPOBJ_APPMODULE2
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_APPOBJ_APPMODULE2" ON "APPMODULEDEPENDENCY" ("DEPENDID") 
-   ;
+  CREATE INDEX "J_FK_APPOBJ_APPMODULE2" ON "APPMODULEDEPENDENCY" ("DEPENDID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSPRODUCT_UNIT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPRODUCT_UNIT" ON "PLAN2OOSPRODUCT" ("UNITNAME") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPRODUCT_UNIT" ON "PLAN2OOSPRODUCT" ("UNITNAME");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2GOODS_GRANTINVESTMEN
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2GOODS_GRANTINVESTMEN" ON "PLAN2GOODS" ("GRANTINVESTMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2GOODS_GRANTINVESTMEN" ON "PLAN2GOODS" ("GRANTINVESTMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2LEDGER_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_PURCHASEMODE" ON "PLAN2LEDGER" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_PURCHASEMODE" ON "PLAN2LEDGER" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_FCTGOODS_OKPD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_FCTGOODS_OKPD" ON "FCTGOODS" ("OKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_FCTGOODS_OKPD" ON "FCTGOODS" ("OKPD_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ROLEREF_REFNAME
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEREF_REFNAME" ON "ROLEREFCLASS" ("REF_NAME") 
-   ;
+  CREATE INDEX "J_FK_ROLEREF_REFNAME" ON "ROLEREFCLASS" ("REF_NAME");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPVENDOR_ORGFORM
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPVENDOR_ORGFORM" ON "CMPVENDOR" ("PROPFORM_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPVENDOR_ORGFORM" ON "CMPVENDOR" ("PROPFORM_ID");
 --------------------------------------------------------
 --  DDL for Index PK_NECESSITY
 --------------------------------------------------------
@@ -22183,14 +22077,12 @@
 --  DDL for Index J_FK_ROLEREGISTER_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEREGISTER_OPERTYPE" ON "ROLEREGISTER" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_ROLEREGISTER_OPERTYPE" ON "ROLEREGISTER" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CMPCRITE_LOTPOSORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPCRITE_LOTPOSORDER_ID" ON "CMPCRITERION" ("ORDER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_CMPCRITE_LOTPOSORDER_ID" ON "CMPCRITERION" ("ORDER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index PK_SUPPORTCRYPTOLIB
 --------------------------------------------------------
@@ -22200,14 +22092,12 @@
 --  DDL for Index J_FK_LEDGER_INDUSTRYCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_INDUSTRYCODE" ON "LEDGER" ("INDUSTRYCODE_ID") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_INDUSTRYCODE" ON "LEDGER" ("INDUSTRYCODE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_ORGACCOU_BANK_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORGACCOU_BANK_ID" ON "ORGACCOUNT" ("BANK_ID") 
-   ;
+  CREATE INDEX "IFK_ORGACCOU_BANK_ID" ON "ORGACCOUNT" ("BANK_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_PREFERENCEGROUPFEATURE
 --------------------------------------------------------
@@ -22222,8 +22112,7 @@
 --  DDL for Index J_FK_OFFERDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFFERDOC_OPERTYPE" ON "OFFERDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_OFFERDOC_OPERTYPE" ON "OFFERDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_REPFORM
 --------------------------------------------------------
@@ -22233,8 +22122,7 @@
 --  DDL for Index J_FK_GOODSOKDP_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSOKDP_PARENT" ON "GOODSOKDP" ("PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_GOODSOKDP_PARENT" ON "GOODSOKDP" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_GOODSOKDPPREFCOUNTRY
 --------------------------------------------------------
@@ -22244,8 +22132,7 @@
 --  DDL for Index J_FK_DOCDIGESTROLES_DOCACTION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCDIGESTROLES_DOCACTION" ON "DOCDIGESTROLES" ("DOCACTION_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCDIGESTROLES_DOCACTION" ON "DOCDIGESTROLES" ("DOCACTION_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_SUPPORTCRYPTOLIBPARAM
 --------------------------------------------------------
@@ -22255,20 +22142,17 @@
 --  DDL for Index J_FK_P3PURCHASEDOC_PROHIBITION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_PROHIBITION" ON "PLAN3PURCHASEDOC" ("PROHIBITIONSCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_PROHIBITION" ON "PLAN3PURCHASEDOC" ("PROHIBITIONSCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3GOODS_OKVED
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3GOODS_OKVED" ON "PLAN3PURCHASEGOODS" ("OKVED_ID") 
-   ;
+  CREATE INDEX "J_FK_P3GOODS_OKVED" ON "PLAN3PURCHASEGOODS" ("OKVED_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CAVILDOC_CUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CAVILDOC_CUSTOMER" ON "CAVILDOC" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "J_FK_CAVILDOC_CUSTOMER" ON "CAVILDOC" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_SYSRIGHT_NAME
 --------------------------------------------------------
@@ -22278,56 +22162,47 @@
 --  DDL for Index J_FK_CAVILDOC_CMPORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CAVILDOC_CMPORG" ON "CAVILDOC" ("CMPORG_ID") 
-   ;
+  CREATE INDEX "J_FK_CAVILDOC_CMPORG" ON "CAVILDOC" ("CMPORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLANDOC_NECESSITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLANDOC_NECESSITY" ON "PLANDOC" ("NECESSITY_ID") 
-   ;
+  CREATE INDEX "J_FK_PLANDOC_NECESSITY" ON "PLANDOC" ("NECESSITY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSOKVED_POSITION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSOKVED_POSITION" ON "PLAN2OOSOKVED" ("PLAN2OOSPOSITION_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSOKVED_POSITION" ON "PLAN2OOSOKVED" ("PLAN2OOSPOSITION_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_MSG_RECEIVER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_MSG_RECEIVER" ON "MSG" ("RECEIVER_ID") 
-   ;
+  CREATE INDEX "J_FK_MSG_RECEIVER" ON "MSG" ("RECEIVER_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_CONSOLIDDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONSOLIDDOC_DISPSTATUS" ON "CONSOLIDDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_CONSOLIDDOC_DISPSTATUS" ON "CONSOLIDDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_DOCUMENT_DOCUMENTCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_DOCUMENT_DOCUMENTCLASS" ON "DOCUMENT" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "IDX_DOCUMENT_DOCUMENTCLASS" ON "DOCUMENT" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_CONTEMPDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTEMPDOC_DATENUM" ON "CONTRACTTEMPLATEDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_CONTEMPDOC_DATENUM" ON "CONTRACTTEMPLATEDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index IFK_PLANDOC_RECIPIENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PLANDOC_RECIPIENT_ID" ON "PLANDOC" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "IFK_PLANDOC_RECIPIENT_ID" ON "PLANDOC" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_LEDGER_PAYCONDITION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_PAYCONDITION" ON "LEDGER" ("PAYCONDITIONCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_PAYCONDITION" ON "LEDGER" ("PAYCONDITIONCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_DOCFLAG_DOC_FLAGTYPE
 --------------------------------------------------------
@@ -22337,50 +22212,42 @@
 --  DDL for Index J_FK_RPL_CLIENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RPL_CLIENT" ON "RPL" ("CLIENT_ID") 
-   ;
+  CREATE INDEX "J_FK_RPL_CLIENT" ON "RPL" ("CLIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CETERMLINE_TERMREASON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CETERMLINE_TERMREASON" ON "CETERMINATIONLINE" ("TERMINATIONREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_CETERMLINE_TERMREASON" ON "CETERMINATIONLINE" ("TERMINATIONREASON_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_LIABILITYEXPENSE_CREDENTI
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LIABILITYEXPENSE_CREDENTI" ON "LIABILITYEXPENSE" ("CREDENTIAL_ID") 
-   ;
+  CREATE INDEX "J_FK_LIABILITYEXPENSE_CREDENTI" ON "LIABILITYEXPENSE" ("CREDENTIAL_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_DOCSELEC_COMPETITORPOSORD
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_DOCSELEC_COMPETITORPOSORD" ON "DOCSELECT" ("ORDER_ID", "COMPETITORPOS") 
-   ;
+  CREATE INDEX "IFK_DOCSELEC_COMPETITORPOSORD" ON "DOCSELECT" ("ORDER_ID", "COMPETITORPOS");
 --------------------------------------------------------
 --  DDL for Index IFK_CMPVENDO_VENDOR_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPVENDO_VENDOR_ID" ON "CMPVENDOR" ("VENDOR_ID") 
-   ;
+  CREATE INDEX "IFK_CMPVENDO_VENDOR_ID" ON "CMPVENDOR" ("VENDOR_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_NMSGRULE_DOCUMENTCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NMSGRULE_DOCUMENTCLASS" ON "NOTIFYMSGRULE" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_NMSGRULE_DOCUMENTCLASS" ON "NOTIFYMSGRULE" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PURCHCARRY_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHCARRY_PURCHASEMODE" ON "PURCHASECARRY" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_PURCHCARRY_PURCHASEMODE" ON "PURCHASECARRY" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RQBL_GRANTINVESTMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQBL_GRANTINVESTMENT" ON "RQBUDGETLINE" ("GRANTINVESTMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_RQBL_GRANTINVESTMENT" ON "RQBUDGETLINE" ("GRANTINVESTMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ESCHECKRULE
 --------------------------------------------------------
@@ -22405,14 +22272,12 @@
 --  DDL for Index J_FK_ORGUNFAIR_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORGUNFAIR_PURCHASEMODE" ON "ORGUNFAIR" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_ORGUNFAIR_PURCHASEMODE" ON "ORGUNFAIR" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFFERDOC_ETP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFFERDOC_ETP" ON "OFFERDOC" ("ETP_ID") 
-   ;
+  CREATE INDEX "J_FK_OFFERDOC_ETP" ON "OFFERDOC" ("ETP_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_METACONSTRAINT
 --------------------------------------------------------
@@ -22422,8 +22287,7 @@
 --  DDL for Index J_FK_OFRDECREASON_LOT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFRDECREASON_LOT" ON "OFRDECREASON" ("OFFER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "J_FK_OFRDECREASON_LOT" ON "OFRDECREASON" ("OFFER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index PK_FACTDOCTYPE
 --------------------------------------------------------
@@ -22433,50 +22297,42 @@
 --  DDL for Index J_FK_CLAIMDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CLAIMDOC_BUDGET" ON "CLAIMDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_CLAIMDOC_BUDGET" ON "CLAIMDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DECREASON_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DECREASON_BUDGET" ON "DECREASON" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_DECREASON_BUDGET" ON "DECREASON" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_MENUITEM_MENU
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_MENUITEM_MENU" ON "MENUITEM" ("MENU_ID") 
-   ;
+  CREATE INDEX "J_FK_MENUITEM_MENU" ON "MENUITEM" ("MENU_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DIGEST_FGROUP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DIGEST_FGROUP" ON "DIGEST" ("FGROUP_ID") 
-   ;
+  CREATE INDEX "J_FK_DIGEST_FGROUP" ON "DIGEST" ("FGROUP_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_NOTICEDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NOTICEDOC_DISPSTATUS" ON "NOTICEDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_NOTICEDOC_DISPSTATUS" ON "NOTICEDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_OOSPROTOCOL_TYPE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_OOSPROTOCOL_TYPE" ON "OOSPROTOCOL" ("NOTIFICATIONNUMBER", "PROTOCOLTYPE") 
-   ;
+  CREATE INDEX "IDX_OOSPROTOCOL_TYPE" ON "OOSPROTOCOL" ("NOTIFICATIONNUMBER", "PROTOCOLTYPE");
 --------------------------------------------------------
 --  DDL for Index J_FK_LIABILITYEXPENSE_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LIABILITYEXPENSE_BUDGET" ON "LIABILITYEXPENSE" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_LIABILITYEXPENSE_BUDGET" ON "LIABILITYEXPENSE" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2LEDGER_IDENTIFICCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_IDENTIFICCODE" ON "PLAN2LEDGER" ("IDENTIFICCODECACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_IDENTIFICCODE" ON "PLAN2LEDGER" ("IDENTIFICCODECACHE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_APPOBJ
 --------------------------------------------------------
@@ -22486,20 +22342,17 @@
 --  DDL for Index J_FK_PLAN2LEDGER_DESCRIPTION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_DESCRIPTION" ON "PLAN2LEDGER" ("DESCRIPTIONCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_DESCRIPTION" ON "PLAN2LEDGER" ("DESCRIPTIONCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_GPM_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GPM_PURCHASEMODE" ON "GOODSGROUPPURCHASEMODE" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_GPM_PURCHASEMODE" ON "GOODSGROUPPURCHASEMODE" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_NUMSEQUENCE_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NUMSEQUENCE_BUDGET" ON "NUMSEQUENCE" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_NUMSEQUENCE_BUDGET" ON "NUMSEQUENCE" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index PK_APPOBJPROP
 --------------------------------------------------------
@@ -22514,8 +22367,7 @@
 --  DDL for Index J_FK_REQUESTDOC_CONPERSACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_CONPERSACC_ID" ON "REQUESTDOC" ("GUARCONTRPERSONALACC_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_CONPERSACC_ID" ON "REQUESTDOC" ("GUARCONTRPERSONALACC_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_REPDOCUMENT_NAME
 --------------------------------------------------------
@@ -22525,8 +22377,7 @@
 --  DDL for Index J_FK_TCPM_TENDERCRITERION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TCPM_TENDERCRITERION" ON "TENDERCRITERIONPM" ("TENDERCRITERION_ID") 
-   ;
+  CREATE INDEX "J_FK_TCPM_TENDERCRITERION" ON "TENDERCRITERIONPM" ("TENDERCRITERION_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONGOODS
 --------------------------------------------------------
@@ -22551,8 +22402,7 @@
 --  DDL for Index IFK_ATTACHED_DOCUMENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ATTACHED_DOCUMENT_ID" ON "ATTACHEDPLANDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IFK_ATTACHED_DOCUMENT_ID" ON "ATTACHEDPLANDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_P3SHED
 --------------------------------------------------------
@@ -22562,8 +22412,7 @@
 --  DDL for Index IDX_KLADRSTREET_CODE2
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_KLADRSTREET_CODE2" ON "KLADRSTREET" ("CODE2") 
-   ;
+  CREATE INDEX "IDX_KLADRSTREET_CODE2" ON "KLADRSTREET" ("CODE2");
 --------------------------------------------------------
 --  DDL for Index PK_DOCWEBLINK
 --------------------------------------------------------
@@ -22573,8 +22422,7 @@
 --  DDL for Index J_FK_P3GO_OKVED
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3GO_OKVED" ON "PLAN3PURCHASEGOODSOKVED" ("OKVED_ID") 
-   ;
+  CREATE INDEX "J_FK_P3GO_OKVED" ON "PLAN3PURCHASEGOODSOKVED" ("OKVED_ID");
 --------------------------------------------------------
 --  DDL for Index PK_MAILRECEIVERGROUP_RECEIVER
 --------------------------------------------------------
@@ -22584,20 +22432,17 @@
 --  DDL for Index J_FK_PLAN2DOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DOC_DISPSTATUS" ON "PLAN2DOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DOC_DISPSTATUS" ON "PLAN2DOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORDERDOC_COMMISSION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_COMMISSION" ON "ORDERDOC" ("COMMISSION_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_COMMISSION" ON "ORDERDOC" ("COMMISSION_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN3DOC_RESPORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN3DOC_RESPORG" ON "PLAN3DOC" ("RESPORG_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN3DOC_RESPORG" ON "PLAN3DOC" ("RESPORG_ID");
 --------------------------------------------------------
 --  DDL for Index PK_UNIT
 --------------------------------------------------------
@@ -22612,56 +22457,47 @@
 --  DDL for Index J_FK_SYSUSER_DOMEN
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SYSUSER_DOMEN" ON "SYSUSER" ("DOMEN_ID") 
-   ;
+  CREATE INDEX "J_FK_SYSUSER_DOMEN" ON "SYSUSER" ("DOMEN_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORGETP_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORGETP_SYSUSER" ON "ORGETP" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_ORGETP_SYSUSER" ON "ORGETP" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_ORDERSUM_ORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORDERSUM_ORDER_ID" ON "ORDERSUMMARY" ("ORDER_ID") 
-   ;
+  CREATE INDEX "IFK_ORDERSUM_ORDER_ID" ON "ORDERSUMMARY" ("ORDER_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_OFFERDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_OFFERDOC_DISPSTATUS" ON "OFFERDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_OFFERDOC_DISPSTATUS" ON "OFFERDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_USERSESSION_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_USERSESSION_SYSUSER" ON "USERSESSION" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_USERSESSION_SYSUSER" ON "USERSESSION" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_P2ARRANGEMENT_CMPORG
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_P2ARRANGEMENT_CMPORG" ON "PLAN2ARRANGEMENT" ("CMPORG_ID") 
-   ;
+  CREATE INDEX "IDX_P2ARRANGEMENT_CMPORG" ON "PLAN2ARRANGEMENT" ("CMPORG_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_COMPLAINTDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_COMPLAINTDOC_DISPSTATUS" ON "COMPLAINTDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_COMPLAINTDOC_DISPSTATUS" ON "COMPLAINTDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_CONTRACTEXECDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTRACTEXECDOC_DISPSTATUS" ON "CONTRACTEXECDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_CONTRACTEXECDOC_DISPSTATUS" ON "CONTRACTEXECDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_DOCUMENT_INSTANCE_LINK
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_DOCUMENT_INSTANCE_LINK" ON "DOCUMENT" ("INSTANCE_LINK", "DOCUMENTCLASS_ID", "BUDGET_ID") 
-   ;
+  CREATE INDEX "IDX_DOCUMENT_INSTANCE_LINK" ON "DOCUMENT" ("INSTANCE_LINK", "DOCUMENTCLASS_ID", "BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index PK_FGROUP
 --------------------------------------------------------
@@ -22671,86 +22507,72 @@
 --  DDL for Index J_FK_INDUSTRYCODE_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INDUSTRYCODE_PARENT" ON "INDUSTRYCODE" ("PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_INDUSTRYCODE_PARENT" ON "INDUSTRYCODE" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_FACTDOC_EXPORT_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_FACTDOC_EXPORT_PARENT" ON "FACTDOC" ("EXPORT_PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_FACTDOC_EXPORT_PARENT" ON "FACTDOC" ("EXPORT_PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2LEDGER_CMPORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_CMPORG" ON "PLAN2LEDGER" ("CMPORG_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_CMPORG" ON "PLAN2LEDGER" ("CMPORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORDERDOC_RECIPIENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_RECIPIENT" ON "ORDERDOC" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_RECIPIENT" ON "ORDERDOC" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_TYPECRIT_TENDERCRITERION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TYPECRIT_TENDERCRITERION" ON "TYPECRIT" ("TENDERCRITERION_ID") 
-   ;
+  CREATE INDEX "J_FK_TYPECRIT_TENDERCRITERION" ON "TYPECRIT" ("TENDERCRITERION_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_ORG_SERVEORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORG_SERVEORG_ID" ON "ORG" ("SERVEORG_ID") 
-   ;
+  CREATE INDEX "IFK_ORG_SERVEORG_ID" ON "ORG" ("SERVEORG_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_REQUESTD_CUSTOMER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_REQUESTD_CUSTOMER_ID" ON "REQUESTDOC" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "IFK_REQUESTD_CUSTOMER_ID" ON "REQUESTDOC" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_DOCUMENT_DIGEST
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_DOCUMENT_DIGEST" ON "DIGEST" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_DOCUMENT_DIGEST" ON "DIGEST" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DECREASON_DOCUMENTCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DECREASON_DOCUMENTCLASS" ON "DECREASON" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_DECREASON_DOCUMENTCLASS" ON "DECREASON" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_COMMEMBER_PERSONAL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_COMMEMBER_PERSONAL" ON "COMMEMBER" ("COMMEMBER_ID") 
-   ;
+  CREATE INDEX "J_FK_COMMEMBER_PERSONAL" ON "COMMEMBER" ("COMMEMBER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CERTREQ_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CERTREQ_DISPSTATUS" ON "CERTREQUEST" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_CERTREQ_DISPSTATUS" ON "CERTREQUEST" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CEPENALTY_DOCUMENTCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CEPENALTY_DOCUMENTCLASS" ON "CEPENALTY" ("CLAIM_DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_CEPENALTY_DOCUMENTCLASS" ON "CEPENALTY" ("CLAIM_DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRACTDOC_PROPFORM
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_PROPFORM" ON "CONTRACTDOC" ("CONPROPFORM_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_PROPFORM" ON "CONTRACTDOC" ("CONPROPFORM_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2DOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DOC_OPERTYPE" ON "PLAN2DOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DOC_OPERTYPE" ON "PLAN2DOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_CERTREQUESTOID
 --------------------------------------------------------
@@ -22760,8 +22582,7 @@
 --  DDL for Index IDX_RECOILDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_RECOILDOC_DOC_DATE" ON "RECOILDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_RECOILDOC_DOC_DATE" ON "RECOILDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index PK_LIABILITYGROUP
 --------------------------------------------------------
@@ -22771,20 +22592,17 @@
 --  DDL for Index J_FK_PLAN3DOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN3DOC_BUDGET" ON "PLAN3DOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN3DOC_BUDGET" ON "PLAN3DOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ROLEREGISTER_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEREGISTER_DISPSTATUS" ON "ROLEREGISTER" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_ROLEREGISTER_DISPSTATUS" ON "ROLEREGISTER" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFFERDOC_ACC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFFERDOC_ACC" ON "OFFERDOC" ("VENDORACC_ID") 
-   ;
+  CREATE INDEX "J_FK_OFFERDOC_ACC" ON "OFFERDOC" ("VENDORACC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PREFERENCEGROUPFEATURE
 --------------------------------------------------------
@@ -22794,8 +22612,7 @@
 --  DDL for Index J_FK_CURHISTORY_CURRENCY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CURHISTORY_CURRENCY" ON "CURHISTORY" ("CURRENCY_ID") 
-   ;
+  CREATE INDEX "J_FK_CURHISTORY_CURRENCY" ON "CURHISTORY" ("CURRENCY_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PLAN3DOC
 --------------------------------------------------------
@@ -22805,8 +22622,7 @@
 --  DDL for Index J_FK_RECOILDOC_CMPORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILDOC_CMPORG" ON "RECOILDOC" ("CMPORG_ID") 
-   ;
+  CREATE INDEX "J_FK_RECOILDOC_CMPORG" ON "RECOILDOC" ("CMPORG_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_REFCLASS
 --------------------------------------------------------
@@ -22821,8 +22637,7 @@
 --  DDL for Index IFK_CEPENALTY_DOC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CEPENALTY_DOC_ID" ON "CEPENALTY" ("DOC_ID") 
-   ;
+  CREATE INDEX "IFK_CEPENALTY_DOC_ID" ON "CEPENALTY" ("DOC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ORGOOS223FZUSER
 --------------------------------------------------------
@@ -22842,20 +22657,17 @@
 --  DDL for Index UQ_ROLEREGISTER
 --------------------------------------------------------
 
-  CREATE UNIQUE INDEX "UQ_ROLEREGISTER" ON "ROLEREGISTER" ("USER_ID", "GRANTEDROLE_ID", "GRANTDATE") 
-   ;
+  CREATE UNIQUE INDEX "UQ_ROLEREGISTER" ON "ROLEREGISTER" ("USER_ID", "GRANTEDROLE_ID", "GRANTDATE");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPCUSTOMER_FACTCOUNTRY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPCUSTOMER_FACTCOUNTRY" ON "CMPCUSTOMER" ("CUSTOMERFACTCOUNTRY_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPCUSTOMER_FACTCOUNTRY" ON "CMPCUSTOMER" ("CUSTOMERFACTCOUNTRY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFFERDOC_VENDOREXECUTERAC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFFERDOC_VENDOREXECUTERAC" ON "OFFERDOC" ("VENDOREXECUTERACC_ID") 
-   ;
+  CREATE INDEX "J_FK_OFFERDOC_VENDOREXECUTERAC" ON "OFFERDOC" ("VENDOREXECUTERACC_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_GOODSOKDP_CODE
 --------------------------------------------------------
@@ -22865,8 +22677,7 @@
 --  DDL for Index J_FK_P2ARRANGEMENT_PERIODICITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_PERIODICITY" ON "PLAN2ARRANGEMENT" ("PERIODICITYCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_PERIODICITY" ON "PLAN2ARRANGEMENT" ("PERIODICITYCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_INSTITUTIONLINE
 --------------------------------------------------------
@@ -22881,20 +22692,17 @@
 --  DDL for Index J_FK_P3PURCHASEDOC_CURRENCY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_CURRENCY" ON "PLAN3PURCHASEDOC" ("CURRENCY_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_CURRENCY" ON "PLAN3PURCHASEDOC" ("CURRENCY_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_RQDOCCHI_DOCUMENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RQDOCCHI_DOCUMENT_ID" ON "RQDOCCHILD" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IFK_RQDOCCHI_DOCUMENT_ID" ON "RQDOCCHILD" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_ORG_PARENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORG_PARENT_ID" ON "ORG" ("PARENT_ID") 
-   ;
+  CREATE INDEX "IFK_ORG_PARENT_ID" ON "ORG" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DOCJOURNAL
 --------------------------------------------------------
@@ -22904,8 +22712,7 @@
 --  DDL for Index J_FK_DODIGESTULE_PARDISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DODIGESTULE_PARDISPSTATUS" ON "DOCDIGESTRULE" ("PARDISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_DODIGESTULE_PARDISPSTATUS" ON "DOCDIGESTRULE" ("PARDISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PLAN2OOSEXTNUMBER
 --------------------------------------------------------
@@ -22915,14 +22722,12 @@
 --  DDL for Index J_FK_RQQUALREQ_REQTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQQUALREQ_REQTYPE" ON "RQQUALREQ" ("REQUIREMENTTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_RQQUALREQ_REQTYPE" ON "RQQUALREQ" ("REQUIREMENTTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PROCUREMENT_PERSONAL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PROCUREMENT_PERSONAL" ON "PROCUREMENT" ("RESPPERSONAL_ID") 
-   ;
+  CREATE INDEX "J_FK_PROCUREMENT_PERSONAL" ON "PROCUREMENT" ("RESPPERSONAL_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_ORGOOS223FZUSER
 --------------------------------------------------------
@@ -22932,8 +22737,7 @@
 --  DDL for Index J_FK_CONCONTRACTOR_EXECUTERACC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONCONTRACTOR_EXECUTERACC" ON "CONCONTRACTOR" ("ORGEXECUTERACC_ID") 
-   ;
+  CREATE INDEX "J_FK_CONCONTRACTOR_EXECUTERACC" ON "CONCONTRACTOR" ("ORGEXECUTERACC_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_CODETYPE_DISPLAY_ORDER
 --------------------------------------------------------
@@ -22943,14 +22747,12 @@
 --  DDL for Index J_FK_PLAN2DOC_OWNER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DOC_OWNER" ON "PLAN2DOC" ("OWNER_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DOC_OWNER" ON "PLAN2DOC" ("OWNER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLANDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLANDOC_BUDGET" ON "PLANDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_PLANDOC_BUDGET" ON "PLANDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CRLFILE
 --------------------------------------------------------
@@ -22965,32 +22767,27 @@
 --  DDL for Index IFK_OFRCRITE_LOTPOSOFFER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_OFRCRITE_LOTPOSOFFER_ID" ON "OFRCRITERIONVAL" ("OFFER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_OFRCRITE_LOTPOSOFFER_ID" ON "OFRCRITERIONVAL" ("OFFER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_CUSTOMERLOT_CMPLOT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CUSTOMERLOT_CMPLOT" ON "CMPCUSTOMERLOT" ("ORDER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "J_FK_CUSTOMERLOT_CMPLOT" ON "CMPCUSTOMERLOT" ("ORDER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_P2ARRANGEMENT_EXPLANATION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_EXPLANATION" ON "PLAN2ARRANGEMENT" ("EXPLANATIONCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_EXPLANATION" ON "PLAN2ARRANGEMENT" ("EXPLANATIONCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_RECOILDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_RECOILDOC_DATENUM" ON "RECOILDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_RECOILDOC_DATENUM" ON "RECOILDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index J_FK_CUSTOMERLOT_APPBANK
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CUSTOMERLOT_APPBANK" ON "CMPCUSTOMERLOT" ("GUARAPPBIC") 
-   ;
+  CREATE INDEX "J_FK_CUSTOMERLOT_APPBANK" ON "CMPCUSTOMERLOT" ("GUARAPPBIC");
 --------------------------------------------------------
 --  DDL for Index PK_PLAN2OOSPOSITION
 --------------------------------------------------------
@@ -23000,26 +22797,22 @@
 --  DDL for Index J_FK_DIGESTSIGN_USERROLE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DIGESTSIGN_USERROLE" ON "DIGESTSIGN" ("USERROLE_ID") 
-   ;
+  CREATE INDEX "J_FK_DIGESTSIGN_USERROLE" ON "DIGESTSIGN" ("USERROLE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLANDOC_PLANYEAR
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLANDOC_PLANYEAR" ON "PLANDOC" ("PLANYEAR") 
-   ;
+  CREATE INDEX "IDX_PLANDOC_PLANYEAR" ON "PLANDOC" ("PLANYEAR");
 --------------------------------------------------------
 --  DDL for Index J_FK_PURCHASEMETHOD_ORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHASEMETHOD_ORG" ON "PURCHASEMETHOD" ("CREATORORG_ID") 
-   ;
+  CREATE INDEX "J_FK_PURCHASEMETHOD_ORG" ON "PURCHASEMETHOD" ("CREATORORG_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_OFRQUALR_LOTPOSOFFER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_OFRQUALR_LOTPOSOFFER_ID" ON "OFRQUALREQVAL" ("OFFER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_OFRQUALR_LOTPOSOFFER_ID" ON "OFRQUALREQVAL" ("OFFER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index PK_RQLOT
 --------------------------------------------------------
@@ -23029,8 +22822,7 @@
 --  DDL for Index J_FK_PLAN2LEDGER_INDUSTRYCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_INDUSTRYCODE" ON "PLAN2LEDGER" ("INDUSTRYCODE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_INDUSTRYCODE" ON "PLAN2LEDGER" ("INDUSTRYCODE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RQOPTIMIZEDPRICE
 --------------------------------------------------------
@@ -23040,62 +22832,52 @@
 --  DDL for Index IDX_KLADRSTREET_CODE5
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_KLADRSTREET_CODE5" ON "KLADRSTREET" ("CODE5") 
-   ;
+  CREATE INDEX "IDX_KLADRSTREET_CODE5" ON "KLADRSTREET" ("CODE5");
 --------------------------------------------------------
 --  DDL for Index IDX_REQUESTDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_REQUESTDOC_DATENUM" ON "REQUESTDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_REQUESTDOC_DATENUM" ON "REQUESTDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index J_FK_PRODUCTS_NOTIFICATIONLOT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PRODUCTS_NOTIFICATIONLOT" ON "OOSPRODUCTS" ("LOT_ID", "NOTIFICATION_ID") 
-   ;
+  CREATE INDEX "J_FK_PRODUCTS_NOTIFICATIONLOT" ON "OOSPRODUCTS" ("LOT_ID", "NOTIFICATION_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_PLGOODS_ORGID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PLGOODS_ORGID" ON "PLGOODS" ("ORGID") 
-   ;
+  CREATE INDEX "IFK_PLGOODS_ORGID" ON "PLGOODS" ("ORGID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFRORGSTATUS_ORGSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFRORGSTATUS_ORGSTATUS" ON "OFRORGSTATUS" ("ORGSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_OFRORGSTATUS_ORGSTATUS" ON "OFRORGSTATUS" ("ORGSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_PLANREQU_DOCUMENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PLANREQU_DOCUMENT_ID" ON "PLANREQUEST" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IFK_PLANREQU_DOCUMENT_ID" ON "PLANREQUEST" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CAVILDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CAVILDOC_BUDGET" ON "CAVILDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_CAVILDOC_BUDGET" ON "CAVILDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_REPFRAGMENT_REPSOURCE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REPFRAGMENT_REPSOURCE" ON "REPFRAGMENT" ("REPSOURCE_ID") 
-   ;
+  CREATE INDEX "J_FK_REPFRAGMENT_REPSOURCE" ON "REPFRAGMENT" ("REPSOURCE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_DOCSELEC_DOCREQPOSORDER_I
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_DOCSELEC_DOCREQPOSORDER_I" ON "DOCSELECT" ("ORDER_ID", "DOCREQPOS") 
-   ;
+  CREATE INDEX "IFK_DOCSELEC_DOCREQPOSORDER_I" ON "DOCSELECT" ("ORDER_ID", "DOCREQPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_PFPM_PLACEMENTFEATURE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PFPM_PLACEMENTFEATURE" ON "PLACEMENTFEATUREPM" ("PLACEMENTFEATURE_ID") 
-   ;
+  CREATE INDEX "J_FK_PFPM_PLACEMENTFEATURE" ON "PLACEMENTFEATUREPM" ("PLACEMENTFEATURE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_ORGATTACH
 --------------------------------------------------------
@@ -23110,14 +22892,12 @@
 --  DDL for Index J_FK_DESC_PLANDESC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DESC_PLANDESC" ON "PURCHASEPLAN" ("DESC_ID") 
-   ;
+  CREATE INDEX "J_FK_DESC_PLANDESC" ON "PURCHASEPLAN" ("DESC_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_KLADR_ACTUAL
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_KLADR_ACTUAL" ON "KLADR" ("ACTUAL") 
-   ;
+  CREATE INDEX "IDX_KLADR_ACTUAL" ON "KLADR" ("ACTUAL");
 --------------------------------------------------------
 --  DDL for Index PK_CMPCUSTOMER
 --------------------------------------------------------
@@ -23132,20 +22912,17 @@
 --  DDL for Index J_FK_CMPPLACE_INDUSTRYCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPPLACE_INDUSTRYCODE" ON "CMPPLACE" ("INDUSTRYCODE_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPPLACE_INDUSTRYCODE" ON "CMPPLACE" ("INDUSTRYCODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCFLAG_DOCFLAGTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCFLAG_DOCFLAGTYPE" ON "DOCFLAG" ("DOCFLAGTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCFLAG_DOCFLAGTYPE" ON "DOCFLAG" ("DOCFLAGTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_OOSCUSTOMER_REGNUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_OOSCUSTOMER_REGNUM" ON "OOSCUSTOMERREQUIREMENT" ("CUSTOMERREGNUM") 
-   ;
+  CREATE INDEX "IDX_OOSCUSTOMER_REGNUM" ON "OOSCUSTOMERREQUIREMENT" ("CUSTOMERREGNUM");
 --------------------------------------------------------
 --  DDL for Index PK_RQGOODS
 --------------------------------------------------------
@@ -23155,20 +22932,17 @@
 --  DDL for Index J_FK_ROLEACTION_DOCUMENTCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEACTION_DOCUMENTCLASS" ON "ROLEEVENT" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_ROLEACTION_DOCUMENTCLASS" ON "ROLEEVENT" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLNBUDGETLINE_FINSRC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLNBUDGETLINE_FINSRC" ON "PLNBUDGETLINE" ("FINSRC_ID") 
-   ;
+  CREATE INDEX "J_FK_PLNBUDGETLINE_FINSRC" ON "PLNBUDGETLINE" ("FINSRC_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CONPLACE_RECIPIENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONPLACE_RECIPIENT_ID" ON "CONPLACE" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "IFK_CONPLACE_RECIPIENT_ID" ON "CONPLACE" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index S_OFFERDOC_DI
 --------------------------------------------------------
@@ -23178,8 +22952,7 @@
 --  DDL for Index J_FK_LIABILITY_LINES_ORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LIABILITY_LINES_ORG" ON "LIABILITYEXPENSE_DOCLINES" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "J_FK_LIABILITY_LINES_ORG" ON "LIABILITYEXPENSE_DOCLINES" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DIGEST
 --------------------------------------------------------
@@ -23189,8 +22962,7 @@
 --  DDL for Index J_FK_CAVILDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CAVILDOC_DOCUMENT" ON "CAVILDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_CAVILDOC_DOCUMENT" ON "CAVILDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ORGHEARING
 --------------------------------------------------------
@@ -23200,14 +22972,12 @@
 --  DDL for Index J_FK_LEDGER_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_PURCHASEMODE" ON "LEDGER" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_PURCHASEMODE" ON "LEDGER" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCEVENT_PROCTREE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCEVENT_PROCTREE" ON "DOCEVENT" ("PROCTREE_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCEVENT_PROCTREE" ON "DOCEVENT" ("PROCTREE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_DESCGROUP
 --------------------------------------------------------
@@ -23217,20 +22987,17 @@
 --  DDL for Index J_FK_REPFRAGMENTCHILD_FRAGMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REPFRAGMENTCHILD_FRAGMENT" ON "REPFRAGMENTCHILD" ("REPFRAGMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_REPFRAGMENTCHILD_FRAGMENT" ON "REPFRAGMENTCHILD" ("REPFRAGMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRACTDOC_CONCOUNTRY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_CONCOUNTRY" ON "CONTRACTDOC" ("CONCOUNTRY_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_CONCOUNTRY" ON "CONTRACTDOC" ("CONCOUNTRY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_INV_PROPFORMID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INV_PROPFORMID" ON "INVOICEDOC" ("CONPROPFORM_ID") 
-   ;
+  CREATE INDEX "J_FK_INV_PROPFORMID" ON "INVOICEDOC" ("CONPROPFORM_ID");
 --------------------------------------------------------
 --  DDL for Index PK_NMSG
 --------------------------------------------------------
@@ -23245,20 +23012,17 @@
 --  DDL for Index IFK_CMPCOMME_PHASEPOSORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPCOMME_PHASEPOSORDER_ID" ON "CMPCOMMEMBER" ("ORDER_ID", "PHASEPOS") 
-   ;
+  CREATE INDEX "IFK_CMPCOMME_PHASEPOSORDER_ID" ON "CMPCOMMEMBER" ("ORDER_ID", "PHASEPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_FACTDOC_VENDORCOUNTRY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_FACTDOC_VENDORCOUNTRY" ON "FACTDOC" ("VENDORCOUNTRY_ID") 
-   ;
+  CREATE INDEX "J_FK_FACTDOC_VENDORCOUNTRY" ON "FACTDOC" ("VENDORCOUNTRY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONCONTRACTOR_PROPFORMID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONCONTRACTOR_PROPFORMID" ON "CONCONTRACTOR" ("ORGPROPFORM_ID") 
-   ;
+  CREATE INDEX "J_FK_CONCONTRACTOR_PROPFORMID" ON "CONCONTRACTOR" ("ORGPROPFORM_ID");
 --------------------------------------------------------
 --  DDL for Index PK_KLADRSTREET
 --------------------------------------------------------
@@ -23273,8 +23037,7 @@
 --  DDL for Index J_FK_PLAN3DOC_FACTTERRITORY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN3DOC_FACTTERRITORY" ON "PLAN3DOC" ("CUSTOMERFACTTERRITORY_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN3DOC_FACTTERRITORY" ON "PLAN3DOC" ("CUSTOMERFACTTERRITORY_ID");
 --------------------------------------------------------
 --  DDL for Index PK_REFINANCINGRATE
 --------------------------------------------------------
@@ -23284,26 +23047,22 @@
 --  DDL for Index J_FK_P3GOODS_PURCHASEPLANLINE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3GOODS_PURCHASEPLANLINE" ON "PLAN3PURCHASEGOODS" ("PLAN3PURCHASEDOC_ID", "PLAN3PURCHASELINEPOS") 
-   ;
+  CREATE INDEX "J_FK_P3GOODS_PURCHASEPLANLINE" ON "PLAN3PURCHASEGOODS" ("PLAN3PURCHASEDOC_ID", "PLAN3PURCHASELINEPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCUMENTCLASS_SERVERPROC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCUMENTCLASS_SERVERPROC" ON "DOCUMENTCLASS" ("SERVERPROCESSOR_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCUMENTCLASS_SERVERPROC" ON "DOCUMENTCLASS" ("SERVERPROCESSOR_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSPOSITION_PURCHMOD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPOSITION_PURCHMOD" ON "PLAN2OOSPOSITION" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPOSITION_PURCHMOD" ON "PLAN2OOSPOSITION" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN2DOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2DOC_DISPSTATUS" ON "PLAN2DOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_PLAN2DOC_DISPSTATUS" ON "PLAN2DOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OOSORGROLES
 --------------------------------------------------------
@@ -23313,20 +23072,17 @@
 --  DDL for Index J_FK_CUSTOMERLOT_APPSETTACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CUSTOMERLOT_APPSETTACC_ID" ON "CMPCUSTOMERLOT" ("GUARAPPSETTLEMENTACC_ID") 
-   ;
+  CREATE INDEX "J_FK_CUSTOMERLOT_APPSETTACC_ID" ON "CMPCUSTOMERLOT" ("GUARAPPSETTLEMENTACC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_GROUPPROP_PROPTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GROUPPROP_PROPTYPE" ON "GROUPPROP" ("PROPTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_GROUPPROP_PROPTYPE" ON "GROUPPROP" ("PROPTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_GBGO_GOODSOKPD_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GBGO_GOODSOKPD_ID" ON "GOODSBANGOODSOKPD" ("GOODSOKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_GBGO_GOODSOKPD_ID" ON "GOODSBANGOODSOKPD" ("GOODSOKPD_ID");
 --------------------------------------------------------
 --  DDL for Index PK_LIABILITYCREDENTIAL
 --------------------------------------------------------
@@ -23336,8 +23092,7 @@
 --  DDL for Index J_FK_PLAN2ARRANGEMENT_LOTNUMBE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2ARRANGEMENT_LOTNUMBE" ON "PLAN2ARRANGEMENT" ("LOTNUMBERCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2ARRANGEMENT_LOTNUMBE" ON "PLAN2ARRANGEMENT" ("LOTNUMBERCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index S_PLANDOC_DI
 --------------------------------------------------------
@@ -23347,8 +23102,7 @@
 --  DDL for Index J_FK_NMSGRULE_SENDER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NMSGRULE_SENDER" ON "NOTIFYMSGRULE" ("SENDER_ID") 
-   ;
+  CREATE INDEX "J_FK_NMSGRULE_SENDER" ON "NOTIFYMSGRULE" ("SENDER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OOSORGROLE
 --------------------------------------------------------
@@ -23363,20 +23117,17 @@
 --  DDL for Index J_FK_PLAN2GOODS_OKPD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2GOODS_OKPD" ON "PLAN2GOODS" ("OKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2GOODS_OKPD" ON "PLAN2GOODS" ("OKPD_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_TENDERCRITERIONCHILD_CHIL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TENDERCRITERIONCHILD_CHIL" ON "TENDERCRITERIONCHILD" ("CHILD_ID") 
-   ;
+  CREATE INDEX "J_FK_TENDERCRITERIONCHILD_CHIL" ON "TENDERCRITERIONCHILD" ("CHILD_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_TENDER_TENDERCRITERION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TENDER_TENDERCRITERION" ON "TENDER" ("TENDERCRITERION_ID") 
-   ;
+  CREATE INDEX "J_FK_TENDER_TENDERCRITERION" ON "TENDER" ("TENDERCRITERION_ID");
 --------------------------------------------------------
 --  DDL for Index S_CONTEMPDOC_DNI
 --------------------------------------------------------
@@ -23391,8 +23142,7 @@
 --  DDL for Index J_FK_DOCREQ_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCREQ_PURCHASEMODE" ON "DOCREQ" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCREQ_PURCHASEMODE" ON "DOCREQ" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_DOCCLASS_DISPSTATUS
 --------------------------------------------------------
@@ -23402,14 +23152,12 @@
 --  DDL for Index IDX_ETPATTACH
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_ETPATTACH" ON "ETPATTACH" ("ETPKEY", "ETP_ID") 
-   ;
+  CREATE INDEX "IDX_ETPATTACH" ON "ETPATTACH" ("ETPKEY", "ETP_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN2GOODS_CODE8
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2GOODS_CODE8" ON "PLAN2GOODS" ("CODE8") 
-   ;
+  CREATE INDEX "IDX_PLAN2GOODS_CODE8" ON "PLAN2GOODS" ("CODE8");
 --------------------------------------------------------
 --  DDL for Index PK_TENDERLINE
 --------------------------------------------------------
@@ -23429,8 +23177,7 @@
 --  DDL for Index J_FK_CONTREXECDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTREXECDOC_DISPSTATUS" ON "CONTRACTEXECDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTREXECDOC_DISPSTATUS" ON "CONTRACTEXECDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RQDOCCHILD
 --------------------------------------------------------
@@ -23450,8 +23197,7 @@
 --  DDL for Index J_FK_CLIOBJCOMM_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CLIOBJCOMM_BUDGET" ON "CLIENTOBJECTCOMMENTS" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_CLIOBJCOMM_BUDGET" ON "CLIENTOBJECTCOMMENTS" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index PK_USESCRYPTOLIB
 --------------------------------------------------------
@@ -23461,8 +23207,7 @@
 --  DDL for Index J_FK_CLAIMDOC_CUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CLAIMDOC_CUSTOMER" ON "CLAIMDOC" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "J_FK_CLAIMDOC_CUSTOMER" ON "CLAIMDOC" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PLACEMENTFEATURE
 --------------------------------------------------------
@@ -23477,26 +23222,22 @@
 --  DDL for Index J_FK_DOCFLAGTYPE_CATEGORY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCFLAGTYPE_CATEGORY" ON "DOCFLAGTYPE" ("CATEGORY_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCFLAGTYPE_CATEGORY" ON "DOCFLAGTYPE" ("CATEGORY_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_DIGESTSIGN_DOCATTACHEX
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_DIGESTSIGN_DOCATTACHEX" ON "DIGESTSIGN" ("DOCATTACHEX_ID") 
-   ;
+  CREATE INDEX "IFK_DIGESTSIGN_DOCATTACHEX" ON "DIGESTSIGN" ("DOCATTACHEX_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PANELITEM_CLIENTOBJECT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PANELITEM_CLIENTOBJECT" ON "PANELITEM" ("CLIENTOBJECT_ID") 
-   ;
+  CREATE INDEX "J_FK_PANELITEM_CLIENTOBJECT" ON "PANELITEM" ("CLIENTOBJECT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RQLOT_APPPERSACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQLOT_APPPERSACC_ID" ON "RQLOT" ("GUARAPPPERSONALACC_ID") 
-   ;
+  CREATE INDEX "J_FK_RQLOT_APPPERSACC_ID" ON "RQLOT" ("GUARAPPPERSONALACC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RQCONDEALRESP
 --------------------------------------------------------
@@ -23506,56 +23247,47 @@
 --  DDL for Index IFK_RESERVED_RECIPIENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RESERVED_RECIPIENT_ID" ON "RESERVEDBUDGETLINE" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "IFK_RESERVED_RECIPIENT_ID" ON "RESERVEDBUDGETLINE" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORGOOS223FZUSER_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORGOOS223FZUSER_SYSUSER" ON "ORGOOS223FZUSER" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_ORGOOS223FZUSER_SYSUSER" ON "ORGOOS223FZUSER" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RECOILDOC_CUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILDOC_CUSTOMER" ON "RECOILDOC" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "J_FK_RECOILDOC_CUSTOMER" ON "RECOILDOC" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_FUNUNIT_FUNCAT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_FUNUNIT_FUNCAT" ON "FUNUNIT" ("FUNCAT_ID") 
-   ;
+  CREATE INDEX "J_FK_FUNUNIT_FUNCAT" ON "FUNUNIT" ("FUNCAT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ESTIMATE_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ESTIMATE_BUDGET" ON "ESTIMATE" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_ESTIMATE_BUDGET" ON "ESTIMATE" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPPHASE_COMMISSION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPPHASE_COMMISSION" ON "CMPPHASE" ("COMMISSION_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPPHASE_COMMISSION" ON "CMPPHASE" ("COMMISSION_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORGACCOUNT_ORGACCTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORGACCOUNT_ORGACCTYPE" ON "ORGACCOUNT" ("ORGACCTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_ORGACCOUNT_ORGACCTYPE" ON "ORGACCOUNT" ("ORGACCTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_FACTDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_FACTDOC_DISPSTATUS" ON "FACTDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_FACTDOC_DISPSTATUS" ON "FACTDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CONLOT_CONTRACT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONLOT_CONTRACT_ID" ON "CONLOT" ("CONTRACT_ID") 
-   ;
+  CREATE INDEX "IFK_CONLOT_CONTRACT_ID" ON "CONLOT" ("CONTRACT_ID");
 --------------------------------------------------------
 --  DDL for Index S_NOTICEDOC_DI
 --------------------------------------------------------
@@ -23565,8 +23297,7 @@
 --  DDL for Index J_FK_ORGROLES_ORGROLE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORGROLES_ORGROLE" ON "ORGROLES" ("ORGROLE_ID") 
-   ;
+  CREATE INDEX "J_FK_ORGROLES_ORGROLE" ON "ORGROLES" ("ORGROLE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OOSPROTOCOL
 --------------------------------------------------------
@@ -23576,44 +23307,37 @@
 --  DDL for Index J_FK_CONTEMPDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTEMPDOC_DISPSTATUS" ON "CONTRACTTEMPLATEDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTEMPDOC_DISPSTATUS" ON "CONTRACTTEMPLATEDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN3DOC_ORGFORM
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN3DOC_ORGFORM" ON "PLAN3DOC" ("CUSTOMERPROPFORM_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN3DOC_ORGFORM" ON "PLAN3DOC" ("CUSTOMERPROPFORM_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORDERDOC_CMPORGPOSTCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_CMPORGPOSTCODE" ON "ORDERDOC" ("CMPORGPOSTCOUNTRY_ID", "CMPORGPOSTTERRITORYCODE") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_CMPORGPOSTCODE" ON "ORDERDOC" ("CMPORGPOSTCOUNTRY_ID", "CMPORGPOSTTERRITORYCODE");
 --------------------------------------------------------
 --  DDL for Index IDX_GOODSGROUP_PARENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_GOODSGROUP_PARENT_ID" ON "GOODSGROUP" ("PARENT_ID") 
-   ;
+  CREATE INDEX "IDX_GOODSGROUP_PARENT_ID" ON "GOODSGROUP" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ROLEBUDGET_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEBUDGET_BUDGET" ON "ROLEBUDGET" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_ROLEBUDGET_BUDGET" ON "ROLEBUDGET" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_OFRPLACE_RECIPIENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_OFRPLACE_RECIPIENT_ID" ON "OFRPLACE" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "IFK_OFRPLACE_RECIPIENT_ID" ON "OFRPLACE" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_DOCUMENT_PARDISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_DOCUMENT_PARDISPSTATUS" ON "DOCUMENT" ("DOCUMENTCLASS_ID", "PARDISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_DOCUMENT_PARDISPSTATUS" ON "DOCUMENT" ("DOCUMENTCLASS_ID", "PARDISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ORDERSUMMARY
 --------------------------------------------------------
@@ -23623,14 +23347,12 @@
 --  DDL for Index J_FK_CONBUDGETLINE_FINSRC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONBUDGETLINE_FINSRC" ON "CONBUDGETLINE" ("FINSRC_ID") 
-   ;
+  CREATE INDEX "J_FK_CONBUDGETLINE_FINSRC" ON "CONBUDGETLINE" ("FINSRC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P2ARRANGEMENT_PROHIBITION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_PROHIBITION" ON "PLAN2ARRANGEMENT" ("PROHIBITIONSCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_PROHIBITION" ON "PLAN2ARRANGEMENT" ("PROHIBITIONSCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_TERTYPE
 --------------------------------------------------------
@@ -23645,8 +23367,7 @@
 --  DDL for Index J_FK_RQLOT_CONSETTACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQLOT_CONSETTACC_ID" ON "RQLOT" ("GUARCONTRSETTLEMENTACC_ID") 
-   ;
+  CREATE INDEX "J_FK_RQLOT_CONSETTACC_ID" ON "RQLOT" ("GUARCONTRSETTLEMENTACC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PLAN2CHANGEREASON
 --------------------------------------------------------
@@ -23661,20 +23382,17 @@
 --  DDL for Index J_FK_PLAN2OOSPOS_PURCHMETHOD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPOS_PURCHMETHOD" ON "PLAN2OOSPOSITION" ("PURCHASEMETHOD_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPOS_PURCHMETHOD" ON "PLAN2OOSPOSITION" ("PURCHASEMETHOD_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_P3PURCHASEDOC_PLANYEAR
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_P3PURCHASEDOC_PLANYEAR" ON "PLAN3PURCHASEDOC" ("PLANYEAR") 
-   ;
+  CREATE INDEX "IDX_P3PURCHASEDOC_PLANYEAR" ON "PLAN3PURCHASEDOC" ("PLANYEAR");
 --------------------------------------------------------
 --  DDL for Index IFK_ORDERSUM_CUSTOMER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORDERSUM_CUSTOMER_ID" ON "ORDERSUMMARY" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "IFK_ORDERSUM_CUSTOMER_ID" ON "ORDERSUMMARY" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_NUMPREFIX
 --------------------------------------------------------
@@ -23689,38 +23407,32 @@
 --  DDL for Index J_FK_REQUESTDOC_APPBANK
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_APPBANK" ON "REQUESTDOC" ("GUARAPPBIC") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_APPBANK" ON "REQUESTDOC" ("GUARAPPBIC");
 --------------------------------------------------------
 --  DDL for Index J_FK_NTFYMSGRLE_RCVR_PERSON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NTFYMSGRLE_RCVR_PERSON" ON "NOTIFYMSGRULE_RECEIVER" ("PERSON_ID") 
-   ;
+  CREATE INDEX "J_FK_NTFYMSGRLE_RCVR_PERSON" ON "NOTIFYMSGRULE_RECEIVER" ("PERSON_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2GOODS_OKDP_CODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2GOODS_OKDP_CODE" ON "PLAN2GOODS" ("OKDP_CODE") 
-   ;
+  CREATE INDEX "J_FK_PLAN2GOODS_OKDP_CODE" ON "PLAN2GOODS" ("OKDP_CODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONBL_INDUSTRYCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONBL_INDUSTRYCODE" ON "CONBUDGETLINE" ("INDUSTRYCODE_ID") 
-   ;
+  CREATE INDEX "J_FK_CONBL_INDUSTRYCODE" ON "CONBUDGETLINE" ("INDUSTRYCODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFFERDOC_VENDORPOSTCOUNTR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFFERDOC_VENDORPOSTCOUNTR" ON "OFFERDOC" ("VENDORPOSTCOUNTRY_ID") 
-   ;
+  CREATE INDEX "J_FK_OFFERDOC_VENDORPOSTCOUNTR" ON "OFFERDOC" ("VENDORPOSTCOUNTRY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPCONDEALRESP_PERSONAL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPCONDEALRESP_PERSONAL" ON "CMPCONDEALRESP" ("PERSONAL_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPCONDEALRESP_PERSONAL" ON "CMPCONDEALRESP" ("PERSONAL_ID");
 --------------------------------------------------------
 --  DDL for Index PK_FGROUPATTACH
 --------------------------------------------------------
@@ -23730,8 +23442,7 @@
 --  DDL for Index J_FK_CMPLOT_CONTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPLOT_CONTYPE" ON "CMPLOT" ("CONTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPLOT_CONTYPE" ON "CMPLOT" ("CONTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DOCFLAGTYPE
 --------------------------------------------------------
@@ -23746,8 +23457,7 @@
 --  DDL for Index IFK_ORDERDOC_CMPORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORDERDOC_CMPORG_ID" ON "ORDERDOC" ("CMPORG_ID") 
-   ;
+  CREATE INDEX "IFK_ORDERDOC_CMPORG_ID" ON "ORDERDOC" ("CMPORG_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OLAPQUERY
 --------------------------------------------------------
@@ -23762,8 +23472,7 @@
 --  DDL for Index IFK_RQSUPPLY_BUDGETLINEPOSREQ
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RQSUPPLY_BUDGETLINEPOSREQ" ON "RQSUPPLYSHEDULE" ("REQUEST_ID", "BUDGETLINEPOS") 
-   ;
+  CREATE INDEX "IFK_RQSUPPLY_BUDGETLINEPOSREQ" ON "RQSUPPLYSHEDULE" ("REQUEST_ID", "BUDGETLINEPOS");
 --------------------------------------------------------
 --  DDL for Index UQ_PURCHASEMETHOD_CODE
 --------------------------------------------------------
@@ -23773,14 +23482,12 @@
 --  DDL for Index J_FK_PLAN2LEDGER_GRANTINVESTME
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_GRANTINVESTME" ON "PLAN2LEDGER" ("GRANTINVESTMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_GRANTINVESTME" ON "PLAN2LEDGER" ("GRANTINVESTMENT_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CONBUDGE_RECIPIENTACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONBUDGE_RECIPIENTACC_ID" ON "CONBUDGETLINE" ("RECIPIENTACC_ID") 
-   ;
+  CREATE INDEX "IFK_CONBUDGE_RECIPIENTACC_ID" ON "CONBUDGETLINE" ("RECIPIENTACC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_GOODSOKDPPURCHASEMODE
 --------------------------------------------------------
@@ -23790,14 +23497,12 @@
 --  DDL for Index IFK_CONTRACT_ORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONTRACT_ORG_ID" ON "CONTRACTOR" ("ORG_ID") 
-   ;
+  CREATE INDEX "IFK_CONTRACT_ORG_ID" ON "CONTRACTOR" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_TYPEREQ_REQTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TYPEREQ_REQTYPE" ON "TYPEREQ" ("REQUIREMENTTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_TYPEREQ_REQTYPE" ON "TYPEREQ" ("REQUIREMENTTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_SYSUSEREXT
 --------------------------------------------------------
@@ -23807,20 +23512,17 @@
 --  DDL for Index J_FK_RECOILLINES_OKDP_CODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILLINES_OKDP_CODE" ON "RECOILLINES" ("OKDP_CODE") 
-   ;
+  CREATE INDEX "J_FK_RECOILLINES_OKDP_CODE" ON "RECOILLINES" ("OKDP_CODE");
 --------------------------------------------------------
 --  DDL for Index IDX_OOSCONTRACT_REGNUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_OOSCONTRACT_REGNUM" ON "OOSCONTRACT" ("REGNUM") 
-   ;
+  CREATE INDEX "IDX_OOSCONTRACT_REGNUM" ON "OOSCONTRACT" ("REGNUM");
 --------------------------------------------------------
 --  DDL for Index IDX_KLADRSTREET_CODE4
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_KLADRSTREET_CODE4" ON "KLADRSTREET" ("CODE4") 
-   ;
+  CREATE INDEX "IDX_KLADRSTREET_CODE4" ON "KLADRSTREET" ("CODE4");
 --------------------------------------------------------
 --  DDL for Index PK_CONORGSTATUS
 --------------------------------------------------------
@@ -23830,14 +23532,12 @@
 --  DDL for Index J_FK_SEL_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SEL_DISPSTATUS" ON "SIGNEXPORTLOG" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_SEL_DISPSTATUS" ON "SIGNEXPORTLOG" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_DAY_VERSION
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_DAY_VERSION" ON "DAYVERSION" ("DAY_DATE", "DAY_VERSION") 
-   ;
+  CREATE INDEX "IDX_DAY_VERSION" ON "DAYVERSION" ("DAY_DATE", "DAY_VERSION");
 --------------------------------------------------------
 --  DDL for Index UQ_APPOBJPROPS
 --------------------------------------------------------
@@ -23847,8 +23547,7 @@
 --  DDL for Index J_FK_DDS_OIDREF
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DDS_OIDREF" ON "DOCDIGESTRULE" ("OIDREF_ID") 
-   ;
+  CREATE INDEX "J_FK_DDS_OIDREF" ON "DOCDIGESTRULE" ("OIDREF_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_OOSORGROLE_CODE
 --------------------------------------------------------
@@ -23858,32 +23557,27 @@
 --  DDL for Index J_FK_CMPLOT_CHILDORDERDOC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPLOT_CHILDORDERDOC" ON "CMPLOT" ("CHILD_ORDER_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPLOT_CHILDORDERDOC" ON "CMPLOT" ("CHILD_ORDER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ESCRROLE_USERROLE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ESCRROLE_USERROLE" ON "ESCRROLE" ("USERROLE_ID") 
-   ;
+  CREATE INDEX "J_FK_ESCRROLE_USERROLE" ON "ESCRROLE" ("USERROLE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLANDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLANDOC_DATENUM" ON "PLANDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_PLANDOC_DATENUM" ON "PLANDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index J_FK_P2ARRANGEMENT_CONEXECSTAG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_CONEXECSTAG" ON "PLAN2ARRANGEMENT" ("CONEXECSTAGESCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_CONEXECSTAG" ON "PLAN2ARRANGEMENT" ("CONEXECSTAGESCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_PURCHASEPLAN_CUSTOMER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PURCHASEPLAN_CUSTOMER_ID" ON "PURCHASEPLAN" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "IFK_PURCHASEPLAN_CUSTOMER_ID" ON "PURCHASEPLAN" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CMPDISCUSSION
 --------------------------------------------------------
@@ -23893,26 +23587,22 @@
 --  DDL for Index IFK_CMPSUPPL_LOTPOSORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPSUPPL_LOTPOSORDER_ID" ON "CMPSUPPLYSHEDULE" ("ORDER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_CMPSUPPL_LOTPOSORDER_ID" ON "CMPSUPPLYSHEDULE" ("ORDER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_CUSTOMERREQ_NOTIFICATION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CUSTOMERREQ_NOTIFICATION" ON "OOSCUSTOMERREQUIREMENT" ("NOTIFICATION_ID") 
-   ;
+  CREATE INDEX "J_FK_CUSTOMERREQ_NOTIFICATION" ON "OOSCUSTOMERREQUIREMENT" ("NOTIFICATION_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCUMENTCLASS_DOCPRINTER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCUMENTCLASS_DOCPRINTER" ON "DOCUMENTCLASS" ("DOCPRINTER_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCUMENTCLASS_DOCPRINTER" ON "DOCUMENTCLASS" ("DOCPRINTER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPPLACE_GRANTINVESTMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPPLACE_GRANTINVESTMENT" ON "CMPPLACE" ("GRANTINVESTMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPPLACE_GRANTINVESTMENT" ON "CMPPLACE" ("GRANTINVESTMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OFRSUPPLYSHEDULE
 --------------------------------------------------------
@@ -23922,20 +23612,17 @@
 --  DDL for Index IDX_PLAN2DOC_PLANYEAR
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2DOC_PLANYEAR" ON "PLAN2DOC" ("PLANYEAR") 
-   ;
+  CREATE INDEX "IDX_PLAN2DOC_PLANYEAR" ON "PLAN2DOC" ("PLANYEAR");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSPOS_PROHIBITIONS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPOS_PROHIBITIONS" ON "PLAN2OOSPOSITION" ("PROHIBITIONSCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPOS_PROHIBITIONS" ON "PLAN2OOSPOSITION" ("PROHIBITIONSCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRACTDOC_CONSTRUCTION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_CONSTRUCTION" ON "CONTRACTDOC" ("CONSTRUCTION_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_CONSTRUCTION" ON "CONTRACTDOC" ("CONSTRUCTION_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ROLECLASS
 --------------------------------------------------------
@@ -23945,8 +23632,7 @@
 --  DDL for Index J_FK_PLAN2DOC_RESPPERSONAL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DOC_RESPPERSONAL" ON "PLAN2DOC" ("RESPPERSONAL_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DOC_RESPPERSONAL" ON "PLAN2DOC" ("RESPPERSONAL_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CLIENTOBJECTCOMMENTS
 --------------------------------------------------------
@@ -23956,14 +23642,12 @@
 --  DDL for Index IDX_PLAN3PURCHASEDOC_PCODE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN3PURCHASEDOC_PCODE" ON "PLAN3PURCHASEDOC" ("PURCHASECODE") 
-   ;
+  CREATE INDEX "IDX_PLAN3PURCHASEDOC_PCODE" ON "PLAN3PURCHASEDOC" ("PURCHASECODE");
 --------------------------------------------------------
 --  DDL for Index IFK_RESERVED_ESTIMATE_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RESERVED_ESTIMATE_ID" ON "RESERVEDBUDGETLINE" ("ESTIMATE_ID") 
-   ;
+  CREATE INDEX "IFK_RESERVED_ESTIMATE_ID" ON "RESERVEDBUDGETLINE" ("ESTIMATE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_USERPROFILE
 --------------------------------------------------------
@@ -23973,14 +23657,12 @@
 --  DDL for Index J_FK_APPOBJ_APPMODULE1
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_APPOBJ_APPMODULE1" ON "APPMODULEDEPENDENCY" ("ID") 
-   ;
+  CREATE INDEX "J_FK_APPOBJ_APPMODULE1" ON "APPMODULEDEPENDENCY" ("ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ALTGGLINK_GOODSGROUP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ALTGGLINK_GOODSGROUP" ON "ALTGOODSGROUPLINK" ("GOODSGROUP_ID") 
-   ;
+  CREATE INDEX "J_FK_ALTGGLINK_GOODSGROUP" ON "ALTGOODSGROUPLINK" ("GOODSGROUP_ID");
 --------------------------------------------------------
 --  DDL for Index PK_SYSEVENT
 --------------------------------------------------------
@@ -23990,38 +23672,32 @@
 --  DDL for Index J_FK_P2GOODS_MEDICINEPROPVALUE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2GOODS_MEDICINEPROPVALUE" ON "PLAN2GOODS" ("MEDICINEPROPVALUECACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P2GOODS_MEDICINEPROPVALUE" ON "PLAN2GOODS" ("MEDICINEPROPVALUECACHE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_PURCHASEPLANDOC_CUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PURCHASEPLANDOC_CUSTOMER" ON "PURCHASEPLANDOC" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "IFK_PURCHASEPLANDOC_CUSTOMER" ON "PURCHASEPLANDOC" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCEVERRLOG_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCEVERRLOG_SYSUSER" ON "DOCEVERRLOG" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCEVERRLOG_SYSUSER" ON "DOCEVERRLOG" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_INVOICEDOC_NECESSITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INVOICEDOC_NECESSITY" ON "INVOICEDOC" ("NECESSITY_ID") 
-   ;
+  CREATE INDEX "J_FK_INVOICEDOC_NECESSITY" ON "INVOICEDOC" ("NECESSITY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_GOODSDOCDETAIL_OKDP_CODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSDOCDETAIL_OKDP_CODE" ON "GOODSGROUPDOCDETAIL" ("OKDP_CODE") 
-   ;
+  CREATE INDEX "J_FK_GOODSDOCDETAIL_OKDP_CODE" ON "GOODSGROUPDOCDETAIL" ("OKDP_CODE");
 --------------------------------------------------------
 --  DDL for Index IFK_CMPSUPPL_PLACEPOSORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPSUPPL_PLACEPOSORDER_ID" ON "CMPSUPPLYSHEDULE" ("ORDER_ID", "PLACEPOS") 
-   ;
+  CREATE INDEX "IFK_CMPSUPPL_PLACEPOSORDER_ID" ON "CMPSUPPLYSHEDULE" ("ORDER_ID", "PLACEPOS");
 --------------------------------------------------------
 --  DDL for Index PK_PENALTYCHANGEDOCINFO
 --------------------------------------------------------
@@ -24031,8 +23707,7 @@
 --  DDL for Index J_FK_ORDERDOC_NECESSITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_NECESSITY" ON "ORDERDOC" ("NECESSITY_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_NECESSITY" ON "ORDERDOC" ("NECESSITY_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OIDREF
 --------------------------------------------------------
@@ -24042,14 +23717,12 @@
 --  DDL for Index J_FK_NOTICEDOC_ETP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NOTICEDOC_ETP" ON "NOTICEDOC" ("ETP_ID") 
-   ;
+  CREATE INDEX "J_FK_NOTICEDOC_ETP" ON "NOTICEDOC" ("ETP_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCRETENTION_DOCSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCRETENTION_DOCSTATUS" ON "DOCRETENTION" ("DOCSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCRETENTION_DOCSTATUS" ON "DOCRETENTION" ("DOCSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_GOODSBAN_NAME_NPA
 --------------------------------------------------------
@@ -24069,50 +23742,42 @@
 --  DDL for Index IDX_MSG_QUEUE_NAME
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_MSG_QUEUE_NAME" ON "MSG" ("QUEUE_NAME") 
-   ;
+  CREATE INDEX "IDX_MSG_QUEUE_NAME" ON "MSG" ("QUEUE_NAME");
 --------------------------------------------------------
 --  DDL for Index J_FK_CLAIMPAYFACT_CLAIM
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CLAIMPAYFACT_CLAIM" ON "CLAIMPAYFACT" ("CLAIM_ID") 
-   ;
+  CREATE INDEX "J_FK_CLAIMPAYFACT_CLAIM" ON "CLAIMPAYFACT" ("CLAIM_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLACINGWAY_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLACINGWAY_PURCHASEMODE" ON "PLACINGWAY" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLACINGWAY_PURCHASEMODE" ON "PLACINGWAY" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2GOODS_OKVED
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2GOODS_OKVED" ON "PLAN2GOODS" ("OKVED_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2GOODS_OKVED" ON "PLAN2GOODS" ("OKVED_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCCSTMFLDVALUES_CUSTFLDI
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCCSTMFLDVALUES_CUSTFLDI" ON "DOCCUSTOMFIELDVALUES" ("CUSTFIELD_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCCSTMFLDVALUES_CUSTFLDI" ON "DOCCUSTOMFIELDVALUES" ("CUSTFIELD_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_REQUIREMENTTYPEPM_REQTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUIREMENTTYPEPM_REQTYPE" ON "REQUIREMENTTYPEPM" ("REQUIREMENTTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUIREMENTTYPEPM_REQTYPE" ON "REQUIREMENTTYPEPM" ("REQUIREMENTTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RQCONDEALRESP_PERSONAL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQCONDEALRESP_PERSONAL" ON "RQCONDEALRESP" ("PERSONAL_ID") 
-   ;
+  CREATE INDEX "J_FK_RQCONDEALRESP_PERSONAL" ON "RQCONDEALRESP" ("PERSONAL_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCCL_DISPST_DISPST
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCCL_DISPST_DISPST" ON "DOCCLASS_DISPSTATUS" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCCL_DISPST_DISPST" ON "DOCCLASS_DISPSTATUS" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_MAILRECEIVERGROUP_RECEIVER
 --------------------------------------------------------
@@ -24127,32 +23792,27 @@
 --  DDL for Index J_FK_LOT_OOSNOTIFICATION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LOT_OOSNOTIFICATION" ON "OOSNOTIFICATIONLOT" ("NOTIFICATION_ID") 
-   ;
+  CREATE INDEX "J_FK_LOT_OOSNOTIFICATION" ON "OOSNOTIFICATIONLOT" ("NOTIFICATION_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSPOSITION_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPOSITION_DOCUMENT" ON "PLAN2OOSPOSITION" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPOSITION_DOCUMENT" ON "PLAN2OOSPOSITION" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_FACTDOC_VENDOR_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_FACTDOC_VENDOR_ID" ON "FACTDOC" ("VENDOR_ID") 
-   ;
+  CREATE INDEX "IFK_FACTDOC_VENDOR_ID" ON "FACTDOC" ("VENDOR_ID");
 --------------------------------------------------------
 --  DDL for Index J_FINSRCNEXTYEAR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FINSRCNEXTYEAR" ON "FINSRCSATISFY" ("FINSRCNEXTYEARID") 
-   ;
+  CREATE INDEX "J_FINSRCNEXTYEAR" ON "FINSRCSATISFY" ("FINSRCNEXTYEARID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRACTDOC_CONEXECUTER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_CONEXECUTER" ON "CONTRACTDOC" ("CONEXECUTER_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_CONEXECUTER" ON "CONTRACTDOC" ("CONEXECUTER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RULESCRIPT
 --------------------------------------------------------
@@ -24162,8 +23822,7 @@
 --  DDL for Index J_FK_ORDERDOC_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_PURCHASEMODE" ON "ORDERDOC" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_PURCHASEMODE" ON "ORDERDOC" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ESCHECKRULEREQUISITES
 --------------------------------------------------------
@@ -24173,14 +23832,12 @@
 --  DDL for Index J_FK_CERTREQUEST_USER_ORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CERTREQUEST_USER_ORG" ON "CERTREQUEST" ("USER_ORG_ID") 
-   ;
+  CREATE INDEX "J_FK_CERTREQUEST_USER_ORG" ON "CERTREQUEST" ("USER_ORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPCRITERION_TENDERCRIT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPCRITERION_TENDERCRIT" ON "CMPCRITERION" ("TENDERCRITERION_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPCRITERION_TENDERCRIT" ON "CMPCRITERION" ("TENDERCRITERION_ID");
 --------------------------------------------------------
 --  DDL for Index PK_GOODSGROUP_TREE
 --------------------------------------------------------
@@ -24190,20 +23847,17 @@
 --  DDL for Index J_FK_REQUESTDOC_APPPERSACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_APPPERSACC_ID" ON "REQUESTDOC" ("GUARAPPPERSONALACC_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_APPPERSACC_ID" ON "REQUESTDOC" ("GUARAPPPERSONALACC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCCOMMENT_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCCOMMENT_DOCUMENT" ON "DOCCOMMENT" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCCOMMENT_DOCUMENT" ON "DOCCOMMENT" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_USERBUDGET_ORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_USERBUDGET_ORG" ON "USERBUDGET" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_USERBUDGET_ORG" ON "USERBUDGET" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DOCEXCHANGESCHEME
 --------------------------------------------------------
@@ -24223,20 +23877,17 @@
 --  DDL for Index IDX_TER_TREE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_TER_TREE" ON "TER_TREE" ("TREE") 
-   ;
+  CREATE INDEX "IDX_TER_TREE" ON "TER_TREE" ("TREE");
 --------------------------------------------------------
 --  DDL for Index J_FK_NMSG_NOTIFYMSGEVENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NMSG_NOTIFYMSGEVENT" ON "NOTIFYMSG" ("NOTIFYMSGEVENT_ID") 
-   ;
+  CREATE INDEX "J_FK_NMSG_NOTIFYMSGEVENT" ON "NOTIFYMSG" ("NOTIFYMSGEVENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLNGOODS_OKVED
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLNGOODS_OKVED" ON "PLNGOODS" ("OKVED_ID") 
-   ;
+  CREATE INDEX "J_FK_PLNGOODS_OKVED" ON "PLNGOODS" ("OKVED_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PLGOODS
 --------------------------------------------------------
@@ -24256,14 +23907,12 @@
 --  DDL for Index J_FK_PLAN2OOSPOS_ADVANCE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPOS_ADVANCE" ON "PLAN2OOSPOSITION" ("ADVANCECACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPOS_ADVANCE" ON "PLAN2OOSPOSITION" ("ADVANCECACHE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN2GOODS_CODE6
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2GOODS_CODE6" ON "PLAN2GOODS" ("CODE6") 
-   ;
+  CREATE INDEX "IDX_PLAN2GOODS_CODE6" ON "PLAN2GOODS" ("CODE6");
 --------------------------------------------------------
 --  DDL for Index PK_CONTRACTOR
 --------------------------------------------------------
@@ -24273,8 +23922,7 @@
 --  DDL for Index IFK_REQUESTO_DOC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_REQUESTO_DOC_ID" ON "REQUESTORDER" ("DOC_ID") 
-   ;
+  CREATE INDEX "IFK_REQUESTO_DOC_ID" ON "REQUESTORDER" ("DOC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_SERVERERROR
 --------------------------------------------------------
@@ -24289,8 +23937,7 @@
 --  DDL for Index J_FK_DOCJOURNAL_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCJOURNAL_DISPSTATUS" ON "DOCJOURNAL" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCJOURNAL_DISPSTATUS" ON "DOCJOURNAL" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_RPLSITE_MASTER_ID_CLIENT_ID
 --------------------------------------------------------
@@ -24300,20 +23947,17 @@
 --  DDL for Index J_FK_ETPATTACH_ETP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ETPATTACH_ETP" ON "ETPATTACH" ("ETP_ID") 
-   ;
+  CREATE INDEX "J_FK_ETPATTACH_ETP" ON "ETPATTACH" ("ETP_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CETERMLINE_TERMREASONDOC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CETERMLINE_TERMREASONDOC" ON "CETERMINATIONLINE" ("TERMINATIONREASONDOC_ID") 
-   ;
+  CREATE INDEX "J_FK_CETERMLINE_TERMREASONDOC" ON "CETERMINATIONLINE" ("TERMINATIONREASONDOC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_LEDGER_DELIVERYBASIS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_DELIVERYBASIS" ON "LEDGER" ("DELIVERYBASIS_ID") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_DELIVERYBASIS" ON "LEDGER" ("DELIVERYBASIS_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_NECESSITY_NAME
 --------------------------------------------------------
@@ -24323,8 +23967,7 @@
 --  DDL for Index IDX_REQUESTDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_REQUESTDOC_DOCUMENT" ON "REQUESTDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_REQUESTDOC_DOCUMENT" ON "REQUESTDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ROLEREGISTER
 --------------------------------------------------------
@@ -24339,32 +23982,27 @@
 --  DDL for Index IDX_PURCHASEPLANDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PURCHASEPLANDOC_DATENUM" ON "PURCHASEPLANDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_PURCHASEPLANDOC_DATENUM" ON "PURCHASEPLANDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index J_FK_RECOILDOC_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILDOC_PURCHASEMODE" ON "RECOILDOC" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_RECOILDOC_PURCHASEMODE" ON "RECOILDOC" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_CONTRACTDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTRACTDOC_DISPSTATUS" ON "CONTRACTDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_CONTRACTDOC_DISPSTATUS" ON "CONTRACTDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_OFRPLACE_TERRITORYCODECOU
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_OFRPLACE_TERRITORYCODECOU" ON "OFRPLACE" ("COUNTRY_ID", "TERRITORYCODE") 
-   ;
+  CREATE INDEX "IFK_OFRPLACE_TERRITORYCODECOU" ON "OFRPLACE" ("COUNTRY_ID", "TERRITORYCODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_PLAN2REASON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_PLAN2REASON" ON "PLAN3PURCHASEDOC" ("PLANCHANGEREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_PLAN2REASON" ON "PLAN3PURCHASEDOC" ("PLANCHANGEREASON_ID");
 --------------------------------------------------------
 --  DDL for Index S_RECOILDOC_DI
 --------------------------------------------------------
@@ -24379,50 +24017,42 @@
 --  DDL for Index J_FK_ETP_MSGSITE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ETP_MSGSITE" ON "ETP" ("MSGSITE_ID") 
-   ;
+  CREATE INDEX "J_FK_ETP_MSGSITE" ON "ETP" ("MSGSITE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_CONTEMPDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTEMPDOC_DOCUMENT" ON "CONTRACTTEMPLATEDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_CONTEMPDOC_DOCUMENT" ON "CONTRACTTEMPLATEDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_DELIVBASIS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_DELIVBASIS" ON "PLAN3PURCHASEDOC" ("DELIVERYBASIS_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_DELIVBASIS" ON "PLAN3PURCHASEDOC" ("DELIVERYBASIS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORDERDOC_DOCDEVELOPER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_DOCDEVELOPER" ON "ORDERDOC" ("DOCDEVELOPER_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_DOCDEVELOPER" ON "ORDERDOC" ("DOCDEVELOPER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPGOODS_OKVED
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPGOODS_OKVED" ON "CMPGOODS" ("OKVED_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPGOODS_OKVED" ON "CMPGOODS" ("OKVED_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3GOODS_UNITNAME
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3GOODS_UNITNAME" ON "PLAN3PURCHASEGOODS" ("UNITNAME") 
-   ;
+  CREATE INDEX "J_FK_P3GOODS_UNITNAME" ON "PLAN3PURCHASEGOODS" ("UNITNAME");
 --------------------------------------------------------
 --  DDL for Index J_FK_SYSUSER_PERSON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SYSUSER_PERSON" ON "SYSUSER" ("PERSON_ID") 
-   ;
+  CREATE INDEX "J_FK_SYSUSER_PERSON" ON "SYSUSER" ("PERSON_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_KLADR_CODE2
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_KLADR_CODE2" ON "KLADR" ("CODE2") 
-   ;
+  CREATE INDEX "IDX_KLADR_CODE2" ON "KLADR" ("CODE2");
 --------------------------------------------------------
 --  DDL for Index UQ_DOCGROUP
 --------------------------------------------------------
@@ -24437,56 +24067,47 @@
 --  DDL for Index J_FK_INVGOODS_OKDP_CODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INVGOODS_OKDP_CODE" ON "INVGOODS" ("OKDP_CODE") 
-   ;
+  CREATE INDEX "J_FK_INVGOODS_OKDP_CODE" ON "INVGOODS" ("OKDP_CODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_QUALREQ_REQTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_QUALREQ_REQTYPE" ON "QUALREQ" ("REQUIREMENTTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_QUALREQ_REQTYPE" ON "QUALREQ" ("REQUIREMENTTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONCONTRACTOR_OKTMO
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONCONTRACTOR_OKTMO" ON "CONCONTRACTOR" ("ORGOKTMO_ID") 
-   ;
+  CREATE INDEX "J_FK_CONCONTRACTOR_OKTMO" ON "CONCONTRACTOR" ("ORGOKTMO_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OOSORGROLES_OOSORGROLE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OOSORGROLES_OOSORGROLE" ON "OOSORGROLES" ("ROLECODE") 
-   ;
+  CREATE INDEX "J_FK_OOSORGROLES_OOSORGROLE" ON "OOSORGROLES" ("ROLECODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_CUSTOMERLOT_CONPERSACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CUSTOMERLOT_CONPERSACC_ID" ON "CMPCUSTOMERLOT" ("GUARCONTRPERSONALACC_ID") 
-   ;
+  CREATE INDEX "J_FK_CUSTOMERLOT_CONPERSACC_ID" ON "CMPCUSTOMERLOT" ("GUARCONTRPERSONALACC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_FACTDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_FACTDOC_DISPSTATUS" ON "FACTDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_FACTDOC_DISPSTATUS" ON "FACTDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_CHANGEREASO
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_CHANGEREASO" ON "PLAN3PURCHASEDOC" ("CHANGEREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_CHANGEREASO" ON "PLAN3PURCHASEDOC" ("CHANGEREASON_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN2GOODS_CODE2
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2GOODS_CODE2" ON "PLAN2GOODS" ("CODE2") 
-   ;
+  CREATE INDEX "IDX_PLAN2GOODS_CODE2" ON "PLAN2GOODS" ("CODE2");
 --------------------------------------------------------
 --  DDL for Index J_FK_PURCHASECARRY_NECESSITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHASECARRY_NECESSITY" ON "PURCHASECARRY" ("NECESSITY_ID") 
-   ;
+  CREATE INDEX "J_FK_PURCHASECARRY_NECESSITY" ON "PURCHASECARRY" ("NECESSITY_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_TENDER_COMPETITOR
 --------------------------------------------------------
@@ -24516,26 +24137,22 @@
 --  DDL for Index J_FK_RQLOT_CONPERSACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQLOT_CONPERSACC_ID" ON "RQLOT" ("GUARCONTRPERSONALACC_ID") 
-   ;
+  CREATE INDEX "J_FK_RQLOT_CONPERSACC_ID" ON "RQLOT" ("GUARCONTRPERSONALACC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORDERDOC_OFRREQREASON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_OFRREQREASON" ON "ORDERDOC" ("OFRREQREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_OFRREQREASON" ON "ORDERDOC" ("OFRREQREASON_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_COMMEMBER_COMMISSION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_COMMEMBER_COMMISSION" ON "COMMEMBER" ("COMMISSION_ID") 
-   ;
+  CREATE INDEX "J_FK_COMMEMBER_COMMISSION" ON "COMMEMBER" ("COMMISSION_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_OFRGOODS_GROUPCODE
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_OFRGOODS_GROUPCODE" ON "OFRGOODS" ("GROUPCODE") 
-   ;
+  CREATE INDEX "IFK_OFRGOODS_GROUPCODE" ON "OFRGOODS" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index S_CONTRCARDDOC_DNI
 --------------------------------------------------------
@@ -24550,14 +24167,12 @@
 --  DDL for Index J_FK_PLAN2LEDGER_GOODSGROUP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_GOODSGROUP" ON "PLAN2LEDGER" ("GROUP_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_GOODSGROUP" ON "PLAN2LEDGER" ("GROUP_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_CONTRACTEXECDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTRACTEXECDOC_DOC_DATE" ON "CONTRACTEXECDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_CONTRACTEXECDOC_DOC_DATE" ON "CONTRACTEXECDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index PK_CMPPERSONALRESP
 --------------------------------------------------------
@@ -24567,8 +24182,7 @@
 --  DDL for Index J_FK_GOODSOKPDPREF_COUNTRY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSOKPDPREF_COUNTRY" ON "GOODSOKPDCOUNTRYPREF" ("COUNTRY_ID") 
-   ;
+  CREATE INDEX "J_FK_GOODSOKPDPREF_COUNTRY" ON "GOODSOKPDCOUNTRYPREF" ("COUNTRY_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_USERCERT
 --------------------------------------------------------
@@ -24578,20 +24192,17 @@
 --  DDL for Index J_FK_P2ARRANGEMENT_TERRITORY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_TERRITORY" ON "PLAN2ARRANGEMENT" ("COUNTRY_ID", "TERRITORYCODE") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_TERRITORY" ON "PLAN2ARRANGEMENT" ("COUNTRY_ID", "TERRITORYCODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCJOURNAL_OLD_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCJOURNAL_OLD_DISPSTATUS" ON "DOCJOURNAL" ("OLD_DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCJOURNAL_OLD_DISPSTATUS" ON "DOCJOURNAL" ("OLD_DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLNGOODS_OKDP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLNGOODS_OKDP" ON "PLNGOODS" ("OKDP_CODE") 
-   ;
+  CREATE INDEX "J_FK_PLNGOODS_OKDP" ON "PLNGOODS" ("OKDP_CODE");
 --------------------------------------------------------
 --  DDL for Index S_REQUESTDOC_NI
 --------------------------------------------------------
@@ -24616,20 +24227,17 @@
 --  DDL for Index IFK_BUDGET_TERRITORY_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_BUDGET_TERRITORY_ID" ON "BUDGET" ("TERRITORY_ID") 
-   ;
+  CREATE INDEX "IFK_BUDGET_TERRITORY_ID" ON "BUDGET" ("TERRITORY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RECOILLINES_FINSRC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILLINES_FINSRC" ON "RECOILLINES" ("FINSRC_ID") 
-   ;
+  CREATE INDEX "J_FK_RECOILLINES_FINSRC" ON "RECOILLINES" ("FINSRC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_EQUALITYCODES_EQUALITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_EQUALITYCODES_EQUALITY" ON "EQUALITYCODES" ("EQUALITY_ID") 
-   ;
+  CREATE INDEX "J_FK_EQUALITYCODES_EQUALITY" ON "EQUALITYCODES" ("EQUALITY_ID");
 --------------------------------------------------------
 --  DDL for Index S_CONSOLIDDOC_DI
 --------------------------------------------------------
@@ -24639,38 +24247,32 @@
 --  DDL for Index J_FK_SCHPLAN_SCHTASK
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SCHPLAN_SCHTASK" ON "SCHPLAN" ("SCHTASK_ID") 
-   ;
+  CREATE INDEX "J_FK_SCHPLAN_SCHTASK" ON "SCHPLAN" ("SCHTASK_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_SEL_DOCATTACHEX
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SEL_DOCATTACHEX" ON "SIGNEXPORTLOG" ("DOCATTACHEX_ID") 
-   ;
+  CREATE INDEX "J_FK_SEL_DOCATTACHEX" ON "SIGNEXPORTLOG" ("DOCATTACHEX_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSKBK_POSITION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSKBK_POSITION" ON "PLAN2OOSKBK" ("PLAN2OOSPOSITION_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSKBK_POSITION" ON "PLAN2OOSKBK" ("PLAN2OOSPOSITION_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_REQUESTDOC_CONSETTACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_CONSETTACC_ID" ON "REQUESTDOC" ("GUARCONTRSETTLEMENTACC_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_CONSETTACC_ID" ON "REQUESTDOC" ("GUARCONTRSETTLEMENTACC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ROLEATTACH_DOCUMENTCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEATTACH_DOCUMENTCLASS" ON "ROLEATTACH" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_ROLEATTACH_DOCUMENTCLASS" ON "ROLEATTACH" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_PURCHMETHOD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_PURCHMETHOD" ON "PLAN3PURCHASEDOC" ("PURCHASEMETHOD_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_PURCHMETHOD" ON "PLAN3PURCHASEDOC" ("PURCHASEMETHOD_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OFRREQREASON
 --------------------------------------------------------
@@ -24685,26 +24287,22 @@
 --  DDL for Index J_FK_DOCREQ_REQTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCREQ_REQTYPE" ON "DOCREQ" ("REQUIREMENTTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCREQ_REQTYPE" ON "DOCREQ" ("REQUIREMENTTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORGADDKPP_ORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORGADDKPP_ORG" ON "ORGADDKPP" ("ORG_ID") 
-   ;
+  CREATE INDEX "J_FK_ORGADDKPP_ORG" ON "ORGADDKPP" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORDERDOC_SINGLECUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_SINGLECUSTOMER" ON "ORDERDOC" ("SINGLECUSTOMERREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_SINGLECUSTOMER" ON "ORDERDOC" ("SINGLECUSTOMERREASON_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRACTDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_BUDGET" ON "CONTRACTDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_BUDGET" ON "CONTRACTDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_GOODSPRICE
 --------------------------------------------------------
@@ -24719,14 +24317,12 @@
 --  DDL for Index IDX_OOSCUSTOMERREQ_LOT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_OOSCUSTOMERREQ_LOT" ON "OOSCUSTOMERREQUIREMENT" ("LOT_ID") 
-   ;
+  CREATE INDEX "IDX_OOSCUSTOMERREQ_LOT" ON "OOSCUSTOMERREQUIREMENT" ("LOT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSKBKYEAR_KBK
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSKBKYEAR_KBK" ON "PLAN2OOSKBKYEAR" ("PLAN2OOSKBK_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSKBKYEAR_KBK" ON "PLAN2OOSKBKYEAR" ("PLAN2OOSKBK_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PLAN2GOODS
 --------------------------------------------------------
@@ -24736,20 +24332,17 @@
 --  DDL for Index J_FK_PLAN2LEDGER_DELIVERYBASIS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_DELIVERYBASIS" ON "PLAN2LEDGER" ("DELIVERYBASIS_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_DELIVERYBASIS" ON "PLAN2LEDGER" ("DELIVERYBASIS_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CONCONTR_ORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONCONTR_ORG_ID" ON "CONCONTRACTOR" ("ORG_ID") 
-   ;
+  CREATE INDEX "IFK_CONCONTR_ORG_ID" ON "CONCONTRACTOR" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DIGESTSIGN_IMPORTUSER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DIGESTSIGN_IMPORTUSER_ID" ON "DIGESTSIGN" ("IMPORTUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_DIGESTSIGN_IMPORTUSER_ID" ON "DIGESTSIGN" ("IMPORTUSER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONPLACE
 --------------------------------------------------------
@@ -24779,8 +24372,7 @@
 --  DDL for Index IDX_CONTEMPDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTEMPDOC_DISPSTATUS" ON "CONTRACTTEMPLATEDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_CONTEMPDOC_DISPSTATUS" ON "CONTRACTTEMPLATEDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CAVILTYPE
 --------------------------------------------------------
@@ -24790,14 +24382,12 @@
 --  DDL for Index J_FK_P2ARRANGEMENT_DELIVADDR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_DELIVADDR" ON "PLAN2ARRANGEMENT" ("DELIVERYADDRESS_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_DELIVADDR" ON "PLAN2ARRANGEMENT" ("DELIVERYADDRESS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_FACTDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_FACTDOC_DOCUMENT" ON "FACTDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_FACTDOC_DOCUMENT" ON "FACTDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_FUNCMODULE
 --------------------------------------------------------
@@ -24807,14 +24397,12 @@
 --  DDL for Index J_FK_ECHKRULREQS_RULEREQUISTE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ECHKRULREQS_RULEREQUISTE" ON "ESCHECKRULEREQUISITES" ("RULEREQUISITE_ID") 
-   ;
+  CREATE INDEX "J_FK_ECHKRULREQS_RULEREQUISTE" ON "ESCHECKRULEREQUISITES" ("RULEREQUISITE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_DOCATTACHEX_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_DOCATTACHEX_DOCUMENT" ON "DOCATTACHEX" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IFK_DOCATTACHEX_DOCUMENT" ON "DOCATTACHEX" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DAYVERSION
 --------------------------------------------------------
@@ -24834,8 +24422,7 @@
 --  DDL for Index J_FK_PLAN2DAILYTOTALS_PURCHMDE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DAILYTOTALS_PURCHMDE" ON "PLAN2DAILYTOTALS" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DAILYTOTALS_PURCHMDE" ON "PLAN2DAILYTOTALS" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONSOLIDDOC
 --------------------------------------------------------
@@ -24845,8 +24432,7 @@
 --  DDL for Index J_FK_PURCHASECARRY_OKDP_CODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHASECARRY_OKDP_CODE" ON "PURCHASECARRY" ("OKDP_CODE") 
-   ;
+  CREATE INDEX "J_FK_PURCHASECARRY_OKDP_CODE" ON "PURCHASECARRY" ("OKDP_CODE");
 --------------------------------------------------------
 --  DDL for Index PK_REQUIREMENTTYPEPM
 --------------------------------------------------------
@@ -24856,38 +24442,32 @@
 --  DDL for Index J_FK_ESCHECKRULE_SCRIPT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ESCHECKRULE_SCRIPT" ON "ESCHECKRULE" ("RULESCRIPT_ID") 
-   ;
+  CREATE INDEX "J_FK_ESCHECKRULE_SCRIPT" ON "ESCHECKRULE" ("RULESCRIPT_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CONGOODS_GROUPCODE
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONGOODS_GROUPCODE" ON "CONGOODS" ("GROUPCODE") 
-   ;
+  CREATE INDEX "IFK_CONGOODS_GROUPCODE" ON "CONGOODS" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_RECOILDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILDOC_BUDGET" ON "RECOILDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_RECOILDOC_BUDGET" ON "RECOILDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_GBPM_PMODE_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GBPM_PMODE_ID" ON "GOODSBANPURCHASEMODE" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_GBPM_PMODE_ID" ON "GOODSBANPURCHASEMODE" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSPRODUCT_POSITION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPRODUCT_POSITION" ON "PLAN2OOSPRODUCT" ("PLAN2OOSPOSITION_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPRODUCT_POSITION" ON "PLAN2OOSPRODUCT" ("PLAN2OOSPOSITION_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_INVBUDGE_ESTIMATE_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_INVBUDGE_ESTIMATE_ID" ON "INVBUDGETLINE" ("ESTIMATE_ID") 
-   ;
+  CREATE INDEX "IFK_INVBUDGE_ESTIMATE_ID" ON "INVBUDGETLINE" ("ESTIMATE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OFRGROUPPROPVALUE
 --------------------------------------------------------
@@ -24897,32 +24477,27 @@
 --  DDL for Index J_FK_ESCHECKRULE_FGROUPHEADER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ESCHECKRULE_FGROUPHEADER" ON "ESCHECKRULE" ("FGROUPHEADER_ID") 
-   ;
+  CREATE INDEX "J_FK_ESCHECKRULE_FGROUPHEADER" ON "ESCHECKRULE" ("FGROUPHEADER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CERTREQUESTOID_OIDREF
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CERTREQUESTOID_OIDREF" ON "CERTREQUESTOID" ("OIDREF_ID") 
-   ;
+  CREATE INDEX "J_FK_CERTREQUESTOID_OIDREF" ON "CERTREQUESTOID" ("OIDREF_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CAVILDOC_RESPPERSON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CAVILDOC_RESPPERSON" ON "CAVILDOC" ("RESPPERSON_ID") 
-   ;
+  CREATE INDEX "J_FK_CAVILDOC_RESPPERSON" ON "CAVILDOC" ("RESPPERSON_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_RP_FORM_NAME_NAME
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_RP_FORM_NAME_NAME" ON "REPPROFILE" ("FORM_NAME", "NAME") 
-   ;
+  CREATE INDEX "IDX_RP_FORM_NAME_NAME" ON "REPPROFILE" ("FORM_NAME", "NAME");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPCUSTOMER_POSTCOUNTRY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPCUSTOMER_POSTCOUNTRY" ON "CMPCUSTOMER" ("CUSTOMERPOSTCOUNTRY_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPCUSTOMER_POSTCOUNTRY" ON "CMPCUSTOMER" ("CUSTOMERPOSTCOUNTRY_ID");
 --------------------------------------------------------
 --  DDL for Index S_REQUESTDOC_DNI
 --------------------------------------------------------
@@ -24932,74 +24507,62 @@
 --  DDL for Index J_FK_CONTRCARDDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRCARDDOC_DISPSTATUS" ON "CONTRACTCARDDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRCARDDOC_DISPSTATUS" ON "CONTRACTCARDDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSPRODUCT_OKVED
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPRODUCT_OKVED" ON "PLAN2OOSPRODUCT" ("OKVED_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPRODUCT_OKVED" ON "PLAN2OOSPRODUCT" ("OKVED_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_KLADRSTREET_ACTUAL
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_KLADRSTREET_ACTUAL" ON "KLADRSTREET" ("ACTUAL") 
-   ;
+  CREATE INDEX "IDX_KLADRSTREET_ACTUAL" ON "KLADRSTREET" ("ACTUAL");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFRGROUPPROP_PROPTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFRGROUPPROP_PROPTYPE" ON "OFRGROUPPROP" ("PROPTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_OFRGROUPPROP_PROPTYPE" ON "OFRGROUPPROP" ("PROPTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PROCUREMENT_REQUEST
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PROCUREMENT_REQUEST" ON "PROCUREMENT" ("REQUEST_ID") 
-   ;
+  CREATE INDEX "J_FK_PROCUREMENT_REQUEST" ON "PROCUREMENT" ("REQUEST_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORDERDOC_BANK
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_BANK" ON "ORDERDOC" ("DOCFEESETTLEMENTBIC") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_BANK" ON "ORDERDOC" ("DOCFEESETTLEMENTBIC");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLNBL_INDUSTRYCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLNBL_INDUSTRYCODE" ON "PLNBUDGETLINE" ("INDUSTRYCODE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLNBL_INDUSTRYCODE" ON "PLNBUDGETLINE" ("INDUSTRYCODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RPLRULEOBJ_RPLOBJECT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RPLRULEOBJ_RPLOBJECT" ON "RPLRULEOBJ" ("RPLOBJECT_ID") 
-   ;
+  CREATE INDEX "J_FK_RPLRULEOBJ_RPLOBJECT" ON "RPLRULEOBJ" ("RPLOBJECT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CLASSOPER_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CLASSOPER_OPERTYPE" ON "CLASSOPER" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_CLASSOPER_OPERTYPE" ON "CLASSOPER" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_FACTDOC_RECIPIENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_FACTDOC_RECIPIENT_ID" ON "FACTDOC" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "IFK_FACTDOC_RECIPIENT_ID" ON "FACTDOC" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ESCHECKRULE_PARDISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ESCHECKRULE_PARDISPSTATUS" ON "ESCHECKRULE" ("PARDISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_ESCHECKRULE_PARDISPSTATUS" ON "ESCHECKRULE" ("PARDISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_RQCRITER_LOTPOSREQUEST_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RQCRITER_LOTPOSREQUEST_ID" ON "RQCRITERION" ("REQUEST_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_RQCRITER_LOTPOSREQUEST_ID" ON "RQCRITERION" ("REQUEST_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index PK_REFUSALFACTFOUNDATION
 --------------------------------------------------------
@@ -25009,8 +24572,7 @@
 --  DDL for Index IDX_CLAIMDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CLAIMDOC_DOC_DATE" ON "CLAIMDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_CLAIMDOC_DOC_DATE" ON "CLAIMDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index S_CONTRACTEXECDOC_DI
 --------------------------------------------------------
@@ -25020,8 +24582,7 @@
 --  DDL for Index IDX_CONTRCARDDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTRCARDDOC_DATENUM" ON "CONTRACTCARDDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_CONTRCARDDOC_DATENUM" ON "CONTRACTCARDDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index PK_PLANPOSITIONNUMBERERR
 --------------------------------------------------------
@@ -25031,20 +24592,17 @@
 --  DDL for Index J_FK_P3LINE_ESTIMATE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3LINE_ESTIMATE" ON "PLAN3PURCHASELINE" ("ESTIMATE_ID") 
-   ;
+  CREATE INDEX "J_FK_P3LINE_ESTIMATE" ON "PLAN3PURCHASELINE" ("ESTIMATE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_OFFERDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_OFFERDOC_DOCUMENT" ON "OFFERDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_OFFERDOC_DOCUMENT" ON "OFFERDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_BANKGUARANTEEDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_BANKGUARANTEEDOC_DOCUMENT" ON "BANKGUARANTEEDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_BANKGUARANTEEDOC_DOCUMENT" ON "BANKGUARANTEEDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_AUCTIONLOG
 --------------------------------------------------------
@@ -25064,14 +24622,12 @@
 --  DDL for Index J_FK_P3PURCHASEDOC_OFRREQRSN
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_OFRREQRSN" ON "PLAN3PURCHASEDOC" ("OFRREQREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_OFRREQRSN" ON "PLAN3PURCHASEDOC" ("OFRREQREASON_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_ORDERDOC_VENDOR_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORDERDOC_VENDOR_ID" ON "ORDERDOC" ("VENDOR_ID") 
-   ;
+  CREATE INDEX "IFK_ORDERDOC_VENDOR_ID" ON "ORDERDOC" ("VENDOR_ID");
 --------------------------------------------------------
 --  DDL for Index PK_METACONSTRAINT
 --------------------------------------------------------
@@ -25081,44 +24637,37 @@
 --  DDL for Index IDX_LEDGER_GROUP
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_LEDGER_GROUP" ON "LEDGER" ("GROUP_ID") 
-   ;
+  CREATE INDEX "IDX_LEDGER_GROUP" ON "LEDGER" ("GROUP_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRACTDOC_CONEXECUTERAC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_CONEXECUTERAC" ON "CONTRACTDOC" ("CONEXECUTERACC_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_CONEXECUTERAC" ON "CONTRACTDOC" ("CONEXECUTERACC_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_DOCUMENT_PARENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_DOCUMENT_PARENT_ID" ON "DOCUMENT" ("PARENT_ID") 
-   ;
+  CREATE INDEX "IDX_DOCUMENT_PARENT_ID" ON "DOCUMENT" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_BANKGUARANTEEDOC_DOCCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_BANKGUARANTEEDOC_DOCCLASS" ON "BANKGUARANTEEDOC" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_BANKGUARANTEEDOC_DOCCLASS" ON "BANKGUARANTEEDOC" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLANDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLANDOC_DOC_DATE" ON "PLANDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_PLANDOC_DOC_DATE" ON "PLANDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index J_FK_GOODSOKVED_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSOKVED_PARENT" ON "GOODSOKVED" ("PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_GOODSOKVED_PARENT" ON "GOODSOKVED" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_REQUESTDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_REQUESTDOC_DOC_DATE" ON "REQUESTDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_REQUESTDOC_DOC_DATE" ON "REQUESTDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index PK_DOCDIGESTROLES
 --------------------------------------------------------
@@ -25128,20 +24677,17 @@
 --  DDL for Index IDX_DATAOBJECTCHANGELOG_OBJ
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_DATAOBJECTCHANGELOG_OBJ" ON "DATAOBJECTCHANGELOG" ("OBJ_NAME", "OBJ_ID") 
-   ;
+  CREATE INDEX "IDX_DATAOBJECTCHANGELOG_OBJ" ON "DATAOBJECTCHANGELOG" ("OBJ_NAME", "OBJ_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN3DOC_DOCDATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN3DOC_DOCDATE" ON "PLAN3DOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_PLAN3DOC_DOCDATE" ON "PLAN3DOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index IFK_INVOICED_CUSTOMER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_INVOICED_CUSTOMER_ID" ON "INVOICEDOC" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "IFK_INVOICED_CUSTOMER_ID" ON "INVOICEDOC" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_STATISTICSSOURCE
 --------------------------------------------------------
@@ -25151,8 +24697,7 @@
 --  DDL for Index IDX_FACTDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_FACTDOC_DATENUM" ON "FACTDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_FACTDOC_DATENUM" ON "FACTDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index PK_SERVERPROCESSOR
 --------------------------------------------------------
@@ -25162,14 +24707,12 @@
 --  DDL for Index J_FK_P3GOODS_OKPD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3GOODS_OKPD" ON "PLAN3PURCHASEGOODS" ("OKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_P3GOODS_OKPD" ON "PLAN3PURCHASEGOODS" ("OKPD_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ROLEATTACH_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEATTACH_DISPSTATUS" ON "ROLEATTACH" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_ROLEATTACH_DISPSTATUS" ON "ROLEATTACH" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_COMPLAINTDOC
 --------------------------------------------------------
@@ -25179,38 +24722,32 @@
 --  DDL for Index J_FK_OKTMO_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OKTMO_PARENT" ON "OKTMO" ("PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_OKTMO_PARENT" ON "OKTMO" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PK_PLAN2OOSFEATURE_POSITI
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PK_PLAN2OOSFEATURE_POSITI" ON "PLAN2OOSFEATURE" ("PLAN2OOSPOSITION_ID") 
-   ;
+  CREATE INDEX "J_FK_PK_PLAN2OOSFEATURE_POSITI" ON "PLAN2OOSFEATURE" ("PLAN2OOSPOSITION_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN3DOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN3DOC_DISPSTATUS" ON "PLAN3DOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_PLAN3DOC_DISPSTATUS" ON "PLAN3DOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCEVENT_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCEVENT_DISPSTATUS" ON "DOCEVENT" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCEVENT_DISPSTATUS" ON "DOCEVENT" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTREXECDOC_CUST
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTREXECDOC_CUST" ON "CONTRACTEXECDOC" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTREXECDOC_CUST" ON "CONTRACTEXECDOC" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ROLECLASS_DOCUMENTCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLECLASS_DOCUMENTCLASS" ON "ROLECLASS" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_ROLECLASS_DOCUMENTCLASS" ON "ROLECLASS" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ORGCONCCONT
 --------------------------------------------------------
@@ -25220,20 +24757,17 @@
 --  DDL for Index IFK_ORDERSUM_CMPGOODSPOSORDER
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORDERSUM_CMPGOODSPOSORDER" ON "ORDERSUMMARY" ("ORDER_ID", "CMPGOODSPOS") 
-   ;
+  CREATE INDEX "IFK_ORDERSUM_CMPGOODSPOSORDER" ON "ORDERSUMMARY" ("ORDER_ID", "CMPGOODSPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONPLACE_EXECSTEP2POS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONPLACE_EXECSTEP2POS" ON "CONPLACE" ("CONTRACT_ID", "EXECSTEP2POS") 
-   ;
+  CREATE INDEX "J_FK_CONPLACE_EXECSTEP2POS" ON "CONPLACE" ("CONTRACT_ID", "EXECSTEP2POS");
 --------------------------------------------------------
 --  DDL for Index IFK_NOTICEEM_ORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_NOTICEEM_ORG_ID" ON "NOTICEEMAILORG" ("ORG_ID") 
-   ;
+  CREATE INDEX "IFK_NOTICEEM_ORG_ID" ON "NOTICEEMAILORG" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PLAN3PURCHASEDOC
 --------------------------------------------------------
@@ -25248,20 +24782,17 @@
 --  DDL for Index IFK_PLANDOC_CUSTOMER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PLANDOC_CUSTOMER_ID" ON "PLANDOC" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "IFK_PLANDOC_CUSTOMER_ID" ON "PLANDOC" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_FCTGOODS_GROUPCODE
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_FCTGOODS_GROUPCODE" ON "FCTGOODS" ("GROUPCODE") 
-   ;
+  CREATE INDEX "IFK_FCTGOODS_GROUPCODE" ON "FCTGOODS" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index IDX_DOCUMENT_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_DOCUMENT_DISPSTATUS" ON "DOCUMENT" ("DISPSTATUS_ID", "DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "IDX_DOCUMENT_DISPSTATUS" ON "DOCUMENT" ("DISPSTATUS_ID", "DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_CODETYPE_NAME
 --------------------------------------------------------
@@ -25276,14 +24807,12 @@
 --  DDL for Index J_FK_REQUESTDOC_CONBANK
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_CONBANK" ON "REQUESTDOC" ("GUARANTEECONTRACTBIC") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_CONBANK" ON "REQUESTDOC" ("GUARANTEECONTRACTBIC");
 --------------------------------------------------------
 --  DDL for Index J_FK_REQUESTDOC_CONTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_CONTYPE" ON "REQUESTDOC" ("CONTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_CONTYPE" ON "REQUESTDOC" ("CONTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index S_FACTDOC_NI
 --------------------------------------------------------
@@ -25293,8 +24822,7 @@
 --  DDL for Index IDX_CONTRCARDDOC_DOCDATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTRCARDDOC_DOCDATE" ON "CONTRACTCARDDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_CONTRCARDDOC_DOCDATE" ON "CONTRACTCARDDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index PK_HISTORYMODIFY
 --------------------------------------------------------
@@ -25314,8 +24842,7 @@
 --  DDL for Index J_FK_REQUESTDOC_NECESSITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_NECESSITY" ON "REQUESTDOC" ("NECESSITY_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_NECESSITY" ON "REQUESTDOC" ("NECESSITY_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RQFEATURE
 --------------------------------------------------------
@@ -25330,8 +24857,7 @@
 --  DDL for Index J_FK_ROLERIGHT_SYSRIGHT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLERIGHT_SYSRIGHT" ON "ROLERIGHT" ("SYSRIGHT_NAME") 
-   ;
+  CREATE INDEX "J_FK_ROLERIGHT_SYSRIGHT" ON "ROLERIGHT" ("SYSRIGHT_NAME");
 --------------------------------------------------------
 --  DDL for Index PK_ATTACHCATEGORIES
 --------------------------------------------------------
@@ -25366,8 +24892,7 @@
 --  DDL for Index IFK_GOODSOKDPPUR_GOODSOKDP_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_GOODSOKDPPUR_GOODSOKDP_ID" ON "GOODSOKDPPURCHASEMODE" ("GOODSOKDP_ID") 
-   ;
+  CREATE INDEX "IFK_GOODSOKDPPUR_GOODSOKDP_ID" ON "GOODSOKDPPURCHASEMODE" ("GOODSOKDP_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_REFINANCINGRATE
 --------------------------------------------------------
@@ -25382,26 +24907,22 @@
 --  DDL for Index J_FK_REQUESTDOC_OFRREQREASON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_OFRREQREASON" ON "REQUESTDOC" ("OFRREQREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_OFRREQREASON" ON "REQUESTDOC" ("OFRREQREASON_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_CONTRPAYORD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_CONTRPAYORD" ON "PLAN3PURCHASEDOC" ("CONTRACTPAYORDERCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_CONTRPAYORD" ON "PLAN3PURCHASEDOC" ("CONTRACTPAYORDERCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_PAYCOND
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_PAYCOND" ON "PLAN3PURCHASEDOC" ("PAYCONDITIONCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_PAYCOND" ON "PLAN3PURCHASEDOC" ("PAYCONDITIONCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_WEBSTAT_STATSOURCE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_WEBSTAT_STATSOURCE" ON "WEBSTATCACHE" ("STATISTICSSOURCE_ID") 
-   ;
+  CREATE INDEX "J_FK_WEBSTAT_STATSOURCE" ON "WEBSTATCACHE" ("STATISTICSSOURCE_ID");
 --------------------------------------------------------
 --  DDL for Index S_PURCHASEPLANDOC_NI
 --------------------------------------------------------
@@ -25411,8 +24932,7 @@
 --  DDL for Index J_FK_CSGOODS_GROUP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CSGOODS_GROUP" ON "CSGOODS" ("GROUPCODE") 
-   ;
+  CREATE INDEX "J_FK_CSGOODS_GROUP" ON "CSGOODS" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index PK_COUNTRY
 --------------------------------------------------------
@@ -25427,32 +24947,27 @@
 --  DDL for Index J_FK_TCPM_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TCPM_PURCHASEMODE" ON "TENDERCRITERIONPM" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_TCPM_PURCHASEMODE" ON "TENDERCRITERIONPM" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPCUSTLOT_CONMNGRRESP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPCUSTLOT_CONMNGRRESP" ON "CMPCUSTOMERLOT" ("CONMNGRRESP_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPCUSTLOT_CONMNGRRESP" ON "CMPCUSTOMERLOT" ("CONMNGRRESP_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCGROUP_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCGROUP_PARENT" ON "DOCGROUP" ("PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCGROUP_PARENT" ON "DOCGROUP" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_PLNBUDGE_RECIPIENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PLNBUDGE_RECIPIENT_ID" ON "PLNBUDGETLINE" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "IFK_PLNBUDGE_RECIPIENT_ID" ON "PLNBUDGETLINE" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_SIGNTYPE_SIGNFORMAT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SIGNTYPE_SIGNFORMAT" ON "SIGNTYPE" ("SIGNFORMAT_ID") 
-   ;
+  CREATE INDEX "J_FK_SIGNTYPE_SIGNFORMAT" ON "SIGNTYPE" ("SIGNFORMAT_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_RESPONSIBILITY_NAME
 --------------------------------------------------------
@@ -25462,20 +24977,17 @@
 --  DDL for Index J_FK_CONTRACTDOC_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_PURCHASEMODE" ON "CONTRACTDOC" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_PURCHASEMODE" ON "CONTRACTDOC" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLANDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLANDOC_DISPSTATUS" ON "PLANDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_PLANDOC_DISPSTATUS" ON "PLANDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CUSTOMERREQ_NOTIFICATIONL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CUSTOMERREQ_NOTIFICATIONL" ON "OOSCUSTOMERREQUIREMENT" ("LOT_ID", "NOTIFICATION_ID") 
-   ;
+  CREATE INDEX "J_FK_CUSTOMERREQ_NOTIFICATIONL" ON "OOSCUSTOMERREQUIREMENT" ("LOT_ID", "NOTIFICATION_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_RPLOBJECT_NAME
 --------------------------------------------------------
@@ -25495,8 +25007,7 @@
 --  DDL for Index IDX_INVOICEDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_INVOICEDOC_DISPSTATUS" ON "INVOICEDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_INVOICEDOC_DISPSTATUS" ON "INVOICEDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DESCGROUP
 --------------------------------------------------------
@@ -25506,32 +25017,27 @@
 --  DDL for Index J_FK_ROLEREGISTER_GRANTEDROLE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEREGISTER_GRANTEDROLE" ON "ROLEREGISTER" ("GRANTEDROLE_ID") 
-   ;
+  CREATE INDEX "J_FK_ROLEREGISTER_GRANTEDROLE" ON "ROLEREGISTER" ("GRANTEDROLE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RPLSITE_CLIENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RPLSITE_CLIENT" ON "RPLSITE" ("CLIENT_ID") 
-   ;
+  CREATE INDEX "J_FK_RPLSITE_CLIENT" ON "RPLSITE" ("CLIENT_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_PURCHASEPLAN_DOC
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PURCHASEPLAN_DOC" ON "PURCHASEPLAN" ("PURCHASEPLANDOC_ID") 
-   ;
+  CREATE INDEX "IFK_PURCHASEPLAN_DOC" ON "PURCHASEPLAN" ("PURCHASEPLANDOC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCSTATUS_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCSTATUS_DISPSTATUS" ON "DOCSTATUS" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCSTATUS_DISPSTATUS" ON "DOCSTATUS" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONREFUSALFACT_REFFACTFND
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONREFUSALFACT_REFFACTFND" ON "CONREFUSALFACT" ("REFUSALFACTFOUNDATION_ID") 
-   ;
+  CREATE INDEX "J_FK_CONREFUSALFACT_REFFACTFND" ON "CONREFUSALFACT" ("REFUSALFACTFOUNDATION_ID");
 --------------------------------------------------------
 --  DDL for Index PK_SYSRIGHT
 --------------------------------------------------------
@@ -25541,38 +25047,32 @@
 --  DDL for Index J_FK_SEL_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SEL_SYSUSER" ON "SIGNEXPORTLOG" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_SEL_SYSUSER" ON "SIGNEXPORTLOG" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_CONSOLIDDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONSOLIDDOC_DOCUMENT" ON "CONSOLIDDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_CONSOLIDDOC_DOCUMENT" ON "CONSOLIDDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCFLAGTYPE_DOCUMENTCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCFLAGTYPE_DOCUMENTCLASS" ON "DOCFLAGTYPE" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCFLAGTYPE_DOCUMENTCLASS" ON "DOCFLAGTYPE" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCUMENTBLOCKINFO_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCUMENTBLOCKINFO_SYSUSER" ON "DOCUMENTBLOCKINFO" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCUMENTBLOCKINFO_SYSUSER" ON "DOCUMENTBLOCKINFO" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCCL_DISPST_PARDISPST
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCCL_DISPST_PARDISPST" ON "DOCCLASS_DISPSTATUS" ("PARDISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCCL_DISPST_PARDISPST" ON "DOCCLASS_DISPSTATUS" ("PARDISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2LEDGER_NECESSITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_NECESSITY" ON "PLAN2LEDGER" ("NECESSITY_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_NECESSITY" ON "PLAN2LEDGER" ("NECESSITY_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_GCREGISTER
 --------------------------------------------------------
@@ -25587,14 +25087,12 @@
 --  DDL for Index IDX_GOODSGROUP_TREE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_GOODSGROUP_TREE" ON "GOODSGROUP_TREE" ("TREE") 
-   ;
+  CREATE INDEX "IDX_GOODSGROUP_TREE" ON "GOODSGROUP_TREE" ("TREE");
 --------------------------------------------------------
 --  DDL for Index IDX_OOSCONTRACT_NOTICECUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_OOSCONTRACT_NOTICECUSTOMER" ON "OOSCONTRACT" ("NOTIFICATIONNUMBER", "CUSTOMERREGNUM") 
-   ;
+  CREATE INDEX "IDX_OOSCONTRACT_NOTICECUSTOMER" ON "OOSCONTRACT" ("NOTIFICATIONNUMBER", "CUSTOMERREGNUM");
 --------------------------------------------------------
 --  DDL for Index PK_DOCSTATUS
 --------------------------------------------------------
@@ -25609,14 +25107,12 @@
 --  DDL for Index IFK_CMPGOODS_GROUPCODE
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPGOODS_GROUPCODE" ON "CMPGOODS" ("GROUPCODE") 
-   ;
+  CREATE INDEX "IFK_CMPGOODS_GROUPCODE" ON "CMPGOODS" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_CONBANKSUPP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_CONBANKSUPP" ON "PLAN3PURCHASEDOC" ("CONBANKSUPPORTCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_CONBANKSUPP" ON "PLAN3PURCHASEDOC" ("CONBANKSUPPORTCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DOCFLAGCATEGORY
 --------------------------------------------------------
@@ -25626,8 +25122,7 @@
 --  DDL for Index J_FK_MSGSITE_MSGLINKTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_MSGSITE_MSGLINKTYPE" ON "MSGSITE" ("MSGLINKTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_MSGSITE_MSGLINKTYPE" ON "MSGSITE" ("MSGLINKTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DIGESTSIGN
 --------------------------------------------------------
@@ -25647,38 +25142,32 @@
 --  DDL for Index IFK_CONBUDGE_PLACEPOSCONTRACT
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONBUDGE_PLACEPOSCONTRACT" ON "CONBUDGETLINE" ("CONTRACT_ID", "PLACEPOS") 
-   ;
+  CREATE INDEX "IFK_CONBUDGE_PLACEPOSCONTRACT" ON "CONBUDGETLINE" ("CONTRACT_ID", "PLACEPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRACTDOC_NECESSITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_NECESSITY" ON "CONTRACTDOC" ("NECESSITY_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_NECESSITY" ON "CONTRACTDOC" ("NECESSITY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_INVBL_GRANTINVESTMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INVBL_GRANTINVESTMENT" ON "INVBUDGETLINE" ("GRANTINVESTMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_INVBL_GRANTINVESTMENT" ON "INVBUDGETLINE" ("GRANTINVESTMENT_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_FACTDOC_TERRITORYCODECOU
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_FACTDOC_TERRITORYCODECOU" ON "FACTDOC" ("COUNTRY_ID", "TERRITORYCODE") 
-   ;
+  CREATE INDEX "IFK_FACTDOC_TERRITORYCODECOU" ON "FACTDOC" ("COUNTRY_ID", "TERRITORYCODE");
 --------------------------------------------------------
 --  DDL for Index IFK_OFRPLACE_LOTPOSOFFER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_OFRPLACE_LOTPOSOFFER_ID" ON "OFRPLACE" ("OFFER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_OFRPLACE_LOTPOSOFFER_ID" ON "OFRPLACE" ("OFFER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index IDX_CONTRCARDDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTRCARDDOC_DISPSTATUS" ON "CONTRACTCARDDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_CONTRCARDDOC_DISPSTATUS" ON "CONTRACTCARDDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ORGSELSTATUS
 --------------------------------------------------------
@@ -25693,8 +25182,7 @@
 --  DDL for Index J_FK_EXCHANGECLASSES_CLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_EXCHANGECLASSES_CLASS" ON "EXCHANGECLASSES" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_EXCHANGECLASSES_CLASS" ON "EXCHANGECLASSES" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CMPVOTERESULT
 --------------------------------------------------------
@@ -25704,8 +25192,7 @@
 --  DDL for Index J_FK_DOCACTION_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCACTION_DISPSTATUS" ON "DOCACTION" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCACTION_DISPSTATUS" ON "DOCACTION" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_JAVACLASS
 --------------------------------------------------------
@@ -25715,14 +25202,12 @@
 --  DDL for Index J_FK_DOCDIGROLES_USERROLE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCDIGROLES_USERROLE" ON "DOCDIGESTROLES" ("USERROLE_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCDIGROLES_USERROLE" ON "DOCDIGESTROLES" ("USERROLE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_GOODS_GROUP_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_GOODS_GROUP_ID" ON "GOODS" ("GROUP_ID") 
-   ;
+  CREATE INDEX "IDX_GOODS_GROUP_ID" ON "GOODS" ("GROUP_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_DOCCATEGORY_CODE
 --------------------------------------------------------
@@ -25747,14 +25232,12 @@
 --  DDL for Index J_FK_PLAN2GOODS_NECESSITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2GOODS_NECESSITY" ON "PLAN2GOODS" ("NECESSITY_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2GOODS_NECESSITY" ON "PLAN2GOODS" ("NECESSITY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2DAILYTOTALS_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DAILYTOTALS_BUDGET" ON "PLAN2DAILYTOTALS" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DAILYTOTALS_BUDGET" ON "PLAN2DAILYTOTALS" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PLAN2OOSKBKYEAR
 --------------------------------------------------------
@@ -25769,32 +25252,27 @@
 --  DDL for Index IFK_PERSONAL_ORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PERSONAL_ORG_ID" ON "PERSONAL" ("ORG_ID") 
-   ;
+  CREATE INDEX "IFK_PERSONAL_ORG_ID" ON "PERSONAL" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_BUDGET_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_BUDGET_PARENT" ON "BUDGET" ("PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_BUDGET_PARENT" ON "BUDGET" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFRGOODS_OKDP_CODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFRGOODS_OKDP_CODE" ON "OFRGOODS" ("OKDP_CODE") 
-   ;
+  CREATE INDEX "J_FK_OFRGOODS_OKDP_CODE" ON "OFRGOODS" ("OKDP_CODE");
 --------------------------------------------------------
 --  DDL for Index IFK_ORGUNFAI_ORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORGUNFAI_ORG_ID" ON "ORGUNFAIR" ("ORG_ID") 
-   ;
+  CREATE INDEX "IFK_ORGUNFAI_ORG_ID" ON "ORGUNFAIR" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_OOSNOTIFICATION_NUMBER
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_OOSNOTIFICATION_NUMBER" ON "OOSNOTIFICATION" ("NOTIFICATIONNUMBER") 
-   ;
+  CREATE INDEX "IDX_OOSNOTIFICATION_NUMBER" ON "OOSNOTIFICATION" ("NOTIFICATIONNUMBER");
 --------------------------------------------------------
 --  DDL for Index S_PLANDOC_DNI
 --------------------------------------------------------
@@ -25804,38 +25282,32 @@
 --  DDL for Index IDX_ORDERDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_ORDERDOC_DOCUMENT" ON "ORDERDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_ORDERDOC_DOCUMENT" ON "ORDERDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_PERIODICITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_PERIODICITY" ON "PLAN3PURCHASEDOC" ("PERIODICITYCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_PERIODICITY" ON "PLAN3PURCHASEDOC" ("PERIODICITYCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CMPVOTER_ORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPVOTER_ORDER_ID" ON "CMPVOTERESULT" ("ORDER_ID") 
-   ;
+  CREATE INDEX "IFK_CMPVOTER_ORDER_ID" ON "CMPVOTERESULT" ("ORDER_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_ORGGOODS_GROUP_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORGGOODS_GROUP_ID" ON "ORGGOODSGROUP" ("GROUP_ID") 
-   ;
+  CREATE INDEX "IFK_ORGGOODS_GROUP_ID" ON "ORGGOODSGROUP" ("GROUP_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCREP_DOCUMENTCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCREP_DOCUMENTCLASS" ON "DOCUMENTREPORTS" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCREP_DOCUMENTCLASS" ON "DOCUMENTREPORTS" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_REPFORM_SERVERACTION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REPFORM_SERVERACTION" ON "REPFORM" ("SERVERPROCESSOR_ID", "SERVERACTION_NAME") 
-   ;
+  CREATE INDEX "J_FK_REPFORM_SERVERACTION" ON "REPFORM" ("SERVERPROCESSOR_ID", "SERVERACTION_NAME");
 --------------------------------------------------------
 --  DDL for Index UQ_CLIENTOBJECT
 --------------------------------------------------------
@@ -25850,14 +25322,12 @@
 --  DDL for Index J_FK_P3GOODS_OKDP_CODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3GOODS_OKDP_CODE" ON "PLAN3PURCHASEGOODS" ("OKDP_CODE") 
-   ;
+  CREATE INDEX "J_FK_P3GOODS_OKDP_CODE" ON "PLAN3PURCHASEGOODS" ("OKDP_CODE");
 --------------------------------------------------------
 --  DDL for Index IFK_INVBUDGE_RECIPIENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_INVBUDGE_RECIPIENT_ID" ON "INVBUDGETLINE" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "IFK_INVBUDGE_RECIPIENT_ID" ON "INVBUDGETLINE" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_P3GOODSOKVED
 --------------------------------------------------------
@@ -25882,14 +25352,12 @@
 --  DDL for Index J_FK_GOODSOKPD_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSOKPD_PARENT" ON "GOODSOKPD" ("PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_GOODSOKPD_PARENT" ON "GOODSOKPD" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_KLADR_CODE1
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_KLADR_CODE1" ON "KLADR" ("CODE1") 
-   ;
+  CREATE INDEX "IDX_KLADR_CODE1" ON "KLADR" ("CODE1");
 --------------------------------------------------------
 --  DDL for Index UQ_UNIT_NAME
 --------------------------------------------------------
@@ -25909,8 +25377,7 @@
 --  DDL for Index J_FK_ALTGOODSGROUP_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ALTGOODSGROUP_PARENT" ON "ALTGOODSGROUP" ("PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_ALTGOODSGROUP_PARENT" ON "ALTGOODSGROUP" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ALTGOODSGROUPTYPE
 --------------------------------------------------------
@@ -25920,20 +25387,17 @@
 --  DDL for Index J_FK_P3LINE_INDUSTRYCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3LINE_INDUSTRYCODE" ON "PLAN3PURCHASELINE" ("INDUSTRYCODE_ID") 
-   ;
+  CREATE INDEX "J_FK_P3LINE_INDUSTRYCODE" ON "PLAN3PURCHASELINE" ("INDUSTRYCODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3GOODS_GOODSGROUP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3GOODS_GOODSGROUP" ON "PLAN3PURCHASEGOODS" ("GROUPCODE") 
-   ;
+  CREATE INDEX "J_FK_P3GOODS_GOODSGROUP" ON "PLAN3PURCHASEGOODS" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index IDX_DOCJOURNAL_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_DOCJOURNAL_DOCUMENT" ON "DOCJOURNAL" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_DOCJOURNAL_DOCUMENT" ON "DOCJOURNAL" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_SERVERPROCESSOR_NAME
 --------------------------------------------------------
@@ -25943,8 +25407,7 @@
 --  DDL for Index J_FK_PLAN2DOC_DESCRIPTION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DOC_DESCRIPTION" ON "PLAN2DOC" ("DESCRIPTION_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DOC_DESCRIPTION" ON "PLAN2DOC" ("DESCRIPTION_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DOCUMENTREPORTS
 --------------------------------------------------------
@@ -25954,8 +25417,7 @@
 --  DDL for Index J_FK_PLUGIN_RPLTABLE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLUGIN_RPLTABLE" ON "RPLTABLEPLUGIN" ("RPLTABLE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLUGIN_RPLTABLE" ON "RPLTABLEPLUGIN" ("RPLTABLE_ID");
 --------------------------------------------------------
 --  DDL for Index S_ORDERDOC_NI
 --------------------------------------------------------
@@ -25970,14 +25432,12 @@
 --  DDL for Index J_FK_BUDGETLINE_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_BUDGETLINE_BUDGET" ON "BUDGETLINE" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_BUDGETLINE_BUDGET" ON "BUDGETLINE" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_ESTIMATE_ORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ESTIMATE_ORG_ID" ON "ESTIMATE" ("ORG_ID") 
-   ;
+  CREATE INDEX "IFK_ESTIMATE_ORG_ID" ON "ESTIMATE" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OFRPLACE
 --------------------------------------------------------
@@ -25997,20 +25457,17 @@
 --  DDL for Index J_FK_ORGPERSONALRESP_RESP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORGPERSONALRESP_RESP" ON "ORGPERSONALRESP" ("RESPONSIBILITY_ID") 
-   ;
+  CREATE INDEX "J_FK_ORGPERSONALRESP_RESP" ON "ORGPERSONALRESP" ("RESPONSIBILITY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RQCRITERION_TENDERCRITERI
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQCRITERION_TENDERCRITERI" ON "RQCRITERION" ("TENDERCRITERION_ID") 
-   ;
+  CREATE INDEX "J_FK_RQCRITERION_TENDERCRITERI" ON "RQCRITERION" ("TENDERCRITERION_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_USERSESSIONACCESS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_USERSESSIONACCESS" ON "USERSESSIONACCESS" ("ACCESS_TIME") 
-   ;
+  CREATE INDEX "IDX_USERSESSIONACCESS" ON "USERSESSIONACCESS" ("ACCESS_TIME");
 --------------------------------------------------------
 --  DDL for Index PK_CMPCOMPETITOR
 --------------------------------------------------------
@@ -26020,20 +25477,17 @@
 --  DDL for Index IFK_QUALIFYS_QUALIFYREQPOSORD
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_QUALIFYS_QUALIFYREQPOSORD" ON "QUALIFYSELECT" ("ORDER_ID", "QUALIFYREQPOS") 
-   ;
+  CREATE INDEX "IFK_QUALIFYS_QUALIFYREQPOSORD" ON "QUALIFYSELECT" ("ORDER_ID", "QUALIFYREQPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRACTDOC_SINGLECUSTOME
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_SINGLECUSTOME" ON "CONTRACTDOC" ("SINGLECUSTOMERREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_SINGLECUSTOME" ON "CONTRACTDOC" ("SINGLECUSTOMERREASON_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_USERCERT_USSU
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_USERCERT_USSU" ON "USERCERTSYSUSER" ("USERCERT_ID") 
-   ;
+  CREATE INDEX "J_FK_USERCERT_USSU" ON "USERCERTSYSUSER" ("USERCERT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CEEXECUTIONLINE
 --------------------------------------------------------
@@ -26043,50 +25497,42 @@
 --  DDL for Index J_FK_CONTRACTDOC_CCCONTRACT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_CCCONTRACT" ON "CONTRACTDOC" ("CONFCONCCONTRACT_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_CCCONTRACT" ON "CONTRACTDOC" ("CONFCONCCONTRACT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOMEN_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOMEN_PARENT" ON "DOMEN" ("PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_DOMEN_PARENT" ON "DOMEN" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_REFDOC_REF
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REFDOC_REF" ON "REFDOC" ("REF_ID") 
-   ;
+  CREATE INDEX "J_FK_REFDOC_REF" ON "REFDOC" ("REF_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2DOC_RECIPIENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DOC_RECIPIENT" ON "PLAN2DOC" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DOC_RECIPIENT" ON "PLAN2DOC" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DESCRIPTION_DESCGROUP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DESCRIPTION_DESCGROUP" ON "DESCRIPTION" ("DESCGROUP_ID") 
-   ;
+  CREATE INDEX "J_FK_DESCRIPTION_DESCGROUP" ON "DESCRIPTION" ("DESCGROUP_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_DIGEST_DIGESTSIGN
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_DIGEST_DIGESTSIGN" ON "DIGESTSIGN" ("DIGEST_ID") 
-   ;
+  CREATE INDEX "IDX_DIGEST_DIGESTSIGN" ON "DIGESTSIGN" ("DIGEST_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_OOSORGANIZATION_REGION
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_OOSORGANIZATION_REGION" ON "OOSORGANIZATION" ("FACTREGIONKLADRCODE", "SUBORDINATIONTYPEID") 
-   ;
+  CREATE INDEX "IDX_OOSORGANIZATION_REGION" ON "OOSORGANIZATION" ("FACTREGIONKLADRCODE", "SUBORDINATIONTYPEID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RPLSITE_RPLRULE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RPLSITE_RPLRULE" ON "RPLSITE" ("RPLRULE_ID") 
-   ;
+  CREATE INDEX "J_FK_RPLSITE_RPLRULE" ON "RPLSITE" ("RPLRULE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_FGROUPHEADER_NAME
 --------------------------------------------------------
@@ -26096,8 +25542,7 @@
 --  DDL for Index J_FK_FACTDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_FACTDOC_BUDGET" ON "FACTDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_FACTDOC_BUDGET" ON "FACTDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index PK_BANKGUARANTEEDOC
 --------------------------------------------------------
@@ -26117,8 +25562,7 @@
 --  DDL for Index IFK_QUALIFYS_COMPETITORPOSORD
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_QUALIFYS_COMPETITORPOSORD" ON "QUALIFYSELECT" ("ORDER_ID", "COMPETITORPOS") 
-   ;
+  CREATE INDEX "IFK_QUALIFYS_COMPETITORPOSORD" ON "QUALIFYSELECT" ("ORDER_ID", "COMPETITORPOS");
 --------------------------------------------------------
 --  DDL for Index PK_COMMISSION
 --------------------------------------------------------
@@ -26128,92 +25572,77 @@
 --  DDL for Index J_FK_PLAN2LEDGER_UNITNAME
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_UNITNAME" ON "PLAN2LEDGER" ("UNITNAME") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_UNITNAME" ON "PLAN2LEDGER" ("UNITNAME");
 --------------------------------------------------------
 --  DDL for Index IFK_CONBUDGE_ESTIMATE_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONBUDGE_ESTIMATE_ID" ON "CONBUDGETLINE" ("ESTIMATE_ID") 
-   ;
+  CREATE INDEX "IFK_CONBUDGE_ESTIMATE_ID" ON "CONBUDGETLINE" ("ESTIMATE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P2ARRANGEMENT_PUBLICDISCU
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_PUBLICDISCU" ON "PLAN2ARRANGEMENT" ("PUBLICDISCUSSCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_PUBLICDISCU" ON "PLAN2ARRANGEMENT" ("PUBLICDISCUSSCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2GOODS_PLAN2DOC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2GOODS_PLAN2DOC" ON "PLAN2GOODS" ("PLAN2DOC_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2GOODS_PLAN2DOC" ON "PLAN2GOODS" ("PLAN2DOC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPCUSTOMER_CUSTPOSTCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPCUSTOMER_CUSTPOSTCODE" ON "CMPCUSTOMER" ("CUSTOMERPOSTCOUNTRY_ID", "CUSTOMERPOSTTERRITORYCODE") 
-   ;
+  CREATE INDEX "J_FK_CMPCUSTOMER_CUSTPOSTCODE" ON "CMPCUSTOMER" ("CUSTOMERPOSTCOUNTRY_ID", "CUSTOMERPOSTTERRITORYCODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORGETP_ORGROLE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORGETP_ORGROLE" ON "ORGETP" ("ORGROLE_ID") 
-   ;
+  CREATE INDEX "J_FK_ORGETP_ORGROLE" ON "ORGETP" ("ORGROLE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PURCHASEPLANDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PURCHASEPLANDOC_DOC_DATE" ON "PURCHASEPLANDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_PURCHASEPLANDOC_DOC_DATE" ON "PURCHASEPLANDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCUMENTCLASS_PRINT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCUMENTCLASS_PRINT" ON "DOCUMENTCLASS" ("PRINTCLIENTOBJECT_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCUMENTCLASS_PRINT" ON "DOCUMENTCLASS" ("PRINTCLIENTOBJECT_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_NOTICEDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_NOTICEDOC_DOC_DATE" ON "NOTICEDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_NOTICEDOC_DOC_DATE" ON "NOTICEDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCEVENT_USERPROCTREE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCEVENT_USERPROCTREE" ON "DOCEVENT" ("USERPROCTREE_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCEVENT_USERPROCTREE" ON "DOCEVENT" ("USERPROCTREE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_DISPSTAT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_DISPSTAT" ON "PLAN3PURCHASEDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_DISPSTAT" ON "PLAN3PURCHASEDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DIGESTSIGN_SIGNFORMAT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DIGESTSIGN_SIGNFORMAT" ON "DIGESTSIGN" ("SIGNVERSION") 
-   ;
+  CREATE INDEX "J_FK_DIGESTSIGN_SIGNFORMAT" ON "DIGESTSIGN" ("SIGNVERSION");
 --------------------------------------------------------
 --  DDL for Index IDX_ORDERDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_ORDERDOC_DATENUM" ON "ORDERDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_ORDERDOC_DATENUM" ON "ORDERDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index IDX_INVOICEDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_INVOICEDOC_DOC_DATE" ON "INVOICEDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_INVOICEDOC_DOC_DATE" ON "INVOICEDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRCARDDOC_CON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRCARDDOC_CON" ON "CONTRACTCARDDOC" ("CON_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRCARDDOC_CON" ON "CONTRACTCARDDOC" ("CON_ID");
 --------------------------------------------------------
 --  DDL for Index S_CLAIMDOC_DNI
 --------------------------------------------------------
@@ -26223,56 +25652,47 @@
 --  DDL for Index J_FK_P3PURCHASEDOC_DESCRIPTION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_DESCRIPTION" ON "PLAN3PURCHASEDOC" ("DESCRIPTION_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_DESCRIPTION" ON "PLAN3PURCHASEDOC" ("DESCRIPTION_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFRGROUPPROP_GROUPPROP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFRGROUPPROP_GROUPPROP" ON "OFRGROUPPROP" ("GROUPPROP_ID") 
-   ;
+  CREATE INDEX "J_FK_OFRGROUPPROP_GROUPPROP" ON "OFRGROUPPROP" ("GROUPPROP_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RBL_INDUSTRYCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RBL_INDUSTRYCODE" ON "RESERVEDBUDGETLINE" ("INDUSTRYCODE_ID") 
-   ;
+  CREATE INDEX "J_FK_RBL_INDUSTRYCODE" ON "RESERVEDBUDGETLINE" ("INDUSTRYCODE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_ORG_FACTERRITORY_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORG_FACTERRITORY_ID" ON "ORG" ("FACTERRITORY_ID") 
-   ;
+  CREATE INDEX "IFK_ORG_FACTERRITORY_ID" ON "ORG" ("FACTERRITORY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ROLEATTACH_DOCCATEGORY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEATTACH_DOCCATEGORY" ON "ROLEATTACH" ("CATEGORY_ID") 
-   ;
+  CREATE INDEX "J_FK_ROLEATTACH_DOCCATEGORY" ON "ROLEATTACH" ("CATEGORY_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_OFFERDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_OFFERDOC_DATENUM" ON "OFFERDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_OFFERDOC_DATENUM" ON "OFFERDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index IDX_INVOICEDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_INVOICEDOC_DATENUM" ON "INVOICEDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_INVOICEDOC_DATENUM" ON "INVOICEDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index J_FK_INSTITUTIONLINE_GI
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INSTITUTIONLINE_GI" ON "INSTITUTIONLINE" ("GRANTINVESTMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_INSTITUTIONLINE_GI" ON "INSTITUTIONLINE" ("GRANTINVESTMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCSTATUS_USERPROCTREE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCSTATUS_USERPROCTREE" ON "DOCSTATUS" ("USERPROCTREE_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCSTATUS_USERPROCTREE" ON "DOCSTATUS" ("USERPROCTREE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_P3PURFEATURE
 --------------------------------------------------------
@@ -26282,44 +25702,37 @@
 --  DDL for Index J_FK_PLAN2DAILYTOTALS_CUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DAILYTOTALS_CUSTOMER" ON "PLAN2DAILYTOTALS" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DAILYTOTALS_CUSTOMER" ON "PLAN2DAILYTOTALS" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ROLEREGISTER_GRANTINGUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEREGISTER_GRANTINGUSER" ON "ROLEREGISTER" ("GRANTINGUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_ROLEREGISTER_GRANTINGUSER" ON "ROLEREGISTER" ("GRANTINGUSER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_RCPT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_RCPT" ON "PLAN3PURCHASEDOC" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_RCPT" ON "PLAN3PURCHASEDOC" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ROLEAPPOBJ_APPOBJNAME
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEAPPOBJ_APPOBJNAME" ON "ROLEAPPOBJ" ("APPOBJNAME") 
-   ;
+  CREATE INDEX "J_FK_ROLEAPPOBJ_APPOBJNAME" ON "ROLEAPPOBJ" ("APPOBJNAME");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLUGIN_PARENTRPL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLUGIN_PARENTRPL" ON "RPLTABLEPLUGIN" ("PLUGIN_RPLTABLE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLUGIN_PARENTRPL" ON "RPLTABLEPLUGIN" ("PLUGIN_RPLTABLE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN2GOODS_CODE3
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2GOODS_CODE3" ON "PLAN2GOODS" ("CODE3") 
-   ;
+  CREATE INDEX "IDX_PLAN2GOODS_CODE3" ON "PLAN2GOODS" ("CODE3");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORG_DIRECTOR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORG_DIRECTOR" ON "ORG" ("DIRECTOR_ID") 
-   ;
+  CREATE INDEX "J_FK_ORG_DIRECTOR" ON "ORG" ("DIRECTOR_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PERSON
 --------------------------------------------------------
@@ -26329,14 +25742,12 @@
 --  DDL for Index J_FK_P3PURCHASEDOC_SINGLECUST
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_SINGLECUST" ON "PLAN3PURCHASEDOC" ("SINGLECUSTOMERREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_SINGLECUST" ON "PLAN3PURCHASEDOC" ("SINGLECUSTOMERREASON_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSPOSITION_DISPSTAT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPOSITION_DISPSTAT" ON "PLAN2OOSPOSITION" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPOSITION_DISPSTAT" ON "PLAN2OOSPOSITION" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_KBKLINEFIT
 --------------------------------------------------------
@@ -26356,14 +25767,12 @@
 --  DDL for Index J_FK_ORDERDOC_SPECIALORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_SPECIALORG" ON "ORDERDOC" ("SPECIALORG_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_SPECIALORG" ON "ORDERDOC" ("SPECIALORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_INVBUDGETLINE_LIABILITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INVBUDGETLINE_LIABILITY" ON "INVBUDGETLINE" ("LIABILITYEXPENSE_ID") 
-   ;
+  CREATE INDEX "J_FK_INVBUDGETLINE_LIABILITY" ON "INVBUDGETLINE" ("LIABILITYEXPENSE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OFRGROUPPROP
 --------------------------------------------------------
@@ -26373,26 +25782,22 @@
 --  DDL for Index IDX_RECOILDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_RECOILDOC_DISPSTATUS" ON "RECOILDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_RECOILDOC_DISPSTATUS" ON "RECOILDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CLAIMDOC_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CLAIMDOC_PARENT" ON "CLAIMDOC" ("PARENT_CONTRACT_ID") 
-   ;
+  CREATE INDEX "J_FK_CLAIMDOC_PARENT" ON "CLAIMDOC" ("PARENT_CONTRACT_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_RQDOCCHI_DOC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RQDOCCHI_DOC_ID" ON "RQDOCCHILD" ("DOC_ID") 
-   ;
+  CREATE INDEX "IFK_RQDOCCHI_DOC_ID" ON "RQDOCCHILD" ("DOC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCSTATUS_PROCTREE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCSTATUS_PROCTREE" ON "DOCSTATUS" ("PROCTREE_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCSTATUS_PROCTREE" ON "DOCSTATUS" ("PROCTREE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONEXECSTEP2
 --------------------------------------------------------
@@ -26407,8 +25812,7 @@
 --  DDL for Index J_FK_RQCOMMEMBER_PERSONAL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQCOMMEMBER_PERSONAL" ON "RQCOMMEMBER" ("COMMEMBER_ID") 
-   ;
+  CREATE INDEX "J_FK_RQCOMMEMBER_PERSONAL" ON "RQCOMMEMBER" ("COMMEMBER_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_KLADR_CODE
 --------------------------------------------------------
@@ -26418,8 +25822,7 @@
 --  DDL for Index J_FK_GOODSOKDP_OKVED
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSOKDP_OKVED" ON "GOODSOKDP" ("OKVED_ID") 
-   ;
+  CREATE INDEX "J_FK_GOODSOKDP_OKVED" ON "GOODSOKDP" ("OKVED_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_OFRGROUPPROP
 --------------------------------------------------------
@@ -26429,8 +25832,7 @@
 --  DDL for Index J_FK_LEDGER_FINSRC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_FINSRC" ON "LEDGER" ("FINSRC_ID") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_FINSRC" ON "LEDGER" ("FINSRC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_FUNCDOCUMENT
 --------------------------------------------------------
@@ -26440,20 +25842,17 @@
 --  DDL for Index IFK_OFFERDOC_VENDOR_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_OFFERDOC_VENDOR_ID" ON "OFFERDOC" ("VENDOR_ID") 
-   ;
+  CREATE INDEX "IFK_OFFERDOC_VENDOR_ID" ON "OFFERDOC" ("VENDOR_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_LEDGER_DESCRIPTION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_DESCRIPTION" ON "LEDGER" ("DESCRIPTIONCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_DESCRIPTION" ON "LEDGER" ("DESCRIPTIONCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RQLOT_CURRENCY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQLOT_CURRENCY" ON "RQLOT" ("CURRENCY_ID") 
-   ;
+  CREATE INDEX "J_FK_RQLOT_CURRENCY" ON "RQLOT" ("CURRENCY_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_DOCACTION
 --------------------------------------------------------
@@ -26463,20 +25862,17 @@
 --  DDL for Index J_FK_CERTREVOKEREQ_DOCCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CERTREVOKEREQ_DOCCLASS" ON "CERTREVOKEREQUEST" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_CERTREVOKEREQ_DOCCLASS" ON "CERTREVOKEREQUEST" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2LEDGER_GOODS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_GOODS" ON "PLAN2LEDGER" ("GOODS_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_GOODS" ON "PLAN2LEDGER" ("GOODS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN2GOODS_CODE1
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2GOODS_CODE1" ON "PLAN2GOODS" ("CODE1") 
-   ;
+  CREATE INDEX "IDX_PLAN2GOODS_CODE1" ON "PLAN2GOODS" ("CODE1");
 --------------------------------------------------------
 --  DDL for Index PK_CLNDTYPE
 --------------------------------------------------------
@@ -26486,8 +25882,7 @@
 --  DDL for Index IFK_RQVENDOR_VENDOR_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RQVENDOR_VENDOR_ID" ON "RQVENDOR" ("VENDOR_ID") 
-   ;
+  CREATE INDEX "IFK_RQVENDOR_VENDOR_ID" ON "RQVENDOR" ("VENDOR_ID");
 --------------------------------------------------------
 --  DDL for Index PK_LICTYPE
 --------------------------------------------------------
@@ -26497,56 +25892,47 @@
 --  DDL for Index J_FK_PLAN2DOC_NECESSITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DOC_NECESSITY" ON "PLAN2DOC" ("NECESSITY_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DOC_NECESSITY" ON "PLAN2DOC" ("NECESSITY_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_AUCTIONB_DOCUMENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_AUCTIONB_DOCUMENT_ID" ON "AUCTIONBID" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IFK_AUCTIONB_DOCUMENT_ID" ON "AUCTIONBID" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2DOCCHILD_DOCUMENTID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DOCCHILD_DOCUMENTID" ON "PLAN2DOCCHILD" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DOCCHILD_DOCUMENTID" ON "PLAN2DOCCHILD" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN2GOODS_CODE5
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2GOODS_CODE5" ON "PLAN2GOODS" ("CODE5") 
-   ;
+  CREATE INDEX "IDX_PLAN2GOODS_CODE5" ON "PLAN2GOODS" ("CODE5");
 --------------------------------------------------------
 --  DDL for Index J_FK_LEDGER_NECESSITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_NECESSITY" ON "LEDGER" ("NECESSITY_ID") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_NECESSITY" ON "LEDGER" ("NECESSITY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_TYPEDOCREQ_REQTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TYPEDOCREQ_REQTYPE" ON "TYPEDOCREQ" ("REQUIREMENTTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_TYPEDOCREQ_REQTYPE" ON "TYPEDOCREQ" ("REQUIREMENTTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_LEDGER_UNIT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_UNIT" ON "LEDGER" ("UNITNAME") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_UNIT" ON "LEDGER" ("UNITNAME");
 --------------------------------------------------------
 --  DDL for Index IDX_CODE_GOODS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CODE_GOODS" ON "GOODS" ("GROUP_ID", "CODE") 
-   ;
+  CREATE INDEX "IDX_CODE_GOODS" ON "GOODS" ("GROUP_ID", "CODE");
 --------------------------------------------------------
 --  DDL for Index IFK_CERTREVOKEREQ_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CERTREVOKEREQ_DOCUMENT" ON "CERTREVOKEREQUEST" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IFK_CERTREVOKEREQ_DOCUMENT" ON "CERTREVOKEREQUEST" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CEPAYPENALTY
 --------------------------------------------------------
@@ -26581,14 +25967,12 @@
 --  DDL for Index J_FK_RQGOODS_OKVED
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQGOODS_OKVED" ON "RQGOODS" ("OKVED_ID") 
-   ;
+  CREATE INDEX "J_FK_RQGOODS_OKVED" ON "RQGOODS" ("OKVED_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_COMPLAINTDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_COMPLAINTDOC_BUDGET" ON "COMPLAINTDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_COMPLAINTDOC_BUDGET" ON "COMPLAINTDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PLANPOSITIONCHANGEREASON
 --------------------------------------------------------
@@ -26603,26 +25987,22 @@
 --  DDL for Index J_FK_PLAN2DOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DOC_BUDGET" ON "PLAN2DOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DOC_BUDGET" ON "PLAN2DOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_ORGACCOU_KEEPER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORGACCOU_KEEPER_ID" ON "ORGACCOUNT" ("KEEPER_ID") 
-   ;
+  CREATE INDEX "IFK_ORGACCOU_KEEPER_ID" ON "ORGACCOUNT" ("KEEPER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CERTREVOKEREQ_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CERTREVOKEREQ_DISPSTATUS" ON "CERTREVOKEREQUEST" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_CERTREVOKEREQ_DISPSTATUS" ON "CERTREVOKEREQUEST" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PROCUREMENT_ORDER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PROCUREMENT_ORDER" ON "PROCUREMENT" ("ORDER_ID") 
-   ;
+  CREATE INDEX "J_FK_PROCUREMENT_ORDER" ON "PROCUREMENT" ("ORDER_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_REPFRAGMENT
 --------------------------------------------------------
@@ -26637,74 +26017,62 @@
 --  DDL for Index IFK_RQQUALRE_LOTPOSREQUEST_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RQQUALRE_LOTPOSREQUEST_ID" ON "RQQUALREQ" ("REQUEST_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_RQQUALRE_LOTPOSREQUEST_ID" ON "RQQUALREQ" ("REQUEST_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFFERDOC_VENDORCOUNTRY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFFERDOC_VENDORCOUNTRY" ON "OFFERDOC" ("VENDORCOUNTRY_ID") 
-   ;
+  CREATE INDEX "J_FK_OFFERDOC_VENDORCOUNTRY" ON "OFFERDOC" ("VENDORCOUNTRY_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_RQGOODS_GROUPCODE
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RQGOODS_GROUPCODE" ON "RQGOODS" ("GROUPCODE") 
-   ;
+  CREATE INDEX "IFK_RQGOODS_GROUPCODE" ON "RQGOODS" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index IFK_CMPEXPEN_GROUPCODE
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPEXPEN_GROUPCODE" ON "CMPEXPENSE" ("GROUPCODE") 
-   ;
+  CREATE INDEX "IFK_CMPEXPEN_GROUPCODE" ON "CMPEXPENSE" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_RQGOODS_OKDP_CODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQGOODS_OKDP_CODE" ON "RQGOODS" ("OKDP_CODE") 
-   ;
+  CREATE INDEX "J_FK_RQGOODS_OKDP_CODE" ON "RQGOODS" ("OKDP_CODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_LEDGER_PLAN2DOC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_PLAN2DOC" ON "LEDGER" ("PLAN2DOC_ID") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_PLAN2DOC" ON "LEDGER" ("PLAN2DOC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_TYPEREQCRIT_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TYPEREQCRIT_PURCHASEMODE" ON "TYPEREQCRIT" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_TYPEREQCRIT_PURCHASEMODE" ON "TYPEREQCRIT" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFFERDOC_PROPFORM
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFFERDOC_PROPFORM" ON "OFFERDOC" ("VENDORPROPFORM_ID") 
-   ;
+  CREATE INDEX "J_FK_OFFERDOC_PROPFORM" ON "OFFERDOC" ("VENDORPROPFORM_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCUMENTCLASS_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCUMENTCLASS_DOCUMENT" ON "DOCUMENTCLASS" ("CLIENTDOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCUMENTCLASS_DOCUMENT" ON "DOCUMENTCLASS" ("CLIENTDOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_TASKJOURNAL
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_TASKJOURNAL" ON "TASKJOURNAL" ("ACTION_DATE") 
-   ;
+  CREATE INDEX "IDX_TASKJOURNAL" ON "TASKJOURNAL" ("ACTION_DATE");
 --------------------------------------------------------
 --  DDL for Index IFK_OFRSUPPL_LOTPOSOFFER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_OFRSUPPL_LOTPOSOFFER_ID" ON "OFRSUPPLYSHEDULE" ("OFFER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_OFRSUPPL_LOTPOSOFFER_ID" ON "OFRSUPPLYSHEDULE" ("OFFER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSPOS_CONEXECSTAGES
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPOS_CONEXECSTAGES" ON "PLAN2OOSPOSITION" ("CONEXECSTAGESCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPOS_CONEXECSTAGES" ON "PLAN2OOSPOSITION" ("CONEXECSTAGESCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_BANKGUARANTEEREFREASON
 --------------------------------------------------------
@@ -26719,50 +26087,42 @@
 --  DDL for Index J_FK_DOCEVERRLOG_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCEVERRLOG_DISPSTATUS" ON "DOCEVERRLOG" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCEVERRLOG_DISPSTATUS" ON "DOCEVERRLOG" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RQQUALREQ_PLACEMENTFEAT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQQUALREQ_PLACEMENTFEAT" ON "RQQUALREQ" ("PLACEMENTFEATURE_ID") 
-   ;
+  CREATE INDEX "J_FK_RQQUALREQ_PLACEMENTFEAT" ON "RQQUALREQ" ("PLACEMENTFEATURE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PFPM_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PFPM_PURCHASEMODE" ON "PLACEMENTFEATUREPM" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_PFPM_PURCHASEMODE" ON "PLACEMENTFEATUREPM" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_ORDERSUM_CMPBUDGETLINEPOSO
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORDERSUM_CMPBUDGETLINEPOSO" ON "ORDERSUMMARY" ("ORDER_ID", "CMPBUDGETLINEPOS") 
-   ;
+  CREATE INDEX "IFK_ORDERSUM_CMPBUDGETLINEPOSO" ON "ORDERSUMMARY" ("ORDER_ID", "CMPBUDGETLINEPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_CUSTOMERLOT_CONSETTACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CUSTOMERLOT_CONSETTACC_ID" ON "CMPCUSTOMERLOT" ("GUARCONTRSETTLEMENTACC_ID") 
-   ;
+  CREATE INDEX "J_FK_CUSTOMERLOT_CONSETTACC_ID" ON "CMPCUSTOMERLOT" ("GUARCONTRSETTLEMENTACC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONSOLIDDOC_CMPORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONSOLIDDOC_CMPORG" ON "CONSOLIDDOC" ("CMPORG_ID") 
-   ;
+  CREATE INDEX "J_FK_CONSOLIDDOC_CMPORG" ON "CONSOLIDDOC" ("CMPORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCRESTATITMS_RET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCRESTATITMS_RET" ON "DOCRETENTIONSTATITEMS" ("DOCRETENTION_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCRESTATITMS_RET" ON "DOCRETENTIONSTATITEMS" ("DOCRETENTION_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_REQUESTDOC_REPNOTICE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_REPNOTICE" ON "REQUESTDOC" ("REPNOTICE_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_REPNOTICE" ON "REQUESTDOC" ("REPNOTICE_ID");
 --------------------------------------------------------
 --  DDL for Index S_CONTRACTEXECDOC_DNI
 --------------------------------------------------------
@@ -26772,8 +26132,7 @@
 --  DDL for Index IFK_NOTIFYMSGDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_NOTIFYMSGDOC_DOCUMENT" ON "NOTIFYMSGDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IFK_NOTIFYMSGDOC_DOCUMENT" ON "NOTIFYMSGDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RECOILLINES
 --------------------------------------------------------
@@ -26788,20 +26147,17 @@
 --  DDL for Index IFK_CMPDISCU_LOTPOSORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPDISCU_LOTPOSORDER_ID" ON "CMPDISCUSSION" ("ORDER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_CMPDISCU_LOTPOSORDER_ID" ON "CMPDISCUSSION" ("ORDER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPFEATURE_CMPLOT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPFEATURE_CMPLOT" ON "CMPFEATURE" ("ORDER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "J_FK_CMPFEATURE_CMPLOT" ON "CMPFEATURE" ("ORDER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index IFK_ORGCHILD_CHILD_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORGCHILD_CHILD_ID" ON "ORGCHILD" ("CHILD_ID") 
-   ;
+  CREATE INDEX "IFK_ORGCHILD_CHILD_ID" ON "ORGCHILD" ("CHILD_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OOS223PURCHASENOTICEINFO
 --------------------------------------------------------
@@ -26816,20 +26172,17 @@
 --  DDL for Index IDX_COMPLAINTDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_COMPLAINTDOC_DOC_DATE" ON "COMPLAINTDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_COMPLAINTDOC_DOC_DATE" ON "COMPLAINTDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index J_FK_PURCHCARRY_FINSRC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHCARRY_FINSRC" ON "PURCHASECARRY" ("FINSRC_ID") 
-   ;
+  CREATE INDEX "J_FK_PURCHCARRY_FINSRC" ON "PURCHASECARRY" ("FINSRC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CDCAVILTYPE_CAVILTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CDCAVILTYPE_CAVILTYPE" ON "CDCAVILTYPE" ("CAVILTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_CDCAVILTYPE_CAVILTYPE" ON "CDCAVILTYPE" ("CAVILTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CEPENALTY
 --------------------------------------------------------
@@ -26844,14 +26197,12 @@
 --  DDL for Index J_FK_RQLOT_CONMNGRRESP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQLOT_CONMNGRRESP" ON "RQLOT" ("CONMNGRRESP_ID") 
-   ;
+  CREATE INDEX "J_FK_RQLOT_CONMNGRRESP" ON "RQLOT" ("CONMNGRRESP_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN3DOC_PLANYEAR
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN3DOC_PLANYEAR" ON "PLAN3DOC" ("PLANYEAR") 
-   ;
+  CREATE INDEX "IDX_PLAN3DOC_PLANYEAR" ON "PLAN3DOC" ("PLANYEAR");
 --------------------------------------------------------
 --  DDL for Index PK_PLAN3DOCCHILD
 --------------------------------------------------------
@@ -26861,8 +26212,7 @@
 --  DDL for Index IDX_PURCHASEPLANDOC
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PURCHASEPLANDOC" ON "PURCHASEPLANDOC" ("BUDGET_ID", "CUSTOMER_ID", "PLANYEAR") 
-   ;
+  CREATE INDEX "IDX_PURCHASEPLANDOC" ON "PURCHASEPLANDOC" ("BUDGET_ID", "CUSTOMER_ID", "PLANYEAR");
 --------------------------------------------------------
 --  DDL for Index UQ_GOODSGROUP_CODE
 --------------------------------------------------------
@@ -26882,8 +26232,7 @@
 --  DDL for Index J_FK_KBKLINEFIT_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_KBKLINEFIT_BUDGET" ON "KBKLINEFIT" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_KBKLINEFIT_BUDGET" ON "KBKLINEFIT" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_NUMPREFIX
 --------------------------------------------------------
@@ -26893,8 +26242,7 @@
 --  DDL for Index J_FK_RQVENDOR_ORGFORM
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQVENDOR_ORGFORM" ON "RQVENDOR" ("PROPFORM_ID") 
-   ;
+  CREATE INDEX "J_FK_RQVENDOR_ORGFORM" ON "RQVENDOR" ("PROPFORM_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_CLIENTOBJECTCOMMENTS
 --------------------------------------------------------
@@ -26909,8 +26257,7 @@
 --  DDL for Index J_FK_TYPEREQ_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TYPEREQ_PURCHASEMODE" ON "TYPEREQ" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_TYPEREQ_PURCHASEMODE" ON "TYPEREQ" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index S_COMPLAINTDOC_NI
 --------------------------------------------------------
@@ -26920,38 +26267,32 @@
 --  DDL for Index J_FK_ALTUNIT_ALTGOODSGROUP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ALTUNIT_ALTGOODSGROUP" ON "ALTUNITFACTOR" ("ALTGOODSGROUP_ID") 
-   ;
+  CREATE INDEX "J_FK_ALTUNIT_ALTGOODSGROUP" ON "ALTUNITFACTOR" ("ALTGOODSGROUP_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PURCHASECARRY_PAYCONDITIO
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHASECARRY_PAYCONDITIO" ON "PURCHASECARRY" ("PAYCONDITIONCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_PURCHASECARRY_PAYCONDITIO" ON "PURCHASECARRY" ("PAYCONDITIONCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_CONSOLIDDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONSOLIDDOC_DOC_DATE" ON "CONSOLIDDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_CONSOLIDDOC_DOC_DATE" ON "CONSOLIDDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index J_FK_COMPLAINTDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_COMPLAINTDOC_DISPSTATUS" ON "COMPLAINTDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_COMPLAINTDOC_DISPSTATUS" ON "COMPLAINTDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_TASKJOURNAL_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TASKJOURNAL_SYSUSER" ON "TASKJOURNAL" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_TASKJOURNAL_SYSUSER" ON "TASKJOURNAL" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_REQUESTDOC_PARENTREQUEST
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_REQUESTDOC_PARENTREQUEST" ON "REQUESTDOC" ("PARENTREQUESTDOC_ID") 
-   ;
+  CREATE INDEX "IDX_REQUESTDOC_PARENTREQUEST" ON "REQUESTDOC" ("PARENTREQUESTDOC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OFRRETREASON
 --------------------------------------------------------
@@ -26961,8 +26302,7 @@
 --  DDL for Index J_FK_RECOILLINES_GOODSGROUPCOD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILLINES_GOODSGROUPCOD" ON "RECOILLINES" ("GROUPCODE") 
-   ;
+  CREATE INDEX "J_FK_RECOILLINES_GOODSGROUPCOD" ON "RECOILLINES" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index PK_PLGOODSPROP
 --------------------------------------------------------
@@ -26992,8 +26332,7 @@
 --  DDL for Index J_FK_CONREASONLINE_CONREASON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONREASONLINE_CONREASON" ON "CONTRACTREASON_DOCLINES" ("CONTRACTREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_CONREASONLINE_CONREASON" ON "CONTRACTREASON_DOCLINES" ("CONTRACTREASON_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_MSGSITEEXCHANGE
 --------------------------------------------------------
@@ -27008,8 +26347,7 @@
 --  DDL for Index J_FK_PLAN2GOODS_GOODSGROUP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2GOODS_GOODSGROUP" ON "PLAN2GOODS" ("GROUPCODE") 
-   ;
+  CREATE INDEX "J_FK_PLAN2GOODS_GOODSGROUP" ON "PLAN2GOODS" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index PK_CLNDDAY
 --------------------------------------------------------
@@ -27019,26 +26357,22 @@
 --  DDL for Index IFK_CONSUPPL_PLACEPOSCONTRACT
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONSUPPL_PLACEPOSCONTRACT" ON "CONSUPPLYSHEDULE" ("CONTRACT_ID", "PLACEPOS") 
-   ;
+  CREATE INDEX "IFK_CONSUPPL_PLACEPOSCONTRACT" ON "CONSUPPLYSHEDULE" ("CONTRACT_ID", "PLACEPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_RECOILDOC_CONTRACTOR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILDOC_CONTRACTOR" ON "RECOILDOC" ("CON_ID") 
-   ;
+  CREATE INDEX "J_FK_RECOILDOC_CONTRACTOR" ON "RECOILDOC" ("CON_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN2GOODS_CODE10
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2GOODS_CODE10" ON "PLAN2GOODS" ("CODE10") 
-   ;
+  CREATE INDEX "IDX_PLAN2GOODS_CODE10" ON "PLAN2GOODS" ("CODE10");
 --------------------------------------------------------
 --  DDL for Index IDX_NOTICEDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_NOTICEDOC_DOCUMENT" ON "NOTICEDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_NOTICEDOC_DOCUMENT" ON "NOTICEDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_UPDPACKAGE
 --------------------------------------------------------
@@ -27053,32 +26387,27 @@
 --  DDL for Index J_FK_PLNGOODS_OKPD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLNGOODS_OKPD" ON "PLNGOODS" ("OKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_PLNGOODS_OKPD" ON "PLNGOODS" ("OKPD_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PURCHASECARRY_INDUSTRYCOD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHASECARRY_INDUSTRYCOD" ON "PURCHASECARRY" ("INDUSTRYCODE_ID") 
-   ;
+  CREATE INDEX "J_FK_PURCHASECARRY_INDUSTRYCOD" ON "PURCHASECARRY" ("INDUSTRYCODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CCCONTRACT_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CCCONTRACT_PURCHASEMODE" ON "CONFCONCLUSIONCONTRACT" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_CCCONTRACT_PURCHASEMODE" ON "CONFCONCLUSIONCONTRACT" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CMPDISCU_PHASEPOSORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPDISCU_PHASEPOSORDER_ID" ON "CMPDISCUSSION" ("ORDER_ID", "PHASEPOS") 
-   ;
+  CREATE INDEX "IFK_CMPDISCU_PHASEPOSORDER_ID" ON "CMPDISCUSSION" ("ORDER_ID", "PHASEPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_CERTREVOKEREQ_USERCERT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CERTREVOKEREQ_USERCERT" ON "CERTREVOKEREQUEST" ("USERCERT_ID") 
-   ;
+  CREATE INDEX "J_FK_CERTREVOKEREQ_USERCERT" ON "CERTREVOKEREQUEST" ("USERCERT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ROLERIGHT
 --------------------------------------------------------
@@ -27088,26 +26417,22 @@
 --  DDL for Index J_FK_CMPQUALREQ_PLACEMENTFEAT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPQUALREQ_PLACEMENTFEAT" ON "CMPQUALREQ" ("PLACEMENTFEATURE_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPQUALREQ_PLACEMENTFEAT" ON "CMPQUALREQ" ("PLACEMENTFEATURE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRACTDOC_CURRENCY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_CURRENCY" ON "CONTRACTDOC" ("CURRENCY_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_CURRENCY" ON "CONTRACTDOC" ("CURRENCY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_AUCTIONBID_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_AUCTIONBID_BUDGET" ON "AUCTIONBID" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_AUCTIONBID_BUDGET" ON "AUCTIONBID" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_FGROUPATTACH_FGROUP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_FGROUPATTACH_FGROUP" ON "FGROUPATTACH" ("FGROUP_ID") 
-   ;
+  CREATE INDEX "J_FK_FGROUPATTACH_FGROUP" ON "FGROUPATTACH" ("FGROUP_ID");
 --------------------------------------------------------
 --  DDL for Index PK_KLADR
 --------------------------------------------------------
@@ -27117,14 +26442,12 @@
 --  DDL for Index J_FK_INVOICEDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INVOICEDOC_BUDGET" ON "INVOICEDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_INVOICEDOC_BUDGET" ON "INVOICEDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_ORDERSUM_CMPLOTPOSORDER_I
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORDERSUM_CMPLOTPOSORDER_I" ON "ORDERSUMMARY" ("ORDER_ID", "CMPLOTPOS") 
-   ;
+  CREATE INDEX "IFK_ORDERSUM_CMPLOTPOSORDER_I" ON "ORDERSUMMARY" ("ORDER_ID", "CMPLOTPOS");
 --------------------------------------------------------
 --  DDL for Index UQ_DOCEVENT
 --------------------------------------------------------
@@ -27134,20 +26457,17 @@
 --  DDL for Index IDX_KLADR_CODE4
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_KLADR_CODE4" ON "KLADR" ("CODE4") 
-   ;
+  CREATE INDEX "IDX_KLADR_CODE4" ON "KLADR" ("CODE4");
 --------------------------------------------------------
 --  DDL for Index J_FK_P2ARRANGEMENT_COUNTRY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_COUNTRY" ON "PLAN2ARRANGEMENT" ("COUNTRY_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_COUNTRY" ON "PLAN2ARRANGEMENT" ("COUNTRY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONCONTRACTOR_EXECUTER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONCONTRACTOR_EXECUTER" ON "CONCONTRACTOR" ("ORGEXECUTER_ID") 
-   ;
+  CREATE INDEX "J_FK_CONCONTRACTOR_EXECUTER" ON "CONCONTRACTOR" ("ORGEXECUTER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_INDUSTRYCODE
 --------------------------------------------------------
@@ -27167,26 +26487,22 @@
 --  DDL for Index J_FK_REPATTACH_REPDOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REPATTACH_REPDOCUMENT" ON "REPTEMPLATEATTACH" ("REPDOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_REPATTACH_REPDOCUMENT" ON "REPTEMPLATEATTACH" ("REPDOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN3DOC_CUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN3DOC_CUSTOMER" ON "PLAN3DOC" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN3DOC_CUSTOMER" ON "PLAN3DOC" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CLAIMDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CLAIMDOC_OPERTYPE" ON "CLAIMDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_CLAIMDOC_OPERTYPE" ON "CLAIMDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2GOODS_GOODSBRANCH
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2GOODS_GOODSBRANCH" ON "PLAN2GOODS" ("GOODSBRANCH_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2GOODS_GOODSBRANCH" ON "PLAN2GOODS" ("GOODSBRANCH_ID");
 --------------------------------------------------------
 --  DDL for Index PK_GOODSOKPDPREFCOUNTRY
 --------------------------------------------------------
@@ -27196,26 +26512,22 @@
 --  DDL for Index IDX_KLADRSTREET_CODE1
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_KLADRSTREET_CODE1" ON "KLADRSTREET" ("CODE1") 
-   ;
+  CREATE INDEX "IDX_KLADRSTREET_CODE1" ON "KLADRSTREET" ("CODE1");
 --------------------------------------------------------
 --  DDL for Index IDX_ORDERDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_ORDERDOC_DISPSTATUS" ON "ORDERDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_ORDERDOC_DISPSTATUS" ON "ORDERDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_AUCTIONL_LOTPOSORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_AUCTIONL_LOTPOSORDER_ID" ON "AUCTIONLOG" ("ORDER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_AUCTIONL_LOTPOSORDER_ID" ON "AUCTIONLOG" ("ORDER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_ETP_OOSETPCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ETP_OOSETPCODE" ON "ETP" ("OOSETPCODE") 
-   ;
+  CREATE INDEX "J_FK_ETP_OOSETPCODE" ON "ETP" ("OOSETPCODE");
 --------------------------------------------------------
 --  DDL for Index PK_CLNDDAYTYPE
 --------------------------------------------------------
@@ -27230,14 +26542,12 @@
 --  DDL for Index J_FK_CONTRACTDOC_CONTERCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_CONTERCODE" ON "CONTRACTDOC" ("CONCOUNTRY_ID", "CONTERRITORYCODE") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_CONTERCODE" ON "CONTRACTDOC" ("CONCOUNTRY_ID", "CONTERRITORYCODE");
 --------------------------------------------------------
 --  DDL for Index IDX_RPLLOG_TABLE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_RPLLOG_TABLE" ON "RPLLOG" ("RPLTABLE_ID", "GENERATION", "RECORD_ID") 
-   ;
+  CREATE INDEX "IDX_RPLLOG_TABLE" ON "RPLLOG" ("RPLTABLE_ID", "GENERATION", "RECORD_ID");
 --------------------------------------------------------
 --  DDL for Index S_ORDERDOC_DNI
 --------------------------------------------------------
@@ -27252,8 +26562,7 @@
 --  DDL for Index J_FK_DOCRESTAT_DOCRET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCRESTAT_DOCRET" ON "DOCRETENTIONSTATUS" ("DOCRETENTION_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCRESTAT_DOCRET" ON "DOCRETENTIONSTATUS" ("DOCRETENTION_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ROLEFUNC
 --------------------------------------------------------
@@ -27273,8 +26582,7 @@
 --  DDL for Index J_FK_CONSOLIDDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONSOLIDDOC_BUDGET" ON "CONSOLIDDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_CONSOLIDDOC_BUDGET" ON "CONSOLIDDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_DOCCUSTOMFIELDS
 --------------------------------------------------------
@@ -27284,8 +26592,7 @@
 --  DDL for Index J_FK_KLADR_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_KLADR_PARENT" ON "KLADR" ("PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_KLADR_PARENT" ON "KLADR" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OPERTYPE
 --------------------------------------------------------
@@ -27295,14 +26602,12 @@
 --  DDL for Index J_FK_CMPPERSONALRESP_RESP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPPERSONALRESP_RESP" ON "CMPPERSONALRESP" ("RESPONSIBILITY_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPPERSONALRESP_RESP" ON "CMPPERSONALRESP" ("RESPONSIBILITY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RECOILLINES_INDUSTRYCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILLINES_INDUSTRYCODE" ON "RECOILLINES" ("INDUSTRYCODE_ID") 
-   ;
+  CREATE INDEX "J_FK_RECOILLINES_INDUSTRYCODE" ON "RECOILLINES" ("INDUSTRYCODE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONAGREEMENTSDOCS
 --------------------------------------------------------
@@ -27312,8 +26617,7 @@
 --  DDL for Index J_FK_PLAN2DOC_OOSDISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DOC_OOSDISPSTATUS" ON "PLAN2DOC" ("OOSDISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DOC_OOSDISPSTATUS" ON "PLAN2DOC" ("OOSDISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PLANREQUEST
 --------------------------------------------------------
@@ -27323,32 +26627,27 @@
 --  DDL for Index IFK_CONTRACT_CMPORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONTRACT_CMPORG_ID" ON "CONTRACTDOC" ("CMPORG_ID") 
-   ;
+  CREATE INDEX "IFK_CONTRACT_CMPORG_ID" ON "CONTRACTDOC" ("CMPORG_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_OFRGROUP_GROUPCODE
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_OFRGROUP_GROUPCODE" ON "OFRGROUPPROP" ("GROUPCODE") 
-   ;
+  CREATE INDEX "IFK_OFRGROUP_GROUPCODE" ON "OFRGROUPPROP" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2ARRANGEMENT_LOTNAME
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2ARRANGEMENT_LOTNAME" ON "PLAN2ARRANGEMENT" ("LOTNAMECACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2ARRANGEMENT_LOTNAME" ON "PLAN2ARRANGEMENT" ("LOTNAMECACHE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CERTREQ_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CERTREQ_DOCUMENT" ON "CERTREQUEST" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IFK_CERTREQ_DOCUMENT" ON "CERTREQUEST" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_NOTICEDO_AUTHORORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_NOTICEDO_AUTHORORG_ID" ON "NOTICEDOC" ("AUTHORORG_ID") 
-   ;
+  CREATE INDEX "IFK_NOTICEDO_AUTHORORG_ID" ON "NOTICEDOC" ("AUTHORORG_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OOSNOTIFICATIONLOT
 --------------------------------------------------------
@@ -27358,8 +26657,7 @@
 --  DDL for Index J_FK_DOCDIGESTRULE_FGROUPHEADE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCDIGESTRULE_FGROUPHEADE" ON "DOCDIGESTRULE" ("FGROUPHEADER_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCDIGESTRULE_FGROUPHEADE" ON "DOCDIGESTRULE" ("FGROUPHEADER_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_BANK_BIC
 --------------------------------------------------------
@@ -27369,8 +26667,7 @@
 --  DDL for Index J_FK_GOODSOKPD_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSOKPD_PURCHASEMODE" ON "GOODSOKPDPURCHASEMODE" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_GOODSOKPD_PURCHASEMODE" ON "GOODSOKPDPURCHASEMODE" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_SIGNTYPE
 --------------------------------------------------------
@@ -27385,20 +26682,17 @@
 --  DDL for Index J_FK_REQUESTDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_DISPSTATUS" ON "REQUESTDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_DISPSTATUS" ON "REQUESTDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_USERORG_ORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_USERORG_ORG" ON "USERORG" ("ORG_ID") 
-   ;
+  CREATE INDEX "J_FK_USERORG_ORG" ON "USERORG" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_AUCTIONBID_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_AUCTIONBID_DISPSTATUS" ON "AUCTIONBID" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_AUCTIONBID_DISPSTATUS" ON "AUCTIONBID" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index S_PLANDOC_NI
 --------------------------------------------------------
@@ -27408,8 +26702,7 @@
 --  DDL for Index IFK_OFRDOCRE_LOTPOSOFFER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_OFRDOCRE_LOTPOSOFFER_ID" ON "OFRDOCREQVAL" ("OFFER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_OFRDOCRE_LOTPOSOFFER_ID" ON "OFRDOCREQVAL" ("OFFER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index PK_OOSCONTRACTPRODUCTS
 --------------------------------------------------------
@@ -27419,8 +26712,7 @@
 --  DDL for Index IDX_OFFERDOC_CLASS_ETPKEY
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_OFFERDOC_CLASS_ETPKEY" ON "OFFERDOC" ("DOCUMENTCLASS_ID", "ETPKEY", "ETP_ID") 
-   ;
+  CREATE INDEX "IDX_OFFERDOC_CLASS_ETPKEY" ON "OFFERDOC" ("DOCUMENTCLASS_ID", "ETPKEY", "ETP_ID");
 --------------------------------------------------------
 --  DDL for Index S_RECOILDOC_NI
 --------------------------------------------------------
@@ -27435,20 +26727,17 @@
 --  DDL for Index J_FK_OFRDECREASON_OFRRETREASON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFRDECREASON_OFRRETREASON" ON "OFRDECREASON" ("OFRRETREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_OFRDECREASON_OFRRETREASON" ON "OFRDECREASON" ("OFRRETREASON_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CMPCUSTO_CUSTOMER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPCUSTO_CUSTOMER_ID" ON "CMPCUSTOMER" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "IFK_CMPCUSTO_CUSTOMER_ID" ON "CMPCUSTOMER" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_NOTICEDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NOTICEDOC_OPERTYPE" ON "NOTICEDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_NOTICEDOC_OPERTYPE" ON "NOTICEDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RPLTRANSACTMODE
 --------------------------------------------------------
@@ -27483,8 +26772,7 @@
 --  DDL for Index J_FK_DOCDIGESTRULE_RULESCRIPT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCDIGESTRULE_RULESCRIPT" ON "DOCDIGESTRULE" ("RULESCRIPT_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCDIGESTRULE_RULESCRIPT" ON "DOCDIGESTRULE" ("RULESCRIPT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PURCHCARRY
 --------------------------------------------------------
@@ -27494,14 +26782,12 @@
 --  DDL for Index J_FK_PLAN3DOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN3DOC_DOCUMENT" ON "PLAN3DOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN3DOC_DOCUMENT" ON "PLAN3DOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3LINE_FINSRC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3LINE_FINSRC" ON "PLAN3PURCHASELINE" ("FINSRC_ID") 
-   ;
+  CREATE INDEX "J_FK_P3LINE_FINSRC" ON "PLAN3PURCHASELINE" ("FINSRC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_BUDGETSTAGE
 --------------------------------------------------------
@@ -27511,8 +26797,7 @@
 --  DDL for Index J_FK_ORGLICENSE_LICTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORGLICENSE_LICTYPE" ON "ORGLICENCE" ("LICTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_ORGLICENSE_LICTYPE" ON "ORGLICENCE" ("LICTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PERSONAL
 --------------------------------------------------------
@@ -27532,8 +26817,7 @@
 --  DDL for Index J_FK_P2ARRANGEMENT_DELIVBASIS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_DELIVBASIS" ON "PLAN2ARRANGEMENT" ("DELIVERYBASIS_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_DELIVBASIS" ON "PLAN2ARRANGEMENT" ("DELIVERYBASIS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PLAN2DOC
 --------------------------------------------------------
@@ -27548,8 +26832,7 @@
 --  DDL for Index IFK_BUDGETLI_RECIPIENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_BUDGETLI_RECIPIENT_ID" ON "BUDGETLINE" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "IFK_BUDGETLI_RECIPIENT_ID" ON "BUDGETLINE" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_FINSRCSATISFY
 --------------------------------------------------------
@@ -27559,14 +26842,12 @@
 --  DDL for Index J_FK_DIGESTSIGN_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DIGESTSIGN_DISPSTATUS" ON "DIGESTSIGN" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_DIGESTSIGN_DISPSTATUS" ON "DIGESTSIGN" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_INVOICEDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INVOICEDOC_OPERTYPE" ON "INVOICEDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_INVOICEDOC_OPERTYPE" ON "INVOICEDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CODETYPE
 --------------------------------------------------------
@@ -27581,14 +26862,12 @@
 --  DDL for Index IDX_MENUITEMWEB_MENU
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_MENUITEMWEB_MENU" ON "MENUITEMWEB" ("MENU_ID") 
-   ;
+  CREATE INDEX "IDX_MENUITEMWEB_MENU" ON "MENUITEMWEB" ("MENU_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLANDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLANDOC_OPERTYPE" ON "PLANDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLANDOC_OPERTYPE" ON "PLANDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_MSGSITE
 --------------------------------------------------------
@@ -27608,26 +26887,22 @@
 --  DDL for Index IDX_CONTRCARDDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTRCARDDOC_DOCUMENT" ON "CONTRACTCARDDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_CONTRCARDDOC_DOCUMENT" ON "CONTRACTCARDDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_SIGNFORMAT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SIGNFORMAT_ID" ON "SUPPORTCRYPTOLIBFORMAT" ("SIGNFORMAT_ID") 
-   ;
+  CREATE INDEX "J_FK_SIGNFORMAT_ID" ON "SUPPORTCRYPTOLIBFORMAT" ("SIGNFORMAT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_CUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_CUSTOMER" ON "PLAN3PURCHASEDOC" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_CUSTOMER" ON "PLAN3PURCHASEDOC" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2GOODS_INDUSTRYCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2GOODS_INDUSTRYCODE" ON "PLAN2GOODS" ("INDUSTRYCODE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2GOODS_INDUSTRYCODE" ON "PLAN2GOODS" ("INDUSTRYCODE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_USERORG
 --------------------------------------------------------
@@ -27637,14 +26912,12 @@
 --  DDL for Index J_FK_GOODSOKPDPREF_OKPD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSOKPDPREF_OKPD" ON "GOODSOKPDCOUNTRYPREF" ("GOODSOKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_GOODSOKPDPREF_OKPD" ON "GOODSOKPDCOUNTRYPREF" ("GOODSOKPD_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_REQUESTDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_BUDGET" ON "REQUESTDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_BUDGET" ON "REQUESTDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index PK_GOODSOKDP
 --------------------------------------------------------
@@ -27654,8 +26927,7 @@
 --  DDL for Index J_FK_ALTGOODSGROUP_TYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ALTGOODSGROUP_TYPE" ON "ALTGOODSGROUP" ("TYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_ALTGOODSGROUP_TYPE" ON "ALTGOODSGROUP" ("TYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ORGETP
 --------------------------------------------------------
@@ -27675,14 +26947,12 @@
 --  DDL for Index J_FK_FACTDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_FACTDOC_OPERTYPE" ON "FACTDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_FACTDOC_OPERTYPE" ON "FACTDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CERTICREQ_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CERTICREQ_DOCUMENT" ON "CERTINTERCHANGEREQUEST" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IFK_CERTICREQ_DOCUMENT" ON "CERTINTERCHANGEREQUEST" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index S_OFFERDOC_NI
 --------------------------------------------------------
@@ -27692,14 +26962,12 @@
 --  DDL for Index IFK_CEPENALTY_DOCUMENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CEPENALTY_DOCUMENT_ID" ON "CEPENALTY" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IFK_CEPENALTY_DOCUMENT_ID" ON "CEPENALTY" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_REQUESTDOC_PERSONAL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_PERSONAL" ON "REQUESTDOC" ("RESPPERSONAL_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_PERSONAL" ON "REQUESTDOC" ("RESPPERSONAL_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CMPDECISION
 --------------------------------------------------------
@@ -27724,8 +26992,7 @@
 --  DDL for Index IFK_CONCONTR_ORGACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONCONTR_ORGACC_ID" ON "CONCONTRACTOR" ("ORGACC_ID") 
-   ;
+  CREATE INDEX "IFK_CONCONTR_ORGACC_ID" ON "CONCONTRACTOR" ("ORGACC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CMPGOODS
 --------------------------------------------------------
@@ -27735,8 +27002,7 @@
 --  DDL for Index IDX_P3PURCHASEDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_P3PURCHASEDOC_DISPSTATUS" ON "PLAN3PURCHASEDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_P3PURCHASEDOC_DISPSTATUS" ON "PLAN3PURCHASEDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_FUNUNIT_NAME
 --------------------------------------------------------
@@ -27756,8 +27022,7 @@
 --  DDL for Index J_FK_REQUESTDOC_CONSOLIDDOC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_CONSOLIDDOC" ON "REQUESTDOC" ("CONSOLIDDOC_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_CONSOLIDDOC" ON "REQUESTDOC" ("CONSOLIDDOC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_COMMEMBER
 --------------------------------------------------------
@@ -27767,14 +27032,12 @@
 --  DDL for Index IFK_PURCHASECARRY_RECIPIENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PURCHASECARRY_RECIPIENT_ID" ON "PURCHASECARRY" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "IFK_PURCHASECARRY_RECIPIENT_ID" ON "PURCHASECARRY" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RPL_MASTER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RPL_MASTER" ON "RPL" ("MASTER_ID") 
-   ;
+  CREATE INDEX "J_FK_RPL_MASTER" ON "RPL" ("MASTER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RQDOCREQ
 --------------------------------------------------------
@@ -27789,26 +27052,22 @@
 --  DDL for Index J_FK_CMPPERSONAL_PERSONAL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPPERSONAL_PERSONAL" ON "CMPPERSONAL" ("PERSONAL_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPPERSONAL_PERSONAL" ON "CMPPERSONAL" ("PERSONAL_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_INVOICEDOC_CONEXECUTERACC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INVOICEDOC_CONEXECUTERACC" ON "INVOICEDOC" ("CONEXECUTERACC_ID") 
-   ;
+  CREATE INDEX "J_FK_INVOICEDOC_CONEXECUTERACC" ON "INVOICEDOC" ("CONEXECUTERACC_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_INVGOODS_GROUPCODE
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_INVGOODS_GROUPCODE" ON "INVGOODS" ("GROUPCODE") 
-   ;
+  CREATE INDEX "IFK_INVGOODS_GROUPCODE" ON "INVGOODS" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index IDX_DOCUMENT_PDD
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_DOCUMENT_PDD" ON "DOCUMENT" ("PARENT_ID", "DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_DOCUMENT_PDD" ON "DOCUMENT" ("PARENT_ID", "DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONSTRUCTION
 --------------------------------------------------------
@@ -27818,14 +27077,12 @@
 --  DDL for Index IDX_CONSOLIDDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONSOLIDDOC_DATENUM" ON "CONSOLIDDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_CONSOLIDDOC_DATENUM" ON "CONSOLIDDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index IDX_CONTRACTDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTRACTDOC_DOC_DATE" ON "CONTRACTDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_CONTRACTDOC_DOC_DATE" ON "CONTRACTDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index PK_CERTREQ
 --------------------------------------------------------
@@ -27835,8 +27092,7 @@
 --  DDL for Index J_FK_CSGOODS_OKDP_CODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CSGOODS_OKDP_CODE" ON "CSGOODS" ("OKDP_CODE") 
-   ;
+  CREATE INDEX "J_FK_CSGOODS_OKDP_CODE" ON "CSGOODS" ("OKDP_CODE");
 --------------------------------------------------------
 --  DDL for Index PK_OFRDECREASON
 --------------------------------------------------------
@@ -27846,74 +27102,62 @@
 --  DDL for Index J_FK_DOCUMENTCLASS_SERVERACTIO
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCUMENTCLASS_SERVERACTIO" ON "DOCUMENTCLASS" ("DOCPRINTER_ID", "PRINTER_ACTION") 
-   ;
+  CREATE INDEX "J_FK_DOCUMENTCLASS_SERVERACTIO" ON "DOCUMENTCLASS" ("DOCPRINTER_ID", "PRINTER_ACTION");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONSOLIDDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONSOLIDDOC_OPERTYPE" ON "CONSOLIDDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_CONSOLIDDOC_OPERTYPE" ON "CONSOLIDDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PF_PLFEATURE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PF_PLFEATURE" ON "PLAN3PURCHASEFEATURE" ("PLACEMENTFEATURE_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PF_PLFEATURE" ON "PLAN3PURCHASEFEATURE" ("PLACEMENTFEATURE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_DELIVADDR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_DELIVADDR" ON "PLAN3PURCHASEDOC" ("DELIVERYADDRESS_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_DELIVADDR" ON "PLAN3PURCHASEDOC" ("DELIVERYADDRESS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2ARRANGEMENT_PREFEREN
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2ARRANGEMENT_PREFEREN" ON "PLAN2ARRANGEMENT" ("PREFERENCEGROUP_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2ARRANGEMENT_PREFEREN" ON "PLAN2ARRANGEMENT" ("PREFERENCEGROUP_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RECOILDOC_NECESSITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILDOC_NECESSITY" ON "RECOILDOC" ("NECESSITY_ID") 
-   ;
+  CREATE INDEX "J_FK_RECOILDOC_NECESSITY" ON "RECOILDOC" ("NECESSITY_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_GOODSGRO_GOODSGROUP_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_GOODSGRO_GOODSGROUP_ID" ON "GOODSGROUPPURCHASEMODE" ("GOODSGROUP_ID") 
-   ;
+  CREATE INDEX "IFK_GOODSGRO_GOODSGROUP_ID" ON "GOODSGROUPPURCHASEMODE" ("GOODSGROUP_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_MAILRECEIVERGROUP_USR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_MAILRECEIVERGROUP_USR" ON "MAILRECEIVERGROUP_RECEIVER" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_MAILRECEIVERGROUP_USR" ON "MAILRECEIVERGROUP_RECEIVER" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ATTACHCATEGORIES_CATEGORY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ATTACHCATEGORIES_CATEGORY" ON "ATTACHCATEGORIES" ("DOCCATEGORY_ID") 
-   ;
+  CREATE INDEX "J_FK_ATTACHCATEGORIES_CATEGORY" ON "ATTACHCATEGORIES" ("DOCCATEGORY_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CMPGOODS_LOTPOSORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPGOODS_LOTPOSORDER_ID" ON "CMPGOODS" ("ORDER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_CMPGOODS_LOTPOSORDER_ID" ON "CMPGOODS" ("ORDER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2GOODS_RECIPIENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2GOODS_RECIPIENT" ON "PLAN2GOODS" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2GOODS_RECIPIENT" ON "PLAN2GOODS" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_LIABILITYCRED_LIABILITYGR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LIABILITYCRED_LIABILITYGR" ON "LIABILITYCREDENTIAL" ("LIABILITYGROUP_ID") 
-   ;
+  CREATE INDEX "J_FK_LIABILITYCRED_LIABILITYGR" ON "LIABILITYCREDENTIAL" ("LIABILITYGROUP_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_ORGETP
 --------------------------------------------------------
@@ -27928,32 +27172,27 @@
 --  DDL for Index J_FK_RQFEATURE_RQLOT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQFEATURE_RQLOT" ON "RQFEATURE" ("REQUEST_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "J_FK_RQFEATURE_RQLOT" ON "RQFEATURE" ("REQUEST_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index IFK_AUCTIONB_ORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_AUCTIONB_ORDER_ID" ON "AUCTIONBID" ("ORDER_ID") 
-   ;
+  CREATE INDEX "IFK_AUCTIONB_ORDER_ID" ON "AUCTIONBID" ("ORDER_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_OFRSUPPL_GOODSPOSOFFER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_OFRSUPPL_GOODSPOSOFFER_ID" ON "OFRSUPPLYSHEDULE" ("OFFER_ID", "GOODSPOS") 
-   ;
+  CREATE INDEX "IFK_OFRSUPPL_GOODSPOSOFFER_ID" ON "OFRSUPPLYSHEDULE" ("OFFER_ID", "GOODSPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_ROLEACTION_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEACTION_DISPSTATUS" ON "ROLEEVENT" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_ROLEACTION_DISPSTATUS" ON "ROLEEVENT" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFRPLACE_CUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFRPLACE_CUSTOMER" ON "OFRPLACE" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "J_FK_OFRPLACE_CUSTOMER" ON "OFRPLACE" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OOS223PURCHNOTICELOTINFO
 --------------------------------------------------------
@@ -27968,26 +27207,22 @@
 --  DDL for Index IDX_PLAN2GOODS_CODE4
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2GOODS_CODE4" ON "PLAN2GOODS" ("CODE4") 
-   ;
+  CREATE INDEX "IDX_PLAN2GOODS_CODE4" ON "PLAN2GOODS" ("CODE4");
 --------------------------------------------------------
 --  DDL for Index J_FK_LIABILITY_LINES_EXPENSE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LIABILITY_LINES_EXPENSE" ON "LIABILITYEXPENSE_DOCLINES" ("LIABILITYEXPENSE_ID") 
-   ;
+  CREATE INDEX "J_FK_LIABILITY_LINES_EXPENSE" ON "LIABILITYEXPENSE_DOCLINES" ("LIABILITYEXPENSE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RECOILDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILDOC_OPERTYPE" ON "RECOILDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_RECOILDOC_OPERTYPE" ON "RECOILDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORG_OKTMO
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORG_OKTMO" ON "ORG" ("OKTMO_ID") 
-   ;
+  CREATE INDEX "J_FK_ORG_OKTMO" ON "ORG" ("OKTMO_ID");
 --------------------------------------------------------
 --  DDL for Index PK_SERVERPROVIDER
 --------------------------------------------------------
@@ -28002,8 +27237,7 @@
 --  DDL for Index J_FK_PURCHASECARRY_CONTRACTOR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHASECARRY_CONTRACTOR" ON "PURCHASECARRY" ("CONTRACTOR_ID") 
-   ;
+  CREATE INDEX "J_FK_PURCHASECARRY_CONTRACTOR" ON "PURCHASECARRY" ("CONTRACTOR_ID");
 --------------------------------------------------------
 --  DDL for Index PK_TYPEREQ
 --------------------------------------------------------
@@ -28023,14 +27257,12 @@
 --  DDL for Index IFK_ORGACCOU_EXECUTER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORGACCOU_EXECUTER_ID" ON "ORGACCOUNT" ("EXECUTER_ID") 
-   ;
+  CREATE INDEX "IFK_ORGACCOU_EXECUTER_ID" ON "ORGACCOUNT" ("EXECUTER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORDERDOC_ORGFORM
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_ORGFORM" ON "ORDERDOC" ("VENDORPROPFORM_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_ORGFORM" ON "ORDERDOC" ("VENDORPROPFORM_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CETERMINATIONLINE
 --------------------------------------------------------
@@ -28040,14 +27272,12 @@
 --  DDL for Index J_FK_CONTRACTDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_OPERTYPE" ON "CONTRACTDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_OPERTYPE" ON "CONTRACTDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_INVOICEDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INVOICEDOC_DISPSTATUS" ON "INVOICEDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_INVOICEDOC_DISPSTATUS" ON "INVOICEDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_TERRITORY
 --------------------------------------------------------
@@ -28057,20 +27287,17 @@
 --  DDL for Index J_FK_DOCDIGREQS_RULEREQUISITE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCDIGREQS_RULEREQUISITE" ON "DOCDIGESTREQUISITES" ("RULEREQUISITE_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCDIGREQS_RULEREQUISITE" ON "DOCDIGESTREQUISITES" ("RULEREQUISITE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_INVOICEDOC_CONTRACTREASON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INVOICEDOC_CONTRACTREASON" ON "INVOICEDOC" ("SINGLECUSTOMERREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_INVOICEDOC_CONTRACTREASON" ON "INVOICEDOC" ("SINGLECUSTOMERREASON_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_COMPLAINTDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_COMPLAINTDOC_DOCUMENT" ON "COMPLAINTDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_COMPLAINTDOC_DOCUMENT" ON "COMPLAINTDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CMPDOCREQ
 --------------------------------------------------------
@@ -28080,8 +27307,7 @@
 --  DDL for Index J_FK_CUSTOMERLOT_CONBANK
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CUSTOMERLOT_CONBANK" ON "CMPCUSTOMERLOT" ("GUARANTEECONTRACTBIC") 
-   ;
+  CREATE INDEX "J_FK_CUSTOMERLOT_CONBANK" ON "CMPCUSTOMERLOT" ("GUARANTEECONTRACTBIC");
 --------------------------------------------------------
 --  DDL for Index PK_REQUESTORDER
 --------------------------------------------------------
@@ -28091,14 +27317,12 @@
 --  DDL for Index J_FK_ORG_ORGFORM
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORG_ORGFORM" ON "ORG" ("PROPFORM_ID") 
-   ;
+  CREATE INDEX "J_FK_ORG_ORGFORM" ON "ORG" ("PROPFORM_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3LINE_RCPT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3LINE_RCPT" ON "PLAN3PURCHASELINE" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "J_FK_P3LINE_RCPT" ON "PLAN3PURCHASELINE" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_GOODSOKVED_CODE
 --------------------------------------------------------
@@ -28108,20 +27332,17 @@
 --  DDL for Index J_FK_ORDERDOC_PURCHASEORGCACHE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_PURCHASEORGCACHE" ON "ORDERDOC" ("PURCHASEORGNAMECACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_PURCHASEORGCACHE" ON "ORDERDOC" ("PURCHASEORGNAMECACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFFERDOC_VENDORTERCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFFERDOC_VENDORTERCODE" ON "OFFERDOC" ("VENDORCOUNTRY_ID", "VENDORTERRITORYCODE") 
-   ;
+  CREATE INDEX "J_FK_OFFERDOC_VENDORTERCODE" ON "OFFERDOC" ("VENDORCOUNTRY_ID", "VENDORTERRITORYCODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_GOODSGROUP_OKDP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSGROUP_OKDP" ON "GOODSGROUP" ("OKDP_CODE") 
-   ;
+  CREATE INDEX "J_FK_GOODSGROUP_OKDP" ON "GOODSGROUP" ("OKDP_CODE");
 --------------------------------------------------------
 --  DDL for Index UQ_BUDGETLINE
 --------------------------------------------------------
@@ -28131,8 +27352,7 @@
 --  DDL for Index J_FK_CONTRACTDOC_OOSPURCHASE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_OOSPURCHASE" ON "CONTRACTDOC" ("OOSPURCHASEORG_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_OOSPURCHASE" ON "CONTRACTDOC" ("OOSPURCHASEORG_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RQQUALREQ
 --------------------------------------------------------
@@ -28147,8 +27367,7 @@
 --  DDL for Index J_FK_ORGADDKPP_ORGFORM
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORGADDKPP_ORGFORM" ON "ORGADDKPP" ("PROPFORM_ID") 
-   ;
+  CREATE INDEX "J_FK_ORGADDKPP_ORGFORM" ON "ORGADDKPP" ("PROPFORM_ID");
 --------------------------------------------------------
 --  DDL for Index S_COMPLAINTDOC_DI
 --------------------------------------------------------
@@ -28158,8 +27377,7 @@
 --  DDL for Index IFK_INVOICED_TERRITORYCODECOU
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_INVOICED_TERRITORYCODECOU" ON "INVOICEDOC" ("COUNTRY_ID", "TERRITORYCODE") 
-   ;
+  CREATE INDEX "IFK_INVOICED_TERRITORYCODECOU" ON "INVOICEDOC" ("COUNTRY_ID", "TERRITORYCODE");
 --------------------------------------------------------
 --  DDL for Index UQ_INTERBUDGET_OUTERBUDGET
 --------------------------------------------------------
@@ -28169,8 +27387,7 @@
 --  DDL for Index J_FK_CONTYPEATTACH
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTYPEATTACH" ON "CONTYPEATTACH" ("CONTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTYPEATTACH" ON "CONTYPEATTACH" ("CONTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_STOREDDOCUMENTS
 --------------------------------------------------------
@@ -28190,44 +27407,37 @@
 --  DDL for Index J_FK_RECOILLINES_PAYCONDITION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILLINES_PAYCONDITION" ON "RECOILLINES" ("PAYCONDITIONCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_RECOILLINES_PAYCONDITION" ON "RECOILLINES" ("PAYCONDITIONCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PRODUCTS_NOTIFICATION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PRODUCTS_NOTIFICATION" ON "OOSPRODUCTS" ("NOTIFICATION_ID") 
-   ;
+  CREATE INDEX "J_FK_PRODUCTS_NOTIFICATION" ON "OOSPRODUCTS" ("NOTIFICATION_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CERTICREQ_USERCERT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CERTICREQ_USERCERT" ON "CERTINTERCHANGEREQUEST" ("USERCERT_ID") 
-   ;
+  CREATE INDEX "J_FK_CERTICREQ_USERCERT" ON "CERTINTERCHANGEREQUEST" ("USERCERT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLNBL_GRANTINVESTMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLNBL_GRANTINVESTMENT" ON "PLNBUDGETLINE" ("GRANTINVESTMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_PLNBL_GRANTINVESTMENT" ON "PLNBUDGETLINE" ("GRANTINVESTMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_TYPEDOCREQ_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TYPEDOCREQ_PURCHASEMODE" ON "TYPEDOCREQ" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_TYPEDOCREQ_PURCHASEMODE" ON "TYPEDOCREQ" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_TENDER_CRITERIONPOSORDE
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_TENDER_CRITERIONPOSORDE" ON "TENDER" ("ORDER_ID", "CRITERIONPOS") 
-   ;
+  CREATE INDEX "IFK_TENDER_CRITERIONPOSORDE" ON "TENDER" ("ORDER_ID", "CRITERIONPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN3DOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN3DOC_OPERTYPE" ON "PLAN3DOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN3DOC_OPERTYPE" ON "PLAN3DOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_INTERBUDGET_BUDGET
 --------------------------------------------------------
@@ -28242,20 +27452,17 @@
 --  DDL for Index J_FK_CMPDOCREQ_REQTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPDOCREQ_REQTYPE" ON "CMPDOCREQ" ("REQUIREMENTTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPDOCREQ_REQTYPE" ON "CMPDOCREQ" ("REQUIREMENTTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN3DOC_COUNTRY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN3DOC_COUNTRY" ON "PLAN3DOC" ("CUSTOMERCOUNTRY_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN3DOC_COUNTRY" ON "PLAN3DOC" ("CUSTOMERCOUNTRY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_LEDGER_OKDP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_OKDP" ON "LEDGER" ("OKDP_ID") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_OKDP" ON "LEDGER" ("OKDP_ID");
 --------------------------------------------------------
 --  DDL for Index PK_BANKGUARANTEEREFDOC
 --------------------------------------------------------
@@ -28265,8 +27472,7 @@
 --  DDL for Index J_FK_NMSG_RECEIVER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NMSG_RECEIVER" ON "NOTIFYMSG" ("RECEIVER_ID") 
-   ;
+  CREATE INDEX "J_FK_NMSG_RECEIVER" ON "NOTIFYMSG" ("RECEIVER_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_DOCCUSTOMFIELDVALUES
 --------------------------------------------------------
@@ -28276,14 +27482,12 @@
 --  DDL for Index IDX_PLANDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLANDOC_DOCUMENT" ON "PLANDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_PLANDOC_DOCUMENT" ON "PLANDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PURCHASEPLAN_NECESSITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHASEPLAN_NECESSITY" ON "PURCHASEPLAN" ("NECESSITY_ID") 
-   ;
+  CREATE INDEX "J_FK_PURCHASEPLAN_NECESSITY" ON "PURCHASEPLAN" ("NECESSITY_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_TENDERLINECOMM
 --------------------------------------------------------
@@ -28298,8 +27502,7 @@
 --  DDL for Index J_FK_ORDERDOC_REPNOTICE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_REPNOTICE" ON "ORDERDOC" ("REPNOTICE_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_REPNOTICE" ON "ORDERDOC" ("REPNOTICE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_GOODSOKPDPURCHASEMODE
 --------------------------------------------------------
@@ -28309,8 +27512,7 @@
 --  DDL for Index J_FK_PLAN2GOODS_FINSRC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2GOODS_FINSRC" ON "PLAN2GOODS" ("FINSRC_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2GOODS_FINSRC" ON "PLAN2GOODS" ("FINSRC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PREFERENCEGROUP
 --------------------------------------------------------
@@ -28320,8 +27522,7 @@
 --  DDL for Index J_FK_RESERVEDLINE_PARENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RESERVEDLINE_PARENT_ID" ON "RESERVEDBUDGETLINE" ("PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_RESERVEDLINE_PARENT_ID" ON "RESERVEDBUDGETLINE" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CSGOODSPROP
 --------------------------------------------------------
@@ -28336,14 +27537,12 @@
 --  DDL for Index J_FK_CERTICREQ_DOCCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CERTICREQ_DOCCLASS" ON "CERTINTERCHANGEREQUEST" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_CERTICREQ_DOCCLASS" ON "CERTINTERCHANGEREQUEST" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_KLADR_CHILDLEVEL
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_KLADR_CHILDLEVEL" ON "KLADR" ("CHILDLEVEL") 
-   ;
+  CREATE INDEX "IDX_KLADR_CHILDLEVEL" ON "KLADR" ("CHILDLEVEL");
 --------------------------------------------------------
 --  DDL for Index PK_DBUPDATE
 --------------------------------------------------------
@@ -28358,8 +27557,7 @@
 --  DDL for Index J_FK_BANKGUARANTEEREFDOC_STAT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_BANKGUARANTEEREFDOC_STAT" ON "BANKGUARANTEEREFDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_BANKGUARANTEEREFDOC_STAT" ON "BANKGUARANTEEREFDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OFRGOODS
 --------------------------------------------------------
@@ -28369,8 +27567,7 @@
 --  DDL for Index J_FK_NOTICEORG_DOCGROUP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NOTICEORG_DOCGROUP" ON "NOTICEDOC" ("DOCGROUP_ID") 
-   ;
+  CREATE INDEX "J_FK_NOTICEORG_DOCGROUP" ON "NOTICEDOC" ("DOCGROUP_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CMPEXPENSE
 --------------------------------------------------------
@@ -28385,44 +27582,37 @@
 --  DDL for Index J_FK_INDUSTRYCODE_ORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INDUSTRYCODE_ORG" ON "INDUSTRYCODE" ("ORG_ID") 
-   ;
+  CREATE INDEX "J_FK_INDUSTRYCODE_ORG" ON "INDUSTRYCODE" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PURCHPLANDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHPLANDOC_DISPSTATUS" ON "PURCHASEPLANDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_PURCHPLANDOC_DISPSTATUS" ON "PURCHASEPLANDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_AUCTIONBID_DOCUMENTCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_AUCTIONBID_DOCUMENTCLASS" ON "AUCTIONBID" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_AUCTIONBID_DOCUMENTCLASS" ON "AUCTIONBID" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_REQUESTDOC_COMMISSION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_COMMISSION" ON "REQUESTDOC" ("COMMISSION_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_COMMISSION" ON "REQUESTDOC" ("COMMISSION_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PENALTYCHANGEDOCINFO_CLAI
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PENALTYCHANGEDOCINFO_CLAI" ON "CLAIMPENALTYCHANGEDOCINFO" ("CLAIM_ID") 
-   ;
+  CREATE INDEX "J_FK_PENALTYCHANGEDOCINFO_CLAI" ON "CLAIMPENALTYCHANGEDOCINFO" ("CLAIM_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN2GOODS_CODE7
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2GOODS_CODE7" ON "PLAN2GOODS" ("CODE7") 
-   ;
+  CREATE INDEX "IDX_PLAN2GOODS_CODE7" ON "PLAN2GOODS" ("CODE7");
 --------------------------------------------------------
 --  DDL for Index IFK_RESERVED_ORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RESERVED_ORDER_ID" ON "RESERVEDBUDGETLINE" ("ORDER_ID") 
-   ;
+  CREATE INDEX "IFK_RESERVED_ORDER_ID" ON "RESERVEDBUDGETLINE" ("ORDER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DESCRIPTION_CACHE
 --------------------------------------------------------
@@ -28432,8 +27622,7 @@
 --  DDL for Index J_FK_HISTORYMODIFY_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_HISTORYMODIFY_SYSUSER" ON "HISTORYMODIFY" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_HISTORYMODIFY_SYSUSER" ON "HISTORYMODIFY" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index S_PURCHASEPLANDOC_DNI
 --------------------------------------------------------
@@ -28443,44 +27632,37 @@
 --  DDL for Index J_FK_CEEXECUTIONLINE_FACTDOC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CEEXECUTIONLINE_FACTDOC" ON "CEEXECUTIONLINE" ("FACTDOC_ID") 
-   ;
+  CREATE INDEX "J_FK_CEEXECUTIONLINE_FACTDOC" ON "CEEXECUTIONLINE" ("FACTDOC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_COUNTRY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_COUNTRY" ON "PLAN3PURCHASEDOC" ("COUNTRY_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_COUNTRY" ON "PLAN3PURCHASEDOC" ("COUNTRY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPCOMMEMBER_PERSONAL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPCOMMEMBER_PERSONAL" ON "CMPCOMMEMBER" ("COMMEMBER_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPCOMMEMBER_PERSONAL" ON "CMPCOMMEMBER" ("COMMEMBER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PREFERENCEGROUP_PURCHASE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PREFERENCEGROUP_PURCHASE" ON "PREFERENCEGROUP" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_PREFERENCEGROUP_PURCHASE" ON "PREFERENCEGROUP" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_APPOBJ_APPMODULE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_APPOBJ_APPMODULE" ON "APPOBJ" ("MODULEID") 
-   ;
+  CREATE INDEX "J_FK_APPOBJ_APPMODULE" ON "APPOBJ" ("MODULEID");
 --------------------------------------------------------
 --  DDL for Index IFK_RESERVED_CUSTOMER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RESERVED_CUSTOMER_ID" ON "RESERVEDBUDGETLINE" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "IFK_RESERVED_CUSTOMER_ID" ON "RESERVEDBUDGETLINE" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CRLFILE_CRLPOINT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CRLFILE_CRLPOINT" ON "CRLFILE" ("CRLPOINT_ID") 
-   ;
+  CREATE INDEX "J_FK_CRLFILE_CRLPOINT" ON "CRLFILE" ("CRLPOINT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RQGOODSPROP
 --------------------------------------------------------
@@ -28490,8 +27672,7 @@
 --  DDL for Index J_FK_P3PURCHASEDOC_PURCHASEMOD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_PURCHASEMOD" ON "PLAN3PURCHASEDOC" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_PURCHASEMOD" ON "PLAN3PURCHASEDOC" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_TENDERCRITERIONCHILD
 --------------------------------------------------------
@@ -28501,26 +27682,22 @@
 --  DDL for Index J_FK_SYSUSER_ORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SYSUSER_ORG" ON "SYSUSER" ("ORG_ID") 
-   ;
+  CREATE INDEX "J_FK_SYSUSER_ORG" ON "SYSUSER" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CSGOODS_OKPD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CSGOODS_OKPD" ON "CSGOODS" ("OKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_CSGOODS_OKPD" ON "CSGOODS" ("OKPD_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_KLADRSTREET_CODE6
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_KLADRSTREET_CODE6" ON "KLADRSTREET" ("CODE6") 
-   ;
+  CREATE INDEX "IDX_KLADRSTREET_CODE6" ON "KLADRSTREET" ("CODE6");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORG_COUNTRY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORG_COUNTRY" ON "ORG" ("COUNTRY_ID") 
-   ;
+  CREATE INDEX "J_FK_ORG_COUNTRY" ON "ORG" ("COUNTRY_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DOCUMENTCLASS
 --------------------------------------------------------
@@ -28530,8 +27707,7 @@
 --  DDL for Index J_FK_P3PURCHASEDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_DOCUMENT" ON "PLAN3PURCHASEDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_DOCUMENT" ON "PLAN3PURCHASEDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONREASONLINE
 --------------------------------------------------------
@@ -28541,32 +27717,27 @@
 --  DDL for Index J_FK_DOCCOMMENT_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCCOMMENT_SYSUSER" ON "DOCCOMMENT" ("USER_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCCOMMENT_SYSUSER" ON "DOCCOMMENT" ("USER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSPRODUCT_OKPD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPRODUCT_OKPD" ON "PLAN2OOSPRODUCT" ("OKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPRODUCT_OKPD" ON "PLAN2OOSPRODUCT" ("OKPD_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P2ARRANGEMENT_CONTRPROV
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_CONTRPROV" ON "PLAN2ARRANGEMENT" ("CONTRACTPROVIDINGCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_CONTRPROV" ON "PLAN2ARRANGEMENT" ("CONTRACTPROVIDINGCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_RPLLOG_GENERATION
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_RPLLOG_GENERATION" ON "RPLLOG" ("GENERATION", "RPLTABLE_ID", "RECORD_ID") 
-   ;
+  CREATE INDEX "IDX_RPLLOG_GENERATION" ON "RPLLOG" ("GENERATION", "RPLTABLE_ID", "RECORD_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CONTRACT_CONACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONTRACT_CONACC_ID" ON "CONTRACTDOC" ("CONACC_ID") 
-   ;
+  CREATE INDEX "IFK_CONTRACT_CONACC_ID" ON "CONTRACTDOC" ("CONACC_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_INDUSTRYCODE
 --------------------------------------------------------
@@ -28576,8 +27747,7 @@
 --  DDL for Index J_FK_P3PURCHASEDOC_ORDERNAME
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_ORDERNAME" ON "PLAN3PURCHASEDOC" ("ORDERNAMECACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_ORDERNAME" ON "PLAN3PURCHASEDOC" ("ORDERNAMECACHE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_FGROUPHEADER
 --------------------------------------------------------
@@ -28587,32 +27757,27 @@
 --  DDL for Index J_FK_CLAIMDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CLAIMDOC_DISPSTATUS" ON "CLAIMDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_CLAIMDOC_DISPSTATUS" ON "CLAIMDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_DOCUMENT_CLASS_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_DOCUMENT_CLASS_ID" ON "DOCUMENT" ("DOCUMENTCLASS_ID", "ID") 
-   ;
+  CREATE INDEX "IDX_DOCUMENT_CLASS_ID" ON "DOCUMENT" ("DOCUMENTCLASS_ID", "ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCUMENT_PARDISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCUMENT_PARDISPSTATUS" ON "DOCUMENT" ("PARDISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCUMENT_PARDISPSTATUS" ON "DOCUMENT" ("PARDISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_PLNBUDGE_ESTIMATE_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PLNBUDGE_ESTIMATE_ID" ON "PLNBUDGETLINE" ("ESTIMATE_ID") 
-   ;
+  CREATE INDEX "IFK_PLNBUDGE_ESTIMATE_ID" ON "PLNBUDGETLINE" ("ESTIMATE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONGOODS_OKPD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONGOODS_OKPD" ON "CONGOODS" ("OKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_CONGOODS_OKPD" ON "CONGOODS" ("OKPD_ID");
 --------------------------------------------------------
 --  DDL for Index PK_AUCTIONBID
 --------------------------------------------------------
@@ -28622,14 +27787,12 @@
 --  DDL for Index J_FK_CMPGOODS_OKDP_CODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPGOODS_OKDP_CODE" ON "CMPGOODS" ("OKDP_CODE") 
-   ;
+  CREATE INDEX "J_FK_CMPGOODS_OKDP_CODE" ON "CMPGOODS" ("OKDP_CODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFFERDOC_VENDOREXECUTER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFFERDOC_VENDOREXECUTER" ON "OFFERDOC" ("VENDOREXECUTER_ID") 
-   ;
+  CREATE INDEX "J_FK_OFFERDOC_VENDOREXECUTER" ON "OFFERDOC" ("VENDOREXECUTER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_TYPEDOCREQ
 --------------------------------------------------------
@@ -28639,20 +27802,17 @@
 --  DDL for Index J_FK_DDS_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DDS_DISPSTATUS" ON "DOCDIGESTRULE" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_DDS_DISPSTATUS" ON "DOCDIGESTRULE" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_CMPORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_CMPORG" ON "PLAN3PURCHASEDOC" ("CMPORG_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_CMPORG" ON "PLAN3PURCHASEDOC" ("CMPORG_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_ORDERDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_ORDERDOC_DOC_DATE" ON "ORDERDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_ORDERDOC_DOC_DATE" ON "ORDERDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index S_CONTRCARDDOC_NI
 --------------------------------------------------------
@@ -28662,8 +27822,7 @@
 --  DDL for Index J_FK_P3PURCHASEDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_OPERTYPE" ON "PLAN3PURCHASEDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_OPERTYPE" ON "PLAN3PURCHASEDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_REFATTACH
 --------------------------------------------------------
@@ -28673,14 +27832,12 @@
 --  DDL for Index IDX_CLAIMDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CLAIMDOC_DOCUMENT" ON "CLAIMDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_CLAIMDOC_DOCUMENT" ON "CLAIMDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_PURCHASEPLAN_CMPORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PURCHASEPLAN_CMPORG_ID" ON "PURCHASEPLAN" ("CMPORG_ID") 
-   ;
+  CREATE INDEX "IFK_PURCHASEPLAN_CMPORG_ID" ON "PURCHASEPLAN" ("CMPORG_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DESCRIPTION
 --------------------------------------------------------
@@ -28690,8 +27847,7 @@
 --  DDL for Index IFK_REQUESTD_RECIPIENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_REQUESTD_RECIPIENT_ID" ON "REQUESTDOC" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "IFK_REQUESTD_RECIPIENT_ID" ON "REQUESTDOC" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_DOCATTACH
 --------------------------------------------------------
@@ -28701,8 +27857,7 @@
 --  DDL for Index J_FK_BUDGET_RELATION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_BUDGET_RELATION" ON "BUDGET" ("RELATIONBUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_BUDGET_RELATION" ON "BUDGET" ("RELATIONBUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index S_CONSOLIDDOC_DNI
 --------------------------------------------------------
@@ -28712,8 +27867,7 @@
 --  DDL for Index IFK_PURCHASECARRY_GROUPCODE
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PURCHASECARRY_GROUPCODE" ON "PURCHASECARRY" ("GROUPCODE") 
-   ;
+  CREATE INDEX "IFK_PURCHASECARRY_GROUPCODE" ON "PURCHASECARRY" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index PK_DOCUMENT
 --------------------------------------------------------
@@ -28723,8 +27877,7 @@
 --  DDL for Index IDX_INVOICEDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_INVOICEDOC_DOCUMENT" ON "INVOICEDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_INVOICEDOC_DOCUMENT" ON "INVOICEDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_RPL$CONSTRAINTS
 --------------------------------------------------------
@@ -28734,8 +27887,7 @@
 --  DDL for Index J_FK_FCTGOODS_OKDP_CODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_FCTGOODS_OKDP_CODE" ON "FCTGOODS" ("OKDP_CODE") 
-   ;
+  CREATE INDEX "J_FK_FCTGOODS_OKDP_CODE" ON "FCTGOODS" ("OKDP_CODE");
 --------------------------------------------------------
 --  DDL for Index PK_DBCONNECT
 --------------------------------------------------------
@@ -28745,56 +27897,47 @@
 --  DDL for Index J_FK_TENDERLINECOMM_CMPCOMMEMB
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TENDERLINECOMM_CMPCOMMEMB" ON "TENDERLINECOMM" ("ORDER_ID", "COMMEMBERPOS") 
-   ;
+  CREATE INDEX "J_FK_TENDERLINECOMM_CMPCOMMEMB" ON "TENDERLINECOMM" ("ORDER_ID", "COMMEMBERPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_PURCHASEPLAN_FINSRC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHASEPLAN_FINSRC" ON "PURCHASEPLAN" ("FINSRC_ID") 
-   ;
+  CREATE INDEX "J_FK_PURCHASEPLAN_FINSRC" ON "PURCHASEPLAN" ("FINSRC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_INVGOODS_OKPD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INVGOODS_OKPD" ON "INVGOODS" ("OKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_INVGOODS_OKPD" ON "INVGOODS" ("OKPD_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PURCHASEPLANDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PURCHASEPLANDOC_DISPSTATUS" ON "PURCHASEPLANDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_PURCHASEPLANDOC_DISPSTATUS" ON "PURCHASEPLANDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_OFFERDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_OFFERDOC_DOC_DATE" ON "OFFERDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_OFFERDOC_DOC_DATE" ON "OFFERDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFFERDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFFERDOC_DISPSTATUS" ON "OFFERDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_OFFERDOC_DISPSTATUS" ON "OFFERDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CERTREQ_DOCCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CERTREQ_DOCCLASS" ON "CERTREQUEST" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_CERTREQ_DOCCLASS" ON "CERTREQUEST" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_MSG_STATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_MSG_STATUS" ON "MSG" ("DISPSTATUS", "RECEIVER_ID") 
-   ;
+  CREATE INDEX "IDX_MSG_STATUS" ON "MSG" ("DISPSTATUS", "RECEIVER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OOS223PNLI_PURCHNOTICEINF
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OOS223PNLI_PURCHNOTICEINF" ON "OOS223PURCHNOTICELOTINFO" ("OOS223PURCHASENOTICEINFO_ID") 
-   ;
+  CREATE INDEX "J_FK_OOS223PNLI_PURCHNOTICEINF" ON "OOS223PURCHNOTICELOTINFO" ("OOS223PURCHASENOTICEINFO_ID");
 --------------------------------------------------------
 --  DDL for Index PK_FILEFOLDER
 --------------------------------------------------------
@@ -28804,8 +27947,7 @@
 --  DDL for Index J_FK_FGROUPATTACH_DOCATTACHEX
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_FGROUPATTACH_DOCATTACHEX" ON "FGROUPATTACH" ("DOCATTACH_ID") 
-   ;
+  CREATE INDEX "J_FK_FGROUPATTACH_DOCATTACHEX" ON "FGROUPATTACH" ("DOCATTACH_ID");
 --------------------------------------------------------
 --  DDL for Index S_CLAIMDOC_NI
 --------------------------------------------------------
@@ -28815,8 +27957,7 @@
 --  DDL for Index J_FK_ORDERDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_DISPSTATUS" ON "ORDERDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_DISPSTATUS" ON "ORDERDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_PLAN
 --------------------------------------------------------
@@ -28831,20 +27972,17 @@
 --  DDL for Index J_FK_PLANDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLANDOC_DISPSTATUS" ON "PLANDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_PLANDOC_DISPSTATUS" ON "PLANDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CMPDOCRE_LOTPOSORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPDOCRE_LOTPOSORDER_ID" ON "CMPDOCREQ" ("ORDER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_CMPDOCRE_LOTPOSORDER_ID" ON "CMPDOCREQ" ("ORDER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_INVBL_INDUSTRYCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INVBL_INDUSTRYCODE" ON "INVBUDGETLINE" ("INDUSTRYCODE_ID") 
-   ;
+  CREATE INDEX "J_FK_INVBL_INDUSTRYCODE" ON "INVBUDGETLINE" ("INDUSTRYCODE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONTRACTREASON
 --------------------------------------------------------
@@ -28869,14 +28007,12 @@
 --  DDL for Index J_FK_CMPDECISION_CMPCOMPETITOR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPDECISION_CMPCOMPETITOR" ON "CMPDECISION" ("ORDER_ID", "COMPETITORPOS") 
-   ;
+  CREATE INDEX "J_FK_CMPDECISION_CMPCOMPETITOR" ON "CMPDECISION" ("ORDER_ID", "COMPETITORPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_PREFERENCEFEATURE_PLFEATU
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PREFERENCEFEATURE_PLFEATU" ON "PREFERENCEGROUPFEATURE" ("PLACEMENTFEATURE_ID") 
-   ;
+  CREATE INDEX "J_FK_PREFERENCEFEATURE_PLFEATU" ON "PREFERENCEGROUPFEATURE" ("PLACEMENTFEATURE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_RPL$CONSTRAINTS_TRIG
 --------------------------------------------------------
@@ -28886,8 +28022,7 @@
 --  DDL for Index J_FK_PLAN3DOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN3DOC_DISPSTATUS" ON "PLAN3DOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN3DOC_DISPSTATUS" ON "PLAN3DOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_TYPECRITLINE
 --------------------------------------------------------
@@ -28907,32 +28042,27 @@
 --  DDL for Index J_FK_REQUESTDOC_CONMNGRRESP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_CONMNGRRESP" ON "REQUESTDOC" ("CONMNGRRESP_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_CONMNGRRESP" ON "REQUESTDOC" ("CONMNGRRESP_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONBL_GRANTINVESTMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONBL_GRANTINVESTMENT" ON "CONBUDGETLINE" ("GRANTINVESTMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_CONBL_GRANTINVESTMENT" ON "CONBUDGETLINE" ("GRANTINVESTMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RQBL_INDUSTRYCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQBL_INDUSTRYCODE" ON "RQBUDGETLINE" ("INDUSTRYCODE_ID") 
-   ;
+  CREATE INDEX "J_FK_RQBL_INDUSTRYCODE" ON "RQBUDGETLINE" ("INDUSTRYCODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORGSELSTATUS_ORGSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORGSELSTATUS_ORGSTATUS" ON "ORGSELSTATUS" ("ORGSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_ORGSELSTATUS_ORGSTATUS" ON "ORGSELSTATUS" ("ORGSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_ORDERDOC_CLASS_ETPKEY
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_ORDERDOC_CLASS_ETPKEY" ON "ORDERDOC" ("DOCUMENTCLASS_ID", "ETPKEY", "ETP_ID") 
-   ;
+  CREATE INDEX "IDX_ORDERDOC_CLASS_ETPKEY" ON "ORDERDOC" ("DOCUMENTCLASS_ID", "ETPKEY", "ETP_ID");
 --------------------------------------------------------
 --  DDL for Index PK_QUALIFYSELECT
 --------------------------------------------------------
@@ -28942,20 +28072,17 @@
 --  DDL for Index J_FK_MSG_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_MSG_SYSUSER" ON "MSG" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_MSG_SYSUSER" ON "MSG" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_STOREDDO_DOCUMENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_STOREDDO_DOCUMENT_ID" ON "STOREDDOCUMENTS" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IFK_STOREDDO_DOCUMENT_ID" ON "STOREDDOCUMENTS" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RQDOCREQ_REQTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQDOCREQ_REQTYPE" ON "RQDOCREQ" ("REQUIREMENTTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_RQDOCREQ_REQTYPE" ON "RQDOCREQ" ("REQUIREMENTTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONEXECSTEP
 --------------------------------------------------------
@@ -28970,32 +28097,27 @@
 --  DDL for Index J_FK_RPLVERSIONLOG_RPLTABLE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RPLVERSIONLOG_RPLTABLE" ON "RPLVERSIONLOG" ("RPLTABLE_ID") 
-   ;
+  CREATE INDEX "J_FK_RPLVERSIONLOG_RPLTABLE" ON "RPLVERSIONLOG" ("RPLTABLE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_P2ARRANGEMENT_CONTRACTOR
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_P2ARRANGEMENT_CONTRACTOR" ON "PLAN2ARRANGEMENT" ("CONTRACTOR_ID") 
-   ;
+  CREATE INDEX "IDX_P2ARRANGEMENT_CONTRACTOR" ON "PLAN2ARRANGEMENT" ("CONTRACTOR_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_GOODSGRO_GROUPCODE
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_GOODSGRO_GROUPCODE" ON "GOODSGROUPDOCDETAIL" ("GROUPCODE") 
-   ;
+  CREATE INDEX "IFK_GOODSGRO_GROUPCODE" ON "GOODSGROUPDOCDETAIL" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_GROUPUNIT_UNIT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GROUPUNIT_UNIT" ON "GROUPUNIT" ("UNITNAME") 
-   ;
+  CREATE INDEX "J_FK_GROUPUNIT_UNIT" ON "GROUPUNIT" ("UNITNAME");
 --------------------------------------------------------
 --  DDL for Index J_FK_RQLOT_CONBANK
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQLOT_CONBANK" ON "RQLOT" ("GUARANTEECONTRACTBIC") 
-   ;
+  CREATE INDEX "J_FK_RQLOT_CONBANK" ON "RQLOT" ("GUARANTEECONTRACTBIC");
 --------------------------------------------------------
 --  DDL for Index PK_NOTIFYMSGRULE_RECEIVER
 --------------------------------------------------------
@@ -29020,8 +28142,7 @@
 --  DDL for Index J_FK_LEDGER_ORG_CMPORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_ORG_CMPORG" ON "LEDGER" ("CMPORG_ID") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_ORG_CMPORG" ON "LEDGER" ("CMPORG_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DOCATTACHEX
 --------------------------------------------------------
@@ -29036,8 +28157,7 @@
 --  DDL for Index J_FK_SYSUSER_PANEL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SYSUSER_PANEL" ON "SYSUSER" ("PANEL_ID") 
-   ;
+  CREATE INDEX "J_FK_SYSUSER_PANEL" ON "SYSUSER" ("PANEL_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_CURHISTORY
 --------------------------------------------------------
@@ -29047,32 +28167,27 @@
 --  DDL for Index J_FK_RQLOT_CONTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQLOT_CONTYPE" ON "RQLOT" ("CONTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_RQLOT_CONTYPE" ON "RQLOT" ("CONTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P2ARRANGEMENT_CHANGEREASO
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_CHANGEREASO" ON "PLAN2ARRANGEMENT" ("CHANGEREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_CHANGEREASO" ON "PLAN2ARRANGEMENT" ("CHANGEREASON_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONSOLIDDOC_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONSOLIDDOC_PURCHASEMODE" ON "CONSOLIDDOC" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_CONSOLIDDOC_PURCHASEMODE" ON "CONSOLIDDOC" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PANELITEM_PANEL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PANELITEM_PANEL" ON "PANELITEM" ("PANEL_ID") 
-   ;
+  CREATE INDEX "J_FK_PANELITEM_PANEL" ON "PANELITEM" ("PANEL_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RQCONDEALRESP_LOTPOS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQCONDEALRESP_LOTPOS" ON "RQCONDEALRESP" ("REQUEST_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "J_FK_RQCONDEALRESP_LOTPOS" ON "RQCONDEALRESP" ("REQUEST_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index PK_FCTGOODS
 --------------------------------------------------------
@@ -29082,8 +28197,7 @@
 --  DDL for Index J_FK_PROCTREE_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PROCTREE_PARENT" ON "PROCTREE" ("PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_PROCTREE_PARENT" ON "PROCTREE" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_GOODSPROP
 --------------------------------------------------------
@@ -29093,8 +28207,7 @@
 --  DDL for Index IDX_KLADR_CODE3
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_KLADR_CODE3" ON "KLADR" ("CODE3") 
-   ;
+  CREATE INDEX "IDX_KLADR_CODE3" ON "KLADR" ("CODE3");
 --------------------------------------------------------
 --  DDL for Index S_INVOICEDOC_DI
 --------------------------------------------------------
@@ -29104,8 +28217,7 @@
 --  DDL for Index J_FK_PLAN2OOSPOS_PUBLICDISCUSS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPOS_PUBLICDISCUSS" ON "PLAN2OOSPOSITION" ("PUBLICDISCUSSCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPOS_PUBLICDISCUSS" ON "PLAN2OOSPOSITION" ("PUBLICDISCUSSCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_OKTMO_CODE
 --------------------------------------------------------
@@ -29120,14 +28232,12 @@
 --  DDL for Index J_FK_OFRRETREASON_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFRRETREASON_PURCHASEMODE" ON "OFRRETREASON" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_OFRRETREASON_PURCHASEMODE" ON "OFRRETREASON" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_SYSMSG_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SYSMSG_SYSUSER" ON "SYSEVENT" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_SYSMSG_SYSUSER" ON "SYSEVENT" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OOSCONTRACT
 --------------------------------------------------------
@@ -29142,20 +28252,17 @@
 --  DDL for Index J_FK_ORDERDOC_PURCHASEORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_PURCHASEORG_ID" ON "ORDERDOC" ("PURCHASEORG_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_PURCHASEORG_ID" ON "ORDERDOC" ("PURCHASEORG_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_NOTICEDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_NOTICEDOC_DISPSTATUS" ON "NOTICEDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_NOTICEDOC_DISPSTATUS" ON "NOTICEDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_NUMPREFIX_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NUMPREFIX_SYSUSER" ON "NUMPREFIX" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_NUMPREFIX_SYSUSER" ON "NUMPREFIX" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_SUPPORTCRYPTOLIBFORMAT
 --------------------------------------------------------
@@ -29170,14 +28277,12 @@
 --  DDL for Index J_FK_ROLEREGISTER_DOCUMENTCLAS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEREGISTER_DOCUMENTCLAS" ON "ROLEREGISTER" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_ROLEREGISTER_DOCUMENTCLAS" ON "ROLEREGISTER" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORDERDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_BUDGET" ON "ORDERDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_BUDGET" ON "ORDERDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CMPPAYSHEDULE
 --------------------------------------------------------
@@ -29187,38 +28292,32 @@
 --  DDL for Index J_FK_CONTREXECDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTREXECDOC_BUDGET" ON "CONTRACTEXECDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTREXECDOC_BUDGET" ON "CONTRACTEXECDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_PLANREQU_DOC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PLANREQU_DOC_ID" ON "PLANREQUEST" ("DOC_ID") 
-   ;
+  CREATE INDEX "IFK_PLANREQU_DOC_ID" ON "PLANREQUEST" ("DOC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P2ARRANGEMENT_PAYCOND
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_PAYCOND" ON "PLAN2ARRANGEMENT" ("PAYCONDITIONCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_PAYCOND" ON "PLAN2ARRANGEMENT" ("PAYCONDITIONCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_REFJOURNAL_REFCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REFJOURNAL_REFCLASS" ON "REFJOURNAL" ("REF_ID") 
-   ;
+  CREATE INDEX "J_FK_REFJOURNAL_REFCLASS" ON "REFJOURNAL" ("REF_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_GOODSOKDPPREF_COUNTRY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSOKDPPREF_COUNTRY" ON "GOODSOKDPCOUNTRYPREF" ("COUNTRY_ID") 
-   ;
+  CREATE INDEX "J_FK_GOODSOKDPPREF_COUNTRY" ON "GOODSOKDPCOUNTRYPREF" ("COUNTRY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPPLACE_ESTIMATE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPPLACE_ESTIMATE" ON "CMPPLACE" ("ESTIMATE_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPPLACE_ESTIMATE" ON "CMPPLACE" ("ESTIMATE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_SCHPLAN
 --------------------------------------------------------
@@ -29238,8 +28337,7 @@
 --  DDL for Index J_FK_REQUESTDOC_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_PURCHASEMODE" ON "REQUESTDOC" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_PURCHASEMODE" ON "REQUESTDOC" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_NOTIFYMSGGROUP
 --------------------------------------------------------
@@ -29249,14 +28347,12 @@
 --  DDL for Index J_FK_CMPLOT_CURRENCY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPLOT_CURRENCY" ON "CMPLOT" ("CURRENCY_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPLOT_CURRENCY" ON "CMPLOT" ("CURRENCY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORDERDOC_ETP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_ETP" ON "ORDERDOC" ("ETP_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_ETP" ON "ORDERDOC" ("ETP_ID");
 --------------------------------------------------------
 --  DDL for Index S_COMPLAINTDOC_DNI
 --------------------------------------------------------
@@ -29266,8 +28362,7 @@
 --  DDL for Index J_FK_ROLEORG_ORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ROLEORG_ORG" ON "ROLEORG" ("ORG_ID") 
-   ;
+  CREATE INDEX "J_FK_ROLEORG_ORG" ON "ROLEORG" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_PANEL_NAME
 --------------------------------------------------------
@@ -29277,8 +28372,7 @@
 --  DDL for Index J_FK_KLADRSTREET_KLADR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_KLADRSTREET_KLADR" ON "KLADRSTREET" ("KLADR_ID") 
-   ;
+  CREATE INDEX "J_FK_KLADRSTREET_KLADR" ON "KLADRSTREET" ("KLADR_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RULEREQUISITE
 --------------------------------------------------------
@@ -29293,8 +28387,7 @@
 --  DDL for Index IDX_CONTRACTDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTRACTDOC_DOCUMENT" ON "CONTRACTDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_CONTRACTDOC_DOCUMENT" ON "CONTRACTDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index S_RECOILDOC_DNI
 --------------------------------------------------------
@@ -29304,8 +28397,7 @@
 --  DDL for Index IFK_INVOICED_CONACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_INVOICED_CONACC_ID" ON "INVOICEDOC" ("CONACC_ID") 
-   ;
+  CREATE INDEX "IFK_INVOICED_CONACC_ID" ON "INVOICEDOC" ("CONACC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_GROUPPROPVALUE
 --------------------------------------------------------
@@ -29320,8 +28412,7 @@
 --  DDL for Index J_FK_CEREPARATIONLINE_REPDOCID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CEREPARATIONLINE_REPDOCID" ON "CEREPARATIONLINE" ("CONTRACTREPARATIONDOC_ID") 
-   ;
+  CREATE INDEX "J_FK_CEREPARATIONLINE_REPDOCID" ON "CEREPARATIONLINE" ("CONTRACTREPARATIONDOC_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_REPFIELD
 --------------------------------------------------------
@@ -29331,26 +28422,22 @@
 --  DDL for Index J_FK_REPDOCFRAGMENT_REPFRAGMEN
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REPDOCFRAGMENT_REPFRAGMEN" ON "REPDOCFRAGMENT" ("REPFRAGMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_REPDOCFRAGMENT_REPFRAGMEN" ON "REPDOCFRAGMENT" ("REPFRAGMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_QUALREQ_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_QUALREQ_PURCHASEMODE" ON "QUALREQ" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_QUALREQ_PURCHASEMODE" ON "QUALREQ" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_DOCUMENT_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_DOCUMENT_DOC_DATE" ON "DOCUMENT" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_DOCUMENT_DOC_DATE" ON "DOCUMENT" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index J_FK_GOODSOKDP_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSOKDP_PURCHASEMODE" ON "GOODSOKDPPURCHASEMODE" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_GOODSOKDP_PURCHASEMODE" ON "GOODSOKDPPURCHASEMODE" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ETPATTACH
 --------------------------------------------------------
@@ -29360,8 +28447,7 @@
 --  DDL for Index J_FK_TENDERLINE_CMPCRITERIONLI
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TENDERLINE_CMPCRITERIONLI" ON "TENDERLINE" ("ORDER_ID", "CRITERIONPOS", "CRITERIONLINESEQORDER") 
-   ;
+  CREATE INDEX "J_FK_TENDERLINE_CMPCRITERIONLI" ON "TENDERLINE" ("ORDER_ID", "CRITERIONPOS", "CRITERIONLINESEQORDER");
 --------------------------------------------------------
 --  DDL for Index UQ_EXCHANGECLASSES
 --------------------------------------------------------
@@ -29376,8 +28462,7 @@
 --  DDL for Index J_FK_REPFORM_SERVERPROCESSOR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REPFORM_SERVERPROCESSOR" ON "REPFORM" ("SERVERPROCESSOR_ID") 
-   ;
+  CREATE INDEX "J_FK_REPFORM_SERVERPROCESSOR" ON "REPFORM" ("SERVERPROCESSOR_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ETPTYPE
 --------------------------------------------------------
@@ -29387,14 +28472,12 @@
 --  DDL for Index J_FK_PURCHASECARRY_DELIV
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHASECARRY_DELIV" ON "PURCHASECARRY" ("DELIVERYBASIS_ID") 
-   ;
+  CREATE INDEX "J_FK_PURCHASECARRY_DELIV" ON "PURCHASECARRY" ("DELIVERYBASIS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_UPDPACKAGE_SENDER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_UPDPACKAGE_SENDER" ON "UPDPACKAGE" ("SENDER_ID") 
-   ;
+  CREATE INDEX "J_FK_UPDPACKAGE_SENDER" ON "UPDPACKAGE" ("SENDER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ROLEBUDGET
 --------------------------------------------------------
@@ -29404,14 +28487,12 @@
 --  DDL for Index IDX_PURCHASEPLANDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PURCHASEPLANDOC_DOCUMENT" ON "PURCHASEPLANDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_PURCHASEPLANDOC_DOCUMENT" ON "PURCHASEPLANDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN2ARRANGEMENT_GOODS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2ARRANGEMENT_GOODS" ON "PLAN2ARRANGEMENT" ("PLAN2GOODS_ID") 
-   ;
+  CREATE INDEX "IDX_PLAN2ARRANGEMENT_GOODS" ON "PLAN2ARRANGEMENT" ("PLAN2GOODS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_FUNCOBJECT
 --------------------------------------------------------
@@ -29426,32 +28507,27 @@
 --  DDL for Index J_FK_GRANTINVESTMENT_ORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GRANTINVESTMENT_ORG" ON "GRANTINVESTMENT" ("ORG_ID") 
-   ;
+  CREATE INDEX "J_FK_GRANTINVESTMENT_ORG" ON "GRANTINVESTMENT" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PURCHASECARRY_DESCRIPTION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHASECARRY_DESCRIPTION" ON "PURCHASECARRY" ("DESCRIPTIONCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_PURCHASECARRY_DESCRIPTION" ON "PURCHASECARRY" ("DESCRIPTIONCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RQLOT_APPBANK
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQLOT_APPBANK" ON "RQLOT" ("GUARAPPBIC") 
-   ;
+  CREATE INDEX "J_FK_RQLOT_APPBANK" ON "RQLOT" ("GUARAPPBIC");
 --------------------------------------------------------
 --  DDL for Index J_FK_RECOILLINES_DELIV
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILLINES_DELIV" ON "RECOILLINES" ("DELIVERYBASIS_ID") 
-   ;
+  CREATE INDEX "J_FK_RECOILLINES_DELIV" ON "RECOILLINES" ("DELIVERYBASIS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_REQUESTDOC_CURRENCY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_CURRENCY" ON "REQUESTDOC" ("CURRENCY_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_CURRENCY" ON "REQUESTDOC" ("CURRENCY_ID");
 --------------------------------------------------------
 --  DDL for Index PK_REPFRAGMENTCHILD
 --------------------------------------------------------
@@ -29476,8 +28552,7 @@
 --  DDL for Index IFK_OFRGOODS_LOTPOSOFFER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_OFRGOODS_LOTPOSOFFER_ID" ON "OFRGOODS" ("OFFER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_OFRGOODS_LOTPOSOFFER_ID" ON "OFRGOODS" ("OFFER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index PK_P3GOODSPROP
 --------------------------------------------------------
@@ -29502,8 +28577,7 @@
 --  DDL for Index J_FK_DOCUMENT_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCUMENT_OPERTYPE" ON "DOCUMENT" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCUMENT_OPERTYPE" ON "DOCUMENT" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_BUDGET
 --------------------------------------------------------
@@ -29513,8 +28587,7 @@
 --  DDL for Index IFK_CMPPLACE_TERRITORYCODECOU
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPPLACE_TERRITORYCODECOU" ON "CMPPLACE" ("COUNTRY_ID", "TERRITORYCODE") 
-   ;
+  CREATE INDEX "IFK_CMPPLACE_TERRITORYCODECOU" ON "CMPPLACE" ("COUNTRY_ID", "TERRITORYCODE");
 --------------------------------------------------------
 --  DDL for Index PK_USERSESSION
 --------------------------------------------------------
@@ -29524,38 +28597,32 @@
 --  DDL for Index J_FK_REQUESTDOC_ETP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_ETP" ON "REQUESTDOC" ("ETP_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_ETP" ON "REQUESTDOC" ("ETP_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_REQUESTDOC_CONTRACTREASON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_CONTRACTREASON" ON "REQUESTDOC" ("SINGLECUSTOMERREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_CONTRACTREASON" ON "REQUESTDOC" ("SINGLECUSTOMERREASON_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_NOTICEOR_ORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_NOTICEOR_ORG_ID" ON "NOTICEORG" ("ORG_ID") 
-   ;
+  CREATE INDEX "IFK_NOTICEOR_ORG_ID" ON "NOTICEORG" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFRCRITERIONLINEVAL_OFRCR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFRCRITERIONLINEVAL_OFRCR" ON "OFRCRITERIONLINEVAL" ("OFFER_ID", "CMPCRITERIONPOS", "ISFINALOFFER") 
-   ;
+  CREATE INDEX "J_FK_OFRCRITERIONLINEVAL_OFRCR" ON "OFRCRITERIONLINEVAL" ("OFFER_ID", "CMPCRITERIONPOS", "ISFINALOFFER");
 --------------------------------------------------------
 --  DDL for Index J_FK_INSTITUTIONLINE_ORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INSTITUTIONLINE_ORG" ON "INSTITUTIONLINE" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "J_FK_INSTITUTIONLINE_ORG" ON "INSTITUTIONLINE" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CEEXECLINE_CONEXECDOCTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CEEXECLINE_CONEXECDOCTYPE" ON "CEEXECUTIONLINE" ("CONTRACTEXECDOCTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_CEEXECLINE_CONEXECDOCTYPE" ON "CEEXECUTIONLINE" ("CONTRACTEXECDOCTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CMPFEATURE
 --------------------------------------------------------
@@ -29565,20 +28632,17 @@
 --  DDL for Index J_FK_PLAN3DOCCHILD_PLAN3DOC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN3DOCCHILD_PLAN3DOC" ON "PLAN3DOCCHILD" ("PLAN3DOC_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN3DOCCHILD_PLAN3DOC" ON "PLAN3DOCCHILD" ("PLAN3DOC_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_P3PURCHASEDOC_DOCDATA
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_P3PURCHASEDOC_DOCDATA" ON "PLAN3PURCHASEDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_P3PURCHASEDOC_DOCDATA" ON "PLAN3PURCHASEDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN2ARRANGEMENT_PURCHASE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2ARRANGEMENT_PURCHASE" ON "PLAN2ARRANGEMENT" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "IDX_PLAN2ARRANGEMENT_PURCHASE" ON "PLAN2ARRANGEMENT" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PROCTREE
 --------------------------------------------------------
@@ -29598,8 +28662,7 @@
 --  DDL for Index IFK_CONTRACT_CUSTOMER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONTRACT_CUSTOMER_ID" ON "CONTRACTDOC" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "IFK_CONTRACT_CUSTOMER_ID" ON "CONTRACTDOC" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_MENUITEMWEB
 --------------------------------------------------------
@@ -29609,32 +28672,27 @@
 --  DDL for Index IDX_COMPLAINTDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_COMPLAINTDOC_DATENUM" ON "COMPLAINTDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_COMPLAINTDOC_DATENUM" ON "COMPLAINTDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index J_FK_PROCTREE_DOCUMENTCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PROCTREE_DOCUMENTCLASS" ON "PROCTREE" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_PROCTREE_DOCUMENTCLASS" ON "PROCTREE" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSPOS_PERIODICITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPOS_PERIODICITY" ON "PLAN2OOSPOSITION" ("PERIODICITYCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPOS_PERIODICITY" ON "PLAN2OOSPOSITION" ("PERIODICITYCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_AUCTIONB_COMPETITORPOSORD
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_AUCTIONB_COMPETITORPOSORD" ON "AUCTIONBID" ("ORDER_ID", "COMPETITORPOS") 
-   ;
+  CREATE INDEX "IFK_AUCTIONB_COMPETITORPOSORD" ON "AUCTIONBID" ("ORDER_ID", "COMPETITORPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2LEDGER_OKDP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_OKDP" ON "PLAN2LEDGER" ("OKDP_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_OKDP" ON "PLAN2LEDGER" ("OKDP_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OOSCUSTOMERREQ
 --------------------------------------------------------
@@ -29644,8 +28702,7 @@
 --  DDL for Index J_FK_CONBUDGETLINE_LIABILITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONBUDGETLINE_LIABILITY" ON "CONBUDGETLINE" ("LIABILITYEXPENSE_ID") 
-   ;
+  CREATE INDEX "J_FK_CONBUDGETLINE_LIABILITY" ON "CONBUDGETLINE" ("LIABILITYEXPENSE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_GOODSOKVED
 --------------------------------------------------------
@@ -29660,8 +28717,7 @@
 --  DDL for Index J_FK_MENUITEM_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_MENUITEM_PARENT" ON "MENUITEM" ("PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_MENUITEM_PARENT" ON "MENUITEM" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OOSORGANIZATION
 --------------------------------------------------------
@@ -29676,8 +28732,7 @@
 --  DDL for Index J_FK_PURCHPLANDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHPLANDOC_OPERTYPE" ON "PURCHASEPLANDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_PURCHPLANDOC_OPERTYPE" ON "PURCHASEPLANDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CMPGOODSPROP
 --------------------------------------------------------
@@ -29687,38 +28742,32 @@
 --  DDL for Index J_FK_REQUIREMENTTYPEPM_PURCHMD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUIREMENTTYPEPM_PURCHMD" ON "REQUIREMENTTYPEPM" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUIREMENTTYPEPM_PURCHMD" ON "REQUIREMENTTYPEPM" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRACTDOC_OKTMO
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_OKTMO" ON "CONTRACTDOC" ("CONOKTMO_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_OKTMO" ON "CONTRACTDOC" ("CONOKTMO_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_REPFRAGMENTCHILD_CHILD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REPFRAGMENTCHILD_CHILD" ON "REPFRAGMENTCHILD" ("CHILD_ID") 
-   ;
+  CREATE INDEX "J_FK_REPFRAGMENTCHILD_CHILD" ON "REPFRAGMENTCHILD" ("CHILD_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_UPDPACKAGE_RECEIVER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_UPDPACKAGE_RECEIVER" ON "UPDPACKAGE" ("RECEIVER_ID") 
-   ;
+  CREATE INDEX "J_FK_UPDPACKAGE_RECEIVER" ON "UPDPACKAGE" ("RECEIVER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_NMSG_NOTIFYMSGGROUP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NMSG_NOTIFYMSGGROUP" ON "NOTIFYMSG" ("NOTIFYMSGGROUP_ID") 
-   ;
+  CREATE INDEX "J_FK_NMSG_NOTIFYMSGGROUP" ON "NOTIFYMSG" ("NOTIFYMSGGROUP_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_OOSCONTRACT_NOTICENUMBER
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_OOSCONTRACT_NOTICENUMBER" ON "OOSCONTRACT" ("NOTIFICATIONNUMBER") 
-   ;
+  CREATE INDEX "IDX_OOSCONTRACT_NOTICENUMBER" ON "OOSCONTRACT" ("NOTIFICATIONNUMBER");
 --------------------------------------------------------
 --  DDL for Index UQ_NUMSEQUENCE_NAME
 --------------------------------------------------------
@@ -29728,8 +28777,7 @@
 --  DDL for Index J_FK_FMTCONVERTER_CONVERTER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_FMTCONVERTER_CONVERTER_ID" ON "DOCATTACHEX" ("CONVERTER_ID") 
-   ;
+  CREATE INDEX "J_FK_FMTCONVERTER_CONVERTER_ID" ON "DOCATTACHEX" ("CONVERTER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONTYPEATTACH
 --------------------------------------------------------
@@ -29749,20 +28797,17 @@
 --  DDL for Index J_FK_CONTRACTDOC_CONTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_CONTYPE" ON "CONTRACTDOC" ("CONTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_CONTYPE" ON "CONTRACTDOC" ("CONTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CONBUDGE_RECIPIENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONBUDGE_RECIPIENT_ID" ON "CONBUDGETLINE" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "IFK_CONBUDGE_RECIPIENT_ID" ON "CONBUDGETLINE" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3LINE_GRANTINVESTMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3LINE_GRANTINVESTMENT" ON "PLAN3PURCHASELINE" ("GRANTINVESTMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_P3LINE_GRANTINVESTMENT" ON "PLAN3PURCHASELINE" ("GRANTINVESTMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_NOTICEDOC
 --------------------------------------------------------
@@ -29772,8 +28817,7 @@
 --  DDL for Index J_FK_RQBUDGETLINE_FINSRC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQBUDGETLINE_FINSRC" ON "RQBUDGETLINE" ("FINSRC_ID") 
-   ;
+  CREATE INDEX "J_FK_RQBUDGETLINE_FINSRC" ON "RQBUDGETLINE" ("FINSRC_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_RPLOBJECT_SEQORDER
 --------------------------------------------------------
@@ -29788,20 +28832,17 @@
 --  DDL for Index J_FK_SEL_DIGEST
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SEL_DIGEST" ON "SIGNEXPORTLOG" ("DIGEST_ID") 
-   ;
+  CREATE INDEX "J_FK_SEL_DIGEST" ON "SIGNEXPORTLOG" ("DIGEST_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RPL_RPLOBJECT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RPL_RPLOBJECT" ON "RPL" ("RPLOBJECT_ID") 
-   ;
+  CREATE INDEX "J_FK_RPL_RPLOBJECT" ON "RPL" ("RPLOBJECT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ABANDONEDREASON_PM
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ABANDONEDREASON_PM" ON "ABANDONEDREASON" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_ABANDONEDREASON_PM" ON "ABANDONEDREASON" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PROCUREMENT
 --------------------------------------------------------
@@ -29811,32 +28852,27 @@
 --  DDL for Index IFK_RQBUDGET_RECIPIENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RQBUDGET_RECIPIENT_ID" ON "RQBUDGETLINE" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "IFK_RQBUDGET_RECIPIENT_ID" ON "RQBUDGETLINE" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_OFFERDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_OFFERDOC_BUDGET" ON "OFFERDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_OFFERDOC_BUDGET" ON "OFFERDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRACTDOC_MODIFICATION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_MODIFICATION" ON "CONTRACTDOC" ("MODIFICATIONREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_MODIFICATION" ON "CONTRACTDOC" ("MODIFICATIONREASON_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_BUDGET" ON "PLAN3PURCHASEDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_BUDGET" ON "PLAN3PURCHASEDOC" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONORGSTATUS_ORGSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONORGSTATUS_ORGSTATUS" ON "CONORGSTATUS" ("ORGSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_CONORGSTATUS_ORGSTATUS" ON "CONORGSTATUS" ("ORGSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index FK_PURCHPLANDOC
 --------------------------------------------------------
@@ -29851,8 +28887,7 @@
 --  DDL for Index J_FK_WEBSTATVAL_WEBSTATCACHE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_WEBSTATVAL_WEBSTATCACHE" ON "WEBSTATCACHEVAL" ("WEBSTAT_ID") 
-   ;
+  CREATE INDEX "J_FK_WEBSTATVAL_WEBSTATCACHE" ON "WEBSTATCACHEVAL" ("WEBSTAT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CMPREPDOCUMENT
 --------------------------------------------------------
@@ -29862,8 +28897,7 @@
 --  DDL for Index J_FK_PLAN_PURCHASEMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN_PURCHASEMODE" ON "PURCHASEPLAN" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN_PURCHASEMODE" ON "PURCHASEPLAN" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RPLOBJECT
 --------------------------------------------------------
@@ -29878,8 +28912,7 @@
 --  DDL for Index IFK_NOTICEEM_NOTICEDOC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_NOTICEEM_NOTICEDOC_ID" ON "NOTICEEMAILORG" ("NOTICEDOC_ID") 
-   ;
+  CREATE INDEX "IFK_NOTICEEM_NOTICEDOC_ID" ON "NOTICEEMAILORG" ("NOTICEDOC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_MAIL
 --------------------------------------------------------
@@ -29889,8 +28922,7 @@
 --  DDL for Index IFK_RQBUDGET_TERRITORYCODECOU
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RQBUDGET_TERRITORYCODECOU" ON "RQBUDGETLINE" ("COUNTRY_ID", "TERRITORYCODE") 
-   ;
+  CREATE INDEX "IFK_RQBUDGET_TERRITORYCODECOU" ON "RQBUDGETLINE" ("COUNTRY_ID", "TERRITORYCODE");
 --------------------------------------------------------
 --  DDL for Index PK_TYPEDOCREQGROUP
 --------------------------------------------------------
@@ -29900,20 +28932,17 @@
 --  DDL for Index J_FK_CONSTRFIELDS_CONSTRAINTS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONSTRFIELDS_CONSTRAINTS" ON "RPL$CONSTRAINTFIELDS" ("RPL$CONSTRAINTS_ID") 
-   ;
+  CREATE INDEX "J_FK_CONSTRFIELDS_CONSTRAINTS" ON "RPL$CONSTRAINTFIELDS" ("RPL$CONSTRAINTS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPPLACE_FINSRC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPPLACE_FINSRC" ON "CMPPLACE" ("FINSRC_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPPLACE_FINSRC" ON "CMPPLACE" ("FINSRC_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CMPVOTER_DECISIONPOSORDER
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPVOTER_DECISIONPOSORDER" ON "CMPVOTERESULT" ("ORDER_ID", "DECISIONPOS") 
-   ;
+  CREATE INDEX "IFK_CMPVOTER_DECISIONPOSORDER" ON "CMPVOTERESULT" ("ORDER_ID", "DECISIONPOS");
 --------------------------------------------------------
 --  DDL for Index PK_METAOBJECT
 --------------------------------------------------------
@@ -29923,20 +28952,17 @@
 --  DDL for Index J_FK_CONTRACT_SINGLECUSTOMERDO
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACT_SINGLECUSTOMERDO" ON "CONTRACTDOC" ("SINGLECUSTOMERREASONDOC_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACT_SINGLECUSTOMERDO" ON "CONTRACTDOC" ("SINGLECUSTOMERREASONDOC_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_MAIL_READ_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_MAIL_READ_DATE" ON "MAIL" ("READ_DATE") 
-   ;
+  CREATE INDEX "IDX_MAIL_READ_DATE" ON "MAIL" ("READ_DATE");
 --------------------------------------------------------
 --  DDL for Index IDX_LEDGER_GOODS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_LEDGER_GOODS" ON "LEDGER" ("GOODS_ID") 
-   ;
+  CREATE INDEX "IDX_LEDGER_GOODS" ON "LEDGER" ("GOODS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DOCEVENT
 --------------------------------------------------------
@@ -29946,26 +28972,22 @@
 --  DDL for Index J_FK_RQFEATURE_PLFEATURE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQFEATURE_PLFEATURE" ON "RQFEATURE" ("PLACEMENTFEATURE_ID") 
-   ;
+  CREATE INDEX "J_FK_RQFEATURE_PLFEATURE" ON "RQFEATURE" ("PLACEMENTFEATURE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORDERDOC_CURRENCY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_CURRENCY" ON "ORDERDOC" ("CURRENCY_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_CURRENCY" ON "ORDERDOC" ("CURRENCY_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_CONTRCARDDOC_ETPKEY
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTRCARDDOC_ETPKEY" ON "CONTRACTCARDDOC" ("ETP_ID", "ETPKEY") 
-   ;
+  CREATE INDEX "IDX_CONTRCARDDOC_ETPKEY" ON "CONTRACTCARDDOC" ("ETP_ID", "ETPKEY");
 --------------------------------------------------------
 --  DDL for Index IDX_CONTRACTEXECDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTRACTEXECDOC_DOCUMENT" ON "CONTRACTEXECDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_CONTRACTEXECDOC_DOCUMENT" ON "CONTRACTEXECDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_SIGNFORMAT
 --------------------------------------------------------
@@ -29980,14 +29002,12 @@
 --  DDL for Index J_FK_CONTREXECDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTREXECDOC_OPERTYPE" ON "CONTRACTEXECDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTREXECDOC_OPERTYPE" ON "CONTRACTEXECDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2LEDGER_CONTRACTOR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_CONTRACTOR" ON "PLAN2LEDGER" ("CONTRACTOR_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_CONTRACTOR" ON "PLAN2LEDGER" ("CONTRACTOR_ID");
 --------------------------------------------------------
 --  DDL for Index S_PURCHASEPLANDOC_DI
 --------------------------------------------------------
@@ -29997,14 +29017,12 @@
 --  DDL for Index J_FK_DOCREP_DOCPRINTER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCREP_DOCPRINTER" ON "DOCUMENTREPORTS" ("DOCPRINTER_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCREP_DOCPRINTER" ON "DOCUMENTREPORTS" ("DOCPRINTER_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CMPDECIS_PHASEPOSORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPDECIS_PHASEPOSORDER_ID" ON "CMPDECISION" ("ORDER_ID", "PHASEPOS") 
-   ;
+  CREATE INDEX "IFK_CMPDECIS_PHASEPOSORDER_ID" ON "CMPDECISION" ("ORDER_ID", "PHASEPOS");
 --------------------------------------------------------
 --  DDL for Index PK_RPLRULEOBJ
 --------------------------------------------------------
@@ -30019,26 +29037,22 @@
 --  DDL for Index J_FK_BANKGUARANTEEDOC_CUSTORG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_BANKGUARANTEEDOC_CUSTORG" ON "BANKGUARANTEEDOC" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "J_FK_BANKGUARANTEEDOC_CUSTORG" ON "BANKGUARANTEEDOC" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_BANKGUARANTEEREFDOC_CLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_BANKGUARANTEEREFDOC_CLASS" ON "BANKGUARANTEEREFDOC" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_BANKGUARANTEEREFDOC_CLASS" ON "BANKGUARANTEEREFDOC" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ALTGGLINK_ALTGOODSGROUP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ALTGGLINK_ALTGOODSGROUP" ON "ALTGOODSGROUPLINK" ("ALTGOODSGROUP_ID") 
-   ;
+  CREATE INDEX "J_FK_ALTGGLINK_ALTGOODSGROUP" ON "ALTGOODSGROUPLINK" ("ALTGOODSGROUP_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CLNDDAY_CLNDDAYTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CLNDDAY_CLNDDAYTYPE" ON "CLNDDAY" ("CLNDDAYTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_CLNDDAY_CLNDDAYTYPE" ON "CLNDDAY" ("CLNDDAYTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_STATISTICSSOURCE_NAME
 --------------------------------------------------------
@@ -30048,20 +29062,17 @@
 --  DDL for Index J_FK_RECOILLINES_UNIT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILLINES_UNIT" ON "RECOILLINES" ("UNITNAME") 
-   ;
+  CREATE INDEX "J_FK_RECOILLINES_UNIT" ON "RECOILLINES" ("UNITNAME");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCACTION_CLIENTOBJECT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCACTION_CLIENTOBJECT" ON "DOCACTION" ("CLIENTOBJECT_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCACTION_CLIENTOBJECT" ON "DOCACTION" ("CLIENTOBJECT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPFEATURE_PLFEATURE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPFEATURE_PLFEATURE" ON "CMPFEATURE" ("PLACEMENTFEATURE_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPFEATURE_PLFEATURE" ON "CMPFEATURE" ("PLACEMENTFEATURE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CDCAVILTYPE
 --------------------------------------------------------
@@ -30071,8 +29082,7 @@
 --  DDL for Index J_FK_GOODSOKPD_OKPD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSOKPD_OKPD" ON "GOODSOKPDPURCHASEMODE" ("GOODSOKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_GOODSOKPD_OKPD" ON "GOODSOKPDPURCHASEMODE" ("GOODSOKPD_ID");
 --------------------------------------------------------
 --  DDL for Index PK_GOODSGROUPPURCHASEMODE
 --------------------------------------------------------
@@ -30082,8 +29092,7 @@
 --  DDL for Index IDX_CONTRACTEXECDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTRACTEXECDOC_DATENUM" ON "CONTRACTEXECDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_CONTRACTEXECDOC_DATENUM" ON "CONTRACTEXECDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index FK_PLAN
 --------------------------------------------------------
@@ -30108,20 +29117,17 @@
 --  DDL for Index J_FK_PLAN3DOC_RESPEXECUTER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN3DOC_RESPEXECUTER" ON "PLAN3DOC" ("RESPEXECUTER_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN3DOC_RESPEXECUTER" ON "PLAN3DOC" ("RESPEXECUTER_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_NOTICEDO_PUBLISHERORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_NOTICEDO_PUBLISHERORG_ID" ON "NOTICEDOC" ("PUBLISHERORG_ID") 
-   ;
+  CREATE INDEX "IFK_NOTICEDO_PUBLISHERORG_ID" ON "NOTICEDOC" ("PUBLISHERORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_NOTICEORG_SYSDOCGROUP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NOTICEORG_SYSDOCGROUP" ON "NOTICEDOC" ("SYSDOCGROUP_ID") 
-   ;
+  CREATE INDEX "J_FK_NOTICEORG_SYSDOCGROUP" ON "NOTICEDOC" ("SYSDOCGROUP_ID");
 --------------------------------------------------------
 --  DDL for Index PK_REPTEMPLATEATTACH
 --------------------------------------------------------
@@ -30131,14 +29137,12 @@
 --  DDL for Index J_FK_CERTICREQ_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CERTICREQ_DISPSTATUS" ON "CERTINTERCHANGEREQUEST" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_CERTICREQ_DISPSTATUS" ON "CERTINTERCHANGEREQUEST" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRACTDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_DISPSTATUS" ON "CONTRACTDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_DISPSTATUS" ON "CONTRACTDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONPAYSHEDULE
 --------------------------------------------------------
@@ -30148,8 +29152,7 @@
 --  DDL for Index J_FK_USERCERT_CRLPOINT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_USERCERT_CRLPOINT" ON "USERCERT" ("CRLPOINT_ID") 
-   ;
+  CREATE INDEX "J_FK_USERCERT_CRLPOINT" ON "USERCERT" ("CRLPOINT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RQCOMMEMBER
 --------------------------------------------------------
@@ -30164,8 +29167,7 @@
 --  DDL for Index J_FK_PLAN2OOSOKVED_OKVED
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSOKVED_OKVED" ON "PLAN2OOSOKVED" ("OKVED_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSOKVED_OKVED" ON "PLAN2OOSOKVED" ("OKVED_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OOSAPPLICATION
 --------------------------------------------------------
@@ -30175,8 +29177,7 @@
 --  DDL for Index J_FK_P3PURCHASEDOC_IKOKPDID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_IKOKPDID" ON "PLAN3PURCHASEDOC" ("IKOKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_IKOKPDID" ON "PLAN3PURCHASEDOC" ("IKOKPD_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_DOCSTATUS
 --------------------------------------------------------
@@ -30186,8 +29187,7 @@
 --  DDL for Index J_FK_PLAN2OOSPOSITION_CURRENCY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPOSITION_CURRENCY" ON "PLAN2OOSPOSITION" ("CONTRACTCURRENCY_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPOSITION_CURRENCY" ON "PLAN2OOSPOSITION" ("CONTRACTCURRENCY_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ORGFORM_ID
 --------------------------------------------------------
@@ -30202,20 +29202,17 @@
 --  DDL for Index IFK_INVOICED_CON_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_INVOICED_CON_ID" ON "INVOICEDOC" ("CON_ID") 
-   ;
+  CREATE INDEX "IFK_INVOICED_CON_ID" ON "INVOICEDOC" ("CON_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CONPLACE_TERRITORYCODECOU
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONPLACE_TERRITORYCODECOU" ON "CONPLACE" ("COUNTRY_ID", "TERRITORYCODE") 
-   ;
+  CREATE INDEX "IFK_CONPLACE_TERRITORYCODECOU" ON "CONPLACE" ("COUNTRY_ID", "TERRITORYCODE");
 --------------------------------------------------------
 --  DDL for Index IDX_RECOILDOC_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_RECOILDOC_DOCUMENT" ON "RECOILDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IDX_RECOILDOC_DOCUMENT" ON "RECOILDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RPL$CONSTRAINTFIELDS
 --------------------------------------------------------
@@ -30225,8 +29222,7 @@
 --  DDL for Index J_FK_PURCHASECARRY_UNIT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHASECARRY_UNIT" ON "PURCHASECARRY" ("UNITNAME") 
-   ;
+  CREATE INDEX "J_FK_PURCHASECARRY_UNIT" ON "PURCHASECARRY" ("UNITNAME");
 --------------------------------------------------------
 --  DDL for Index PK_OFRGOODSPROP
 --------------------------------------------------------
@@ -30236,8 +29232,7 @@
 --  DDL for Index J_FK_ORDERDOC_OOSETPCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_OOSETPCODE" ON "ORDERDOC" ("OOSETPCODE") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_OOSETPCODE" ON "ORDERDOC" ("OOSETPCODE");
 --------------------------------------------------------
 --  DDL for Index UQ_ANYDATA
 --------------------------------------------------------
@@ -30247,20 +29242,17 @@
 --  DDL for Index IDX_KLADRSTREET_CODE3
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_KLADRSTREET_CODE3" ON "KLADRSTREET" ("CODE3") 
-   ;
+  CREATE INDEX "IDX_KLADRSTREET_CODE3" ON "KLADRSTREET" ("CODE3");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_CONTRACTOR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_CONTRACTOR" ON "PLAN3PURCHASEDOC" ("CONTRACTOR_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_CONTRACTOR" ON "PLAN3PURCHASEDOC" ("CONTRACTOR_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_GOODSOKDPPREF_OKDP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSOKDPPREF_OKDP" ON "GOODSOKDPCOUNTRYPREF" ("GOODSOKDP_ID") 
-   ;
+  CREATE INDEX "J_FK_GOODSOKDPPREF_OKDP" ON "GOODSOKDPCOUNTRYPREF" ("GOODSOKDP_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_ALTGOODSGROUPTYPE
 --------------------------------------------------------
@@ -30290,14 +29282,12 @@
 --  DDL for Index IDX_REQUESTDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_REQUESTDOC_DISPSTATUS" ON "REQUESTDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "IDX_REQUESTDOC_DISPSTATUS" ON "REQUESTDOC" ("DOCUMENTCLASS_ID", "DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_TERRITORY_TERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TERRITORY_TERTYPE" ON "TERRITORY" ("TERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_TERRITORY_TERTYPE" ON "TERRITORY" ("TERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RESPONSIBILITY
 --------------------------------------------------------
@@ -30307,8 +29297,7 @@
 --  DDL for Index J_FK_CONSOLIDDOC_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONSOLIDDOC_DISPSTATUS" ON "CONSOLIDDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_CONSOLIDDOC_DISPSTATUS" ON "CONSOLIDDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_LIABILITYEXPENSE
 --------------------------------------------------------
@@ -30328,20 +29317,17 @@
 --  DDL for Index IFK_PLGOODS_GROUPCODE
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PLGOODS_GROUPCODE" ON "PLGOODS" ("GROUPCODE") 
-   ;
+  CREATE INDEX "IFK_PLGOODS_GROUPCODE" ON "PLGOODS" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_LEDGER_ORG_CUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_ORG_CUSTOMER" ON "LEDGER" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_ORG_CUSTOMER" ON "LEDGER" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_CONTRACTDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTRACTDOC_DATENUM" ON "CONTRACTDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_CONTRACTDOC_DATENUM" ON "CONTRACTDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index PK_NUMSEQUENCE
 --------------------------------------------------------
@@ -30351,20 +29337,17 @@
 --  DDL for Index IDX_CLAIMDOC_DATENUM
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CLAIMDOC_DATENUM" ON "CLAIMDOC" ("DOC_DATE", "DOC_NUMBER") 
-   ;
+  CREATE INDEX "IDX_CLAIMDOC_DATENUM" ON "CLAIMDOC" ("DOC_DATE", "DOC_NUMBER");
 --------------------------------------------------------
 --  DDL for Index J_FK_RQLOT_APPSETTACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQLOT_APPSETTACC_ID" ON "RQLOT" ("GUARAPPSETTLEMENTACC_ID") 
-   ;
+  CREATE INDEX "J_FK_RQLOT_APPSETTACC_ID" ON "RQLOT" ("GUARAPPSETTLEMENTACC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_LIABILITYCRED_BUDGETSTAGE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LIABILITYCRED_BUDGETSTAGE" ON "LIABILITYCREDENTIAL" ("STAGECODE_ID") 
-   ;
+  CREATE INDEX "J_FK_LIABILITYCRED_BUDGETSTAGE" ON "LIABILITYCREDENTIAL" ("STAGECODE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ORGACCOUNT
 --------------------------------------------------------
@@ -30379,26 +29362,22 @@
 --  DDL for Index IDX_CONTEMPDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_CONTEMPDOC_DOC_DATE" ON "CONTRACTTEMPLATEDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_CONTEMPDOC_DOC_DATE" ON "CONTRACTTEMPLATEDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index J_FK_GOODS_UNIT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODS_UNIT" ON "GOODS" ("UNITNAME") 
-   ;
+  CREATE INDEX "J_FK_GOODS_UNIT" ON "GOODS" ("UNITNAME");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORGTURNOVER_CURRENCY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORGTURNOVER_CURRENCY" ON "ORGTURNOVER" ("CURRENCY_ID") 
-   ;
+  CREATE INDEX "J_FK_ORGTURNOVER_CURRENCY" ON "ORGTURNOVER" ("CURRENCY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRACTDOC_MODIFICATIOND
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_MODIFICATIOND" ON "CONTRACTDOC" ("MODIFICATIONREASONDOC_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_MODIFICATIOND" ON "CONTRACTDOC" ("MODIFICATIONREASONDOC_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ORGACCTYPE
 --------------------------------------------------------
@@ -30408,8 +29387,7 @@
 --  DDL for Index IFK_CMPQUALR_LOTPOSORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPQUALR_LOTPOSORDER_ID" ON "CMPQUALREQ" ("ORDER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_CMPQUALR_LOTPOSORDER_ID" ON "CMPQUALREQ" ("ORDER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index PK_REPDOCFRAGMENT
 --------------------------------------------------------
@@ -30419,20 +29397,17 @@
 --  DDL for Index J_FK_TYPEDOCREQGROUP_PURCHMODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_TYPEDOCREQGROUP_PURCHMODE" ON "TYPEDOCREQGROUP" ("PURCHASEMODE_ID") 
-   ;
+  CREATE INDEX "J_FK_TYPEDOCREQGROUP_PURCHMODE" ON "TYPEDOCREQGROUP" ("PURCHASEMODE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CMPCOMPE_LOTPOSORDER_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPCOMPE_LOTPOSORDER_ID" ON "CMPCOMPETITOR" ("ORDER_ID", "LOTPOS") 
-   ;
+  CREATE INDEX "IFK_CMPCOMPE_LOTPOSORDER_ID" ON "CMPCOMPETITOR" ("ORDER_ID", "LOTPOS");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORDERDOC_CMPORGFACTCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_CMPORGFACTCODE" ON "ORDERDOC" ("CMPORGFACTCOUNTRY_ID", "CMPORGFACTTERRITORYCODE") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_CMPORGFACTCODE" ON "ORDERDOC" ("CMPORGFACTCOUNTRY_ID", "CMPORGFACTTERRITORYCODE");
 --------------------------------------------------------
 --  DDL for Index UQ_SYSUSER
 --------------------------------------------------------
@@ -30442,20 +29417,17 @@
 --  DDL for Index J_FK_CCCONTRACT_PLACINGWAY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CCCONTRACT_PLACINGWAY" ON "CONFCONCLUSIONCONTRACT" ("PLACINGWAY_ID") 
-   ;
+  CREATE INDEX "J_FK_CCCONTRACT_PLACINGWAY" ON "CONFCONCLUSIONCONTRACT" ("PLACINGWAY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_USERCERT_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_USERCERT_SYSUSER" ON "USERCERT" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_USERCERT_SYSUSER" ON "USERCERT" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PURCHASEPLANDOC_PLANYEAR
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PURCHASEPLANDOC_PLANYEAR" ON "PURCHASEPLANDOC" ("PLANYEAR") 
-   ;
+  CREATE INDEX "IDX_PURCHASEPLANDOC_PLANYEAR" ON "PURCHASEPLANDOC" ("PLANYEAR");
 --------------------------------------------------------
 --  DDL for Index PK_DISPSTATUS
 --------------------------------------------------------
@@ -30485,20 +29457,17 @@
 --  DDL for Index J_FK_MSGQUEUE_RECEIVER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_MSGQUEUE_RECEIVER" ON "MSGQUEUE" ("RECEIVER_ID") 
-   ;
+  CREATE INDEX "J_FK_MSGQUEUE_RECEIVER" ON "MSGQUEUE" ("RECEIVER_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_PURCHASECARRY_CMPORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PURCHASECARRY_CMPORG_ID" ON "PURCHASECARRY" ("CMPORG_ID") 
-   ;
+  CREATE INDEX "IFK_PURCHASECARRY_CMPORG_ID" ON "PURCHASECARRY" ("CMPORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2GOODS_OLD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2GOODS_OLD" ON "PLAN2GOODS" ("OLDPLAN2GOODS_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2GOODS_OLD" ON "PLAN2GOODS" ("OLDPLAN2GOODS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_FETCHMODE
 --------------------------------------------------------
@@ -30523,8 +29492,7 @@
 --  DDL for Index J_FK_GBPM_GOODSBAN_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GBPM_GOODSBAN_ID" ON "GOODSBANPURCHASEMODE" ("GOODSBAN_ID") 
-   ;
+  CREATE INDEX "J_FK_GBPM_GOODSBAN_ID" ON "GOODSBANPURCHASEMODE" ("GOODSBAN_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CMPLOT
 --------------------------------------------------------
@@ -30549,20 +29517,17 @@
 --  DDL for Index J_FK_SYSPARAM_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SYSPARAM_SYSUSER" ON "SYSPARAM" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_SYSPARAM_SYSUSER" ON "SYSPARAM" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_BANKGUARANTEEDOC_DISPSTAT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_BANKGUARANTEEDOC_DISPSTAT" ON "BANKGUARANTEEDOC" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_BANKGUARANTEEDOC_DISPSTAT" ON "BANKGUARANTEEDOC" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P2ARRANGEMENT_CHANGEDESCR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_CHANGEDESCR" ON "PLAN2ARRANGEMENT" ("CHANGEDESCRIPTIONCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_CHANGEDESCR" ON "PLAN2ARRANGEMENT" ("CHANGEDESCRIPTIONCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OFRCRITERIONLINEVAL
 --------------------------------------------------------
@@ -30577,8 +29542,7 @@
 --  DDL for Index J_FK_CMPCUSTOMERLOT_CUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPCUSTOMERLOT_CUSTOMER" ON "CMPCUSTOMERLOT" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPCUSTOMERLOT_CUSTOMER" ON "CMPCUSTOMERLOT" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_SUPPLYPLACE
 --------------------------------------------------------
@@ -30588,8 +29552,7 @@
 --  DDL for Index J_FK_WEBSTAT_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_WEBSTAT_BUDGET" ON "WEBSTATCACHE" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_WEBSTAT_BUDGET" ON "WEBSTATCACHE" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index PK_APPOINTMENT
 --------------------------------------------------------
@@ -30599,14 +29562,12 @@
 --  DDL for Index J_FK_DOCUMENT_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCUMENT_SYSUSER" ON "DOCUMENT" ("AUTHOR_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCUMENT_SYSUSER" ON "DOCUMENT" ("AUTHOR_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSFEATURE_PLFEATURE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSFEATURE_PLFEATURE" ON "PLAN2OOSFEATURE" ("PLACEMENTFEATURE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSFEATURE_PLFEATURE" ON "PLAN2OOSFEATURE" ("PLACEMENTFEATURE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_TERRITORY
 --------------------------------------------------------
@@ -30621,14 +29582,12 @@
 --  DDL for Index IFK_REQUESTO_DOCUMENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_REQUESTO_DOCUMENT_ID" ON "REQUESTORDER" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "IFK_REQUESTO_DOCUMENT_ID" ON "REQUESTORDER" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_SCHEXPDOCS_DOCUMENTCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_SCHEXPDOCS_DOCUMENTCLASS" ON "SCHEXPDOCS" ("DOCCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_SCHEXPDOCS_DOCUMENTCLASS" ON "SCHEXPDOCS" ("DOCCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ORGTITLE
 --------------------------------------------------------
@@ -30638,8 +29597,7 @@
 --  DDL for Index J_FK_AUCTIONBID_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_AUCTIONBID_OPERTYPE" ON "AUCTIONBID" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_AUCTIONBID_OPERTYPE" ON "AUCTIONBID" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_INVGOODS
 --------------------------------------------------------
@@ -30654,8 +29612,7 @@
 --  DDL for Index J_FK_NMSGRULE_NOTIFYMSGGROUP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NMSGRULE_NOTIFYMSGGROUP" ON "NOTIFYMSGRULE" ("NOTIFYMSGGROUP_ID") 
-   ;
+  CREATE INDEX "J_FK_NMSGRULE_NOTIFYMSGGROUP" ON "NOTIFYMSGRULE" ("NOTIFYMSGGROUP_ID");
 --------------------------------------------------------
 --  DDL for Index PK_EQUALITYCODES
 --------------------------------------------------------
@@ -30670,8 +29627,7 @@
 --  DDL for Index IDX_USERSESSION_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_USERSESSION_BUDGET" ON "USERSESSION" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "IDX_USERSESSION_BUDGET" ON "USERSESSION" ("BUDGET_ID");
 --------------------------------------------------------
 --  DDL for Index PK_FORMATCONVERTER
 --------------------------------------------------------
@@ -30686,14 +29642,12 @@
 --  DDL for Index J_FK_REQUESTDOC_APPSETTACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_APPSETTACC_ID" ON "REQUESTDOC" ("GUARAPPSETTLEMENTACC_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_APPSETTACC_ID" ON "REQUESTDOC" ("GUARAPPSETTLEMENTACC_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_FACTDOC_DOC_DATE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_FACTDOC_DOC_DATE" ON "FACTDOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_FACTDOC_DOC_DATE" ON "FACTDOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index UQ_MSGQUEUE
 --------------------------------------------------------
@@ -30708,8 +29662,7 @@
 --  DDL for Index J_FK_DIGESTSIGN_SYSUSER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DIGESTSIGN_SYSUSER" ON "DIGESTSIGN" ("SYSUSER_ID") 
-   ;
+  CREATE INDEX "J_FK_DIGESTSIGN_SYSUSER" ON "DIGESTSIGN" ("SYSUSER_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RQBUDGETLINE
 --------------------------------------------------------
@@ -30719,26 +29672,22 @@
 --  DDL for Index J_FK_CAVILDOC_DOCUMNETCLASS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CAVILDOC_DOCUMNETCLASS" ON "CAVILDOC" ("DOCUMENTCLASS_ID") 
-   ;
+  CREATE INDEX "J_FK_CAVILDOC_DOCUMNETCLASS" ON "CAVILDOC" ("DOCUMENTCLASS_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_USERSESSION_CLOSE
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_USERSESSION_CLOSE" ON "USERSESSION" ("CLOSE_TIME") 
-   ;
+  CREATE INDEX "IDX_USERSESSION_CLOSE" ON "USERSESSION" ("CLOSE_TIME");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRACTDOC_BANKGUARANTEE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_BANKGUARANTEE" ON "CONTRACTDOC" ("GRNTREGNUMBER_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_BANKGUARANTEE" ON "CONTRACTDOC" ("GRNTREGNUMBER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPCUSTOMER_CUSTFACTCODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPCUSTOMER_CUSTFACTCODE" ON "CMPCUSTOMER" ("CUSTOMERFACTCOUNTRY_ID", "CUSTOMERFACTTERRITORYCODE") 
-   ;
+  CREATE INDEX "J_FK_CMPCUSTOMER_CUSTFACTCODE" ON "CMPCUSTOMER" ("CUSTOMERFACTCOUNTRY_ID", "CUSTOMERFACTTERRITORYCODE");
 --------------------------------------------------------
 --  DDL for Index PK_PLAN2DOCCHILD
 --------------------------------------------------------
@@ -30748,14 +29697,12 @@
 --  DDL for Index IFK_ORG_TERRITORY_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORG_TERRITORY_ID" ON "ORG" ("TERRITORY_ID") 
-   ;
+  CREATE INDEX "IFK_ORG_TERRITORY_ID" ON "ORG" ("TERRITORY_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_DOCSTATUS_DOCSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCSTATUS_DOCSTATUS" ON "DOCSTATUS" ("PARENT_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCSTATUS_DOCSTATUS" ON "DOCSTATUS" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_EQUALITYCODES_CODE
 --------------------------------------------------------
@@ -30770,14 +29717,12 @@
 --  DDL for Index IDX_PLAN2GOODS_CODE9
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2GOODS_CODE9" ON "PLAN2GOODS" ("CODE9") 
-   ;
+  CREATE INDEX "IDX_PLAN2GOODS_CODE9" ON "PLAN2GOODS" ("CODE9");
 --------------------------------------------------------
 --  DDL for Index J_FK_COMPLAINTDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_COMPLAINTDOC_OPERTYPE" ON "COMPLAINTDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_COMPLAINTDOC_OPERTYPE" ON "COMPLAINTDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ORGCHILD
 --------------------------------------------------------
@@ -30792,14 +29737,12 @@
 --  DDL for Index IFK_ATTACHED_DOC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ATTACHED_DOC_ID" ON "ATTACHEDPLANDOC" ("DOC_ID") 
-   ;
+  CREATE INDEX "IFK_ATTACHED_DOC_ID" ON "ATTACHEDPLANDOC" ("DOC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_RQGOODS_OKPD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RQGOODS_OKPD" ON "RQGOODS" ("OKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_RQGOODS_OKPD" ON "RQGOODS" ("OKPD_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_OFRRETREASON_REASON
 --------------------------------------------------------
@@ -30809,14 +29752,12 @@
 --  DDL for Index IDX_MENUITEMWEB_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_MENUITEMWEB_PARENT" ON "MENUITEMWEB" ("PARENT_ID") 
-   ;
+  CREATE INDEX "IDX_MENUITEMWEB_PARENT" ON "MENUITEMWEB" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index IX_NUMUSAGE_NUM_VALUE
 --------------------------------------------------------
 
-  CREATE INDEX "IX_NUMUSAGE_NUM_VALUE" ON "NUMUSAGE" ("NUM_VALUE", "USE_COUNT", "NUMSEQUENCE_ID") 
-   ;
+  CREATE INDEX "IX_NUMUSAGE_NUM_VALUE" ON "NUMUSAGE" ("NUM_VALUE", "USE_COUNT", "NUMSEQUENCE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_GROUPUNIT
 --------------------------------------------------------
@@ -30826,14 +29767,12 @@
 --  DDL for Index J_FK_DOCEVERRLOG_DOCUMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCEVERRLOG_DOCUMENT" ON "DOCEVERRLOG" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCEVERRLOG_DOCUMENT" ON "DOCEVERRLOG" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_PLAN2DOC_DOCDATA
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_PLAN2DOC_DOCDATA" ON "PLAN2DOC" ("DOC_DATE") 
-   ;
+  CREATE INDEX "IDX_PLAN2DOC_DOCDATA" ON "PLAN2DOC" ("DOC_DATE");
 --------------------------------------------------------
 --  DDL for Index PK_PLACEMENTFEATUREPM
 --------------------------------------------------------
@@ -30848,62 +29787,52 @@
 --  DDL for Index IFK_CONTRACT_CON_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONTRACT_CON_ID" ON "CONTRACTDOC" ("CON_ID") 
-   ;
+  CREATE INDEX "IFK_CONTRACT_CON_ID" ON "CONTRACTDOC" ("CON_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_FACTDOC_FACTDOCTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_FACTDOC_FACTDOCTYPE" ON "FACTDOC" ("TYPENAME") 
-   ;
+  CREATE INDEX "J_FK_FACTDOC_FACTDOCTYPE" ON "FACTDOC" ("TYPENAME");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2DOCCHILD_PLAN2DOC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DOCCHILD_PLAN2DOC" ON "PLAN2DOCCHILD" ("PLAN2DOC_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DOCCHILD_PLAN2DOC" ON "PLAN2DOCCHILD" ("PLAN2DOC_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CMPPLACE_RECIPIENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CMPPLACE_RECIPIENT_ID" ON "CMPPLACE" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "IFK_CMPPLACE_RECIPIENT_ID" ON "CMPPLACE" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2LEDGER_FINSRC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2LEDGER_FINSRC" ON "PLAN2LEDGER" ("FINSRC_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2LEDGER_FINSRC" ON "PLAN2LEDGER" ("FINSRC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2GOODS_UNITNAME
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2GOODS_UNITNAME" ON "PLAN2GOODS" ("UNITNAME") 
-   ;
+  CREATE INDEX "J_FK_PLAN2GOODS_UNITNAME" ON "PLAN2GOODS" ("UNITNAME");
 --------------------------------------------------------
 --  DDL for Index J_FK_USESCRYPLIB_SUPPORTCRYPLI
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_USESCRYPLIB_SUPPORTCRYPLI" ON "USESCRYPTOLIB" ("SUPPORTCRYPTOLIB_ID") 
-   ;
+  CREATE INDEX "J_FK_USESCRYPLIB_SUPPORTCRYPLI" ON "USESCRYPTOLIB" ("SUPPORTCRYPTOLIB_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_LIABILIT_ORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_LIABILIT_ORG_ID" ON "LIABILITYEXPENSE" ("ORG_ID") 
-   ;
+  CREATE INDEX "IFK_LIABILIT_ORG_ID" ON "LIABILITYEXPENSE" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPGOODS_OKPD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPGOODS_OKPD" ON "CMPGOODS" ("OKPD_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPGOODS_OKPD" ON "CMPGOODS" ("OKPD_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P2ARRANGEMENT_CONTRPAYORD
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_CONTRPAYORD" ON "PLAN2ARRANGEMENT" ("CONTRACTPAYORDERCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_CONTRPAYORD" ON "PLAN2ARRANGEMENT" ("CONTRACTPAYORDERCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index S_OFFERDOC_DNI
 --------------------------------------------------------
@@ -30918,14 +29847,12 @@
 --  DDL for Index J_FK_INVOICEDOC_CONEXECUTER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INVOICEDOC_CONEXECUTER" ON "INVOICEDOC" ("CONEXECUTER_ID") 
-   ;
+  CREATE INDEX "J_FK_INVOICEDOC_CONEXECUTER" ON "INVOICEDOC" ("CONEXECUTER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORDERDOC_CMPORGFACTCOUNTR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_CMPORGFACTCOUNTR" ON "ORDERDOC" ("CMPORGFACTCOUNTRY_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_CMPORGFACTCOUNTR" ON "ORDERDOC" ("CMPORGFACTCOUNTRY_ID");
 --------------------------------------------------------
 --  DDL for Index PK_INVGOODSPROP
 --------------------------------------------------------
@@ -30935,14 +29862,12 @@
 --  DDL for Index J_FK_GOODSGROUP_UNIT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSGROUP_UNIT" ON "GOODSGROUP" ("UNITNAME") 
-   ;
+  CREATE INDEX "J_FK_GOODSGROUP_UNIT" ON "GOODSGROUP" ("UNITNAME");
 --------------------------------------------------------
 --  DDL for Index J_FK_NMSGRULE_NOTIFYMSGEVENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_NMSGRULE_NOTIFYMSGEVENT" ON "NOTIFYMSGRULE" ("NOTIFYMSGEVENT_ID") 
-   ;
+  CREATE INDEX "J_FK_NMSGRULE_NOTIFYMSGEVENT" ON "NOTIFYMSGRULE" ("NOTIFYMSGEVENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CAVILDOC
 --------------------------------------------------------
@@ -30957,14 +29882,12 @@
 --  DDL for Index J_FK_DOCRETENTIONR_DOCACTION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_DOCRETENTIONR_DOCACTION" ON "DOCRETENTION" ("DOCACTION_ID") 
-   ;
+  CREATE INDEX "J_FK_DOCRETENTIONR_DOCACTION" ON "DOCRETENTION" ("DOCACTION_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_ANYDATA_DATAKEY
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_ANYDATA_DATAKEY" ON "ANYDATA" ("DATA_KEY") 
-   ;
+  CREATE INDEX "IDX_ANYDATA_DATAKEY" ON "ANYDATA" ("DATA_KEY");
 --------------------------------------------------------
 --  DDL for Index PK_CMPQUALREQ
 --------------------------------------------------------
@@ -30974,14 +29897,12 @@
 --  DDL for Index J_FK_CACHELIST_USERSESSION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CACHELIST_USERSESSION" ON "CACHELIST" ("USERSESSION_ID") 
-   ;
+  CREATE INDEX "J_FK_CACHELIST_USERSESSION" ON "CACHELIST" ("USERSESSION_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ESCHECKRULE_DISPSTATUS
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ESCHECKRULE_DISPSTATUS" ON "ESCHECKRULE" ("DISPSTATUS_ID") 
-   ;
+  CREATE INDEX "J_FK_ESCHECKRULE_DISPSTATUS" ON "ESCHECKRULE" ("DISPSTATUS_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PACKTYPE
 --------------------------------------------------------
@@ -30991,8 +29912,7 @@
 --  DDL for Index J_FK_CMPQUALREQ_REQTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPQUALREQ_REQTYPE" ON "CMPQUALREQ" ("REQUIREMENTTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPQUALREQ_REQTYPE" ON "CMPQUALREQ" ("REQUIREMENTTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_ETP_NAME
 --------------------------------------------------------
@@ -31002,8 +29922,7 @@
 --  DDL for Index J_FK_PLAN3DOC_CONFIRMPERSON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN3DOC_CONFIRMPERSON" ON "PLAN3DOC" ("CONFIRMPERSON_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN3DOC_CONFIRMPERSON" ON "PLAN3DOC" ("CONFIRMPERSON_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONBUDGETLINE
 --------------------------------------------------------
@@ -31013,8 +29932,7 @@
 --  DDL for Index J_FK_ORG_CERT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORG_CERT" ON "ORG" ("CERT_ID") 
-   ;
+  CREATE INDEX "J_FK_ORG_CERT" ON "ORG" ("CERT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CACHELIST
 --------------------------------------------------------
@@ -31024,8 +29942,7 @@
 --  DDL for Index J_FK_INSTITUTIONLINE_IC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INSTITUTIONLINE_IC" ON "INSTITUTIONLINE" ("INDUSTRYCODE_ID") 
-   ;
+  CREATE INDEX "J_FK_INSTITUTIONLINE_IC" ON "INSTITUTIONLINE" ("INDUSTRYCODE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ORGPERSONALRESP
 --------------------------------------------------------
@@ -31040,26 +29957,22 @@
 --  DDL for Index J_FK_CUSTOMERLOT_APPPERSACC_ID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CUSTOMERLOT_APPPERSACC_ID" ON "CMPCUSTOMERLOT" ("GUARAPPPERSONALACC_ID") 
-   ;
+  CREATE INDEX "J_FK_CUSTOMERLOT_APPPERSACC_ID" ON "CMPCUSTOMERLOT" ("GUARAPPPERSONALACC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSPOS_ORGANIZER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPOS_ORGANIZER" ON "PLAN2OOSPOSITION" ("CMPORG_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPOS_ORGANIZER" ON "PLAN2OOSPOSITION" ("CMPORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN3DOCCHILD_DOCUMENTID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN3DOCCHILD_DOCUMENTID" ON "PLAN3DOCCHILD" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN3DOCCHILD_DOCUMENTID" ON "PLAN3DOCCHILD" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORG_OKVEDID
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORG_OKVEDID" ON "ORG" ("OKVED_ID") 
-   ;
+  CREATE INDEX "J_FK_ORG_OKVEDID" ON "ORG" ("OKVED_ID");
 --------------------------------------------------------
 --  DDL for Index UK_GOODSDOCDETAIL
 --------------------------------------------------------
@@ -31074,8 +29987,7 @@
 --  DDL for Index J_FK_CONTRACTDOC_PRICECHANGE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_PRICECHANGE" ON "CONTRACTDOC" ("PRICECHANGEREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_PRICECHANGE" ON "CONTRACTDOC" ("PRICECHANGEREASON_ID");
 --------------------------------------------------------
 --  DDL for Index PK_DOCDIGESREQUISITES
 --------------------------------------------------------
@@ -31085,20 +29997,17 @@
 --  DDL for Index J_FK_P2ARRANGEMENT_ORDERNAME
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P2ARRANGEMENT_ORDERNAME" ON "PLAN2ARRANGEMENT" ("ORDERNAMECACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P2ARRANGEMENT_ORDERNAME" ON "PLAN2ARRANGEMENT" ("ORDERNAMECACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_MENUITEM_CLIENTOBJECT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_MENUITEM_CLIENTOBJECT" ON "MENUITEM" ("CLIENTOBJECT_ID") 
-   ;
+  CREATE INDEX "J_FK_MENUITEM_CLIENTOBJECT" ON "MENUITEM" ("CLIENTOBJECT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PROCUREMENT_COMMISSION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PROCUREMENT_COMMISSION" ON "PROCUREMENT" ("COMMISSION_ID") 
-   ;
+  CREATE INDEX "J_FK_PROCUREMENT_COMMISSION" ON "PROCUREMENT" ("COMMISSION_ID");
 --------------------------------------------------------
 --  DDL for Index S_INVOICEDOC_NI
 --------------------------------------------------------
@@ -31113,14 +30022,12 @@
 --  DDL for Index J_FK_CONPAYFACT_CONTRACT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONPAYFACT_CONTRACT" ON "CONPAYFACT" ("CONTRACT_ID") 
-   ;
+  CREATE INDEX "J_FK_CONPAYFACT_CONTRACT" ON "CONPAYFACT" ("CONTRACT_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_ORG_LAWTERRITORY_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORG_LAWTERRITORY_ID" ON "ORG" ("LAWTERRITORY_ID") 
-   ;
+  CREATE INDEX "IFK_ORG_LAWTERRITORY_ID" ON "ORG" ("LAWTERRITORY_ID");
 --------------------------------------------------------
 --  DDL for Index PK_RQVENDOR
 --------------------------------------------------------
@@ -31130,14 +30037,12 @@
 --  DDL for Index J_FK_ORDERDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_OPERTYPE" ON "ORDERDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_OPERTYPE" ON "ORDERDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_PLNGOODS_GROUPCODE
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PLNGOODS_GROUPCODE" ON "PLNGOODS" ("GROUPCODE") 
-   ;
+  CREATE INDEX "IFK_PLNGOODS_GROUPCODE" ON "PLNGOODS" ("GROUPCODE");
 --------------------------------------------------------
 --  DDL for Index UQ_RPLTABLE_NAME
 --------------------------------------------------------
@@ -31147,20 +30052,17 @@
 --  DDL for Index J_FK_P3PURCHASEDOC_CONEXECSTAG
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_CONEXECSTAG" ON "PLAN3PURCHASEDOC" ("CONEXECSTAGESCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_CONEXECSTAG" ON "PLAN3PURCHASEDOC" ("CONEXECSTAGESCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_RQBUDGET_ESTIMATE_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_RQBUDGET_ESTIMATE_ID" ON "RQBUDGETLINE" ("ESTIMATE_ID") 
-   ;
+  CREATE INDEX "IFK_RQBUDGET_ESTIMATE_ID" ON "RQBUDGETLINE" ("ESTIMATE_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_ORGACCOU_ORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_ORGACCOU_ORG_ID" ON "ORGACCOUNT" ("ORG_ID") 
-   ;
+  CREATE INDEX "IFK_ORGACCOU_ORG_ID" ON "ORGACCOUNT" ("ORG_ID");
 --------------------------------------------------------
 --  DDL for Index PK_CONPRODUCTSCHANGEDOCS
 --------------------------------------------------------
@@ -31170,38 +30072,32 @@
 --  DDL for Index J_FK_BANKGUARANTEEREFDOC_DOCUM
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_BANKGUARANTEEREFDOC_DOCUM" ON "BANKGUARANTEEREFDOC" ("DOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_BANKGUARANTEEREFDOC_DOCUM" ON "BANKGUARANTEEREFDOC" ("DOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_LEDGER_GRANTINVESTMENT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_LEDGER_GRANTINVESTMENT" ON "LEDGER" ("GRANTINVESTMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_LEDGER_GRANTINVESTMENT" ON "LEDGER" ("GRANTINVESTMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_USERCERT_SIGNTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_USERCERT_SIGNTYPE" ON "USERCERT" ("SIGNTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_USERCERT_SIGNTYPE" ON "USERCERT" ("SIGNTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORG_ACCOUNTANT
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORG_ACCOUNTANT" ON "ORG" ("ACCOUNTANT_ID") 
-   ;
+  CREATE INDEX "J_FK_ORG_ACCOUNTANT" ON "ORG" ("ACCOUNTANT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_TERRITORY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_TERRITORY" ON "PLAN3PURCHASEDOC" ("COUNTRY_ID", "TERRITORYCODE") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_TERRITORY" ON "PLAN3PURCHASEDOC" ("COUNTRY_ID", "TERRITORYCODE");
 --------------------------------------------------------
 --  DDL for Index J_FK_MSGSITEEXCHANGE_SCHEME
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_MSGSITEEXCHANGE_SCHEME" ON "MSGSITEEXCHANGE" ("DOCEXCHANGESCHEME_ID") 
-   ;
+  CREATE INDEX "J_FK_MSGSITEEXCHANGE_SCHEME" ON "MSGSITEEXCHANGE" ("DOCEXCHANGESCHEME_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_FORMATCONVERTER_NAME
 --------------------------------------------------------
@@ -31211,32 +30107,27 @@
 --  DDL for Index J_FK_ORGPERSONAL_PERSONAL
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORGPERSONAL_PERSONAL" ON "ORGPERSONAL" ("PERSONAL_ID") 
-   ;
+  CREATE INDEX "J_FK_ORGPERSONAL_PERSONAL" ON "ORGPERSONAL" ("PERSONAL_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_REQUESTD_CMPORG_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_REQUESTD_CMPORG_ID" ON "REQUESTDOC" ("CMPORG_ID") 
-   ;
+  CREATE INDEX "IFK_REQUESTD_CMPORG_ID" ON "REQUESTDOC" ("CMPORG_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_BUDGET_FINSRC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_BUDGET_FINSRC" ON "BUDGET" ("FINSRC_ID") 
-   ;
+  CREATE INDEX "J_FK_BUDGET_FINSRC" ON "BUDGET" ("FINSRC_ID");
 --------------------------------------------------------
 --  DDL for Index IFK_CONTRACT_RECIPIENT_ID
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_CONTRACT_RECIPIENT_ID" ON "CONTRACTDOC" ("RECIPIENT_ID") 
-   ;
+  CREATE INDEX "IFK_CONTRACT_RECIPIENT_ID" ON "CONTRACTDOC" ("RECIPIENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONGOODS_OKDP_CODE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONGOODS_OKDP_CODE" ON "CONGOODS" ("OKDP_CODE") 
-   ;
+  CREATE INDEX "J_FK_CONGOODS_OKDP_CODE" ON "CONGOODS" ("OKDP_CODE");
 --------------------------------------------------------
 --  DDL for Index PK_TER_TREE
 --------------------------------------------------------
@@ -31251,14 +30142,12 @@
 --  DDL for Index J_FK_CONTRACTDOC_OFRREQREASON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRACTDOC_OFRREQREASON" ON "CONTRACTDOC" ("OFRREQREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRACTDOC_OFRREQREASON" ON "CONTRACTDOC" ("OFRREQREASON_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CONTRCARDDOC_CUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTRCARDDOC_CUSTOMER" ON "CONTRACTCARDDOC" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTRCARDDOC_CUSTOMER" ON "CONTRACTCARDDOC" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_CMPCONDEALRESP
 --------------------------------------------------------
@@ -31268,20 +30157,17 @@
 --  DDL for Index J_FK_PLAN2DOC_CUSTOMER
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2DOC_CUSTOMER" ON "PLAN2DOC" ("CUSTOMER_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2DOC_CUSTOMER" ON "PLAN2DOC" ("CUSTOMER_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_DISCUSSION
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_DISCUSSION" ON "PLAN3PURCHASEDOC" ("PUBLICDISCUSSCACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_DISCUSSION" ON "PLAN3PURCHASEDOC" ("PUBLICDISCUSSCACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_CMPREPDOCUMENT_REPDOCUMEN
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CMPREPDOCUMENT_REPDOCUMEN" ON "CMPREPDOCUMENT" ("REPDOCUMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_CMPREPDOCUMENT_REPDOCUMEN" ON "CMPREPDOCUMENT" ("REPDOCUMENT_ID");
 --------------------------------------------------------
 --  DDL for Index UQ_BUDGET
 --------------------------------------------------------
@@ -31291,26 +30177,22 @@
 --  DDL for Index IFK_PURCHASECARRY_DOC
 --------------------------------------------------------
 
-  CREATE INDEX "IFK_PURCHASECARRY_DOC" ON "PURCHASECARRY" ("DOC_ID") 
-   ;
+  CREATE INDEX "IFK_PURCHASECARRY_DOC" ON "PURCHASECARRY" ("DOC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_PLAN2OOSPOS_PURCHASEFINPR
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPOS_PURCHASEFINPR" ON "PLAN2OOSPOSITION" ("PURCHASEFINPROCEDURECACHE_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPOS_PURCHASEFINPR" ON "PLAN2OOSPOSITION" ("PURCHASEFINPROCEDURECACHE_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_P3PURCHASEDOC_NECESSITY
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_P3PURCHASEDOC_NECESSITY" ON "PLAN3PURCHASEDOC" ("NECESSITY_ID") 
-   ;
+  CREATE INDEX "J_FK_P3PURCHASEDOC_NECESSITY" ON "PLAN3PURCHASEDOC" ("NECESSITY_ID");
 --------------------------------------------------------
 --  DDL for Index IDX_TERRITORY_PARENT
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_TERRITORY_PARENT" ON "TERRITORY" ("PARENT_ID") 
-   ;
+  CREATE INDEX "IDX_TERRITORY_PARENT" ON "TERRITORY" ("PARENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_ORGADDKPP
 --------------------------------------------------------
@@ -31320,14 +30202,12 @@
 --  DDL for Index J_FK_RECOILLINES_GRANTINVEST
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_RECOILLINES_GRANTINVEST" ON "RECOILLINES" ("GRANTINVESTMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_RECOILLINES_GRANTINVEST" ON "RECOILLINES" ("GRANTINVESTMENT_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_REQUESTDOC_OPERTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_REQUESTDOC_OPERTYPE" ON "REQUESTDOC" ("OPERTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_REQUESTDOC_OPERTYPE" ON "REQUESTDOC" ("OPERTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_PLAN2LEDGER
 --------------------------------------------------------
@@ -31337,8 +30217,7 @@
 --  DDL for Index J_FK_GOODSPROP_GROUPPROP
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_GOODSPROP_GROUPPROP" ON "GOODSPROP" ("GROUP_ID", "SEQORDER") 
-   ;
+  CREATE INDEX "J_FK_GOODSPROP_GROUPPROP" ON "GOODSPROP" ("GROUP_ID", "SEQORDER");
 --------------------------------------------------------
 --  DDL for Index UQ_MENU_NAME
 --------------------------------------------------------
@@ -31348,8 +30227,7 @@
 --  DDL for Index J_FK_PLAN2OOSPOSITION_CHREASON
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PLAN2OOSPOSITION_CHREASON" ON "PLAN2OOSPOSITION" ("CHANGEREASON_ID") 
-   ;
+  CREATE INDEX "J_FK_PLAN2OOSPOSITION_CHREASON" ON "PLAN2OOSPOSITION" ("CHANGEREASON_ID");
 --------------------------------------------------------
 --  DDL for Index PK_MENU
 --------------------------------------------------------
@@ -31394,8 +30272,7 @@
 --  DDL for Index IDX_KLADR_CODE5
 --------------------------------------------------------
 
-  CREATE INDEX "IDX_KLADR_CODE5" ON "KLADR" ("CODE5") 
-   ;
+  CREATE INDEX "IDX_KLADR_CODE5" ON "KLADR" ("CODE5");
 --------------------------------------------------------
 --  DDL for Index UQ_NOTIFYMSGDOC
 --------------------------------------------------------
@@ -31410,8 +30287,7 @@
 --  DDL for Index J_FK_PURCHASECARRY_GRANTINVEST
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_PURCHASECARRY_GRANTINVEST" ON "PURCHASECARRY" ("GRANTINVESTMENT_ID") 
-   ;
+  CREATE INDEX "J_FK_PURCHASECARRY_GRANTINVEST" ON "PURCHASECARRY" ("GRANTINVESTMENT_ID");
 --------------------------------------------------------
 --  DDL for Index PK_MSGLINKTYPE
 --------------------------------------------------------
@@ -31421,14 +30297,12 @@
 --  DDL for Index J_FK_INVBUDGETLINE_FINSRC
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_INVBUDGETLINE_FINSRC" ON "INVBUDGETLINE" ("FINSRC_ID") 
-   ;
+  CREATE INDEX "J_FK_INVBUDGETLINE_FINSRC" ON "INVBUDGETLINE" ("FINSRC_ID");
 --------------------------------------------------------
 --  DDL for Index J_FK_ORDERDOC_CONTYPE
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_ORDERDOC_CONTYPE" ON "ORDERDOC" ("CONTYPE_ID") 
-   ;
+  CREATE INDEX "J_FK_ORDERDOC_CONTYPE" ON "ORDERDOC" ("CONTYPE_ID");
 --------------------------------------------------------
 --  DDL for Index PK_OFRLOT
 --------------------------------------------------------
@@ -31463,5 +30337,4 @@
 --  DDL for Index J_FK_CONTEMPDOC_BUDGET
 --------------------------------------------------------
 
-  CREATE INDEX "J_FK_CONTEMPDOC_BUDGET" ON "CONTRACTTEMPLATEDOC" ("BUDGET_ID") 
-   ;
+  CREATE INDEX "J_FK_CONTEMPDOC_BUDGET" ON "CONTRACTTEMPLATEDOC" ("BUDGET_ID");

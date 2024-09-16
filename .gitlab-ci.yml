@@ -96,6 +96,8 @@ build_and_test:
     name: openjdk:11-jdk-buster
     entrypoint: []
   before_script:
+    - apt update -y
+    - apt install ca-certificates-java -y
     - apt update -y && apt install maven -y
     - export VERSION=`cat .ci/version`
     - export BRANCH=`cat .ci/branch`
@@ -117,6 +119,8 @@ publish:
     name: openjdk:11-jdk-buster
     entrypoint: []
   before_script:
+    - apt update -y
+    - apt install ca-certificates-java -y
     - apt update -y && apt install maven -y
     - export VERSION=`cat .ci/version`
     - export BRANCH=`cat .ci/branch`

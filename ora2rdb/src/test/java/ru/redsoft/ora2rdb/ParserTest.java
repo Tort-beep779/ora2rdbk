@@ -127,4 +127,39 @@ class ParserTest {
         test("hr_ora.sql");
     }
 
+    @Test
+    void rowtypeTest() throws IOException {
+        test("rowtype.sql");
+    }
+
+    @Test
+    void package_constantsTest() throws IOException {
+        test("package_constants.sql");
+    }
+
+    @Test
+    void loopsTest() throws IOException {
+        test("loops.sql");
+    }
+
+    @Test
+    void associative_arraysTest() throws IOException {
+        test("associative_arrays.sql");
+    }
+
+    @Test
+    void blocks_separationTest() throws IOException {
+        test("blocks_separation.sql");
+    }
+
+    @Test
+    void package_separationTest() throws IOException {
+        test("package_separation.sql");
+    }
+    @Test
+    void type_declarationTest() throws IOException {
+        test("type_declaration.sql");
+    }
+
+
 }

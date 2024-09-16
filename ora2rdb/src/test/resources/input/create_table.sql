@@ -2,7 +2,7 @@
 --  DDL for Table ABANDONEDREASON
 --------------------------------------------------------
 
-  CREATE TABLE "GZVLG"."ABANDONEDREASON" 
+  CREATE TABLE "GZVLG"."ABANDONEDREASN"
    (	"ID" NUMBER(15,0), 
 	"VERSION" NUMBER(15,0), 
 	"OOSKEY" VARCHAR2(100 BYTE), 
@@ -17,6 +17,19 @@
 	"PURCHASEMODE_ID" NUMBER(15,0), 
 	"ACTUAL" NUMBER(1,0) DEFAULT 1
    ) ;
+/*
+-- Key points: it's an autonomous transaction, which means the row is inserted into the error
+-- log without also committing other unsaved changes in the session (likely part of a business
+-- transaction that is in trouble). Plus, I invoke the full set of built-in functions to gather
+-- system-level information and write to table. Finally, I add the application-specific information.
+    */
+/* /* -- Log the Error!
+-- Key points: it's an autonomous transaction, which means the row is inserted into the error
+-- log without also committing other unsaved changes in the session (likely part of a business
+-- transaction that is in trouble). Plus, I invoke the full set of built-in functions to gather
+-- system-level information and write to table. Finally, I add the application-specific information.
+*/ */
+
 --------------------------------------------------------
 --  DDL for Table ALTGOODSGROUP
 --------------------------------------------------------

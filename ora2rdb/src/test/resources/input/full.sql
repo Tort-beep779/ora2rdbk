@@ -43362,7 +43362,7 @@
 --  DDL for Function CURRENT_TRANSACTION_ID
 --------------------------------------------------------
 
-  CREATE OR REPLACE FUNCTION "GZVLG"."CURRENT_TRANSACTION_ID" 
+  CREATE OR REPLACE FUNCTION "GZVLG"."CURRENT_TRANSACTION_ID"
 return varchar2 as
 begin
   return dbms_transaction.local_transaction_id(TRUE);
@@ -43867,7 +43867,7 @@ BEGIN
     ' RplMode := 0; ' ||
     ' select rpl_mode into RplMode from RplTransactMode where num_transaction = current_transaction_id; ' ||
     ' if RplMode <> 1 then ';
-  body := body || 'if (deleting) then '; /* delete_rule возможные значения: RESTRICT, CASCADE, SET NULL */
+  body := body || 'if (deleting) then '; /* delete_rule пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: RESTRICT, CASCADE, SET NULL */
   if (rc.delete_rule = 'CASCADE') then /* DELETE CASCADE */
     body := body ||' delete from '||rc.tablename||' where '||parent_where||';';
   elsif (rc.delete_rule = 'SET NULL') then /* DELETE SET NULL */
@@ -43878,7 +43878,7 @@ BEGIN
         ||'raise_application_error(-20001, ''violation of FOREIGN KEY constraint "'||rc.name
         ||'" on table "'||rc.target_tablename||'". Foreign key references are present for the record.''); end if;';
   end if;
-  body := body || ' elsif(' || parent_condition || ') then '; /* update_rule возможные значения: RESTRICT, SET NULL */
+  body := body || ' elsif(' || parent_condition || ') then '; /* update_rule пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: RESTRICT, SET NULL */
   if (rc.update_rule = 'SET NULL') then /* UPDATE SET NULL */
     body := body ||' update '||rc.tablename||' set '||parent_set||' where '||parent_where||';';
   else /* UPDATE RESTRICT */
@@ -44151,32 +44151,32 @@ BEGIN
           ;
        if (s_rec.rplfield1 IS NOT NULL) then
        stmt := stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value1 := :new.' || s_rec.rplfield1 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value1 := :old.' || s_rec.rplfield1 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value1 := :new.' || s_rec.rplfield1 || ';'
+          || '  mutating.old_slave_rpls(mutation_index).field_value1 := :old.' || s_rec.rplfield1 || ';'
           ;
        end if;
        if (s_rec.rplfield2 IS NOT NULL) then
        stmt := stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value2 := :new.' || s_rec.rplfield2 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value2 := :old.' || s_rec.rplfield2 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value2 := :new.' || s_rec.rplfield2 || ';'
+          || '  mutating.old_slave_rpls(mutation_index).field_value2 := :old.' || s_rec.rplfield2 || ';'
           ;
        end if;
        if (s_rec.rplfield3 IS NOT NULL) then
        stmt := stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value3 := :new.' || s_rec.rplfield3 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value3 := :old.' || s_rec.rplfield3 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value3 := :new.' || s_rec.rplfield3 || ';'
+          || '  mutating.old_slave_rpls(mutation_index).field_value3 := :old.' || s_rec.rplfield3 || ';'
           ;
        end if;
        if (s_rec.rplfield4 IS NOT NULL) then
        stmt := stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value4 := :new.' || s_rec.rplfield4 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value4 := :old.' || s_rec.rplfield4 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value4 := :new.' || s_rec.rplfield4 || ';'
+          || '  mutating.old_slave_rpls(mutation_index).field_value4 := :old.' || s_rec.rplfield4 || ';'
           ;
        end if;
        if (s_rec.rplfield5 IS NOT NULL) then
        stmt := stmt 
-          || '  mutating.new_slave_rpls(mutation_index).field_value5 := :new.' || s_rec.rplfield5 || ';' 
-          || '  mutating.old_slave_rpls(mutation_index).field_value5 := :old.' || s_rec.rplfield5 || ';' 
+          || '  mutating.new_slave_rpls(mutation_index).field_value5 := :new.' || s_rec.rplfield5 || ';'
+          || '  mutating.old_slave_rpls(mutation_index).field_value5 := :old.' || s_rec.rplfield5 || ';'
           ;
        end if;
      end if;
@@ -44231,7 +44231,7 @@ BEGIN
           || '           lplugin_table_id := ' || plugin_rec.plugin_rpltable_id || ';'
           || '           insert into RPLLOG (rpltable_id, record_id, transaction_id,' || fieldlist || ') '
           || '             select lplugin_table_id, master.id, current_transaction_id,' || mut_oldfieldvalue
-          || '               from ' || plugin_rec.join_fragment 
+          || '               from ' || plugin_rec.join_fragment
           || '               where slave.id=mutating.old_slave_rpls(i).id;';
        END LOOP;
        stmt := stmt 
@@ -44326,7 +44326,7 @@ BEGIN
                 INTO maxval;
    EXECUTE IMMEDIATE 'select ' || tablename || '_seq.nextval from dual'
                 INTO curval;
-   -- сделаем циклом, а не пересозданием. так надежнее
+   -- пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
    FOR i IN curval .. maxval - 1
    LOOP
       EXECUTE IMMEDIATE 'select ' || tablename || '_seq.nextval from dual'
@@ -47745,7 +47745,7 @@ ALTER TRIGGER "GZVLG"."RPL$WEBSTATCACHEVAL" ENABLE;
   after update on groupprop
   for each row
   WHEN (new.seqorder<>old.seqorder or new.group_id<>old.group_id) begin
-  execute immediate 'update goodsprop set group_id=' || :new.group_id 
+  execute immediate 'update goodsprop set group_id=' || :new.group_id
     || ', seqorder=' || :new.seqorder
     || ' where group_id=' || :old.group_id 
     || ' and seqorder=' || :old.seqorder;
@@ -48626,7 +48626,7 @@ begin
  if inserting then 
  begin 
    if (:new.version is null or (:new.version < 1)) then 
-     :new.version := 1; 
+     :new.version := 1;
  end if; 
 end; 
 else 
@@ -48635,9 +48635,9 @@ else
   end if;
  end if; 
   if inserting then 
-    RecordAction := 0; 
+    RecordAction := 0;
   else 
-    RecordAction := 1; 
+    RecordAction := 1;
   end if;
   TaskJournalId := RPLTRANSACTION.get_task_journal_id; 
   if TaskJournalId is not null then 
@@ -48660,7 +48660,7 @@ begin
  if inserting then 
  begin 
    if (:new.version is null or (:new.version < 1)) then 
-     :new.version := 1; 
+     :new.version := 1;
  end if; 
 end; 
 else 
@@ -48669,12 +48669,12 @@ else
   end if;
  end if; 
   if inserting then 
-    RecordAction := 0; 
+    RecordAction := 0;
   else 
-    RecordAction := 1; 
+    RecordAction := 1;
   end if;
-  TaskJournalId := RPLTRANSACTION.get_task_journal_id; 
-  if TaskJournalId is not null then 
+  TaskJournalId := RPLTRANSACTION.get_task_journal_id;
+  if TaskJournalId is not null then
     insert into RplVersionLog (Ver, Num_Transaction, RplTable_Id, TaskJournal_Id, Record_Id, Record_Action) 
     values (:new.version, dbms_transaction.local_transaction_id, 2, TaskJournalId, :new.id, RecordAction); 
   end if;
@@ -49424,7 +49424,7 @@ begin
  if inserting then 
  begin 
    if (:new.version is null or (:new.version < 1)) then 
-     :new.version := 1; 
+     :new.version := 1;
  end if; 
 end; 
 else 

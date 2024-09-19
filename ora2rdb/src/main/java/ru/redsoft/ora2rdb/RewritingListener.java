@@ -1003,8 +1003,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
     }
     private void convertProcedureWithOutParameters(Function_callContext ctx, StoredProcedure storedProcedure) {
-
-
         if(storedProcedure != null){
             StringBuilder selectQuery = new StringBuilder();
             selectQuery.append("SELECT ");
@@ -1060,14 +1058,22 @@ public class RewritingListener extends PlSqlParserBaseListener {
             return;
         }
 
+        if (ctx.BITMAP() != null)
+            delete(ctx.BITMAP());
+        if (ctx.MULTIVALUE() != null) {
+            commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+            insertBefore(ctx, "Not converted");
+        }
+//        if (ctx.inde)
+
         Table_index_clauseContext table_index_clause_ctx = ctx.table_index_clause();
 
-        for (Index_exprContext index_expr_ctx : table_index_clause_ctx.index_expr()) {
-            if (index_expr_ctx.expression() != null) {
-                delete(ctx);
-                return;
-            }
-        }
+//        for (Index_exprContext index_expr_ctx : table_index_clause_ctx.index_expr()) {
+//            if (index_expr_ctx.expression() != null) {
+//                delete(ctx);
+//                return;
+//            }
+//        }
 
         delete(table_index_clause_ctx.index_properties());
         deleteSPACESAbut(table_index_clause_ctx.index_properties());

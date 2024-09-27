@@ -843,7 +843,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 }
             }
         }
-        if(ctx.function_argument() != null)
+        if (ctx.function_argument() != null)
             convertFunctionCall(ctx);
     }
 
@@ -1057,21 +1057,146 @@ public class RewritingListener extends PlSqlParserBaseListener {
             delete(ctx);
             return;
         }
+        String uniqueStatement = "";
+        String tableSpace = "";
+        String alias = "";
 
         if (ctx.BITMAP() != null)
             delete(ctx.BITMAP());
-        if (ctx.MULTIVALUE() != null) {
-            commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
-            insertBefore(ctx, "Not converted");
-        }
-//        if (ctx.inde)
+        if (ctx.MULTIVALUE() != null)
+            delete(ctx.MULTIVALUE());
+        if (ctx.UNIQUE() != null)
+            uniqueStatement = "UNIQUE ";
 
         Table_index_clauseContext table_index_clause_ctx = ctx.table_index_clause();
 
+        if (table_index_clause_ctx == null) {
+            commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+            insertAfter(ctx, "/* This type of index is not supported in Red Database */");
+            return;
+        }
+
+        commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+
+        if (table_index_clause_ctx.table_alias() != null)
+            alias = " " + Ora2rdb.getRealName(getRuleText(table_index_clause_ctx.table_alias()));
+
+        if (table_index_clause_ctx.index_properties() != null)
+            if (table_index_clause_ctx.index_properties().index_attributes() != null)
+                for (Index_attributesContext index_attr_ctx : table_index_clause_ctx.index_properties().index_attributes())
+                    if (!index_attr_ctx.TABLESPACE().isEmpty())
+                        if (index_attr_ctx.DEFAULT().isEmpty())
+                            tableSpace = " IN TABLESPACE " + Ora2rdb.getRealName(index_attr_ctx.tablespace().get(0).id_expression().getText()) + " ";
+
+        List<Index_exprContext> list_of_index_expr = table_index_clause_ctx.index_expr().stream()
+                .filter(e -> {
+                    if (e.column_name() != null)
+                        if (e.DESC() != null || e.ASC() != null){
+                            makeNewIndex(ctx);
+                            return false;
+                        }
+                    return true;
+                })
+                .collect(Collectors.toList());
+
+        if (!list_of_index_expr.isEmpty()){
+            StringBuilder columns = new StringBuilder();
+            list_of_index_expr.stream()
+                    .map(index_expr_ctx -> Ora2rdb.getRealName(index_expr_ctx.column_name().getText()))
+                    .forEach(columnName -> columns.append(columnName).append(" , "));
+            if (columns.length() > 0) {
+                columns.setLength(columns.length() - 2);
+            }
+            String tableName = Ora2rdb.getRealName(getRuleText(table_index_clause_ctx.tableview_name().schema_and_name().name)) + alias;
+            String index = "\nCREATE " + uniqueStatement + " INDEX " + index_name + " ON " +
+                    tableName + "( " + columns + " )" + tableSpace + ";";
+            insertAfter(ctx, index);
+        }
+
+        list_of_index_expr = table_index_clause_ctx.index_expr().stream()
+                .filter(e -> e.column_name() != null)
+                .filter(e -> e.DESC() != null || e.ASC() != null)
+                .collect(Collectors.toList());
+
+        if (!list_of_index_expr.isEmpty()){
+            for (Index_exprContext index_expr_ctx : list_of_index_expr) {
+                String AscOrDesc = "";
+                if (index_expr_ctx.DESC() != null)
+                    AscOrDesc = "DESCENDING";
+                if (index_expr_ctx.ASC() != null)
+                    AscOrDesc = "ASCENDING";
+
+                String columnName = Ora2rdb.getRealName(index_expr_ctx.column_name().getText());
+                String tableName = Ora2rdb.getRealName(getRuleText(table_index_clause_ctx.tableview_name().schema_and_name().name)) + alias;
+                String newIndexName = index_name + "_" + columnName + "_" + AscOrDesc;
+
+                String index = "\nCREATE " + uniqueStatement + AscOrDesc + " INDEX " + newIndexName + " ON " +
+                        tableName + "( " + columnName + " )" + tableSpace + ";";
+                insertAfter(ctx, index);
+            }
+        }
+
+        list_of_index_expr = table_index_clause_ctx.index_expr().stream()
+                .filter(e -> e.expression() != null)
+                .collect(Collectors.toList());
+        int numberOfIndexExpr = 0;
+        if (!list_of_index_expr.isEmpty()){
+            for (Index_exprContext index_expr_ctx : list_of_index_expr) {
+                numberOfIndexExpr++;
+                String AscOrDesc = "";
+                if (index_expr_ctx.DESC() != null)
+                    AscOrDesc = "DESCENDING";
+                if (index_expr_ctx.ASC() != null)
+                    AscOrDesc = "ASCENDING";
+
+                String tableName = Ora2rdb.getRealName(getRuleText(table_index_clause_ctx.tableview_name().schema_and_name().name)) + alias;
+                String newIndexName = "";
+
+                if (numberOfIndexExpr == 1 && table_index_clause_ctx.index_expr().stream()
+                        .filter(e -> e.column_name() != null).noneMatch(e -> e.DESC() == null || e.ASC() == null))
+                    newIndexName = index_name;
+                else
+                    newIndexName = index_name + "_" + "FUNCTIONAL" + "_" + numberOfIndexExpr + "_" + AscOrDesc;
+
+                String expression = " COMPUTED BY " + "( " + getRewriterText(index_expr_ctx.expression()) + " )";
+
+                String newIndex = "\nCREATE " + uniqueStatement + AscOrDesc + " INDEX " + newIndexName + " ON " +
+                        tableName + expression + tableSpace + ";";
+                insertAfter(ctx, newIndex);
+            }
+        }
+
+
 //        for (Index_exprContext index_expr_ctx : table_index_clause_ctx.index_expr()) {
+//            if (index_expr_ctx.column_name() != null) {
+//                String AscOrDesc = "";
+//                if (index_expr_ctx.DESC() != null)
+//                    AscOrDesc = "DESCENDING";
+//                if (index_expr_ctx.ASC() != null)
+//                    AscOrDesc = "ASCENDING";
+//                String columnName = Ora2rdb.getRealName(index_expr_ctx.column_name().getText());
+//                String tableName = Ora2rdb.getRealName(getRuleText(table_index_clause_ctx.tableview_name().schema_and_name().name)) + alias;
+//                String newIndexName = index_name + "_" + columnName + "_" + AscOrDesc;
+//
+//                String newIndex = "\nCREATE " + uniqueStatement + AscOrDesc + " INDEX " + newIndexName + " ON " +
+//                        tableName + "( " + columnName + " )" + tableSpace + ";";
+//                insertAfter(ctx, newIndex);
+//            }
 //            if (index_expr_ctx.expression() != null) {
-//                delete(ctx);
-//                return;
+//                numberOfIndexExpr++;
+//                String AscOrDesc = "";
+//                if (index_expr_ctx.DESC() != null)
+//                    AscOrDesc = "DESCENDING";
+//                if (index_expr_ctx.ASC() != null)
+//                    AscOrDesc = "ASCENDING";
+//
+//                String tableName = Ora2rdb.getRealName(getRuleText(table_index_clause_ctx.tableview_name().schema_and_name().name)) + alias;
+//                String newIndexName = index_name + "_" + "FUNCTIONAL" + "_" + numberOfIndexExpr + "_" + AscOrDesc;
+//                String expression = " COMPUTED BY " + "( " + getRewriterText(index_expr_ctx.expression()) + " )";
+//
+//                String newIndex = "\nCREATE " + uniqueStatement + AscOrDesc + " INDEX " + newIndexName + " ON " +
+//                        tableName + expression + tableSpace + ";";
+//                insertAfter(ctx, newIndex);
 //            }
 //        }
 
@@ -1079,6 +1204,23 @@ public class RewritingListener extends PlSqlParserBaseListener {
         deleteSPACESAbut(table_index_clause_ctx.index_properties());
 
         create_indexes.add(ctx);
+    }
+
+
+    private void makeNewIndex (Create_indexContext ctx){
+//        Index_exprContext index_expr_ctx = table_index_clause_ctx.index_expr();
+//        String AscOrDesc = "";
+//        if (index_expr_ctx.DESC() != null)
+//            AscOrDesc = "DESCENDING";
+//        if (index_expr_ctx.ASC() != null)
+//            AscOrDesc = "ASCENDING";
+//        String columnName = Ora2rdb.getRealName(index_expr_ctx.column_name().getText());
+//        String tableName = Ora2rdb.getRealName(getRuleText(table_index_clause_ctx.tableview_name().schema_and_name().name)) + alias;
+//        String newIndexName = index_name + "_" + columnName + "_" + AscOrDesc;
+//
+//        String newIndex = "\nCREATE " + uniqueStatement + AscOrDesc + " INDEX " + newIndexName + " ON " +
+//                tableName + "( " + columnName + " )" + tableSpace + ";";
+//        insertAfter(ctx, newIndex);
     }
 
     @Override

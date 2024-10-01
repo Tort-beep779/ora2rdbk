@@ -1,6 +1,7 @@
 package ru.redsoft.ora2rdb;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -9,7 +10,7 @@ public class StorageInfo {
     public static ArrayList<StoredBlock> stored_blocks_list = new ArrayList<>();
     public static ArrayList<Table> tables = new ArrayList<>();
     public static TreeMap<String, TreeSet<String>> table_not_null_cols = new TreeMap<String, TreeSet<String>>();
-    public static TreeSet<String> index_names = new TreeSet<String>();
+    public static HashSet<Index> index_names = new HashSet<>();
     public static TreeMap<String, View> views = new TreeMap<String, View>();
     public static TreeMap<String, TreeMap<String, String>> types_of_column = new TreeMap<>();
 

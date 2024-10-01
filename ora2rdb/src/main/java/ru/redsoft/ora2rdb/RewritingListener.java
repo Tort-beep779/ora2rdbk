@@ -1139,6 +1139,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
                          rewriteIndexExpr(table_index_clause_ctx, filteredList);
                          return null;
                      }));
+            if (table_index_clause_ctx.index_properties() != null) {
+                replace(table_index_clause_ctx.index_properties(), getIndex.getTableSpace());
+            }
         }
 
         deleteSPACESAbut(table_index_clause_ctx.index_properties());

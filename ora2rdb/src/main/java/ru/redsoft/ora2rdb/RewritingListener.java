@@ -1079,6 +1079,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
             delete(ctx.INVALIDATION());
         }
 
+        if (ctx.index_ilm_clause() != null)
+            delete(ctx.index_ilm_clause());
+
         Table_index_clauseContext table_index_clause_ctx = ctx.table_index_clause();
 
         if (table_index_clause_ctx == null) {
@@ -1090,7 +1093,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
         Index getIndex = StorageInfo.index_names.stream()
                 .filter(e -> e.getIndexName().equals(index_name))
                 .findFirst()
-                .get();
+                .orElse(null);
+
+        if (getIndex == null) {
+            delete(ctx);
+            return;
+        }
 
         List<Index_exprContext> list_of_index_expr = table_index_clause_ctx.index_expr().stream()
                 .filter(e -> {

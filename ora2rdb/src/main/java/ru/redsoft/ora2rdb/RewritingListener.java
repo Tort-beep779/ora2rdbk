@@ -1065,7 +1065,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
             delete(ctx.BITMAP());
 
         if (ctx.MULTIVALUE() != null){
-            replace(ctx, "/* This type of index does not support \n" +  Ora2rdb.getRealName(getRuleText(ctx)) + "*/");
+            replace(ctx, "/* This type of index - " + ctx.MULTIVALUE().getText() +  " is not supported in Red Database  \n"
+                    +  Ora2rdb.getRealName(getRuleText(ctx)) + "*/");
             create_indexes.add(ctx);
             return;
         }
@@ -1085,7 +1086,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         Table_index_clauseContext table_index_clause_ctx = ctx.table_index_clause();
 
         if (table_index_clause_ctx == null) {
-            replace(ctx, "/* This type of index does not support \n" +  Ora2rdb.getRealName(getRuleText(ctx)) + "*/");
+            replace(ctx, "/* This type of index is not supported in Red Database\n" +  Ora2rdb.getRealName(getRuleText(ctx)) + "*/");
             create_indexes.add(ctx);
             return;
         }

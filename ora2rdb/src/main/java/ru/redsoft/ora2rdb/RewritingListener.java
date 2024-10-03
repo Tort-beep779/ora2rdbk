@@ -410,9 +410,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
             replace(ctx, "CHAR");
         else if (ctx.BINARY_INTEGER() != null)
             replace(ctx, "INTEGER");
-        else if (ctx.ROWID() != null) {
+        else if (ctx.ROWID() != null)
             replace(ctx, "BINARY(8)");
-        }
+        else if (ctx.PLS_INTEGER() != null)
+            replace(ctx.PLS_INTEGER(), "INTEGER");
     }
 
     @Override
@@ -1065,8 +1066,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
             delete(ctx.BITMAP());
 
         if (ctx.MULTIVALUE() != null){
-            replace(ctx, "/* This type of index - " + ctx.MULTIVALUE().getText() +  " is not supported in Red Database  \n"
-                    +  Ora2rdb.getRealName(getRuleText(ctx)) + "*/");
+            replace(ctx, "/* This type of index - " + ctx.MULTIVALUE().getText()
+                    +  " is not supported in Red Database \n" +  Ora2rdb.getRealName(getRuleText(ctx)) + "*/");
             create_indexes.add(ctx);
             return;
         }
@@ -1086,7 +1087,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         Table_index_clauseContext table_index_clause_ctx = ctx.table_index_clause();
 
         if (table_index_clause_ctx == null) {
-            replace(ctx, "/* This type of index is not supported in Red Database\n" +  Ora2rdb.getRealName(getRuleText(ctx)) + "*/");
+            replace(ctx, "/* This type of index is not supported in Red Database\n"
+                    +  Ora2rdb.getRealName(getRuleText(ctx)) + "*/");
             create_indexes.add(ctx);
             return;
         }
@@ -1104,7 +1106,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         List<Index_exprContext> list_of_index_expr = table_index_clause_ctx.index_expr().stream()
                 .filter(e -> {
                     if (e.DESC() != null || e.ASC() != null) {
-                        newContext.append(makeNewIndex(ctx, e, getIndex));
+                        newContext.append(makeNewIndex(e, getIndex));
                         return false;
                     }
                     return true;
@@ -1133,13 +1135,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
             list_of_index_expr.stream()
                     .skip(1)
-                    .forEach(e -> newContext.append(makeNewIndex(ctx, e, getIndex)));
+                    .forEach(e -> newContext.append(makeNewIndex(e, getIndex)));
 
         } else {
              list_of_index_expr.stream()
                      .filter(e -> {
                          if (e.expression() != null) {
-                             newContext.append(makeNewIndex(ctx, e, getIndex));
+                             newContext.append(makeNewIndex(e, getIndex));
                              return false;
                          }
                          return true;
@@ -1160,7 +1162,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
 
-    private String makeNewIndex(Create_indexContext ctx, Index_exprContext index_expr_ctx, Index index) {
+    private String makeNewIndex(Index_exprContext index_expr_ctx, Index index) {
         String AscOrDesc = "";
         if (index_expr_ctx.DESC() != null)
             AscOrDesc = "DESCENDING";
@@ -1196,6 +1198,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 .map(e -> Ora2rdb.getRealName(getRuleText(e)))
                 .collect(Collectors.joining(", "));
         insertAfter(table_index_clause_ctx.LEFT_PAREN(), index_expr);
+    }
+
+    @Override
+    public void exitAlter_index(Alter_indexContext ctx){
+
+
     }
 
     @Override

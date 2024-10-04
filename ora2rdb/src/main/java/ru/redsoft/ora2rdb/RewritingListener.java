@@ -1218,6 +1218,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         Alter_index_ops_set2Context alter_ctx_2 = ctx.alter_index_ops_set2();
 
+        if (alter_ctx_2 == null){
+            delete(ctx);
+            return;
+        }
+
         String ActiveOrInactive = "";
         String tableSpace = "";
 

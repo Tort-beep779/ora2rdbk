@@ -1084,10 +1084,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
             delete(ctx.USABLE());
         if (ctx.UNUSABLE() != null)
             delete(ctx.UNUSABLE());
-        if (ctx.DEFERRED() != null || ctx.IMMEDIATE() != null){
-            if (ctx.DEFERRED() != null) delete(ctx.DEFERRED());
-            if (ctx.IMMEDIATE() != null) delete(ctx.IMMEDIATE());
-            delete(ctx.INVALIDATION());
+        if (ctx.deferred_immediate_invalidation() != null){
+            if (ctx.deferred_immediate_invalidation().DEFERRED() != null) delete(ctx.deferred_immediate_invalidation().DEFERRED());
+            if (ctx.deferred_immediate_invalidation().IMMEDIATE() != null) delete(ctx.deferred_immediate_invalidation().IMMEDIATE());
+            delete(ctx.deferred_immediate_invalidation().INVALIDATION());
         }
         if (ctx.index_ilm_clause() != null)
             delete(ctx.index_ilm_clause());

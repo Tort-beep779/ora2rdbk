@@ -1267,7 +1267,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             ActiveOrInactive = "INACTIVE ";
         if (alter_ctx_2.rebuild_clause() != null) {
             ActiveOrInactive = "ACTIVE ";
-            if (alter_ctx_2.rebuild_clause().TABLESPACE() != null)
+            if (!alter_ctx_2.rebuild_clause().TABLESPACE().isEmpty())
                 tableSpace = "SET TABLESPACE TO " +
                     Ora2rdb.getRealName(getRuleText(alter_ctx_2.rebuild_clause().tablespace().get(0)));
         }

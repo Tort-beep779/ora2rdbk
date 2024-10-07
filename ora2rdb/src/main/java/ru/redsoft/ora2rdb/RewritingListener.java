@@ -1052,6 +1052,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitCreate_index(Create_indexContext ctx) {
         StringBuilder newContext = new StringBuilder();
+        StringBuilder alterIndexCtx = new StringBuilder();
+        String inactive = "";
         String index_name;
         index_name = Ora2rdb.getRealName(getRuleText(ctx.index_name().schema_and_name().name));
 
@@ -1082,11 +1084,15 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         if (ctx.USABLE() != null)
             delete(ctx.USABLE());
-        if (ctx.UNUSABLE() != null)
+        if (ctx.UNUSABLE() != null) {
             delete(ctx.UNUSABLE());
+            inactive = "INACTIVE";
+        }
         if (ctx.deferred_immediate_invalidation() != null){
-            if (ctx.deferred_immediate_invalidation().DEFERRED() != null) delete(ctx.deferred_immediate_invalidation().DEFERRED());
-            if (ctx.deferred_immediate_invalidation().IMMEDIATE() != null) delete(ctx.deferred_immediate_invalidation().IMMEDIATE());
+            if (ctx.deferred_immediate_invalidation().DEFERRED() != null)
+                delete(ctx.deferred_immediate_invalidation().DEFERRED());
+            if (ctx.deferred_immediate_invalidation().IMMEDIATE() != null)
+                delete(ctx.deferred_immediate_invalidation().IMMEDIATE());
             delete(ctx.deferred_immediate_invalidation().INVALIDATION());
         }
         if (ctx.index_ilm_clause() != null)
@@ -1102,6 +1108,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
             return;
         }
 
+        if (table_index_clause_ctx.index_properties() != null) // find invisible attribute in create index
+            if (table_index_clause_ctx.index_properties().index_attributes() != null)
+                for (Index_attributesContext index_attr_ctx: table_index_clause_ctx.index_properties().index_attributes())
+                    if (!index_attr_ctx.visible_or_invisible().isEmpty())
+                        if (index_attr_ctx.visible_or_invisible().get(0).INVISIBLE() != null)
+                            inactive = "INACTIVE";
+
         List<Index_exprContext> list_of_index_expr = table_index_clause_ctx.index_expr().stream()
                 .filter(e -> {
                     if (e.DESC() != null || e.ASC() != null) {
@@ -1114,9 +1127,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         if (list_of_index_expr.isEmpty()) {
             getIndex.setIsOriginalNameInUse(false);
-            replace(ctx, newContext);
-            create_indexes.add(ctx);
-            return;
         } else if (list_of_index_expr.stream().allMatch(e -> e.column_name() != null)) {
             if (table_index_clause_ctx.index_properties() != null)
                 replace(table_index_clause_ctx.index_properties(), getIndex.tableSpace());
@@ -1156,7 +1166,20 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         deleteSPACESAbut(table_index_clause_ctx.index_properties());
 
-        replace(ctx, getRewriterText(ctx) + newContext);
+        if (!inactive.isEmpty()) {
+            if (getIndex.isOriginalNameInUse())
+                alterIndexCtx.append("\nALTER INDEX ").append(index_name).append(" ").append(inactive).append(";");
+            for (String indexName : getIndex.functionalIndexes())
+                alterIndexCtx.append("\nALTER INDEX ").append(indexName).append(" ").append(inactive).append(";");
+            for (String indexName : getIndex.columnIndexes())
+                alterIndexCtx.append("\nALTER INDEX ").append(indexName).append(" ").append(inactive).append(";");
+        }
+
+        if (getIndex.isOriginalNameInUse())
+            replace(ctx, getRewriterText(ctx) + newContext + alterIndexCtx);
+        else
+            replace(ctx, newContext + "" + alterIndexCtx);
+
         create_indexes.add(ctx);
     }
 
@@ -1185,7 +1208,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
 
         delete(index_expr_ctx);
-        return newIndex + "\n";
+        return newIndex;
     }
 
     private void rewriteIndexExpr (Table_index_clauseContext table_index_clause_ctx,  List<Index_exprContext> list_of_index_expr){

@@ -17,7 +17,6 @@ import json
 import os
 
 
-
 def format_caption(input_string):
     pattern = r'\$'
     formatted_string = re.sub(pattern, r'\\$', input_string)
@@ -89,7 +88,9 @@ def remove_ifcert(content):
             result.append(line)
     return result
 
-
+def formatstr(green_condition,red_condition):
+    pattern = r'}}{#1}'
+    return re.sub(pattern, r'}}{' + (green_condition.encode('unicode_escape')).decode() + r'}', red_condition)
 
 class ReCodeBlock(SphinxDirective):
     has_content = True
@@ -103,6 +104,7 @@ class ReCodeBlock(SphinxDirective):
         'emphasize-lines': directives.unchanged_required,
         'redlines': directives.unchanged_required,
         'greenlines': directives.unchanged_required,
+        'bluelines': directives.unchanged_required,
         'caption': directives.unchanged_required,
         'class': directives.class_option,
         'name': directives.unchanged,
@@ -125,26 +127,11 @@ class ReCodeBlock(SphinxDirective):
 
         location = self.state_machine.get_source_and_line(self.lineno)
 
-        color_condition = 0
-        red_condition = ''
-        green_condition = ''
-        if 'redlines' in self.options:
-            color_condition += 1
-            redlines = self.options.get('redlines', '')
-            red_condition = set_condition(redlines, 'red!40!white')
-        if 'greenlines' in self.options:
-            color_condition += 1
-            greenlines = self.options.get('greenlines', '')
-            green_condition = set_condition(greenlines, 'green!40!black')
-        if color_condition == 1:
-            prefix = prefix + set_command_sphinxVerbatimFormatLine(green_condition+red_condition)
-        elif color_condition == 2:
-            pattern = r'}}{#1}'
-            formatted_string = re.sub(pattern, r'}}{' + (green_condition.encode('unicode_escape')).decode() + r'}', red_condition)
-            prefix = prefix + set_command_sphinxVerbatimFormatLine(formatted_string)
+        prefix = prefix + r'\fvset{formatcom=\color{black}}'
 
         linespec = self.options.get('emphasize-lines')
         if linespec:
+            prefix = prefix + r'\fvset{formatcom=\color{green!40!black}}'
             try:
                 nlines = len(self.content)
                 hl_lines = parselinenos(linespec, nlines)
@@ -158,6 +145,42 @@ class ReCodeBlock(SphinxDirective):
                 return [document.reporter.warning(err, line=self.lineno)]
         else:
             hl_lines = None
+
+        color_condition = 0
+        red_condition = ''
+        green_condition = ''
+        blue_condition = ''
+        redlines = ''
+        greenlines = ''
+        if 'redlines' in self.options:
+            color_condition += 1
+            redlines = self.options.get('redlines', '')
+            red_condition = set_condition(redlines, 'red!40!white')
+        if 'greenlines' in self.options:
+            color_condition += 1
+            greenlines = self.options.get('greenlines', '')
+            green_condition = set_condition(greenlines, 'green!40!black')
+        if 'bluelines' in self.options:
+            color_condition += 10
+            bluelines = self.options.get('bluelines', '')
+            blue_condition = set_condition(bluelines, 'blue!40!black')
+        if color_condition == 1 or color_condition == 10:
+            prefix = prefix + set_command_sphinxVerbatimFormatLine(green_condition+red_condition+blue_condition)
+        elif color_condition == 2:
+            formatted_string = formatstr(green_condition,red_condition)
+            prefix = prefix + set_command_sphinxVerbatimFormatLine(formatted_string)
+        elif color_condition == 11:
+            if redlines != '':
+               formatted_string = formatstr(red_condition,blue_condition)
+            else:
+                formatted_string = formatstr(green_condition,blue_condition)
+            prefix = prefix + set_command_sphinxVerbatimFormatLine(formatted_string)
+        elif color_condition == 12:
+               formatted_string = formatstr(red_condition,blue_condition)
+               formatted_string = formatstr(green_condition,formatted_string)
+               prefix = prefix + set_command_sphinxVerbatimFormatLine(formatted_string)
+
+
 
         literal: Element = nodes.literal_block(code, code)
         if 'linenos' in self.options or 'lineno-start' in self.options:
@@ -189,6 +212,7 @@ class ReCodeBlock(SphinxDirective):
             extra_args['linenostart'] = self.options['lineno-start']
         self.set_source_info(literal)
         self.add_name(literal)
+
 
         latex_prefix = nodes.raw('', prefix, format='latex')
         return [latex_prefix, literal]

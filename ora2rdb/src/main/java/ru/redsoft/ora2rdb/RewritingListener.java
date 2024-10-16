@@ -1075,10 +1075,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         if (ctx.BITMAP() != null)
             delete(ctx.BITMAP());
-        if (ctx.MULTIVALUE() != null){
+        if (ctx.MULTIVALUE() != null) {
             getIndex.setIsOriginalNameInUse(false);
             replace(ctx, "/* This type of index - " + ctx.MULTIVALUE().getText()
-                    +  " is not supported in Red Database \n" +  Ora2rdb.getRealName(getRuleText(ctx)) + "*/");
+                    + " is not supported in Red Database \n" + Ora2rdb.getRealName(getRuleText(ctx)) + "*/");
             create_indexes.add(ctx);
             return;
         }
@@ -1088,7 +1088,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             delete(ctx.UNUSABLE());
             inactive = "INACTIVE";
         }
-        if (ctx.deferred_immediate_invalidation() != null){
+        if (ctx.deferred_immediate_invalidation() != null) {
             if (ctx.deferred_immediate_invalidation().DEFERRED() != null)
                 delete(ctx.deferred_immediate_invalidation().DEFERRED());
             if (ctx.deferred_immediate_invalidation().IMMEDIATE() != null)
@@ -1103,14 +1103,14 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (table_index_clause_ctx == null) {
             getIndex.setIsOriginalNameInUse(false);
             replace(ctx, "/* This type of index is not supported in Red Database\n"
-                    +  Ora2rdb.getRealName(getRuleText(ctx)) + "*/");
+                    + Ora2rdb.getRealName(getRuleText(ctx)) + "*/");
             create_indexes.add(ctx);
             return;
         }
 
         if (table_index_clause_ctx.index_properties() != null) // find invisible attribute in create index
             if (table_index_clause_ctx.index_properties().index_attributes() != null)
-                for (Index_attributesContext index_attr_ctx: table_index_clause_ctx.index_properties().index_attributes())
+                for (Index_attributesContext index_attr_ctx : table_index_clause_ctx.index_properties().index_attributes())
                     if (!index_attr_ctx.visible_or_invisible().isEmpty())
                         if (index_attr_ctx.visible_or_invisible().get(0).INVISIBLE() != null)
                             inactive = "INACTIVE";
@@ -1129,39 +1129,42 @@ public class RewritingListener extends PlSqlParserBaseListener {
             getIndex.setIsOriginalNameInUse(false);
         } else if (list_of_index_expr.stream().allMatch(e -> e.column_name() != null)) {
             if (table_index_clause_ctx.index_properties() != null)
-                replace(table_index_clause_ctx.index_properties(), getIndex.tableSpace());
+                delete(table_index_clause_ctx.index_properties());
             rewriteIndexExpr(table_index_clause_ctx, list_of_index_expr);
+            insertAfter(table_index_clause_ctx, getIndex.tableSpace());
         } else if (list_of_index_expr.stream().allMatch(e -> e.expression() != null)) {
             if (table_index_clause_ctx.index_properties() != null)
                 delete(table_index_clause_ctx.index_properties());
+
+            list_of_index_expr.stream()
+                    .skip(1)
+                    .forEach(e -> newContext.append(makeNewIndex(e, getIndex)));
 
             Optional<Index_exprContext> firstIndexExpr = list_of_index_expr.stream().findFirst();
             firstIndexExpr.ifPresent(e -> {
                 delete(table_index_clause_ctx.LEFT_PAREN());
                 delete(table_index_clause_ctx.RIGHT_PAREN());
+                for (TerminalNode t : table_index_clause_ctx.COMMA())
+                    delete(t);
                 replace(e, " COMPUTED BY " + "( "
                         + getRewriterText(e.expression()) + " )" + getIndex.tableSpace());
             });
-
-            list_of_index_expr.stream()
-                    .skip(1)
-                    .forEach(e -> newContext.append(makeNewIndex(e, getIndex)));
         } else {
-             list_of_index_expr.stream()
-                     .filter(e -> {
-                         if (e.expression() != null) {
-                             newContext.append(makeNewIndex(e, getIndex));
-                             return false;
-                         }
-                         return true;
-                     })
-                     .collect(Collectors.collectingAndThen(Collectors.toList(), filteredList -> {
-                         rewriteIndexExpr(table_index_clause_ctx, filteredList);
-                         return null;
-                     }));
-            if (table_index_clause_ctx.index_properties() != null) {
-                replace(table_index_clause_ctx.index_properties(), getIndex.tableSpace());
-            }
+            list_of_index_expr.stream()
+                    .filter(e -> {
+                        if (e.expression() != null) {
+                            newContext.append(makeNewIndex(e, getIndex));
+                            return false;
+                        }
+                        return true;
+                    })
+                    .collect(Collectors.collectingAndThen(Collectors.toList(), filteredList -> {
+                        rewriteIndexExpr(table_index_clause_ctx, filteredList);
+                        return null;
+                    }));
+            if (table_index_clause_ctx.index_properties() != null)
+                delete(table_index_clause_ctx.index_properties());
+            insertAfter(table_index_clause_ctx, getIndex.tableSpace());
         }
 
         deleteSPACESAbut(table_index_clause_ctx.index_properties());
@@ -1211,10 +1214,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
         return newIndex;
     }
 
-    private void rewriteIndexExpr (Table_index_clauseContext table_index_clause_ctx,  List<Index_exprContext> list_of_index_expr){
+    private void rewriteIndexExpr(Table_index_clauseContext table_index_clause_ctx, List<Index_exprContext> list_of_index_expr) {
         String index_expr;
         table_index_clause_ctx.COMMA()
-                        .forEach(this::delete);
+                .forEach(this::delete);
         index_expr = list_of_index_expr.stream()
                 .peek(this::delete)
                 .map(e -> Ora2rdb.getRealName(getRuleText(e)))
@@ -1223,7 +1226,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitAlter_index(Alter_indexContext ctx){
+    public void exitAlter_index(Alter_indexContext ctx) {
         String index_name;
         index_name = Ora2rdb.getRealName(getRuleText(ctx.index_name().schema_and_name().name));
 
@@ -1241,7 +1244,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         Alter_index_ops_set2Context alter_ctx_2 = ctx.alter_index_ops_set2();
 
-        if (alter_ctx_2 == null){
+        if (alter_ctx_2 == null) {
             delete(ctx);
             return;
         }
@@ -1250,14 +1253,14 @@ public class RewritingListener extends PlSqlParserBaseListener {
         String tableSpace = "";
 
         if (alter_ctx_2.enable_or_disable() != null) {
-            if(alter_ctx_2.enable_or_disable().ENABLE() != null)
+            if (alter_ctx_2.enable_or_disable().ENABLE() != null)
                 ActiveOrInactive = "ACTIVE ";
             if (alter_ctx_2.enable_or_disable().DISABLE() != null)
                 ActiveOrInactive = "INACTIVE ";
         }
 
-        if (alter_ctx_2.visible_or_invisible() != null){
-            if(alter_ctx_2.visible_or_invisible().VISIBLE() != null)
+        if (alter_ctx_2.visible_or_invisible() != null) {
+            if (alter_ctx_2.visible_or_invisible().VISIBLE() != null)
                 ActiveOrInactive = "ACTIVE ";
             if (alter_ctx_2.visible_or_invisible().INVISIBLE() != null)
                 ActiveOrInactive = "INACTIVE ";
@@ -1269,15 +1272,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
             ActiveOrInactive = "ACTIVE ";
             if (!alter_ctx_2.rebuild_clause().TABLESPACE().isEmpty())
                 tableSpace = "SET TABLESPACE TO " +
-                    Ora2rdb.getRealName(getRuleText(alter_ctx_2.rebuild_clause().tablespace().get(0)));
+                        Ora2rdb.getRealName(getRuleText(alter_ctx_2.rebuild_clause().tablespace().get(0)));
         }
-        if (alter_ctx_2.alter_index_partitioning() != null)
-            if (alter_ctx_2.alter_index_partitioning().modify_index_default_attrs() != null)
-                if (alter_ctx_2.alter_index_partitioning().modify_index_default_attrs().TABLESPACE() != null)
-                    if (alter_ctx_2.alter_index_partitioning().modify_index_default_attrs().tablespace() != null)
-                        tableSpace = "SET TABLESPACE TO " +
-                                Ora2rdb.getRealName(getRuleText(alter_ctx_2.alter_index_partitioning().modify_index_default_attrs().tablespace()));
-
         if (tableSpace.isEmpty() && ActiveOrInactive.isEmpty()) {
             replace(ctx, newContext);
             return;
@@ -1286,10 +1282,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (getIndex.isOriginalNameInUse())
             newContext.append("ALTER INDEX ").append(index_name).append(" ").append(ActiveOrInactive).append(tableSpace).append(";\n");
 
-       for (String nameOfIndex : getIndex.functionalIndexes()){
-           newContext.append("ALTER INDEX ").append(nameOfIndex).append(" ").append(ActiveOrInactive).append(tableSpace).append(";\n");
-       }
-        for (String nameOfIndex : getIndex.columnIndexes()){
+        for (String nameOfIndex : getIndex.functionalIndexes()) {
+            newContext.append("ALTER INDEX ").append(nameOfIndex).append(" ").append(ActiveOrInactive).append(tableSpace).append(";\n");
+        }
+        for (String nameOfIndex : getIndex.columnIndexes()) {
             newContext.append("ALTER INDEX ").append(nameOfIndex).append(" ").append(ActiveOrInactive).append(tableSpace).append(";\n");
         }
 
@@ -1331,18 +1327,26 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void enterCreate_view(Create_viewContext ctx) {
-        current_view = StorageInfo.views.get(Ora2rdb.getRealName(getRuleText(ctx.id_expression(0))));
+        current_view = StorageInfo.views.get(Ora2rdb.getRealName(getRuleText(ctx.tableview_name().schema_and_name().name)));
     }
 
     @Override
     public void exitCreate_view(Create_viewContext ctx) {
-        replace(ctx.REPLACE(), "ALTER");
-        delete(ctx.FORCE());
+        StringBuilder newView = new StringBuilder();
+//        replace(ctx.REPLACE(), "ALTER");
+//
+//        if (ctx.FORCE() != null) {
+//            delete(ctx.FORCE());
+//            if (ctx.NO() != null)
+//                delete(ctx.NO());
+//        }
 
-        if (ctx.PERIOD() != null) {
-            delete(ctx.schema_name());
-            delete(ctx.PERIOD());
-        }
+        String view_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().schema_and_name().name));
+//        if (ctx.editioning_clause() != null)
+//            delete(ctx.editioning_clause());
+        newView.append("CREATE OR ALTER VIEW ").append(view_name).append(" AS ");
+
+
         current_view = null;
     }
 

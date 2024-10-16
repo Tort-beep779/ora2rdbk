@@ -184,7 +184,6 @@ public class ScanListener extends PlSqlParserBaseListener {
         if (ctx.UNIQUE() != null)
             uniqueStatement = "UNIQUE ";
 
-
         Table_index_clauseContext table_index_clause_ctx = ctx.table_index_clause();
 
         if (table_index_clause_ctx == null)
@@ -192,14 +191,16 @@ public class ScanListener extends PlSqlParserBaseListener {
 
         if (table_index_clause_ctx.table_alias() != null)
             alias = " " + Ora2rdb.getRealName(table_index_clause_ctx.table_alias().getText());
-
+        tableSpace = " IN TABLESPACE PRIMARY ";
         if (table_index_clause_ctx.index_properties() != null)
             if (table_index_clause_ctx.index_properties().index_attributes() != null)
                 for (Index_attributesContext index_attr_ctx : table_index_clause_ctx.index_properties().index_attributes())
-                    if (!index_attr_ctx.TABLESPACE().isEmpty())
+                    if (!index_attr_ctx.TABLESPACE().isEmpty()) {
                         if (index_attr_ctx.DEFAULT().isEmpty())
                             tableSpace = " IN TABLESPACE " + Ora2rdb.getRealName(index_attr_ctx.tablespace().get(0).id_expression().getText()) + " ";
-
+                        else if (table_index_clause_ctx.index_properties().local_partitioned_index() != null)
+                            tableSpace = "";
+                    }
         String tableName = Ora2rdb.getRealName(ctx.table_index_clause().tableview_name().schema_and_name().name.getText()) + alias;
 
         Index index = new Index(index_name, uniqueStatement, tableSpace,tableName, false);
@@ -468,7 +469,7 @@ public class ScanListener extends PlSqlParserBaseListener {
     }
     @Override
     public void enterCreate_view(Create_viewContext ctx) {
-        StorageInfo.views.put(Ora2rdb.getRealName(ctx.id_expression(0).getText()), new View(ctx));
+        StorageInfo.views.put(Ora2rdb.getRealName(ctx.tableview_name().schema_and_name().name.getText()), new View(ctx));
     }
 
     private String getConvertType(Type_specContext ctx) { //todo переделать стандартные значения

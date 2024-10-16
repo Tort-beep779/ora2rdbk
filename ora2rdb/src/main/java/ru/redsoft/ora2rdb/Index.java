@@ -13,7 +13,7 @@ public class Index {
     private List<String> columnIndexes = new ArrayList<>();
     private boolean isOriginalNameInUse = true;
 
-    public Index(String indexName, String unique, String tableSpace, String tableName, boolean systemIndex){
+    public Index(String indexName, String unique, String tableSpace, String tableName, boolean systemIndex) {
         this.indexName = indexName;
         this.unique = unique;
         this.tableSpace = tableSpace;
@@ -41,10 +41,11 @@ public class Index {
         return isSystemIndex;
     }
 
-    public void setFunctionalIndexes(String name){
+    public void setFunctionalIndexes(String name) {
         functionalIndexes.add(name);
     }
-    public int getNumberOfFunctionalIndexes(){
+
+    public int getNumberOfFunctionalIndexes() {
         return functionalIndexes.size();
     }
 
@@ -52,10 +53,11 @@ public class Index {
         return functionalIndexes;
     }
 
-    public void setColumnIndexes(String name){
+    public void setColumnIndexes(String name) {
         columnIndexes.add(name);
     }
-    public int getNumberOfColumnIndexes(){
+
+    public int getNumberOfColumnIndexes() {
         return columnIndexes.size();
     }
 

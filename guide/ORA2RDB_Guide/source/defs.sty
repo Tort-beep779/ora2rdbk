@@ -39,7 +39,8 @@
 \usepackage{titlesec}
 \usepackage{xhfill}
 \usepackage{booktabs}
-\usepackage{listingsutf8}
+%\usepackage{listingsutf8}
+\usepackage{listings}
 \usepackage{float}
 \usepackage{tablefootnote}
 \usepackage{colortbl}
@@ -151,10 +152,8 @@
 	div.warning_background-TeXcolor = red!8,
    }
 
-
 \renewenvironment{sphinxnote}[1]{\begin{sphinxheavybox}}{\end{sphinxheavybox}} % чтобы не печаталось слово "Примечание:"
 \renewenvironment{sphinxwarning}[1]{\begin{sphinxheavybox}}{\end{sphinxheavybox}} % чтобы не печаталось слово "Предупреждение:"
-
 
 % команда для настройки Verbatim (код-блоков) 
 % потребовалось для отступа текста от рамки внутри блока кода
@@ -171,15 +170,12 @@
 \sphinxDeclareSphinxColorOption{VerbatimHighlightColor}{{rgb}{0.808,1,0.975}}
 %\renewcommand\sphinxVerbatimHighlightLine[1]{\ifthenelse{\value{FancyVerbLine}=2 \or \value{FancyVerbLine}=3}{\textcolor{red!40!white}{#1}}{}}
 
-
-
 % настройка код-блоков
 % директива код-блоков переопределена в файле NewCodeBlockDirective.py
 \sphinxsetup{
 	verbatimvisiblespace = ,   % чтобы переносы строк в код-блоке были без 
 	verbatimcontinued = ,      % красных стрелок и подчеркивания пробела
 }
-
 
 \newcommand{\redstatementstyle}{
 	\sphinxsetup{
@@ -260,3 +256,25 @@
 \def\dottednumberline#1{\hb@xt@\@tempdima{#1}}
 \renewcommand{\l@paragraph}[2]{{\@dottedtocline{2}{8.6em}{2em}{#1}{#2}}}
 \makeatother
+
+
+
+\mdfsetup{%
+	middlelinewidth=0.5pt,
+	backgroundcolor=white!98!black,	
+	roundcorner=5pt,
+	innerleftmargin = 10pt,
+	innertopmargin=5pt,
+	skipabove = 10pt,
+	skipbelow = 5pt,
+	shadow=true,
+	shadowsize=4pt,
+	nobreak=false,
+	rightmargin=0pt,
+	align=right, 
+}
+
+\renewcommand{\bfdefault}{b}  % чтобы жирный шрифт стал менее широким
+
+\renewenvironment{sphinxalltt}[1]
+{\begin{mdframed}\begin{alltt}\small}{\end{alltt}\end{mdframed}} % рамка для parsed-literal

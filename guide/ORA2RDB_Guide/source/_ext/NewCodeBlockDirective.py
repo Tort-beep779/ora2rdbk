@@ -15,7 +15,8 @@ from docutils.statemachine import StringList
 import re
 import json
 import os
-
+from docutils.parsers.rst import Directive
+from docutils.parsers.rst.roles import set_classes
 
 def format_caption(input_string):
     pattern = r'\$'
@@ -111,7 +112,6 @@ class ReCodeBlock(SphinxDirective):
         'include': directives.unchanged_required,
     }
 
-
     def run(self) -> list[Node]:
         if 'caption' in self.options:
             prefix = '\\noindent \\textit{\\textbf{' + self.options.get('caption', '') + '}}\\vspace{-5pt}'
@@ -127,11 +127,8 @@ class ReCodeBlock(SphinxDirective):
 
         location = self.state_machine.get_source_and_line(self.lineno)
 
-        prefix = prefix + r'\fvset{formatcom=\color{black}}'
-
         linespec = self.options.get('emphasize-lines')
         if linespec:
-            prefix = prefix + r'\fvset{formatcom=\color{green!40!black}}'
             try:
                 nlines = len(self.content)
                 hl_lines = parselinenos(linespec, nlines)
@@ -149,9 +146,6 @@ class ReCodeBlock(SphinxDirective):
         color_condition = 0
         red_condition = ''
         green_condition = ''
-        blue_condition = ''
-        redlines = ''
-        greenlines = ''
         if 'redlines' in self.options:
             color_condition += 1
             redlines = self.options.get('redlines', '')
@@ -160,26 +154,14 @@ class ReCodeBlock(SphinxDirective):
             color_condition += 1
             greenlines = self.options.get('greenlines', '')
             green_condition = set_condition(greenlines, 'green!40!black')
-        if 'bluelines' in self.options:
-            color_condition += 10
-            bluelines = self.options.get('bluelines', '')
-            blue_condition = set_condition(bluelines, 'blue!40!black')
-        if color_condition == 1 or color_condition == 10:
-            prefix = prefix + set_command_sphinxVerbatimFormatLine(green_condition+red_condition+blue_condition)
+        if color_condition == 0:
+            prefix = prefix + set_command_sphinxVerbatimFormatLine('\\textcolor{black}{#1}')
+        elif color_condition == 1:
+            prefix = prefix + set_command_sphinxVerbatimFormatLine(green_condition+red_condition)
         elif color_condition == 2:
-            formatted_string = formatstr(green_condition,red_condition)
+            pattern = r'}}{#1}'
+            formatted_string = re.sub(pattern, r'}}{' + (green_condition.encode('unicode_escape')).decode() + r'}', red_condition)
             prefix = prefix + set_command_sphinxVerbatimFormatLine(formatted_string)
-        elif color_condition == 11:
-            if redlines != '':
-               formatted_string = formatstr(red_condition,blue_condition)
-            else:
-                formatted_string = formatstr(green_condition,blue_condition)
-            prefix = prefix + set_command_sphinxVerbatimFormatLine(formatted_string)
-        elif color_condition == 12:
-               formatted_string = formatstr(red_condition,blue_condition)
-               formatted_string = formatstr(green_condition,formatted_string)
-               prefix = prefix + set_command_sphinxVerbatimFormatLine(formatted_string)
-
 
 
         literal: Element = nodes.literal_block(code, code)
@@ -199,6 +181,7 @@ class ReCodeBlock(SphinxDirective):
             elif arg.lower()=='redbordless':
                 prefix = prefix + '\\redbordlessstyle'
             elif arg.lower()=='sql':
+                prefix = prefix + '\\redexamplestyle'
                 literal['language'] = arg
         else:
             prefix = prefix + '\\redstatementstyle'
@@ -217,6 +200,28 @@ class ReCodeBlock(SphinxDirective):
         latex_prefix = nodes.raw('', prefix, format='latex')
         return [latex_prefix, literal]
 
+class ParsedLiteral(Directive):
+
+    option_spec = {'class': directives.class_option, 'caption': directives.unchanged_required,}
+    has_content = True
+
+    def run(self):
+        if 'caption' in self.options:
+            prefix = '\\noindent \\textit{\\textbf{' + self.options.get('caption', '') + '}}\\vspace{-5pt}'
+        else:
+            prefix = ''
+        set_classes(self.options)
+        self.assert_has_content()
+        text = '\n'.join(self.content)
+        text = '.\n' + text
+        text_nodes, messages = self.state.inline_text(text, self.lineno)
+        node = nodes.literal_block(text, '', *text_nodes, **self.options)
+        node.line = self.content_offset + 1
+        latex_prefix = nodes.raw('', prefix, format='latex')
+        return [latex_prefix, node] + messages
+
+
 def setup(app):
     app.add_directive('code-block', ReCodeBlock)
+    app.add_directive('color-block', ParsedLiteral)
 

@@ -847,29 +847,46 @@
 ``CREATE INDEX``
 ^^^^^^^^^^^^^^^^^^^^
 
+Рассмотрим синтаксис создания индексов в СУБД Oracle [1]_:
 
-      
-.. code-block::
-    :redlines: 3, 4, 6, 7, 10, 12
-    :greenlines: 1, 2, 5, 9, 11
+.. color-block::
     :caption: Oracle
     
-    CREATE [ UNIQUE | BITMAP ] INDEX [ <схема>. ] <имя индекса>
-    ON { <табличный индекс>
-       | <кластерный индекс>
-       | <bitmap индекс>
-       }
-    [ USABLE | UNUSABLE ]
-    [ { DEFERRED | IMMEDIATE } INVALIDATION ] ;
+    :green:`CREATE [ UNIQUE` :red:`| BITMAP | MULTIVALUE` :green:`] INDEX` :red:`[<схема>.]` :green:`<имя индекса>`
+    :red:`[ILM { ADD  POLICY [ <policy_clause> ]`
+         :red:`| { DELETE | ENABLE | DISABLE } POLICY <имя политики>`  
+         :red:`| { DELETE_ALL | ENABLE_ALL | DISABLE_ALL }`
+         :red:`}` 
+    :red:`]`
+    :green:`ON { <табличный индекс>`
+       :red:`| <bitmap индекс>`
+       :red:`| <кластерный индекс>`       
+       :green:`}`
+    :red:`[ USABLE | UNUSABLE ]`
+    :red:`[ { DEFERRED | IMMEDIATE } INVALIDATION ]` :green:`;` 
 
-    <табличный индекс> ::= [ <схема>. ] <имя таблицы> 
-                           [ <алиас таблицы> ]
-                           (<выражение индекса> [ASC|DESC] [,<выражение индекса> [ASC|DESC]]...)
-                           [ <атрибуты индекса> ]
+    :green:`<табличный индекс> ::=` :red:`[<схема>.]` :green:`<имя таблицы>` 
+                           :red:`[ <алиас таблицы> ]`
+                           :green:`( <выражение индекса> [ASC|DESC] [, <выражение индекса> [ASC|DESC]]...)`
+                           :green:`[ TABLESPACE <имя табличного пространства> ]`
+                           :green:`[ VISIBLE | INVISIBLE ]`
+                           :red:`[ <другие атрибуты индекса> ]`
 
+
+**Замечания**
+
+- Ключевое слово ``BITMAP`` удаляется. В РБД используются индексы на основе B-деревьев.
+- Индексы с ключевым словом ``MULTIVALUE`` комментируются. В текущей версии конвертера не поддерживается работа с типами JSON.
+- Конструкция ``ILM ADD|DELETE POLICY ...`` удаляется.
+- Выражения ``USABLE/UNUSABLE``, ``DEFERRED/IMMEDIATE INVALIDATION`` удаляются.
+
+Далее рассмотрим только те конструкции оператора ``CREATE INDEX``, которые преобразуются 
+конвертером и поддерживаются Ред Базой Данных.
 
 Создание табличного индекса
-""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""
+
+Сравнение операторов создания табличного индекса [2]_:
 
 .. list-table::
       :class: borderless
@@ -877,24 +894,128 @@
       * - :ess:`Oracle`
       
           .. code-block::
-             :greenlines: 1, 2, 3, 4, 5
-             
-             CREATE [UNIQUE] INDEX 
-             [<схема>.] <имя индекса> 
-             ON [ <схема>. ] <имя таблицы> 
-             ( <выражение индекса> [ASC|DESC] 
-               [, <выражение индекса> [ASC|DESC]]...);
+             :greenlines: 1, 2, 3, 4, 5, 6, 7
+              
+             CREATE [UNIQUE] 
+             INDEX <имя индекса> 
+             ON <имя таблицы> 
+             ( <столбец>|<выражение столбца> [ASC|DESC] 
+               [, ...])
+             [ TABLESPACE <имя табличного пространства> ]
+             [ VISIBLE | INVISIBLE ];
                                                         
         - :ess:`Rdb`
         
           .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5
+             :greenlines: 1, 2, 3, 4, 5, 6, 7
              
              CREATE [UNIQUE] [ASC[ENDING] | DESC[ENDING]]
              INDEX <имя индекса> 
              ON <имя таблицы>
              { (<столбец> [, <столбец> …])
-             | COMPUTED BY (<выражение индекса>) };
+             | COMPUTED BY (<выражение столбца>) }
+             [[IN] TABLESPACE <имя табл. пространства>]
+             ;
+
+.. warning::
+
+  Поскольку в РБД при создании первичных, внешних ключей и ключей уникальности автоматически создаются одноименные индексы, 
+  из входного скрипта Oracle необходимо исключить те команды ``CREATE INDEX``, которые явно создают те же самые индексы. 
+
+При конвертации оператора ``CREATE INDEX`` выполняются следующие задачи преобразования:  
+
+1. *Преобразование ключевых слов* ``ASC|DESC``
+
+   В РБД нет возможности указывать ключевые слова ``ASC|DESC`` для упорядочивания значений каждого столбца, зато есть
+   возможность задать упорядочиваемость для совокупности столбцов, входящих в индекс. По умолчанию все индексы упорядочены по возрастанию
+   значений столбцов (``ASC``). Если индекс создается по разнонаправленно упорядоченным столбцам, то для столбца(ов) с прямой (``ASC``) 
+   и обратной (``DESC``) сортировкой конвертор создаёт разные индексы.
+
+   .. code-block:: sql
+    :caption: Oracle
+    
+    CREATE INDEX emp_name_dpt_ix 
+      ON hr.employees (last_name ASC, department_id DESC);
+
+   .. code-block:: sql
+    :caption: to Rdb
+    
+    CREATE ASC INDEX emp_name_dpt_ix_last_name_ASCENDING 
+      ON employees (last_name) IN TABLESPACE PRIMARY;
+
+    CREATE DESC INDEX emp_name_dpt_ix_department_id_DESCENDING 
+      ON employees (department_id) IN TABLESPACE PRIMARY;
+
+2. *Преобразование функциональных индексов (по выражению)*
+
+   Если задано выражение для индекса, то при конвертации добавляется ключевое слово ``COMPUTED BY``. 
+   В РДБ есть возможность задать только одно выражение для индекса. Поэтому, если в Oracle индекс 
+   создается по нескольким выражениям, то конвертор создает несколько индексов на каждое выражение.
+
+   В РБД существует два вида индексов: по столбцам и по выражению (вычисляемые), но не их комбинация. 
+   Поэтому если индекс комбинированный: по столбцам и по выражению, то конвертор создает разные индексы.
+
+   .. code-block:: sql
+    :caption: Oracle
+    
+    CREATE INDEX emp_total_sal_idx
+      ON employees (12 * salary * commission_pct, salary, commission_pct);
+
+   .. code-block:: sql
+    :caption: to Rdb
+    
+    CREATE INDEX emp_total_sal_idx
+      ON employees (salary, commission_pct) IN TABLESPACE PRIMARY;
+    
+    CREATE INDEX emp_total_sal_idx_functional_1_ 
+      ON employees COMPUTED BY (12 * salary * commission_pct) IN TABLESPACE PRIMARY;
+   
+3. *Преобразование правила добавления табличных пространств*
+
+   .. unindented_list::
+
+      - Если правило ``TABLESPACE`` не указано, база данных Oracle создаёт индекс в табличном пространстве по умолчанию 
+        владельца схемы, содержащей индекс. В РБД в этом случае индекс будет создан в том же табличном пространстве, что и таблица.
+        Поэтому при конвертации ``CREATE INDEX`` без ``TABLESPACE`` добавляется выражение ``IN TABLESPACE PRIMARY`` (в РБД), чтобы индекс 
+        создался в основном файле базы данных (см. примеры выше).
+
+      - Если в операторе указывается табличное пространство, куда нужно поместить индекс, то никаких преобразований не делается, 
+        за исключением необязательной лексемы ``IN``.
+
+        .. code-block:: sql
+          :caption: Oracle
+        
+          CREATE INDEX emp_fname_uppercase_idx
+            ON employees (UPPER(first_name)) TABLESPACE new_tablespace;
+
+        .. code-block:: sql
+          :caption: to Rdb
+        
+          CREATE INDEX emp_fname_uppercase_idx
+            ON employees COMPUTED BY (UPPER(first_name)) IN TABLESPACE new_tablespace;
+  
+
+4. *Преобразование правила* ``VISIBLE | INVISIBLE``
+
+   Данные ключевые слова используется в Oracle, чтобы указать будет ли индекс видимым или невидимым для оптимизатора.
+   В РБД такие ключевые слова в операторе создания индекса отсутствуют, но отключать и включать индексы можно 
+   с помощью запроса ``ALTER INDEX ... {ACTIVE | INACTIVE}``.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      CREATE INDEX emp_name_dpt_ix 
+        ON hr.employees(last_name, department_id) INVISIBLE;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      CREATE INDEX emp_name_dpt_ix 
+        ON employees(last_name, department_id) IN TABLESPACE PRIMARY;
+      ALTER INDEX emp_name_dpt_ix INACTIVE;
+
+   
+
 
 
 ``ALTER INDEX``
@@ -2076,3 +2197,9 @@
 
 
 
+.. [1]
+   Конструкции операторов Oracle, которые обрабатываются конвертером (с учетом разницы в синтаксисе) обозначены :green:`зеленым` цветом.
+   :red:`Красным` цветом обозначены конструкции, которые не поддерживаются Ред Базой Данных или конвертером.
+
+.. [2]
+   Для Ред Базы Данных представлен не полный синтаксис оператора, а только те конструкции, которые соответствуют синтаксису Oracle и конвертируются в них.

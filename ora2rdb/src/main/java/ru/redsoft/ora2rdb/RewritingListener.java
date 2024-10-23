@@ -49,6 +49,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         out.append("CREATE EXCEPTION NO_DATA_FOUND\n" +
                 "\t'no data found';\n");
+        out.append("CREATE EXCEPTION READ_ONLY_VIEW\n" +
+                "\t'view is for read only';\n");
+
 
         for (Create_sequenceContext sequence : sequences)
             out.append(getRewriterText(sequence)).append("\n\n");
@@ -276,6 +279,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (!Ora2rdb.reorder) {
             insertBefore(ctx, "CREATE EXCEPTION NO_DATA_FOUND\n" +
                     "\t'no data found';\n");
+            insertBefore(ctx, "CREATE EXCEPTION READ_ONLY_VIEW\n" +
+                    "\t'view is for read only';\n");
+
         }
     }
 
@@ -1333,21 +1339,64 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitCreate_view(Create_viewContext ctx) {
         StringBuilder newView = new StringBuilder();
-//        replace(ctx.REPLACE(), "ALTER");
-//
-//        if (ctx.FORCE() != null) {
-//            delete(ctx.FORCE());
-//            if (ctx.NO() != null)
-//                delete(ctx.NO());
-//        }
 
         String view_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().schema_and_name().name));
-//        if (ctx.editioning_clause() != null)
-//            delete(ctx.editioning_clause());
-        newView.append("CREATE OR ALTER VIEW ").append(view_name).append(" AS ");
+        newView.append("\nCREATE OR ALTER VIEW ").append(view_name).append(" ");
+        if (ctx.view_options() != null)
+            if (ctx.view_options().view_alias_constraint() != null) {
+                if (!ctx.view_options().view_alias_constraint().inline_constraint().isEmpty())
+                    for (Inline_constraintContext constraint : ctx.view_options().view_alias_constraint().inline_constraint())
+                        commentBlock(constraint.start.getTokenIndex(), constraint.stop.getTokenIndex());
+//                if (!ctx.view_options().view_alias_constraint().out_of_line_constraint().isEmpty())
+//                    for (Out_of_line_constraintContext constraint : ctx.view_options().view_alias_constraint().out_of_line_constraint())
+//                        commentBlock(constraint.start.getTokenIndex(), constraint.stop.getTokenIndex());
+                if (!ctx.view_options().view_alias_constraint().VISIBLE().isEmpty()
+                        || !ctx.view_options().view_alias_constraint().INVISIBLE().isEmpty() ) {
+                    for ( TerminalNode invisible : ctx.view_options().view_alias_constraint().INVISIBLE())
+                        replace(invisible, "/*INVISIBLE*/");
+                    for ( TerminalNode visible : ctx.view_options().view_alias_constraint().VISIBLE())
+                        replace(visible, "/*VISIBLE*/");
+                }
+                newView.append(getRewriterText(ctx.view_options().view_alias_constraint()));
+            } else {
+                commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+                insertBefore(ctx, "/* This type of view is not supported */\n");
+                current_view = null;
+                return;
+            }
+        if (ctx.BEQUEATH() != null) {
+            if (ctx.DEFINER() != null)
+                newView.append(" /* BEQUEATH DEFINER */ ");
+            else if (ctx.CURRENT_USER() != null)
+                newView.append(" /* BEQUEATH CURRENT_USER */ ");
+        }
+        newView.append(" AS\n");
+        newView.append(getRewriterText(ctx.select_only_statement())).append(" ");
+        if (ctx.subquery_restriction_clause() != null) {
+            if (ctx.subquery_restriction_clause().CHECK() != null)
+                newView.append("WITH CHECK OPTION ");
+            if (ctx.subquery_restriction_clause().READ() != null) {
+                String readOnlyTrigger = makeReadOnlyTrgForView(view_name);
+                newView.insert(0, readOnlyTrigger);
+            }
+            if (ctx.subquery_restriction_clause().CONSTRAINT() != null)
+                newView.append(" /* CONSTRAINT ").append(Ora2rdb.getRealName(getRuleText(ctx.subquery_restriction_clause().constraint_name())))
+                        .append("*/");
+        }
 
-
+        replace(ctx, "");
+        insertAfter(ctx, newView);
         current_view = null;
+    }
+
+    private String makeReadOnlyTrgForView(String view_name) {
+        StringBuilder trg = new StringBuilder();
+        String infMessage = "\n/*This is a trigger that makes view read only*/";
+        trg.append(infMessage);
+        trg.append("\nCREATE TRIGGER ").append(view_name).append("_READ_ONLY_TRIGGER").append(" FOR ")
+                .append(view_name).append(" ").append("\nBEFORE INSERT OR UPDATE OR DELETE\n")
+                .append("AS BEGIN \n ").append("EXCEPTION READ_ONLY_VIEW\n").append("END;\n");
+        return trg.toString();
     }
 
     @Override

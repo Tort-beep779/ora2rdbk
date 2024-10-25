@@ -51,6 +51,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 "\t'no data found';\n");
         out.append("CREATE EXCEPTION READ_ONLY_VIEW\n" +
                 "\t'view is for read only';\n");
+        out.append("ALTER DATABASE SET DEFAULT SQL SECURITY DEFINER");
 
 
         for (Create_sequenceContext sequence : sequences)
@@ -276,13 +277,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitSql_script(Sql_scriptContext ctx) {
-        if (!Ora2rdb.reorder) {
+        if (!Ora2rdb.reorder)
             insertBefore(ctx, "CREATE EXCEPTION NO_DATA_FOUND\n" +
-                    "\t'no data found';\n");
-            insertBefore(ctx, "CREATE EXCEPTION READ_ONLY_VIEW\n" +
-                    "\t'view is for read only';\n");
-
-        }
+                    "\t'no data found';\n"  +
+                    "CREATE EXCEPTION READ_ONLY_VIEW\n" +
+                    "\t'view is for read only';\n" +
+                    "ALTER DATABASE SET DEFAULT SQL SECURITY DEFINER;\n");
     }
 
     @Override
@@ -998,7 +998,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         }
 
-
         delete(ctx);
         if (current_plsql_block.getStatement().loop_statement() != null)
             return;
@@ -1019,7 +1018,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
                     else
                         selectQuery.append(storedProcedure.getParameters().get(i).getName()).append("_OUT ");
                 }
-
             }
             selectQuery.append(" FROM ").append(getRewriterText(ctx));
             selectQuery.append(" INTO ");
@@ -1191,7 +1189,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         create_indexes.add(ctx);
     }
-
 
     private String makeNewIndex(Index_exprContext index_expr_ctx, Index index) {
         String AscOrDesc = "";
@@ -1367,8 +1364,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (ctx.BEQUEATH() != null) {
             if (ctx.DEFINER() != null)
                 newView.append(" /* BEQUEATH DEFINER */ ");
-            else if (ctx.CURRENT_USER() != null)
+            else if (ctx.CURRENT_USER() != null) {
                 newView.append(" /* BEQUEATH CURRENT_USER */ ");
+                newView.insert(0, "/* In Red Database this view is executed in the context of the DEFINER. \n" +
+                        "You can change it using < ALTER DATABASE SET DEFAULT SQL SECURITY {DEFINER|INVOKER} > operator */");
+            }
         }
         newView.append(" AS\n");
         newView.append(getRewriterText(ctx.select_only_statement())).append(" ");
@@ -1397,6 +1397,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 .append(view_name).append(" ").append("\nBEFORE INSERT OR UPDATE OR DELETE\n")
                 .append("AS BEGIN \n ").append("EXCEPTION READ_ONLY_VIEW\n").append("END;\n");
         return trg.toString();
+    }
+
+    @Override
+    public void exitAlter_view (Alter_viewContext ctx){
+
     }
 
     @Override
@@ -2430,7 +2435,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
                             gen_elem_part_ctx.function_argument() != null) {
                         String insert_stmt = "UPDATE OR INSERT INTO " + current_plsql_block.array_to_table.get(name) + " VALUES (";
                         boolean abort = false;
-
                         Function_argumentContext func_arg_ctx = gen_elem_part_ctx.function_argument();
 
                         if (func_arg_ctx.argument().size() == 1)
@@ -2438,7 +2442,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
                         else {
                             abort = true;
                         }
-
 
                         if (!abort) {
                             insert_stmt += getRewriterText(ctx.expression()) + ")";

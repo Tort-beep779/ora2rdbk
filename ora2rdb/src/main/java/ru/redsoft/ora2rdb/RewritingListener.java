@@ -50,7 +50,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         out.append("CREATE EXCEPTION NO_DATA_FOUND\n" +
                 "\t'no data found';\n");
         out.append("CREATE EXCEPTION READ_ONLY_VIEW\n" +
-                "\t'view is for read only';\n");
+                "\t'cannot perform a DML operation on a read-only view';\n");
         out.append("ALTER DATABASE SET DEFAULT SQL SECURITY DEFINER");
 
 
@@ -281,7 +281,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             insertBefore(ctx, "CREATE EXCEPTION NO_DATA_FOUND\n" +
                     "\t'no data found';\n"  +
                     "CREATE EXCEPTION READ_ONLY_VIEW\n" +
-                    "\t'view is for read only';\n" +
+                    "\t'cannot perform a DML operation on a read-only view';\n" +
                     "ALTER DATABASE SET DEFAULT SQL SECURITY DEFINER;\n");
     }
 
@@ -1372,17 +1372,17 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         newView.append(" AS\n");
         newView.append(getRewriterText(ctx.select_only_statement())).append(" ");
+        String readOnlyTrigger = "";
         if (ctx.subquery_restriction_clause() != null) {
             if (ctx.subquery_restriction_clause().CHECK() != null)
                 newView.append("WITH CHECK OPTION ");
-            if (ctx.subquery_restriction_clause().READ() != null) {
-                String readOnlyTrigger = makeReadOnlyTrgForView(view_name);
-                newView.insert(0, readOnlyTrigger);
-            }
+            if (ctx.subquery_restriction_clause().READ() != null)
+                readOnlyTrigger = makeReadOnlyTrgForView(view_name);
             if (ctx.subquery_restriction_clause().CONSTRAINT() != null)
                 newView.append(" /* CONSTRAINT ").append(Ora2rdb.getRealName(getRuleText(ctx.subquery_restriction_clause().constraint_name())))
                         .append("*/");
         }
+        newView.append(";").append(readOnlyTrigger);
 
         replace(ctx, "");
         insertAfter(ctx, newView);
@@ -1395,13 +1395,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         trg.append(infMessage);
         trg.append("\nCREATE TRIGGER ").append(view_name).append("_READ_ONLY_TRIGGER").append(" FOR ")
                 .append(view_name).append(" ").append("\nBEFORE INSERT OR UPDATE OR DELETE\n")
-                .append("AS BEGIN \n ").append("EXCEPTION READ_ONLY_VIEW\n").append("END;\n");
+                .append("AS BEGIN \n ").append("EXCEPTION READ_ONLY_VIEW;\n").append("END;\n");
         return trg.toString();
-    }
-
-    @Override
-    public void exitAlter_view (Alter_viewContext ctx){
-
     }
 
     @Override

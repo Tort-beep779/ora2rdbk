@@ -141,7 +141,7 @@
              [ DEFAULT [ ON NULL ] <выражение>]
              [ ENCRYPT <спецификация шифрования> ]
              [ <ограничение столбца>]
-                                                         .
+             :addline:
 
         - :ess:`Rdb`
         
@@ -236,7 +236,7 @@
               GENERATED ALWAYS AS (<выражение>)          
                                                                   
                                                     
-                                                          .
+              :addline:
     
 
 Ограничение столбца
@@ -283,7 +283,7 @@
                          | SET DEFAULT | NO ACTION}]
             | CHECK (<условие столбца>)
             }
-                                                        .
+            :addline:
    
 Ограничение таблицы
 """"""""""""""""""""
@@ -329,7 +329,7 @@
                          | SET DEFAULT |  NO ACTION }]
             | CHECK (<условие столбца>)
             }
-                                                        .
+            :addline:
  
 
 ``ALTER TABLE``
@@ -403,11 +403,11 @@
           .. code-block:: 
              :greenlines: 1, 2, 3
    
-              ALTER TABLE <имя таблицы>
-              ADD <определение столбца> 
-              [, ADD <определение столбца> ...]
+             ALTER TABLE <имя таблицы>
+             ADD <определение столбца> 
+             [, ADD <определение столбца> ...]
 
-                                                        .
+             :addline:
 
 Модификация столбца
 """""""""""""""""""""
@@ -614,7 +614,7 @@
 
 
 
-                                                         .
+             :addline:
 
 
 Переименование столбца
@@ -692,7 +692,7 @@
 
 
 
-                                                        .
+             :addline:
 
 
 
@@ -717,7 +717,7 @@
              :greenlines: 1
              
              DROP TABLE <имя таблицы>;
-                                                        .
+             :addline:
 
 
 .. _subsec:sequence:
@@ -770,7 +770,7 @@
 
 
 
-                                                        .
+             :addline:
 
 
 ``ALTER SEQUENCE``
@@ -816,7 +816,7 @@
 
 
 
-                                                        .  
+             :addline:  
 
 ``DROP SEQUENCE``
 ^^^^^^^^^^^^^^^^^^^^
@@ -862,7 +862,7 @@
        :red:`| <bitmap индекс>`
        :red:`| <кластерный индекс>`       
        :green:`}`
-    :red:`[ USABLE | UNUSABLE ]`
+    :green:`[ USABLE | UNUSABLE ]`
     :red:`[ { DEFERRED | IMMEDIATE } INVALIDATION ]` :green:`;` 
 
     :green:`<табличный индекс> ::=` :red:`[<схема>.]` :green:`<имя таблицы>` 
@@ -878,13 +878,15 @@
 - Ключевое слово ``BITMAP`` удаляется. В РБД используются индексы на основе B-деревьев.
 - Индексы с ключевым словом ``MULTIVALUE`` комментируются. В текущей версии конвертера не поддерживается работа с типами JSON.
 - Конструкция ``ILM ADD|DELETE POLICY ...`` удаляется.
-- Выражения ``USABLE/UNUSABLE``, ``DEFERRED/IMMEDIATE INVALIDATION`` удаляются.
+- Выражения ``DEFERRED/IMMEDIATE INVALIDATION`` удаляются.
+- Bitmap и кластерный индексы комментируются.
+
+
+Преобразование ``CREATE INDEX``
+""""""""""""""""""""""""""""""""
 
 Далее рассмотрим только те конструкции оператора ``CREATE INDEX``, которые преобразуются 
 конвертером и поддерживаются Ред Базой Данных.
-
-Создание табличного индекса
-""""""""""""""""""""""""""""
 
 Сравнение операторов создания табличного индекса [2]_:
 
@@ -894,7 +896,7 @@
       * - :ess:`Oracle`
       
           .. code-block::
-             :greenlines: 1, 2, 3, 4, 5, 6, 7
+             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8
               
              CREATE [UNIQUE] 
              INDEX <имя индекса> 
@@ -902,7 +904,8 @@
              ( <столбец>|<выражение столбца> [ASC|DESC] 
                [, ...])
              [ TABLESPACE <имя табличного пространства> ]
-             [ VISIBLE | INVISIBLE ];
+             [ VISIBLE | INVISIBLE ]
+             [ USABLE | UNUSABLE ];
                                                         
         - :ess:`Rdb`
         
@@ -914,61 +917,61 @@
              ON <имя таблицы>
              { (<столбец> [, <столбец> …])
              | COMPUTED BY (<выражение столбца>) }
-             [[IN] TABLESPACE <имя табл. пространства>]
-             ;
+             [[IN] TABLESPACE <имя табл. пространства>];
+
+             :addline:
 
 .. warning::
 
   Поскольку в РБД при создании первичных, внешних ключей и ключей уникальности автоматически создаются одноименные индексы, 
   из входного скрипта Oracle необходимо исключить те команды ``CREATE INDEX``, которые явно создают те же самые индексы. 
 
-При конвертации оператора ``CREATE INDEX`` выполняются следующие задачи преобразования:  
+  При конвертации оператора ``CREATE INDEX`` выполняются следующие задачи:  
 
 1. *Преобразование ключевых слов* ``ASC|DESC``
 
    В РБД нет возможности указывать ключевые слова ``ASC|DESC`` для упорядочивания значений каждого столбца, зато есть
    возможность задать упорядочиваемость для совокупности столбцов, входящих в индекс. По умолчанию все индексы упорядочены по возрастанию
-   значений столбцов (``ASC``). Если индекс создается по разнонаправленно упорядоченным столбцам, то для столбца(ов) с прямой (``ASC``) 
-   и обратной (``DESC``) сортировкой конвертор создаёт разные индексы.
+   значений столбцов (``ASC``). Если индекс создается по разнонаправленно упорядоченным столбцам, то конвертор создаст индекс 
+   с направлением сортировки первого столбца:
 
    .. code-block:: sql
     :caption: Oracle
     
-    CREATE INDEX emp_name_dpt_ix 
-      ON hr.employees (last_name ASC, department_id DESC);
+    CREATE INDEX index_name 
+      ON table_name (column1 DESC, column2 ASC, column3 DESC);
 
    .. code-block:: sql
     :caption: to Rdb
     
-    CREATE ASC INDEX emp_name_dpt_ix_last_name_ASCENDING 
-      ON employees (last_name) IN TABLESPACE PRIMARY;
+    CREATE DESCENDING INDEX index_name 
+      ON table_name (column1, column2, column3) IN TABLESPACE PRIMARY;
 
-    CREATE DESC INDEX emp_name_dpt_ix_department_id_DESCENDING 
-      ON employees (department_id) IN TABLESPACE PRIMARY;
 
 2. *Преобразование функциональных индексов (по выражению)*
 
    Если задано выражение для индекса, то при конвертации добавляется ключевое слово ``COMPUTED BY``. 
-   В РДБ есть возможность задать только одно выражение для индекса. Поэтому, если в Oracle индекс 
-   создается по нескольким выражениям, то конвертор создает несколько индексов на каждое выражение.
-
-   В РБД существует два вида индексов: по столбцам и по выражению (вычисляемые), но не их комбинация. 
-   Поэтому если индекс комбинированный: по столбцам и по выражению, то конвертор создает разные индексы.
-
+   
    .. code-block:: sql
     :caption: Oracle
     
     CREATE INDEX emp_total_sal_idx
-      ON employees (12 * salary * commission_pct, salary, commission_pct);
+      ON employees (12 * salary * commission_pct);
 
    .. code-block:: sql
     :caption: to Rdb
     
-    CREATE INDEX emp_total_sal_idx
-      ON employees (salary, commission_pct) IN TABLESPACE PRIMARY;
-    
     CREATE INDEX emp_total_sal_idx_functional_1_ 
       ON employees COMPUTED BY (12 * salary * commission_pct) IN TABLESPACE PRIMARY;
+
+   В РДБ есть возможность задать только одно выражение для индекса. Поэтому, если в Oracle индекс 
+   создается по нескольким выражениям, то конвертор закомментирует индекс и предложит пользователю 
+   самостоятельно его перестроить.
+
+   В РБД существует два вида индексов: по столбцам и по выражению (вычисляемые), но не их комбинация. 
+   Поэтому если индекс комбинированный: по столбцам и по выражению, то конвертор также закомментирует 
+   индекс и предложит пользователю самостоятельно его перестроить.
+   
    
 3. *Преобразование правила добавления табличных пространств*
 
@@ -998,8 +1001,9 @@
 4. *Преобразование правила* ``VISIBLE | INVISIBLE``
 
    Данные ключевые слова используется в Oracle, чтобы указать будет ли индекс видимым или невидимым для оптимизатора.
-   В РБД такие ключевые слова в операторе создания индекса отсутствуют, но отключать и включать индексы можно 
-   с помощью запроса ``ALTER INDEX ... {ACTIVE | INACTIVE}``.
+   В РБД такие ключевые слова в операторе создания индекса отсутствуют. По умолчанию все индексы видимы и активны. 
+   Поэтому при конвертации ключевое слово ``VISIBLE`` удаляется, а вместо ``INVISIBLE`` выполняется дополнительный оператор
+   ``ALTER INDEX ... INACTIVE``, который отключает индекс.
 
    .. code-block:: sql
       :caption: Oracle
@@ -1014,44 +1018,75 @@
         ON employees(last_name, department_id) IN TABLESPACE PRIMARY;
       ALTER INDEX emp_name_dpt_ix INACTIVE;
 
-   
+5. *Преобразование правила* ``USABLE | UNUSABLE``
 
+   Данные ключевые слова используется в Oracle, чтобы указать может он быть использован для доступа к данным или нет.
+   По умолчанию все индексы - ``USABLE``. 
+   В РБД такие ключевые слова в операторе создания индекса отсутствуют. 
+   Поэтому при конвертации ключевое слово ``USABLE`` удаляется, а вместо ``UNUSABLE`` выполняется дополнительный оператор
+   ``ALTER INDEX ... INACTIVE``, который отключает индекс.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      CREATE INDEX emp_name_dpt_ix 
+        ON hr.employees(last_name, department_id) UNUSABLE;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      CREATE INDEX emp_name_dpt_ix 
+        ON employees(last_name, department_id) IN TABLESPACE PRIMARY;
+      ALTER INDEX emp_name_dpt_ix INACTIVE;
 
 
 ``ALTER INDEX``
 ^^^^^^^^^^^^^^^^^^^^
 
-.. code-block::
-    :redlines: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20
-    :greenlines: 1, 13, 21
+Рассмотрим синтаксис изменения индексов в СУБД Oracle [3]_:
+
+.. color-block::
     :caption: Oracle
     
-    ALTER INDEX [ <схема>. ] <имя индекса>
-    { { <предложение DEALLOCATE UNUSED>
-      | <предложение ALLOCATE EXTENT>
-      | SHRINK SPACE [ COMPACT ] [ CASCADE ]
-      | { NOPARALLEL | PARALLEL [<число>] }
-      | <физические атрибуты>
-      | { LOGGING | NOLOGGING |  FILESYSTEM_LIKE_LOGGING }
-      | INDEXING { PARTIAL | FULL }
-      } ...
-    | <предложение REBUILD>
-    | PARAMETERS ( 'ODCI_parameters' )
-    | COMPILE
-    | { ENABLE | DISABLE }
-    | UNUSABLE [ ONLINE ] [ { DEFERRED | IMMEDIATE } INVALIDATION ]
-    | VISIBLE | INVISIBLE
-    | RENAME TO <новое имя>
-    | COALESCE [ CLEANUP ] [ ONLY ] [ <предложение PARALLEL> ]
-    | { MONITORING | NOMONITORING } USAGE
-    | UPDATE BLOCK REFERENCES
-    | <предложение для секционированных индексов>
-    };
+    :green:`ALTER INDEX` :red:`[<схема>.]` :green:`<имя индекса>`
+    :red:`[ILM { ADD  POLICY [ <policy_clause> ]`
+         :red:`| { DELETE | ENABLE | DISABLE } POLICY <имя политики>`  
+         :red:`| { DELETE_ALL | ENABLE_ALL | DISABLE_ALL }`
+         :red:`}` 
+    :red:`]`
+    :green:`{` :red:`{ <предложение DEALLOCATE UNUSED>`
+      :red:`| <предложение ALLOCATE EXTENT>`
+      :red:`| SHRINK SPACE [ COMPACT ] [ CASCADE ]`
+      :red:`| { NOPARALLEL | PARALLEL [<число>] }`
+      :red:`| <физические атрибуты>`
+      :red:`| { LOGGING | NOLOGGING |  FILESYSTEM_LIKE_LOGGING }`
+      :red:`| INDEXING { PARTIAL | FULL }`
+      :red:`} ...`
+    :green:`| REBUILD [TABLESPACE <имя табл. пространства>` :red:`| <другие атрибуты rebuild>`:green:`]`
+    :red:`| PARAMETERS ('ODCI_parameters')`
+    :red:`| COMPILE`
+    :green:`| { ENABLE | DISABLE }`
+    :green:`| UNUSABLE` :red:`[ ONLINE ] [ { DEFERRED | IMMEDIATE } INVALIDATION ]`
+    :green:`| {VISIBLE | INVISIBLE}`
+    :red:`| RENAME TO <новое имя>`
+    :red:`| COALESCE [ CLEANUP ] [ ONLY ] [ <предложение PARALLEL> ]`
+    :red:`| { MONITORING | NOMONITORING } USAGE`
+    :red:`| UPDATE BLOCK REFERENCES`
+    :red:`| <предложение для секционированных индексов>`
+    :green:`} ;`
+
+**Замечания**
+
+- Все неподдерживаемые конструкции удаляются
 
 
+Преобразование ``ALTER INDEX``
+""""""""""""""""""""""""""""""""
 
-``DROP INDEX``
-^^^^^^^^^^^^^^^
+Далее рассмотрим только те конструкции оператора ``ALTER INDEX``, которые преобразуются 
+конвертером и поддерживаются Ред Базой Данных.
+
+Сравнение операторов изменения табличного индекса:
 
 .. list-table::
       :class: borderless
@@ -1059,21 +1094,139 @@
       * - :ess:`Oracle`
       
           .. code-block::
-             :redlines: 2, 3
-             :greenlines: 1
-             
-             DROP INDEX [ <схема>. ] <имя индекса>
-             [ONLINE] [FORCE] 
-             [{DEFERRED|IMMEDIATE} INVALIDATION];
+             :greenlines: 1, 2, 3, 4, 5, 6
+
+             ALTER INDEX <имя индекса>
+             { { ENABLE | DISABLE }
+             | { VISIBLE | INVISIBLE }
+             | REBUILD 
+               [TABLESPACE <имя табл.прост-ва>]
+             };
                                                         
         - :ess:`Rdb`
         
           .. code-block:: 
-             :greenlines: 1
+             :greenlines: 1, 2, 3, 4, 5, 6
              
-             DROP INDEX <имя индекса>;
+             ALTER INDEX <имя индекса> 
+             { {ACTIVE | INACTIVE}
 
-                                                         .
+             | SET TABLESPACE [TO] { <имя табл.прост-ва> 
+                                   | PRIMARY}
+             };                                  
+
+
+При конвертации оператора ``ALTER INDEX`` выполняются следующие задачи:  
+
+1. *Преобразование ключевых слов* ``ENABLE | DISABLE``
+
+   Ключевые слова ``ENABLE/DISABLE`` применяются только к вычисляемому индексу, 
+   они разрешают или запрещают использование индекса.
+   При конвертации ``ENABLE`` заменяется на ``ACTIVE``, только если индекс имеет видимость ``VISIBLE``.
+   Ключевое слово ``DISABLE`` заменяется на ``INACTIVE``.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      ALTER INDEX emp_fname_uppercase_idx DISABLE;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      ALTER  INDEX emp_fname_uppercase_idx INACTIVE;
+
+2. *Преобразование ключевого слова* ``UNUSABLE``
+
+   Если индекс не пригоден для использования, он получает статус ``UNUSABLE``. Соответствено он не используется в запросах.
+   Это правило заменяется на ``INACTIVE``.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      ALTER INDEX emp_fname_uppercase_idx UNUSABLE;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      ALTER  INDEX emp_fname_uppercase_idx INACTIVE;
+   
+
+3. *Преобразование ключевых слов* ``VISIBLE | INVISIBLE``
+
+   Данные ключевые слова используется в Oracle, чтобы указать будет ли индекс видимым или невидимым для оптимизатора.
+   В РБД вместо них используются ключевые слова ``ACTIVE/INACTIVE``, которые включают/отключают индекс.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      ALTER INDEX emp_name_dpt_ix VISIBLE;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      ALTER INDEX emp_name_dpt_ix ACTIVE;
+
+4. *Преобразование правила* ``REBUILD``
+
+   Данное правило пересоздаёт существующий индекс. 
+   
+   Если индекс имеет видимость ``VISIBLE``, то для РБД аналогичным действием будет оператор ``ACTIVE``.
+   Если индекс невидим оптимизатору, то весь оператор удаляется.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      ALTER INDEX emp_name_dpt_ix REBUILD;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      ALTER INDEX emp_name_dpt_ix ACTIVE;
+   
+5. *Преобразование правила* ``REBUILD TABLESPACE``
+
+   Это правило пересоздает существующий индекс в новом табличном пространстве. Аналогичная конструкция есть в РБД, после которой
+   (если индекс - ``VISIBLE``) добавляется оператор на переактивацию индекса.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      ALTER INDEX emp_name_dpt_ix REBUILD TABLESPACE ts_name;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      ALTER INDEX emp_name_dpt_ix SET TABLESPACE TO ts_name;
+      ALTER INDEX emp_name_dpt_ix ACTIVE;
+
+   Если индекс имеет статус ``INVISIBLE``, то оператор "``ALTER INDEX ... ACTIVE;``" опускается.
+
+
+
+``DROP INDEX``
+^^^^^^^^^^^^^^^
+
+
+.. list-table::
+      :class: borderless
+      
+      * - :ess:`Oracle`
+      
+          .. color-block::
+             
+             :green:`DROP INDEX` :red:`[<схема>.]` :green:`<имя индекса>`
+             :red:`[ONLINE] [FORCE]`
+             :red:`[{DEFERRED|IMMEDIATE} INVALIDATION]`:green:`;`
+                                                        
+        - :ess:`Rdb`
+        
+          .. code-block:: 
+            :greenlines: 1
+             
+            DROP INDEX <имя индекса>;
+
+            :addline:
+
 
 .. _subsec:view:
 
@@ -1083,36 +1236,58 @@
 ``CREATE VIEW``
 ^^^^^^^^^^^^^^^^^^^^
 
-.. code-block::
-    :redlines:  3, 5, 7, 8, 11, 12, 13, 14, 15, 17, 20, 21
-    :greenlines: 1, 2, 4, 6, 9, 10, 16, 19
+Рассмотрим синтаксис изменения индексов в СУБД Oracle [4]_:
+
+.. color-block::
     :caption: Oracle
     
-    CREATE [OR REPLACE]
-    [[NO] FORCE]
-    [ EDITIONING | EDITIONABLE [ EDITIONING ] | NONEDITIONABLE ]
-    VIEW [ <схема>. ] <имя представления>
-    [ SHARING = { METADATA | DATA | EXTENDED DATA | NONE } ]
-    [ ( { <алиас> 
-        [ VISIBLE | INVISIBLE ] [ <ограничение строки>... ]
-        | <ограничение представления> }
-        [, ... ]
-      )
-    | <предложение для объектного представления>
-    | <предложение для XMLType представления>
-    ]
-    [ DEFAULT COLLATION <сортировка> ]
-    [ BEQUEATH { CURRENT_USER | DEFINER } ]
-    AS <оператор SELECT> [ <предложения с ограничениями> ]
-    [ CONTAINER_MAP | CONTAINERS_DEFAULT ] ;
+    :green:`CREATE [OR REPLACE] [[NO] FORCE]` :red:`[ EDITIONING | EDITIONABLE [ EDITIONING ] | NONEDITIONABLE ]`
+    :green:`VIEW` :red:`[<схема>.]` :green:`<имя представления>`
+    :red:`[ SHARING = { METADATA | DATA | EXTENDED DATA | NONE } ]`
+    :green:`[ ( { <алиас>` :red:`[ VISIBLE | INVISIBLE ] [ <ограничение строки>... ]`
+        :red:`| <ограничение представления>` :green:`}`
+        :green:`[, <алиас>... ]`
+      :green:`)`
+    :red:`| <предложение для объектного представления>`
+    :red:`| <предложение для XMLType представления>`
+    :green:`]`
+    :red:`[ DEFAULT COLLATION <сортировка> ]`
+    :red:`[ BEQUEATH { CURRENT_USER | DEFINER } ]`
+    :green:`AS <оператор SELECT>` 
+    :green:`[ {WITH CHECK OPTION | WITH READ ONLY}` :red:`[CONSTRAINT <имя ограничения>]` :green:`]`
+    :red:`[ CONTAINER_MAP | CONTAINERS_DEFAULT ]` :green:`;`
 
-    <предложения с ограничениями> ::= WITH { CHECK OPTION
-                                           | READ ONLY
-                                           } [ CONSTRAINT <имя ограничения> ]
+**Замечания**
+
+- При конвертации удаляются ключевые слова ``EDITIONING, EDITIONABLE, NONEDITIONABLE``.
+- Удаляется конструкция ``SHARING``.
+- Не конвертируются объектные представления и XMLType-представления.
+- Ограничения строки и ограничения представления комментируются. 
+- Атрибуты ``VISIBLE/INVISIBLE`` комментируются.
+- Предложение ``DEFAULT COLLATION`` удаляется.
+- Предложение ``BEQUEATH {CURRENT_USER|DEFINER}`` комментируется.
+
+  Это правило определяет с каким правами: создателя (``DEFINER``) или вызывающего пользователя (``CURRENT_USER``) 
+  будут вызываться функции внутри представления.
+  По умолчанию в Oracle и РБД представления вызываются с правами владельца.
+  Подобной конструкции в РБД нет, поэтому не получится изменить поведения по умолчанию. 
+
+  .. warning::
+
+   Если при создании функции (которая используется в представлении) указывается, что она должна вызываться с правами ``CURRENT_USER``,
+   и при создании представления указывается ``BEQUEATH CURRENT_USER``, то такой случай не имеет аналогов в РБД.
+   Во всех остальных случаях функции внутри представления будут вызываться с правами создателя.
+
+- Предложение ``CONTAINER_MAP/CONTAINERS_DEFAULT`` удаляется.
 
 
-Создание представления
-""""""""""""""""""""""""
+Преобразование ``CREATE VIEW``
+""""""""""""""""""""""""""""""""
+
+Далее рассмотрим только те конструкции оператора ``CREATE VIEW``, которые преобразуются 
+конвертером и поддерживаются Ред Базой Данных.
+
+Сравнение операторов создания представления:
 
 .. list-table::
       :class: borderless
@@ -1120,13 +1295,14 @@
       * - :ess:`Oracle`
           
           .. code-block::
-             :greenlines: 1,2,3,4,5
+             :greenlines: 1,2,3,4,5,6
              
-             CREATE [OR REPLACE] 
-             VIEW [ <схема>. ] <имя представления> 
-             [( <алиас> [,<алиас>] )]
-  	         AS <оператор SELECT>
-  	         [WITH CHECK OPTION]
+             CREATE [OR REPLACE] [[NO] FORCE] 
+             VIEW <имя представления> 
+             [( <алиас> [, <алиас>...] )]
+             AS <оператор SELECT>
+             [ { WITH CHECK OPTION 
+               | WITH READ ONLY } ]
   	                                                        
         - :ess:`Rdb`
         
@@ -1135,13 +1311,72 @@
              
              CREATE [OR ALTER] 
              VIEW <имя представления> 
-             [(<столбец> [, <столбец> ...])]
-  	         AS <оператор SELECT>
-  	         [WITH CHECK OPTION]
+             [( <алиас> [, <алиас>...] )]
+             AS <оператор SELECT>
+             [WITH CHECK OPTION]
+             :addline:
 
 
-Предложение FORCE
-""""""""""""""""""
+При конвертации оператора ``CREATE VIEW`` выполняются следующие задачи:  
+
+1. *Замена ключевого слова* ``OR REPLACE``
+
+   Данное ключевое слово заменяется на равнозначное ему ``OR ALTER`` 
+2. *Добавление правила* ``FORCE``
+   
+   В Oracle опция ``FORCE`` используется, чтобы принудительно создать представление, 
+   использующее объекты, которые не были созданы ранее. В РБД это ключевое слово отсутствует, поэтому 
+   при создании представлений проверка зависимостей выполняется всегда. Данную проблему можно решить, 
+   если в процессе преобразования упорядочить операторы создания объектов таким образом, чтобы при 
+   их выполнении не возникало ошибки об отсутствующем объекте БД. Чтобы этого добиться, при запуске 
+   конвертера необходимо указать ключ "``-r``" , который изменяет порядок создания объектов (см. :ref:`sec:install`). 
+3. *Преобразование правила* ``WITH READ ONLY``
+
+   Эта опция запрещает операции обновления, удаления и вставки данных базовой таблицы через это представление.
+   В РБД подобной опции нет, но при конвертации вместо неё создается триггер, который при попытке 
+   вставки/удаления/изменения представление выкидывает исключение.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      CREATE OR REPLACE FORCE VIEW VTAPP.CF_REP_CUSTOMER (CUSTOMER, DESCRIPTION, OBJKEY, OBJVERSION, OBJID)
+      BEQUEATH DEFINER
+      AS 
+        SELECT
+          customer                       customer,
+          description                    description,
+          rowkey                         objkey,
+          to_char(rowversion,'YYYYMMDDHH24MISS') objversion,
+          rowid                          objid
+        FROM cf_rep_customer_tab
+      WITH READ ONLY;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      CREATE EXCEPTION READ_ONLY_VIEW 'cannot perform a DML operation on a read-only view';
+
+      CREATE OR ALTER VIEW CF_REP_CUSTOMER (CUSTOMER, DESCRIPTION, OBJKEY, OBJVERSION, OBJID) 
+      /* BEQUEATH DEFINER */  
+      AS
+        SELECT
+          customer                       customer,
+          description                    description,
+          rowkey                         objkey,
+          UPPER( CAST(rowversion AS VARCHAR(32765) FORMAT'YYYYMMDDHH24MISS')) objversion,
+          rowid                          objid
+        FROM cf_rep_customer_tab ;
+
+      CREATE TRIGGER CF_REP_CUSTOMER_READ_ONLY_TRIGGER FOR CF_REP_CUSTOMER
+      BEFORE INSERT OR UPDATE OR DELETE
+      AS BEGIN
+        EXCEPTION READ_ONLY_VIEW
+      END;
+
+
+ 
+
+
 
 ``ALTER VIEW``
 ^^^^^^^^^^^^^^^
@@ -1185,7 +1420,7 @@
              :greenlines: 1
              
              DROP VIEW <имя представления> ;
-                                                         .
+             :addline:
 
 
 .. _subsec:function:
@@ -1634,7 +1869,7 @@
              [ACTIVE | INACTIVE];
 
 
-                                                         .
+             :addline:
 
 
 ``DROP TRIGGER``
@@ -2198,8 +2433,22 @@
 
 
 .. [1]
-   Конструкции операторов Oracle, которые обрабатываются конвертером (с учетом разницы в синтаксисе) обозначены :green:`зеленым` цветом.
-   :red:`Красным` цветом обозначены конструкции, которые не поддерживаются Ред Базой Данных или конвертером.
+   Конструкции операторов Oracle, которые преобразуются конвертером (с учетом разницы в синтаксисе) обозначены :green:`зеленым` цветом.
+   :red:`Красным` цветом обозначены конструкции, которые не поддерживаются Ред Базой Данных или конвертером. Неподдерживаемые конструкции
+   удаляются или комментируются.
 
-.. [2]
+
+.. [2] 
    Для Ред Базы Данных представлен не полный синтаксис оператора, а только те конструкции, которые соответствуют синтаксису Oracle и конвертируются в них.
+
+
+.. [3]
+   Конструкции операторов Oracle, которые преобразуются конвертером (с учетом разницы в синтаксисе) обозначены :green:`зеленым` цветом.
+   :red:`Красным` цветом обозначены конструкции, которые не поддерживаются Ред Базой Данных или конвертером. Неподдерживаемые конструкции
+   удаляются или комментируются.
+
+
+.. [4]
+   Конструкции операторов Oracle, которые преобразуются конвертером (с учетом разницы в синтаксисе) обозначены :green:`зеленым` цветом.
+   :red:`Красным` цветом обозначены конструкции, которые не поддерживаются Ред Базой Данных или конвертером. Неподдерживаемые конструкции
+   удаляются или комментируются.

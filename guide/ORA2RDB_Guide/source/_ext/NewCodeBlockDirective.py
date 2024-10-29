@@ -78,14 +78,14 @@ def set_condition(lines, color):
 def set_command_sphinxVerbatimFormatLine(condition):
     return '\\renewcommand\\sphinxVerbatimFormatLine[1]{' + condition + '}'
 
-def remove_ifcert(content):
+def addline(content):
     result = []
-    pattern = r':testrole:\`(.+?)\`'
+    pattern = r':addline:'
     for line in content:
-        if ":testrole:" not in line:
+        if ":addline:" not in line:
             result.append(line)
         else:
-            line = re.sub(pattern, r'\1', line) # то вставляем все строки с :testrole:
+            line = re.sub(pattern, r'                                            .', line)
             result.append(line)
     return result
 
@@ -118,12 +118,14 @@ class ReCodeBlock(SphinxDirective):
         else:
             prefix = ''
         document = self.state.document
+
+        self.content = addline(self.content)
+        code = '\n'.join(self.content)
+
         if 'include' in self.options:
             idtest = self.options.get('include')
             code = '\n'.join(parsefile(idtest))
-        else:
-            self.content = remove_ifcert(self.content)
-            code = '\n'.join(self.content)
+
 
         location = self.state_machine.get_source_and_line(self.lineno)
 
@@ -172,7 +174,7 @@ class ReCodeBlock(SphinxDirective):
         if self.arguments:
             literal['language'] = self.env.temp_data.get('highlight_language',
                                                          self.config.highlight_language)
-            prefix = prefix + '\\redstatementstyle'
+            prefix = prefix + '\\redexamplestyle'
             arg = self.arguments[0]
             if arg.lower()=='redstatement':
                 prefix = prefix + '\\redstatementstyle'
@@ -207,7 +209,7 @@ class ParsedLiteral(Directive):
 
     def run(self):
         if 'caption' in self.options:
-            prefix = '\\noindent \\textit{\\textbf{' + self.options.get('caption', '') + '}}\\vspace{-5pt}'
+            prefix = '\\noindent \\textit{\\textbf{' + self.options.get('caption', '') + '}}'
         else:
             prefix = ''
         set_classes(self.options)

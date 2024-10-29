@@ -22,7 +22,7 @@ sys.path.append(os.path.abspath("./_ext"))
 
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx_design', 'UnindentedListDirective', 'NewCodeBlockDirective', 'sphinxnotes.comboroles', 'sphinx.ext.autodoc']
+extensions = ['sphinx_design', 'UnindentedListDirective', 'NewCodeBlockDirective', 'sphinxnotes.comboroles']
 
 #f = open('defs.tex.txt', 'r+');
 #PREAMBLE = f.read();
@@ -60,7 +60,7 @@ latex_elements = {
 'preamble': r"""
 \usepackage{defs}
 \newcommand{\DUrolered}[1]{{\color{red!40!white}#1}}
-\newcommand{\DUrolegreen}[1]{{\color{green!40!black} #1}}
+\newcommand{\DUrolegreen}[1]{{\textcolor{green!40!black}{#1}}}
 \newcommand{\DUrolegreenbf}[1]{{\color{green!40!black}{\footnotesize\normalfont\textbf{#1}}}}
 """,
 'hyperref' : r'''
@@ -164,3 +164,4 @@ rst_prolog = """
 .. role:: green
 .. role:: greenbf
 """
+

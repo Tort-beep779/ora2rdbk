@@ -37,8 +37,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
     StoredAnonymousBlock currentAnonymousBlock = null;
 
 
-    boolean containsException = false;
-    boolean exceptionExist = false;
+    boolean containsCustomException = false;
+    boolean customExceptionExist = false;
+
+    boolean containsNoFoundException = false;
+    boolean noFoundExceptionExist = false;
+
 
     public RewritingListener(CommonTokenStream tokens) {
         rewriter = new TokenStreamRewriter(tokens);
@@ -270,21 +274,17 @@ public class RewritingListener extends PlSqlParserBaseListener {
             current_plsql_block.popScope();
     }
 
-
-    @Override
-    public void exitSql_script(Sql_scriptContext ctx) {
-        if (!Ora2rdb.reorder) {
-            insertBefore(ctx, "CREATE EXCEPTION NO_DATA_FOUND\n" +
-                    "\t'no data found';\n");
-        }
-    }
-
     @Override
     public void exitUnit_statement(Unit_statementContext ctx) {
-        if (!exceptionExist & containsException) {
+        if (!customExceptionExist & containsCustomException) {
             String exception = "CREATE EXCEPTION CUSTOM_EXCEPTION 'error';";
             insertBefore(ctx, exception + "\n\n");
-            exceptionExist = true;
+            customExceptionExist = true;
+        }
+        if(!noFoundExceptionExist & containsNoFoundException){
+            insertBefore(ctx, "CREATE EXCEPTION NO_DATA_FOUND\n" +
+                    "\t'no data found';\n");
+            noFoundExceptionExist = true;
         }
     }
 
@@ -649,7 +649,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
         return storedBlock;
     }
 
-    //    todo part233
     private StoredFunction findStorageFunction(Create_function_bodyContext ctx){
         StoredFunction storedFunction = new StoredFunction();
         String name;
@@ -938,7 +937,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitFunction_call(Function_callContext ctx) {
         if (Ora2rdb.getRealName(getRuleText(ctx.routine_name())).equals("RAISE_APPLICATION_ERROR")) {
-            containsException = true;
+            containsCustomException = true;
             replace(ctx.routine_name(), "EXCEPTION CUSTOM_EXCEPTION");
             delete(ctx.function_argument().argument(0));
             delete(ctx.function_argument().COMMA(0));
@@ -1165,6 +1164,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             if_clause.append('\n').append(indentation).append("IF (ROW_COUNT = 0) THEN").append('\n');
             if_clause.append(indentation).append('\t').append("EXCEPTION NO_DATA_FOUND");
             replace(ctx, getRewriterText(ctx) + ";" + if_clause);
+            containsNoFoundException = true;
         }
     }
 

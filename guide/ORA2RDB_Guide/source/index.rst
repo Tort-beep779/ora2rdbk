@@ -10,8 +10,9 @@ Welcome to SQL_Guide's documentation!
    sec-common
    sec-ddl
    sec-dml
-   sec-psql
-   
+   sec-psqlstat
+   sec-psqlelem
+
 
 
 

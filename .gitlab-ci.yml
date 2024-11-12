@@ -82,9 +82,10 @@ build_and_test:
     - echo proxy=$http_proxy >> /etc/yum.conf
     - yum install -y expect java-11-openjdk git $EXTRA_DEPENDENCIES
     - yum install -y https://dl.min.io/client/mc/release/linux-amd64/archive/mcli-20210613174822.0.0.x86_64.rpm
-    - cd /opt
+    - pushd /opt
     - wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
     - tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+    - popd
     - export PATH=${M2_HOME}/bin:${PATH}
     - export VERSION=`cat .ci/version`
     - ln -s `update-alternatives --display jre_11_openjdk | sed -n '2p;3q' | awk -F\" '{split($1, v, " ");printf("%s", v[5])}'` /usr/java11
@@ -108,9 +109,10 @@ build_and_test:
     - apt update -y
     - apt install ca-certificates-java -y
     - apt update -y
-    - cd /opt
+    - pushd /opt
     - wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
     - tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+    - popd
     - export PATH=${M2_HOME}/bin:${PATH}
     - export VERSION=`cat .ci/version`
     - export BRANCH=`cat .ci/branch`
@@ -138,9 +140,10 @@ publish:
     - apt update -y
     - apt install ca-certificates-java -y
     - apt update -y
-    - cd /opt
+    - pushd /opt
     - wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
     - tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+    - popd
     - export PATH=${M2_HOME}/bin:${PATH}
     - export VERSION=`cat .ci/version`
     - export BRANCH=`cat .ci/branch`

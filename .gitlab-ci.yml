@@ -74,12 +74,18 @@ build_and_test:
   stage: build_and_test
   variables:
     JAVA_HOME: /usr/java11
+    MAVEN_VERSION: 3.8.8
+    M2_HOME: /opt/apache-maven-${MAVEN_VERSION}/
   image:
     name: registry.red-soft.biz:5000/docker-images/rdbbuildenv:rdb5-8
   before_script:
     - echo proxy=$http_proxy >> /etc/yum.conf
-    - yum install -y maven expect java-11-openjdk git $EXTRA_DEPENDENCIES
+    - yum install -y expect java-11-openjdk git $EXTRA_DEPENDENCIES
     - yum install -y https://dl.min.io/client/mc/release/linux-amd64/archive/mcli-20210613174822.0.0.x86_64.rpm
+    - cd /opt
+    - wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
+    - tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+    - export PATH=${M2_HOME}/bin:${PATH}
     - export VERSION=`cat .ci/version`
     - ln -s `update-alternatives --display jre_11_openjdk | sed -n '2p;3q' | awk -F\" '{split($1, v, " ");printf("%s", v[5])}'` /usr/java11
   script:
@@ -92,13 +98,20 @@ build_and_test:
     - builder
     - x86_64
   stage: deploy
+  variables:
+    MAVEN_VERSION: 3.8.8
+    M2_HOME: /opt/apache-maven-${MAVEN_VERSION}/
   image:
     name: openjdk:11-jdk-buster
     entrypoint: []
   before_script:
     - apt update -y
     - apt install ca-certificates-java -y
-    - apt update -y && apt install maven -y
+    - apt update -y
+    - cd /opt
+    - wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
+    - tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+    - export PATH=${M2_HOME}/bin:${PATH}
     - export VERSION=`cat .ci/version`
     - export BRANCH=`cat .ci/branch`
     - export CONTEXT=`cat .ci/context`
@@ -115,13 +128,20 @@ publish:
     - builder
     - x86_64
   stage: publish
+  variables:
+    MAVEN_VERSION: 3.8.8
+    M2_HOME: /opt/apache-maven-${MAVEN_VERSION}/
   image:
     name: openjdk:11-jdk-buster
     entrypoint: []
   before_script:
     - apt update -y
     - apt install ca-certificates-java -y
-    - apt update -y && apt install maven -y
+    - apt update -y
+    - cd /opt
+    - wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
+    - tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+    - export PATH=${M2_HOME}/bin:${PATH}
     - export VERSION=`cat .ci/version`
     - export BRANCH=`cat .ci/branch`
     - export CONTEXT=`cat .ci/context`

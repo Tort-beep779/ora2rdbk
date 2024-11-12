@@ -15,8 +15,8 @@ from docutils.statemachine import StringList
 import re
 import json
 import os
-
-
+from docutils.parsers.rst import Directive
+from docutils.parsers.rst.roles import set_classes
 
 def format_caption(input_string):
     pattern = r'\$'
@@ -78,18 +78,20 @@ def set_condition(lines, color):
 def set_command_sphinxVerbatimFormatLine(condition):
     return '\\renewcommand\\sphinxVerbatimFormatLine[1]{' + condition + '}'
 
-def remove_ifcert(content):
+def addline(content):
     result = []
-    pattern = r':testrole:\`(.+?)\`'
+    pattern = r':addline:'
     for line in content:
-        if ":testrole:" not in line:
+        if ":addline:" not in line:
             result.append(line)
         else:
-            line = re.sub(pattern, r'\1', line) # то вставляем все строки с :testrole:
+            line = re.sub(pattern, r'                                            .', line)
             result.append(line)
     return result
 
-
+def formatstr(green_condition,red_condition):
+    pattern = r'}}{#1}'
+    return re.sub(pattern, r'}}{' + (green_condition.encode('unicode_escape')).decode() + r'}', red_condition)
 
 class ReCodeBlock(SphinxDirective):
     has_content = True
@@ -103,12 +105,12 @@ class ReCodeBlock(SphinxDirective):
         'emphasize-lines': directives.unchanged_required,
         'redlines': directives.unchanged_required,
         'greenlines': directives.unchanged_required,
+        'bluelines': directives.unchanged_required,
         'caption': directives.unchanged_required,
         'class': directives.class_option,
         'name': directives.unchanged,
         'include': directives.unchanged_required,
     }
-
 
     def run(self) -> list[Node]:
         if 'caption' in self.options:
@@ -116,32 +118,16 @@ class ReCodeBlock(SphinxDirective):
         else:
             prefix = ''
         document = self.state.document
+
+        self.content = addline(self.content)
+        code = '\n'.join(self.content)
+
         if 'include' in self.options:
             idtest = self.options.get('include')
             code = '\n'.join(parsefile(idtest))
-        else:
-            self.content = remove_ifcert(self.content)
-            code = '\n'.join(self.content)
+
 
         location = self.state_machine.get_source_and_line(self.lineno)
-
-        color_condition = 0
-        red_condition = ''
-        green_condition = ''
-        if 'redlines' in self.options:
-            color_condition += 1
-            redlines = self.options.get('redlines', '')
-            red_condition = set_condition(redlines, 'red!40!white')
-        if 'greenlines' in self.options:
-            color_condition += 1
-            greenlines = self.options.get('greenlines', '')
-            green_condition = set_condition(greenlines, 'green!40!black')
-        if color_condition == 1:
-            prefix = prefix + set_command_sphinxVerbatimFormatLine(green_condition+red_condition)
-        elif color_condition == 2:
-            pattern = r'}}{#1}'
-            formatted_string = re.sub(pattern, r'}}{' + (green_condition.encode('unicode_escape')).decode() + r'}', red_condition)
-            prefix = prefix + set_command_sphinxVerbatimFormatLine(formatted_string)
 
         linespec = self.options.get('emphasize-lines')
         if linespec:
@@ -159,6 +145,27 @@ class ReCodeBlock(SphinxDirective):
         else:
             hl_lines = None
 
+        color_condition = 0
+        red_condition = ''
+        green_condition = ''
+        if 'redlines' in self.options:
+            color_condition += 1
+            redlines = self.options.get('redlines', '')
+            red_condition = set_condition(redlines, 'red!40!white')
+        if 'greenlines' in self.options:
+            color_condition += 1
+            greenlines = self.options.get('greenlines', '')
+            green_condition = set_condition(greenlines, 'green!40!black')
+        if color_condition == 0:
+            prefix = prefix + set_command_sphinxVerbatimFormatLine('\\textcolor{black}{#1}')
+        elif color_condition == 1:
+            prefix = prefix + set_command_sphinxVerbatimFormatLine(green_condition+red_condition)
+        elif color_condition == 2:
+            pattern = r'}}{#1}'
+            formatted_string = re.sub(pattern, r'}}{' + (green_condition.encode('unicode_escape')).decode() + r'}', red_condition)
+            prefix = prefix + set_command_sphinxVerbatimFormatLine(formatted_string)
+
+
         literal: Element = nodes.literal_block(code, code)
         if 'linenos' in self.options or 'lineno-start' in self.options:
             literal['linenos'] = True
@@ -167,7 +174,7 @@ class ReCodeBlock(SphinxDirective):
         if self.arguments:
             literal['language'] = self.env.temp_data.get('highlight_language',
                                                          self.config.highlight_language)
-            prefix = prefix + '\\redstatementstyle'
+            prefix = prefix + '\\redexamplestyle'
             arg = self.arguments[0]
             if arg.lower()=='redstatement':
                 prefix = prefix + '\\redstatementstyle'
@@ -176,6 +183,7 @@ class ReCodeBlock(SphinxDirective):
             elif arg.lower()=='redbordless':
                 prefix = prefix + '\\redbordlessstyle'
             elif arg.lower()=='sql':
+                prefix = prefix + '\\redexamplestyle'
                 literal['language'] = arg
         else:
             prefix = prefix + '\\redstatementstyle'
@@ -190,9 +198,32 @@ class ReCodeBlock(SphinxDirective):
         self.set_source_info(literal)
         self.add_name(literal)
 
+
         latex_prefix = nodes.raw('', prefix, format='latex')
         return [latex_prefix, literal]
 
+class ParsedLiteral(Directive):
+
+    option_spec = {'class': directives.class_option, 'caption': directives.unchanged_required,}
+    has_content = True
+
+    def run(self):
+        if 'caption' in self.options:
+            prefix = '\\noindent \\textit{\\textbf{' + self.options.get('caption', '') + '}}'
+        else:
+            prefix = ''
+        set_classes(self.options)
+        self.assert_has_content()
+        text = '\n'.join(self.content)
+        text = '.\n' + text
+        text_nodes, messages = self.state.inline_text(text, self.lineno)
+        node = nodes.literal_block(text, '', *text_nodes, **self.options)
+        node.line = self.content_offset + 1
+        latex_prefix = nodes.raw('', prefix, format='latex')
+        return [latex_prefix, node] + messages
+
+
 def setup(app):
     app.add_directive('code-block', ReCodeBlock)
+    app.add_directive('color-block', ParsedLiteral)
 

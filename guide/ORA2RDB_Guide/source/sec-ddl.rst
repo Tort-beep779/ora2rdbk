@@ -16,6 +16,7 @@
 .. code-block::
     :redlines: 3, 5, 7, 8, 9, 10, 14, 15, 16, 17, 19, 20, 23, 25
     :greenlines: 1, 2, 4, 6, 11, 13, 18, 22, 24, 26
+    :caption: Oracle
     
     CREATE 
     [GLOBAL TEMPORARY 
@@ -140,7 +141,7 @@
              [ DEFAULT [ ON NULL ] <выражение>]
              [ ENCRYPT <спецификация шифрования> ]
              [ <ограничение столбца>]
-                                                         .
+             :addline:
 
         - :ess:`Rdb`
         
@@ -235,7 +236,7 @@
               GENERATED ALWAYS AS (<выражение>)          
                                                                   
                                                     
-                                                          .
+              :addline:
     
 
 Ограничение столбца
@@ -282,7 +283,7 @@
                          | SET DEFAULT | NO ACTION}]
             | CHECK (<условие столбца>)
             }
-                                                        .
+            :addline:
    
 Ограничение таблицы
 """"""""""""""""""""
@@ -328,7 +329,7 @@
                          | SET DEFAULT |  NO ACTION }]
             | CHECK (<условие столбца>)
             }
-                                                        .
+            :addline:
  
 
 ``ALTER TABLE``
@@ -337,6 +338,7 @@
 .. code-block::
     :redlines: 2, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 24, 25, 28, 29, 30, 34, 35
     :greenlines: 1, 5, 6, 19, 21, 22, 23, 26, 27, 31, 33, 36, 37
+    :caption: Oracle
     
     ALTER TABLE [ <схема>. ] <имя таблицы>
     [ { (MEMOPTIMIZE FOR READ) | (NO MEMOPTIMIZE FOR READ) } ]
@@ -401,11 +403,11 @@
           .. code-block:: 
              :greenlines: 1, 2, 3
    
-              ALTER TABLE <имя таблицы>
-              ADD <определение столбца> 
-              [, ADD <определение столбца> ...]
+             ALTER TABLE <имя таблицы>
+             ADD <определение столбца> 
+             [, ADD <определение столбца> ...]
 
-                                                        .
+             :addline:
 
 Модификация столбца
 """""""""""""""""""""
@@ -612,7 +614,7 @@
 
 
 
-                                                         .
+             :addline:
 
 
 Переименование столбца
@@ -690,7 +692,7 @@
 
 
 
-                                                        .
+             :addline:
 
 
 
@@ -715,7 +717,7 @@
              :greenlines: 1
              
              DROP TABLE <имя таблицы>;
-                                                        .
+             :addline:
 
 
 .. _subsec:sequence:
@@ -768,7 +770,7 @@
 
 
 
-                                                        .
+             :addline:
 
 
 ``ALTER SEQUENCE``
@@ -814,7 +816,7 @@
 
 
 
-                                                        .  
+             :addline:  
 
 ``DROP SEQUENCE``
 ^^^^^^^^^^^^^^^^^^^^
@@ -845,28 +847,48 @@
 ``CREATE INDEX``
 ^^^^^^^^^^^^^^^^^^^^
 
+Рассмотрим синтаксис создания индексов в СУБД Oracle [1]_:
 
-      
-.. code-block::
-    :redlines: 3, 4, 6, 7, 10, 12
-    :greenlines: 1, 2, 5, 9, 11
+.. color-block::
+    :caption: Oracle
     
-    CREATE [ UNIQUE | BITMAP ] INDEX [ <схема>. ] <имя индекса>
-    ON { <табличный индекс>
-       | <кластерный индекс>
-       | <bitmap индекс>
-       }
-    [ USABLE | UNUSABLE ]
-    [ { DEFERRED | IMMEDIATE } INVALIDATION ] ;
+    :green:`CREATE [ UNIQUE` :red:`| BITMAP | MULTIVALUE` :green:`] INDEX` :red:`[<схема>.]` :green:`<имя индекса>`
+    :red:`[ILM { ADD  POLICY [ <policy_clause> ]`
+         :red:`| { DELETE | ENABLE | DISABLE } POLICY <имя политики>`  
+         :red:`| { DELETE_ALL | ENABLE_ALL | DISABLE_ALL }`
+         :red:`}` 
+    :red:`]`
+    :green:`ON { <табличный индекс>`
+       :red:`| <bitmap индекс>`
+       :red:`| <кластерный индекс>`       
+       :green:`}`
+    :green:`[ USABLE | UNUSABLE ]`
+    :red:`[ { DEFERRED | IMMEDIATE } INVALIDATION ]` :green:`;` 
 
-    <табличный индекс> ::= [ <схема>. ] <имя таблицы> 
-                           [ <алиас таблицы> ]
-                           (<выражение индекса> [ASC|DESC] [,<выражение индекса> [ASC|DESC]]...)
-                           [ <атрибуты индекса> ]
+    :green:`<табличный индекс> ::=` :red:`[<схема>.]` :green:`<имя таблицы>` 
+                           :red:`[ <алиас таблицы> ]`
+                           :green:`( <выражение индекса> [ASC|DESC] [, <выражение индекса> [ASC|DESC]]...)`
+                           :green:`[ TABLESPACE <имя табличного пространства> ]`
+                           :green:`[ VISIBLE | INVISIBLE ]`
+                           :red:`[ <другие атрибуты индекса> ]`
 
 
-Создание табличного индекса
-""""""""""""""""""""""""""""""
+**Замечания**
+
+- Ключевое слово ``BITMAP`` удаляется. В РБД используются индексы на основе B-деревьев.
+- Индексы с ключевым словом ``MULTIVALUE`` комментируются. В текущей версии конвертера не поддерживается работа с типами JSON.
+- Конструкция ``ILM ADD|DELETE POLICY ...`` удаляется.
+- Выражения ``DEFERRED/IMMEDIATE INVALIDATION`` удаляются.
+- Bitmap и кластерный индексы комментируются.
+
+
+Преобразование ``CREATE INDEX``
+""""""""""""""""""""""""""""""""
+
+Далее рассмотрим только те конструкции оператора ``CREATE INDEX``, которые преобразуются 
+конвертером и поддерживаются Ред Базой Данных.
+
+Сравнение операторов создания табличного индекса [2]_:
 
 .. list-table::
       :class: borderless
@@ -874,81 +896,337 @@
       * - :ess:`Oracle`
       
           .. code-block::
-             :greenlines: 1, 2, 3, 4, 5
-             
-             CREATE [UNIQUE] INDEX 
-             [<схема>.] <имя индекса> 
-             ON [ <схема>. ] <имя таблицы> 
-             ( <выражение индекса> [ASC|DESC] 
-               [, <выражение индекса> [ASC|DESC]]...);
+             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8
+              
+             CREATE [UNIQUE] 
+             INDEX <имя индекса> 
+             ON <имя таблицы> 
+             ( <столбец>|<выражение столбца> [ASC|DESC] 
+               [, ...])
+             [ TABLESPACE <имя табличного пространства> ]
+             [ VISIBLE | INVISIBLE ]
+             [ USABLE | UNUSABLE ];
                                                         
         - :ess:`Rdb`
         
           .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5
+             :greenlines: 1, 2, 3, 4, 5, 6, 7
              
              CREATE [UNIQUE] [ASC[ENDING] | DESC[ENDING]]
              INDEX <имя индекса> 
              ON <имя таблицы>
              { (<столбец> [, <столбец> …])
-             | COMPUTED BY (<выражение индекса>) };
+             | COMPUTED BY (<выражение столбца>) }
+             [[IN] TABLESPACE <имя табл. пространства>];
+
+             :addline:
+
+.. warning::
+
+  Поскольку в РБД при создании первичных, внешних ключей и ключей уникальности автоматически создаются одноименные индексы, 
+  из входного скрипта Oracle необходимо исключить те команды ``CREATE INDEX``, которые явно создают те же самые индексы. 
+
+  При конвертации оператора ``CREATE INDEX`` выполняются следующие задачи:  
+
+1. *Преобразование ключевых слов* ``ASC|DESC``
+
+   В РБД нет возможности указывать ключевые слова ``ASC|DESC`` для упорядочивания значений каждого столбца, зато есть
+   возможность задать упорядочиваемость для совокупности столбцов, входящих в индекс. По умолчанию все индексы упорядочены по возрастанию
+   значений столбцов (``ASC``). Если индекс создается по разнонаправленно упорядоченным столбцам, то конвертор создаст индекс 
+   с направлением сортировки первого столбца:
+
+   .. code-block:: sql
+    :caption: Oracle
+    
+    CREATE INDEX index_name 
+      ON table_name (column1 DESC, column2 ASC, column3 DESC);
+
+   .. code-block:: sql
+    :caption: to Rdb
+    
+    CREATE DESCENDING INDEX index_name 
+      ON table_name (column1 /*DESC*/, column2 /*ASC*/, column3 /*DESC*/) IN TABLESPACE PRIMARY;
+
+
+2. *Преобразование функциональных индексов (по выражению)*
+
+   Если задано выражение для индекса, то при конвертации добавляется ключевое слово ``COMPUTED BY``. 
+   
+   .. code-block:: sql
+    :caption: Oracle
+    
+    CREATE INDEX emp_total_sal_idx
+      ON employees (12 * salary * commission_pct);
+
+   .. code-block:: sql
+    :caption: to Rdb
+    
+    CREATE INDEX emp_total_sal_idx_functional_1_ 
+      ON employees COMPUTED BY (12 * salary * commission_pct) IN TABLESPACE PRIMARY;
+
+   В РДБ есть возможность задать только одно выражение для индекса. Поэтому, если в Oracle индекс 
+   создается по нескольким выражениям, то конвертор закомментирует индекс и предложит пользователю 
+   самостоятельно его перестроить.
+
+   В РБД существует два вида индексов: по столбцам и по выражению (вычисляемые), но не их комбинация. 
+   Поэтому если индекс комбинированный: по столбцам и по выражению, то конвертор также закомментирует 
+   индекс и предложит пользователю самостоятельно его перестроить.
+   
+   
+3. *Преобразование правила добавления табличных пространств*
+
+   .. unindented_list::
+
+      - Если правило ``TABLESPACE`` не указано, база данных Oracle создаёт индекс в табличном пространстве по умолчанию 
+        владельца схемы, содержащей индекс. В РБД в этом случае индекс будет создан в том же табличном пространстве, что и таблица.
+        Поэтому при конвертации ``CREATE INDEX`` без ``TABLESPACE`` добавляется выражение ``IN TABLESPACE PRIMARY`` (в РБД), чтобы индекс 
+        создался в основном файле базы данных (см. примеры выше).
+
+      - Если в операторе указывается табличное пространство, куда нужно поместить индекс, то никаких преобразований не делается, 
+        за исключением необязательной лексемы ``IN``.
+
+        .. code-block:: sql
+          :caption: Oracle
+        
+          CREATE INDEX emp_fname_uppercase_idx
+            ON employees (UPPER(first_name)) TABLESPACE new_tablespace;
+
+        .. code-block:: sql
+          :caption: to Rdb
+        
+          CREATE INDEX emp_fname_uppercase_idx
+            ON employees COMPUTED BY (UPPER(first_name)) IN TABLESPACE new_tablespace;
+  
+
+4. *Преобразование правила* ``VISIBLE | INVISIBLE``
+
+   Данные ключевые слова используется в Oracle, чтобы указать будет ли индекс видимым или невидимым для оптимизатора.
+   В РБД такие ключевые слова в операторе создания индекса отсутствуют. По умолчанию все индексы видимы и активны. 
+   Поэтому при конвертации ключевое слово ``VISIBLE`` удаляется, а вместо ``INVISIBLE`` выполняется дополнительный оператор
+   ``ALTER INDEX ... INACTIVE``, который отключает индекс.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      CREATE INDEX emp_name_dpt_ix 
+        ON hr.employees(last_name, department_id) INVISIBLE;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      CREATE INDEX emp_name_dpt_ix 
+        ON employees(last_name, department_id) IN TABLESPACE PRIMARY;
+      ALTER INDEX emp_name_dpt_ix INACTIVE;
+
+5. *Преобразование правила* ``USABLE | UNUSABLE``
+
+   Данные ключевые слова используется в Oracle, чтобы указать может он быть использован для доступа к данным или нет.
+   По умолчанию все индексы - ``USABLE``. 
+   В РБД такие ключевые слова в операторе создания индекса отсутствуют. 
+   Поэтому при конвертации ключевое слово ``USABLE`` удаляется, а вместо ``UNUSABLE`` выполняется дополнительный оператор
+   ``ALTER INDEX ... INACTIVE``, который отключает индекс.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      CREATE INDEX emp_name_dpt_ix 
+        ON hr.employees(last_name, department_id) UNUSABLE;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      CREATE INDEX emp_name_dpt_ix 
+        ON employees(last_name, department_id) IN TABLESPACE PRIMARY;
+      ALTER INDEX emp_name_dpt_ix INACTIVE;
 
 
 ``ALTER INDEX``
 ^^^^^^^^^^^^^^^^^^^^
 
-.. code-block::
-    :redlines: 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20
-    :greenlines: 1, 13, 21
+Рассмотрим синтаксис изменения индексов в СУБД Oracle [3]_:
+
+.. color-block::
+    :caption: Oracle
     
-    ALTER INDEX [ <схема>. ] <имя индекса>
-    { { <предложение DEALLOCATE UNUSED>
-      | <предложение ALLOCATE EXTENT>
-      | SHRINK SPACE [ COMPACT ] [ CASCADE ]
-      | { NOPARALLEL | PARALLEL [<число>] }
-      | <физические атрибуты>
-      | { LOGGING | NOLOGGING |  FILESYSTEM_LIKE_LOGGING }
-      | INDEXING { PARTIAL | FULL }
-      } ...
-    | <предложение REBUILD>
-    | PARAMETERS ( 'ODCI_parameters' )
-    | COMPILE
-    | { ENABLE | DISABLE }
-    | UNUSABLE [ ONLINE ] [ { DEFERRED | IMMEDIATE } INVALIDATION ]
-    | VISIBLE | INVISIBLE
-    | RENAME TO <новое имя>
-    | COALESCE [ CLEANUP ] [ ONLY ] [ <предложение PARALLEL> ]
-    | { MONITORING | NOMONITORING } USAGE
-    | UPDATE BLOCK REFERENCES
-    | <предложение для секционированных индексов>
-    };
+    :green:`ALTER INDEX` :red:`[<схема>.]` :green:`<имя индекса>`
+    :red:`[ILM { ADD  POLICY [ <policy_clause> ]`
+         :red:`| { DELETE | ENABLE | DISABLE } POLICY <имя политики>`  
+         :red:`| { DELETE_ALL | ENABLE_ALL | DISABLE_ALL }`
+         :red:`}` 
+    :red:`]`
+    :green:`{` :red:`{ <предложение DEALLOCATE UNUSED>`
+      :red:`| <предложение ALLOCATE EXTENT>`
+      :red:`| SHRINK SPACE [ COMPACT ] [ CASCADE ]`
+      :red:`| { NOPARALLEL | PARALLEL [<число>] }`
+      :red:`| <физические атрибуты>`
+      :red:`| { LOGGING | NOLOGGING |  FILESYSTEM_LIKE_LOGGING }`
+      :red:`| INDEXING { PARTIAL | FULL }`
+      :red:`} ...`
+    :green:`| REBUILD [TABLESPACE <имя табл. пространства>` :red:`| <другие атрибуты rebuild>`:green:`]`
+    :red:`| PARAMETERS ('ODCI_parameters')`
+    :red:`| COMPILE`
+    :green:`| { ENABLE | DISABLE }`
+    :green:`| UNUSABLE` :red:`[ ONLINE ] [ { DEFERRED | IMMEDIATE } INVALIDATION ]`
+    :green:`| {VISIBLE | INVISIBLE}`
+    :red:`| RENAME TO <новое имя>`
+    :red:`| COALESCE [ CLEANUP ] [ ONLY ] [ <предложение PARALLEL> ]`
+    :red:`| { MONITORING | NOMONITORING } USAGE`
+    :red:`| UPDATE BLOCK REFERENCES`
+    :red:`| <предложение для секционированных индексов>`
+    :green:`} ;`
+
+**Замечания**
+
+- Все неподдерживаемые конструкции удаляются
+
+
+Преобразование ``ALTER INDEX``
+""""""""""""""""""""""""""""""""
+
+Далее рассмотрим только те конструкции оператора ``ALTER INDEX``, которые преобразуются 
+конвертером и поддерживаются Ред Базой Данных.
+
+Сравнение операторов изменения табличного индекса:
+
+.. list-table::
+      :class: borderless
+      
+      * - :ess:`Oracle`
+      
+          .. code-block::
+             :greenlines: 1, 2, 3, 4, 5, 6
+
+             ALTER INDEX <имя индекса>
+             { { ENABLE | DISABLE }
+             | { VISIBLE | INVISIBLE }
+             | REBUILD 
+               [TABLESPACE <имя табл.прост-ва>]
+             };
+                                                        
+        - :ess:`Rdb`
+        
+          .. code-block:: 
+             :greenlines: 1, 2, 3, 4, 5, 6
+             
+             ALTER INDEX <имя индекса> 
+             { {ACTIVE | INACTIVE}
+
+             | SET TABLESPACE [TO] { <имя табл.прост-ва> 
+                                   | PRIMARY}
+             };                                  
+
+
+При конвертации оператора ``ALTER INDEX`` выполняются следующие задачи:  
+
+1. *Преобразование ключевых слов* ``ENABLE | DISABLE``
+
+   Ключевые слова ``ENABLE/DISABLE`` применяются только к вычисляемому индексу, 
+   они разрешают или запрещают использование индекса.
+   При конвертации ``ENABLE`` заменяется на ``ACTIVE``, только если индекс имеет видимость ``VISIBLE``.
+   Ключевое слово ``DISABLE`` заменяется на ``INACTIVE``.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      ALTER INDEX emp_fname_uppercase_idx DISABLE;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      ALTER  INDEX emp_fname_uppercase_idx INACTIVE;
+
+2. *Преобразование ключевого слова* ``UNUSABLE``
+
+   Если индекс не пригоден для использования, он получает статус ``UNUSABLE``. Соответствено он не используется в запросах.
+   Это правило заменяется на ``INACTIVE``.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      ALTER INDEX emp_fname_uppercase_idx UNUSABLE;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      ALTER  INDEX emp_fname_uppercase_idx INACTIVE;
+   
+
+3. *Преобразование ключевых слов* ``VISIBLE | INVISIBLE``
+
+   Данные ключевые слова используется в Oracle, чтобы указать будет ли индекс видимым или невидимым для оптимизатора.
+   В РБД вместо них используются ключевые слова ``ACTIVE/INACTIVE``, которые включают/отключают индекс.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      ALTER INDEX emp_name_dpt_ix VISIBLE;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      ALTER INDEX emp_name_dpt_ix ACTIVE;
+
+4. *Преобразование правила* ``REBUILD``
+
+   Данное правило пересоздаёт существующий индекс. 
+   
+   Если индекс имеет видимость ``VISIBLE``, то для РБД аналогичным действием будет оператор ``ACTIVE``.
+   Если индекс невидим оптимизатору, то весь оператор удаляется.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      ALTER INDEX emp_name_dpt_ix REBUILD;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      ALTER INDEX emp_name_dpt_ix ACTIVE;
+   
+5. *Преобразование правила* ``REBUILD TABLESPACE``
+
+   Это правило пересоздает существующий индекс в новом табличном пространстве. Аналогичная конструкция есть в РБД, после которой
+   (если индекс - ``VISIBLE``) добавляется оператор на переактивацию индекса.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      ALTER INDEX emp_name_dpt_ix REBUILD TABLESPACE ts_name;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      ALTER INDEX emp_name_dpt_ix SET TABLESPACE TO ts_name;
+      ALTER INDEX emp_name_dpt_ix ACTIVE;
+
+   Если индекс имеет статус ``INVISIBLE``, то оператор "``ALTER INDEX ... ACTIVE;``" опускается.
 
 
 
 ``DROP INDEX``
 ^^^^^^^^^^^^^^^
 
+
 .. list-table::
       :class: borderless
       
       * - :ess:`Oracle`
       
-          .. code-block::
-             :redlines: 2, 3
-             :greenlines: 1
+          .. color-block::
              
-             DROP INDEX [ <схема>. ] <имя индекса>
-             [ONLINE] [FORCE] 
-             [{DEFERRED|IMMEDIATE} INVALIDATION];
+             :green:`DROP INDEX` :red:`[<схема>.]` :green:`<имя индекса>`
+             :red:`[ONLINE] [FORCE]`
+             :red:`[{DEFERRED|IMMEDIATE} INVALIDATION]`:green:`;`
                                                         
         - :ess:`Rdb`
         
           .. code-block:: 
-             :greenlines: 1
+            :greenlines: 1
              
-             DROP INDEX <имя индекса>;
+            DROP INDEX <имя индекса>;
 
-                                                         .
+            :addline:
+
 
 .. _subsec:view:
 
@@ -958,35 +1236,58 @@
 ``CREATE VIEW``
 ^^^^^^^^^^^^^^^^^^^^
 
-.. code-block::
-    :redlines:  3, 5, 7, 8, 11, 12, 13, 14, 15, 17, 20, 21
-    :greenlines: 1, 2, 4, 6, 9, 10, 16, 19
+Рассмотрим синтаксис изменения индексов в СУБД Oracle [4]_:
+
+.. color-block::
+    :caption: Oracle
     
-    CREATE [OR REPLACE]
-    [[NO] FORCE]
-    [ EDITIONING | EDITIONABLE [ EDITIONING ] | NONEDITIONABLE ]
-    VIEW [ <схема>. ] <имя представления>
-    [ SHARING = { METADATA | DATA | EXTENDED DATA | NONE } ]
-    [ ( { <алиас> 
-        [ VISIBLE | INVISIBLE ] [ <ограничение строки>... ]
-        | <ограничение представления> }
-        [, ... ]
-      )
-    | <предложение для объектного представления>
-    | <предложение для XMLType представления>
-    ]
-    [ DEFAULT COLLATION <сортировка> ]
-    [ BEQUEATH { CURRENT_USER | DEFINER } ]
-    AS <оператор SELECT> [ <предложения с ограничениями> ]
-    [ CONTAINER_MAP | CONTAINERS_DEFAULT ] ;
+    :green:`CREATE [OR REPLACE] [[NO] FORCE]` :red:`[ EDITIONING | EDITIONABLE [ EDITIONING ] | NONEDITIONABLE ]`
+    :green:`VIEW` :red:`[<схема>.]` :green:`<имя представления>`
+    :red:`[ SHARING = { METADATA | DATA | EXTENDED DATA | NONE } ]`
+    :green:`[ ( { <алиас>` :red:`[ VISIBLE | INVISIBLE ] [ <ограничение строки>... ]`
+        :red:`| <ограничение представления>` :green:`}`
+        :green:`[, <алиас>... ]`
+      :green:`)`
+    :red:`| <предложение для объектного представления>`
+    :red:`| <предложение для XMLType представления>`
+    :green:`]`
+    :red:`[ DEFAULT COLLATION <сортировка> ]`
+    :red:`[ BEQUEATH { CURRENT_USER | DEFINER } ]`
+    :green:`AS <оператор SELECT>` 
+    :green:`[ {WITH CHECK OPTION | WITH READ ONLY}` :red:`[CONSTRAINT <имя ограничения>]` :green:`]`
+    :red:`[ CONTAINER_MAP | CONTAINERS_DEFAULT ]` :green:`;`
 
-    <предложения с ограничениями> ::= WITH { CHECK OPTION
-                                           | READ ONLY
-                                           } [ CONSTRAINT <имя ограничения> ]
+**Замечания**
+
+- При конвертации удаляются ключевые слова ``EDITIONING, EDITIONABLE, NONEDITIONABLE``.
+- Удаляется конструкция ``SHARING``.
+- Не конвертируются объектные представления и XMLType-представления.
+- Ограничения строки и ограничения представления комментируются. 
+- Атрибуты ``VISIBLE/INVISIBLE`` комментируются.
+- Предложение ``DEFAULT COLLATION`` удаляется.
+- Предложение ``BEQUEATH {CURRENT_USER|DEFINER}`` комментируется.
+
+  Это правило определяет с каким правами: создателя (``DEFINER``) или вызывающего пользователя (``CURRENT_USER``) 
+  будут вызываться функции внутри представления.
+  По умолчанию в Oracle и РБД представления вызываются с правами владельца.
+  Подобной конструкции в РБД нет, поэтому не получится изменить поведения по умолчанию. 
+
+  .. warning::
+
+   Если при создании функции (которая используется в представлении) указывается, что она должна вызываться с правами ``CURRENT_USER``,
+   и при создании представления указывается ``BEQUEATH CURRENT_USER``, то такой случай не имеет аналогов в РБД.
+   Во всех остальных случаях функции внутри представления будут вызываться с правами создателя.
+
+- Предложение ``CONTAINER_MAP/CONTAINERS_DEFAULT`` удаляется.
 
 
-Создание представления
-""""""""""""""""""""""""
+Преобразование ``CREATE VIEW``
+""""""""""""""""""""""""""""""""
+
+Далее рассмотрим только те конструкции оператора ``CREATE VIEW``, которые преобразуются 
+конвертером и поддерживаются Ред Базой Данных.
+
+Сравнение операторов создания представления:
 
 .. list-table::
       :class: borderless
@@ -994,13 +1295,14 @@
       * - :ess:`Oracle`
           
           .. code-block::
-             :greenlines: 1,2,3,4,5
+             :greenlines: 1,2,3,4,5,6
              
-             CREATE [OR REPLACE] 
-             VIEW [ <схема>. ] <имя представления> 
-             [( <алиас> [,<алиас>] )]
-  	         AS <оператор SELECT>
-  	         [WITH CHECK OPTION]
+             CREATE [OR REPLACE] [[NO] FORCE] 
+             VIEW <имя представления> 
+             [( <алиас> [, <алиас>...] )]
+             AS <оператор SELECT>
+             [ { WITH CHECK OPTION 
+               | WITH READ ONLY } ]
   	                                                        
         - :ess:`Rdb`
         
@@ -1009,13 +1311,72 @@
              
              CREATE [OR ALTER] 
              VIEW <имя представления> 
-             [(<столбец> [, <столбец> ...])]
-  	         AS <оператор SELECT>
-  	         [WITH CHECK OPTION]
+             [( <алиас> [, <алиас>...] )]
+             AS <оператор SELECT>
+             [WITH CHECK OPTION]
+             :addline:
 
 
-Предложение FORCE
-""""""""""""""""""
+При конвертации оператора ``CREATE VIEW`` выполняются следующие задачи:  
+
+1. *Замена ключевого слова* ``OR REPLACE``
+
+   Данное ключевое слово заменяется на равнозначное ему ``OR ALTER`` 
+2. *Добавление правила* ``FORCE``
+   
+   В Oracle опция ``FORCE`` используется, чтобы принудительно создать представление, 
+   использующее объекты, которые не были созданы ранее. В РБД это ключевое слово отсутствует, поэтому 
+   при создании представлений проверка зависимостей выполняется всегда. Данную проблему можно решить, 
+   если в процессе преобразования упорядочить операторы создания объектов таким образом, чтобы при 
+   их выполнении не возникало ошибки об отсутствующем объекте БД. Чтобы этого добиться, при запуске 
+   конвертера необходимо указать ключ "``-r``" , который изменяет порядок создания объектов (см. :ref:`sec:install`). 
+3. *Преобразование правила* ``WITH READ ONLY``
+
+   Эта опция запрещает операции обновления, удаления и вставки данных базовой таблицы через это представление.
+   В РБД подобной опции нет, но при конвертации вместо неё создается триггер, который при попытке 
+   вставки/удаления/изменения представление выкидывает исключение.
+
+   .. code-block:: sql
+      :caption: Oracle
+        
+      CREATE OR REPLACE FORCE VIEW VTAPP.CF_REP_CUSTOMER (CUSTOMER, DESCRIPTION, OBJKEY, OBJVERSION, OBJID)
+      BEQUEATH DEFINER
+      AS 
+        SELECT
+          customer                       customer,
+          description                    description,
+          rowkey                         objkey,
+          to_char(rowversion,'YYYYMMDDHH24MISS') objversion,
+          rowid                          objid
+        FROM cf_rep_customer_tab
+      WITH READ ONLY;
+
+   .. code-block:: sql
+      :caption: to Rdb
+        
+      CREATE EXCEPTION READ_ONLY_VIEW 'cannot perform a DML operation on a read-only view';
+
+      CREATE OR ALTER VIEW CF_REP_CUSTOMER (CUSTOMER, DESCRIPTION, OBJKEY, OBJVERSION, OBJID) 
+      /* BEQUEATH DEFINER */  
+      AS
+        SELECT
+          customer                       customer,
+          description                    description,
+          rowkey                         objkey,
+          UPPER( CAST(rowversion AS VARCHAR(32765) FORMAT'YYYYMMDDHH24MISS')) objversion,
+          rowid                          objid
+        FROM cf_rep_customer_tab ;
+
+      CREATE TRIGGER CF_REP_CUSTOMER_READ_ONLY_TRIGGER FOR CF_REP_CUSTOMER
+      BEFORE INSERT OR UPDATE OR DELETE
+      AS BEGIN
+        EXCEPTION READ_ONLY_VIEW
+      END;
+
+
+ 
+
+
 
 ``ALTER VIEW``
 ^^^^^^^^^^^^^^^
@@ -1059,1085 +1420,30 @@
              :greenlines: 1
              
              DROP VIEW <имя представления> ;
-                                                         .
+             :addline:
 
 
-.. _subsec:function:
 
-Хранимые функции (``Function``)
-----------------------------------
 
-``CREATE FUNCTION``
-^^^^^^^^^^^^^^^^^^^^
 
-.. code-block::
-    :redlines:  2, 6, 8, 9, 11, 12, 13, 14, 15, 16, 30, 33
-    :greenlines: 1, 3, 4, 5, 7, 10, 17, 18, 19, 20, 21, 22, 24, 26, 28, 29, 31, 32
-    :caption: Oracle
-    
-    CREATE [ OR REPLACE ] 
-    [ EDITIONABLE | NONEDITIONABLE ]
-    FUNCTION [ <схема>. ] <имя функции>
-       [ ( <IN|OUT параметр> [, <IN|OUT параметр>]... ) ] 
-       RETURN <тип возвращаемого значения> 
-       [ SHARING = { METADATA | NONE } ]
-       [ AUTHID { CURRENT_USER | DEFINER }]
-       [ ACCESSIBLE BY ( <средство доступа> [, <средство доступа> ]... ) ]
-       [ DEFAULT COLLATION <опция сортировки> ]   
-       [ DETERMINISTIC ]
-       [ PARALLEL_ENABLE ... ]
-       [ RESULT_CACHE ... ]
-       [ AGGREGATE USING ... ]
-       [ PIPELINED ... ]
-       [ SQL_MACRO ]
-       { { IS | AS } <внешний модуль> ;
-       | { IS | AS } [ <объявление_1>;... [<объявление_2>;]... | <объявление_2>;... ] 
-         BEGIN 
-           <блок операторов> ...
-           [ EXCEPTION <exception_handler> [ <exception_handler> ]... ] 
-         END [ <имя функции>] ;
-       }
 
-    <IN-параметр> ::= <имя параметра> [IN] <тип данных> [{:=|DEFAULT} <выражение>]
+.. [1]
+   Конструкции операторов Oracle, которые преобразуются конвертером (с учетом разницы в синтаксисе) обозначены :green:`зеленым` цветом.
+   :red:`Красным` цветом обозначены конструкции, которые не поддерживаются Ред Базой Данных или конвертером. Неподдерживаемые конструкции
+   удаляются или комментируются.
 
-    <OUT-параметр> ::= <имя параметра> {OUT|IN OUT} [NOCOPY] <тип данных>
 
-    <объявление_1> ::= { <объявление типа> | <объявление курсора> 
-                       | <объявление переменных и констант>
-                       | <объявление функции> | <объявление процедуры> }
+.. [2] 
+   Для Ред Базы Данных представлен не полный синтаксис оператора, а только те конструкции, которые соответствуют синтаксису Oracle и конвертируются в них.
 
-    <объявление_2> ::= { <объявление курсора> | <создание курсора> | <объявление функции> 
-                       | <реализация функции> | <объявление процедуры> | <реализация процедуры> }
 
+.. [3]
+   Конструкции операторов Oracle, которые преобразуются конвертером (с учетом разницы в синтаксисе) обозначены :green:`зеленым` цветом.
+   :red:`Красным` цветом обозначены конструкции, которые не поддерживаются Ред Базой Данных или конвертером. Неподдерживаемые конструкции
+   удаляются или комментируются.
 
 
-
-Создание функции с IN параметрами
-""""""""""""""""""""""""""""""""""
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-      
-          .. code-block::
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-             
-             CREATE [ OR REPLACE ] 
-             FUNCTION [ <схема>. ] <имя функции>
-              [(<IN-параметр> [,<IN-параметр>...])] 
-             RETURN <тип возвращаемого значения> 
-             [AUTHID { CURRENT_USER | DEFINER }]
-             [DETERMINISTIC]
-             {IS|AS} 
-                 [ <объявление> [<объявление> ...] ] 
-             BEGIN 
-                 <блок операторов> ...
-             END [ <имя функции> ] ;              
-             
-  	                                                        
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-             
-             CREATE [ OR ALTER ] 
-             FUNCTION <имя хранимой функции>
-              [(<IN-параметр> [,<IN-параметр>...])]
-             RETURNS <тип возвращаемого значения> 
-             [DETERMINISTIC]
-             [SQL SECURITY {DEFINER | INVOKER}]
-             AS
-                 [<объявление> [<объявление> ...] ]
-             BEGIN
-                 <блок операторов>
-             END ;
-
-Создание функции с OUT параметрами
-""""""""""""""""""""""""""""""""""""""""""    
-
-Функция с out-параметрами конвертируется в селективную процедуру, из которой можно получить out-параметры. При конвертации:
-Те же изменения, что и в стандартной функции
-“FUNCTION” заменяется на “PROCEDURE”  
-Удаляются модификаторы  (см.раздел “модификаторы”)
-В возвращаемые параметры добавляется переменная 
-“RET_VAL”, которая принимает тип выходного параметра исходной функции
-В возвращаемые параметры добавляется переменная, которая принимает тип входного параметра исходной функции.
-Изменяется оператор RETURN в теле функции (см. раздел “Return Statement”)
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-      
-          .. code-block::
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
-             
-             CREATE [ OR REPLACE ] 
-             FUNCTION [ <схема>. ] <имя функции>
-              (<OUT-параметр> [,<IN|OUT параметр>...])
-             RETURN <тип возвращаемого значения> 
-
-             [AUTHID { CURRENT_USER | DEFINER }]
-             [DETERMINISTIC]
-             {IS|AS} 
-                 [ <объявление> [<объявление> ...] ] 
-             BEGIN 
-                 <блок операторов> ...
-             END [ <имя функции> ] ;              
-             
-  	                                                        
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
-             
-             CREATE [OR ALTER] 
-             PROCEDURE <имя функции> 
-               (<OUT-параметр> [,<IN|OUT параметр>...])
-             RETURNS (<имя перем.><тип возвр.знач.>,
-                      <OUT-параметр>_OUT)
-             [SQL SECURITY {DEFINER | INVOKER}]
-
-             AS 
-               [<объявление> [<объявление> ...] ]
-             BEGIN
-               <блок операторов>
-             END ;
-
-
-``ALTER FUNCTION``
-^^^^^^^^^^^^^^^^^^^^
-
-.. code-block::
-    :redlines:  1, 2, 3, 4
-    :caption: Oracle
-    
-    ALTER FUNCTION [<схема>.] <имя функции>
-    { COMPILE [ DEBUG ] [ <параметры компиляции> ... ] [ REUSE SETTINGS ] 
-    | { EDITIONABLE | NONEDITIONABLE } 
-    }
-
-
-``DROP FUNCTION``
-^^^^^^^^^^^^^^^^^^^^
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-      
-          .. code-block::
-             :greenlines: 1
-             
-             DROP FUNCTION [ <схема>. ] <имя функции> ;
-
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3
-             
-             DROP FUNCTION <имя функции>;
-
-
-
-.. _subsec:procedure:
-
-Хранимые процедуры (``Procedure``)
-------------------------------------
-
-``CREATE PROCEDURE``
-^^^^^^^^^^^^^^^^^^^^
-
-.. code-block::
-    :redlines:  2, 5, 7, 8, 9, 23, 26
-    :greenlines: 1, 3, 4, 6, 10, 11, 12, 13, 14, 15, 17, 19, 20, 21, 22, 24, 25
-    :caption: Oracle
-    
-    CREATE [ OR REPLACE ] 
-    [ EDITIONABLE | NONEDITIONABLE ]
-    PROCEDURE [ <схема>. ] <имя процедуры>
-       [ ( <IN|OUT параметр> [, <IN|OUT параметр>]... ) ] 
-       [ SHARING = { METADATA | NONE } ]
-       [ AUTHID { CURRENT_USER | DEFINER }]
-       [ ACCESSIBLE BY ( <средство доступа> [, <средство доступа> ]... ) ]
-       [ DEFAULT COLLATION <опция сортировки> ]   
-    { { IS | AS } <внешний модуль>
-    | { IS | AS } [ <объявление_1>;... [<объявление_2>;]... | <объявление_2>;... ] 
-    BEGIN 
-        <блок операторов> ...
-        [ EXCEPTION <exception_handler> [ <exception_handler> ]... ] 
-    END [<имя процедуры>] ;
-    }
-
-    <IN-параметр> ::= <имя параметра> [IN] <тип данных> [{:=|DEFAULT} <выражение>]
-
-    <OUT-параметр> ::= <имя параметра> {OUT|IN OUT} [NOCOPY] <тип данных>
-
-    <объявление_1> ::= { <объявление типа> | <объявление курсора> 
-                       | <объявление переменных и констант>
-                       | <объявление функции> | <объявление процедуры> }
-
-    <объявление_2> ::= { <объявление курсора> | <создание курсора> | <объявление функции> 
-                       | <реализация функции> | <объявление процедуры> | <реализация процедуры> }
-
-
-Создание процедуры с IN параметрами
-""""""""""""""""""""""""""""""""""""
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-      
-          .. code-block::
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9
-             
-             CREATE [ OR REPLACE ] 
-             PROCEDURE [ <схема>. ] <имя процедуры>
-              [(<IN-параметр> [,<IN-параметр>...])] 
-             [AUTHID { CURRENT_USER | DEFINER }]
-             {IS|AS} 
-                [ <объявление> [<объявление> ...] ] 
-             BEGIN 
-                <блок операторов> 
-             END [ <имя процедуры> ] ;              
-             
-  	                                                        
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9
-             
-             CREATE [ OR ALTER ] 
-             PROCEDURE <имя процедуры>
-              [(<IN-параметр> [,<IN-параметр>...])]
-             [SQL SECURITY {DEFINER | INVOKER}]
-             AS
-                [<объявление> [<объявление> ...] ]
-             BEGIN
-                <блок операторов>
-             END ;
-
-Создание процедуры с OUT параметрами
-""""""""""""""""""""""""""""""""""""""""""    
-
-Процедура с out-параметрами конвертируется в селективную процедуру, из которой можно получить out-параметры.
-При конвертации:
-Те же изменения, что и стандартной процедуре
-Добавляется конструкция RETURNS <выходные параметры> 
-Создается возвращаемый параметр,  который принимает тип входящего параметра исходной процедуры. 
-В конце тела процедуры добавляется оператор SUSPEND
-
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-      
-          .. code-block::
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-             
-             CREATE [ OR REPLACE ] 
-             PROCEDURE [ <схема>. ] <имя процедуры>
-              (<OUT-параметр> [,<IN|OUT-параметр>...])
-
-             [AUTHID { CURRENT_USER | DEFINER }]
-             {IS|AS} 
-                [ <объявление> [<объявление> ...] ] 
-             BEGIN 
-                <блок операторов> 
-             END [ <имя процедуры> ] ;              
-             
-  	                                                        
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-             
-             CREATE [OR ALTER] 
-             PROCEDURE <имя процедуры> 
-               (<OUT-параметр> [,<IN|OUT-параметр>...])
-             RETURNS (<OUT-пар.>_OUT [,...]);
-             [SQL SECURITY {DEFINER | INVOKER}]
-             AS 
-               [<объявление> [<объявление> ...] ]
-             BEGIN
-               <блок операторов>
-             END ;
-
-
-``ALTER PROCEDURE``
-^^^^^^^^^^^^^^^^^^^^
-
-.. code-block::
-    :redlines:  1, 2, 3, 4
-    :caption: Oracle
-    
-    ALTER PROCEDURE [<схема>.] <имя процедуры>
-    { COMPILE [ DEBUG ] [ <параметры компиляции> ... ] [ REUSE SETTINGS ] 
-    | { EDITIONABLE | NONEDITIONABLE } 
-    }
-
-
-``DROP PROCEDURE``
-^^^^^^^^^^^^^^^^^^^^
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-      
-          .. code-block::
-             :greenlines: 1
-             
-             DROP PROCEDURE [ <схема>. ] <имя процедуры> ;
-
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1
-             
-             DROP PROCEDURE <имя процедуры>;
-
-
-.. _subsec:trigger:
-
-Триггеры (``Trigger``)
---------------------------
-
-``CREATE TRIGGER``
-^^^^^^^^^^^^^^^^^^^^
-
-.. code-block::
-    :redlines:  2, 4, 5, 7, 8, 9, 12, 13, 14, 15, 17, 19, 25, 30, 36
-    :greenlines: 1, 3, 6, 11, 16, 18, 20, 21, 22, 23, 24, 26, 27, 28, 29, 31, 32, 33, 34, 35, 38, 39, 41, 42
-    :caption: Oracle
-    
-    CREATE [ OR REPLACE ] 
-    [ EDITIONABLE | NONEDITIONABLE ]
-    TRIGGER [<схема>.] <имя триггера>
-    [ SHARING = { METADATA | NONE } ] 
-    [ DEFAULT COLLATION <опция сортировки> ] 
-    { <dml триггеры>
-    | <dml триггеры с заменой для необновляемых представлений>
-    | <составной dml триггер>
-    | <системный триггер> }
-
-    <dml триггеры> ::= { BEFORE | AFTER } <DML событие> 
-                       [ REFERENCING { OLD [AS] <old> | NEW [AS] <new> | PARENT [AS] <parent>}... ] 
-                       [ FOR EACH ROW ]
-                       [ { FORWARD | REVERSE } CROSSEDITION ] 
-                       [ { FOLLOWS | PRECEDES } [<схема>.] <имя триггера> [,...]]
-                       [ ENABLE | DISABLE ] 
-                       [ WHEN ( <условие> )] 
-                       {
-                         [ << label >> [ << label >> ]...] 
-                         [ DECLARE {<объявление_1>;... [<объявление_2>;]... | <объявление_2>;...}] 
-                         BEGIN 
-                            <блок операторов>
-                         [ EXCEPTION <exception_handler> [ <exception_handler> ]... ] 
-                         END [ <имя триггера> ] ; 
-                       | CALL <routine_clause> 
-                       }                 
-  
-    <объявление_1> ::= { <объявление типа> | <объявление курсора> 
-                       | <объявление переменных и констант>
-                       | <объявление функции> | <объявление процедуры> }
-
-    <объявление_2> ::= { <объявление курсора> | <создание курсора> | <объявление функции> 
-                       | <реализация функции> | <объявление процедуры> | <реализация процедуры> }
-                      
-
-
-Создание DML триггеров
-""""""""""""""""""""""""
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-      
-          .. code-block::
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-             
-             CREATE [ OR REPLACE ] 
-             TRIGGER [<схема>.] <имя триггера>
-
-             { BEFORE | AFTER } 
-                  <DML событие> [OR <DML событие> ...]
-             ON [<схема>.] { <таблица> | <представление> }
-             [ ENABLE | DISABLE ] 
-             [ DECLARE <объявление>;... ] 
-             BEGIN 
-                <блок операторов>
-             END [ <имя триггера> ] ;
-
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-             
-             CREATE [ OR ALTER ] 
-             TRIGGER <имя триггера>
-             [ACTIVE | INACTIVE]
-             { BEFORE | AFTER } 
-                  <DML событие> [OR <DML событие> ...]
-             ON { <таблица> | <представление> }
-
-             AS [<объявление>; ...]
-             BEGIN
-               <блок операторов>
-             END;
-
-             
-
-
-
-
-
-``ALTER TRIGGER``
-^^^^^^^^^^^^^^^^^^^^
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :redlines: 2,3, 5, 6
-              :greenlines: 1, 4, 7
-              
-              ALTER TRIGGER [<схема>. ] <имя триггера>
-              { COMPILE [DEBUG] [<параметры компиляции>...] 
-                [REUSE SETTINGS]
-              | { ENABLE | DISABLE }
-              | RENAME TO <новое имя>
-              | { EDITIONABLE | NONEDITIONABLE }
-              } ;
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 4
-             
-             ALTER TRIGGER <имя триггера>
-             
-             
-             [ACTIVE | INACTIVE];
-
-
-                                                         .
-
-
-``DROP TRIGGER``
-^^^^^^^^^^^^^^^^^^^^
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :redlines: 2,3, 5, 6
-              :greenlines: 1, 4, 7
-              
-              DROP TRIGGER [<схема>.] <имя триггера>;
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 4
-             
-             DROP TRIGGER <имя триггера>;
-
-
-.. _subsec:package:
-
-Заголовки пакетов (``Package``)
----------------------------------
-
-
-``CREATE PACKAGE``
-^^^^^^^^^^^^^^^^^^^^
-
-.. code-block::
-    :redlines:  2, 4, 5, 7, 12, 13, 17, 19, 20, 21, 24
-    :greenlines: 1, 3, 6, 8, 9, 11, 15, 16, 18, 23
-    :caption: Oracle
-    
-    CREATE [ OR REPLACE ] 
-    [ EDITIONABLE | NONEDITIONABLE ]
-    PACKAGE [<схема>.] <имя пакета> 
-    [ SHARING = { METADATA | NONE } ] 
-    [ { DEFAULT COLLATION <опция сортировки> 
-      | AUTHID { CURRENT_USER | DEFINER } 
-      | ACCESSIBLE BY ( <средство доступа> [, <средство доступа> ]... )}... ]  
-    { IS | AS } <список объявлений> 
-    END [<имя пакета>] ;
-
-    <список объявлений> ::= { <объявление пак. функции> | <объявление пак. процедуры>
-                            | <объявление типа> | <объявление курсора> 
-                            | <объявление переменных и констант> } ...
-
-    <объявление пак.функции> ::= FUNCTION <имя функции> [(<IN|OUT параметр>[,<IN|OUT параметр>])]
-                                 RETURN <тип данных> 
-                                 [ ACCESSIBLE BY (<средство доступа> [, <средство доступа> ]... ) 
-                                 | DETERMINISTIC 
-                                 | PIPELINED ... 
-                                 | PARALLEL_ENABLE ...  
-                                 | RESULT_CACHE ... ] ;
-
-    <объявление пак.процедуры> ::= PROCEDURE <процедура> [(<IN|OUT параметр>[,<IN|OUT параметр>])] 
-                                   [ACCESSIBLE BY (<средство доступа> [, <средство доступа> ]...)] ;
-
-Создание пакета 
-""""""""""""""""""
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :greenlines: 1, 2, 3, 4, 5, 6, 7
-              
-              CREATE [ OR REPLACE ] 
-              PACKAGE [<схема>.] <имя пакета>
-              [AUTHID { CURRENT_USER | DEFINER }]
-              { IS | AS } 
-                 { <объявление процедуры>; 
-                 | <объявление функции>; ...}
-              END [<имя пакета>] ;
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7
-             
-             CREATE [ OR ALTER ]
-             PACKAGE <имя пакета>
-             [SQL SECURITY {DEFINER | INVOKER}]
-             AS BEGIN
-                { <объявление процедуры>;
-                | <объявление функции>;...}
-             END ; 
-
-
-Объявление пакетной процедуры с IN параметрами
-""""""""""""""""""""""""""""""""""""""""""""""""
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :greenlines: 1, 2, 3, 4, 5,7,8,9
-              
-              CREATE [ OR REPLACE ] 
-              PACKAGE [<схема>.] <имя пакета>
-              [AUTHID { CURRENT_USER | DEFINER }]
-              { IS | AS } 
-                 PROCEDURE <имя> (<IN-пар.>[,<IN-пар.>]); 
-
-                 [ <объявление процедуры>; 
-                 | <объявление функции>;...]
-              END [<имя пакета>] ;
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 7, 8, 9
-             
-             CREATE [ OR ALTER ]
-             PACKAGE <имя пакета>
-             [SQL SECURITY {DEFINER | INVOKER}]
-             AS BEGIN
-                PROCEDURE <имя> (<IN-пар.>[,<IN-пар.>]);
-
-                [ <объявление процедуры>; 
-                | <объявление функции>;...]
-             END ; 
-
-
-
-Объявление пакетной функции с IN параметрами
-"""""""""""""""""""""""""""""""""""""""""""""
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :greenlines: 1, 2, 3, 4, 5, 6, 7, 9, 10, 11
-              
-              CREATE [ OR REPLACE ] 
-              PACKAGE [<схема>.] <имя пакета>
-              [AUTHID { CURRENT_USER | DEFINER }]
-              { IS | AS } 
-                 FUNCTION <имя> (<IN-пар.>[,<IN-пар.>]...)
-                   RETURN <тип данных> 
-                   [DETERMINISTIC];
-
-                 [ <объявление процедуры>; 
-                 | <объявление функции>;...];
-              END [<имя пакета>];
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 9, 10, 11
-             
-             CREATE [ OR ALTER ]
-             PACKAGE <имя пакета>
-             [SQL SECURITY {DEFINER | INVOKER}]
-             AS BEGIN
-                FUNCTION <имя> (<IN-пар.> [,<IN-пар.>...])
-                  RETURNS <тип данных> 
-                  [DETERMINISTIC];
-
-                [ <объявление процедуры>; 
-                | <объявление функции>;...]
-             END ; 
-
-Объявление функции с OUT параметрами
-""""""""""""""""""""""""""""""""""""""
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :redlines: 7
-              :greenlines: 1, 2, 3, 4, 5, 6, 9, 10, 11
-              
-              CREATE [ OR REPLACE ] 
-              PACKAGE [<схема>.] <имя пакета>
-              [AUTHID { CURRENT_USER | DEFINER }]
-              { IS | AS } 
-              FUNCTION <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
-                RETURN <тип возвр.данных> 
-                [DETERMINISTIC];
-
-              [ <объявление процедуры>; 
-              | <объявление функции>;...];
-              END [<имя пакета>];
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 9, 10, 11
-             
-             CREATE [ OR ALTER ]
-             PACKAGE <имя пакета>
-             [SQL SECURITY {DEFINER | INVOKER}]
-             AS BEGIN
-             PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>]);
-               RETURNS ( <имя перем.><тип возвр.данных>,
-                         <OUT-пар.>_OUT ...);
-
-             [ <объявление процедуры>; 
-             | <объявление функции>;...]
-             END ; 
-
-Объявление процедуры с OUT параметрами
-""""""""""""""""""""""""""""""""""""""""
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :greenlines: 1, 2, 3, 4, 5, 8, 9, 10
-              
-              CREATE [ OR REPLACE ] 
-              PACKAGE [<схема>.] <имя пакета>
-              [AUTHID { CURRENT_USER | DEFINER }]
-              { IS | AS } 
-              PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>]); 
-
-
-              [ <объявление процедуры>; 
-              | <объявление функции>;...];
-              END [<имя пакета>] ;
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 8, 9, 10
-             
-             CREATE [ OR ALTER ]
-             PACKAGE <имя пакета>
-             [SQL SECURITY {DEFINER | INVOKER}]
-             AS BEGIN
-             PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>]);
-               RETURNS (<OUT-пар.>_OUT [,...])
-
-             [ <объявление процедуры>; 
-             | <объявление функции>;...]
-             END ; 
-
-
-
-
-
-``ALTER PACKAGE``
-^^^^^^^^^^^^^^^^^^
-
-.. code-block::
-    :redlines:  1, 2, 3
-    :caption: Oracle
-
-    ALTER PACKAGE [<схема>.] <имя пакета>
-    { COMPILE [ DEBUG ] [ <параметры компиляции> ... ] [ REUSE SETTINGS ] 
-    | { EDITIONABLE | NONEDITIONABLE } } ;
-
-
-``DROP PACKAGE``
-^^^^^^^^^^^^^^^^^
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :greenlines: 1
-              
-              DROP PACKAGE [<схема>.] <имя пакета>;
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1
-             
-             DROP PACKAGE <имя пакета>;
-
-
-.. _subsec:packagebody:
-
-Тело пакетов (``Package Body``)
---------------------------------
-
-
-``CREATE PACKAGE BODY``
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code-block::
-    :redlines:  2,7, 8, 9,10, 24, 25,26,   29,30,31,   36,37,38,39,   48,49,50,51
-    :greenlines: 1, 3, 4, 5, 6, 11,   13,14,15,   17,18,19,   21,22,23,    28,   33,34,35,40,41,42,43,44,45,46,   47,52,53,54,55,56,57
-    :caption: Oracle
-    
-    CREATE [ OR REPLACE ] 
-    [ EDITIONABLE | NONEDITIONABLE ] 
-    PACKAGE BODY [<схема>.] <имя пакета> 
-    { IS | AS } 
-      { <объявление_1>;... [<объявление_2>;]... 
-      | <объявление_2>;... }   
-    [ BEGIN 
-      <блок операторов>
-      [ EXCEPTION <exception_handler>... ]
-    ]
-    END [<имя пакета>] ;
-
-    <объявление_1> ::= { <объявление функции> | <объявление процедуры>
-                       | <объявление типа> | <объявление курсора> 
-                       | <объявление переменных и констант> }
-
-    <объявление_2> ::= { <объявление функции> | <реализация функции> 
-                       | <объявление процедуры> | <реализация процедуры>
-                       | <объявление курсора> | <создание курсора> }
-    
-    <объявление функции> ::= FUNCTION <имя функции> [(<IN|OUT параметр>[,<IN|OUT параметр>])]
-                             RETURN <тип данных> 
-                             [ DETERMINISTIC 
-                             | PIPELINED 
-                             | PARALLEL_ENABLE 
-                             | RESULT_CACHE ]... ; 
-
-    <объявление процедуры> ::= PROCEDURE <процедура> [(<IN|OUT параметр>[,<IN|OUT параметр>])] 
-                               [ ACCESSIBLE BY (<средство доступа> [, <средство доступа> ]...)
-                               | DEFAULT COLLATION <опция сортировки>
-                               | AUTHID { CURRENT_USER | DEFINER }]... ;
-
-    <реализация функции> ::= FUNCTION <имя функции> [(<IN|OUT параметр>[,<IN|OUT параметр>])]
-                             RETURN <тип данных> 
-                             [ DETERMINISTIC
-                             | PIPELINED
-                             | PARALLEL_ENABLE
-                             | RESULT_CACHE [ RELIES_ON ...]  ]...
-                             { { IS | AS } <внешний модуль>
-                             | { IS | AS } [ <объявление_1>;... [<объявление_2>;]... 
-                                           | <объявление_2>;... ] 
-                             BEGIN
-                                 <блок операторов> ...
-                                 [ EXCEPTION <exception_handler> [ <exception_handler> ]... ]
-                             END [<имя процедуры>] ; }
-
-    <реализация процедуры> ::= PROCEDURE <процедура> [(<IN|OUT параметр>[,<IN|OUT параметр>])] 
-                               [ ACCESSIBLE BY (<средство доступа> [, <средство доступа> ]...)
-                               | DEFAULT COLLATION <опция сортировки>
-                               | AUTHID { CURRENT_USER | DEFINER }]... 
-                               { { IS | AS } <внешний модуль>
-                               | { IS | AS } [ <объявление_1>;... [<объявление_2>;]... 
-                                             | <объявление_2>;... ] 
-                               BEGIN
-                                    <блок операторов> ...
-                                    [ EXCEPTION <exception_handler> [ <exception_handler> ]... ]
-                               END [<имя процедуры>] ; }
-
-
-
-Создание тела пакета 
-"""""""""""""""""""""
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :greenlines: 1, 2, 3, 4, 5, 6, 7, 8
-              
-              CREATE [ OR REPLACE ] 
-              PACKAGE BODY [<схема>.] <имя пакета>
-              { IS | AS }
-                 [ <объявление процедуры>;
-                 | <объявление функции>;...]
-                 { <реализация процедуры>;
-                 | <реализация функции>;...}
-              END [<имя пакета>] ;
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8
-             
-             RECREATE
-             PACKAGE BODY <имя пакета>
-             AS BEGIN
-                [ <объявление процедуры>;
-                | <объявление функции>;...]
-                { <реализация процедуры>;
-                | <реализация функции>;...}
-             END ;
-
-
-Реализация пакетной функции с IN параметрами
-"""""""""""""""""""""""""""""""""""""""""""""
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
-              
-              CREATE [ OR REPLACE ] 
-              PACKAGE BODY [<схема>.] <имя пакета>
-              { IS | AS } 
-                 FUNCTION <имя> (<IN-пар.>[,<IN-пар.>]...)
-                   RETURN <тип данных> 
-                   [DETERMINISTIC]
-                 { IS | AS } [ <объявление>...]
-                 BEGIN
-                    <блок операторов> ...
-                 END [<имя процедуры>] ; 
-
-                 [ <объявление|реализация процедуры>; 
-                 | <объявление|реализация функции>;...];
-              END [<имя пакета>];
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
-             
-             RECREATE
-             PACKAGE BODY <имя пакета>
-             AS BEGIN
-                FUNCTION <имя> (<IN-пар.> [,<IN-пар.>...])
-                  RETURNS <тип данных> 
-                  [DETERMINISTIC]
-                AS [<объявление> ... ]
-                BEGIN
-                  <блок операторов>
-                END ;
-
-                [ <объявление|реализация процедуры>; 
-                | <объявление|реализация функции>;...];
-             END ; 
-
-
-Реализация пакетной процедуры с IN параметрами
-"""""""""""""""""""""""""""""""""""""""""""""""
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
-              
-              CREATE [ OR REPLACE ] 
-              PACKAGE BODY [<схема>.] <имя пакета>
-              { IS | AS } 
-                 PROCEDURE <имя> (<IN-пар.>[,<IN-пар.>])
-                 { IS | AS } [<объявление> ... ]
-                 BEGIN
-                   <блок операторов>
-                 END  [<имя процедуры>] ;
-
-                 [ <объявление|реализация процедуры>; 
-                 | <объявление|реализация функции>;...];
-              END [<имя пакета>] ;
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
-             
-             RECREATE
-             PACKAGE BODY <имя пакета>
-             AS BEGIN
-                PROCEDURE <имя> (<IN-пар.>[,<IN-пар.>])
-                AS [<объявление> ... ]
-                BEGIN
-                  <блок операторов>
-                END ;
-
-                [ <объявление|реализация процедуры>; 
-                | <объявление|реализация функции>;...];
-             END ; 
-
-
-Реализация пакетной функции с OUT параметрами
-"""""""""""""""""""""""""""""""""""""""""""""
-
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :redlines: 7
-              :greenlines: 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15
-              
-              CREATE [ OR REPLACE ] 
-              PACKAGE BODY [<схема>.] <имя пакета>
-              { IS | AS } 
-                FUNCTION <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
-                RETURN <тип возвр.данных> 
-
-                [DETERMINISTIC]
-                { IS | AS } [<объявление> ... ]
-                BEGIN
-                   <блок операторов>
-                END  [<имя процедуры>] ;
-
-                [ <объявление|реализация процедуры>; 
-                | <объявление|реализация функции>;...];
-              END [<имя пакета>];
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-             
-             RECREATE
-             PACKAGE BODY <имя пакета>
-             AS BEGIN
-              PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
-              RETURNS ( <имя перем.><тип возвр.данных>,
-                        <OUT-пар.>_OUT ...)
-
-              AS [<объявление> ... ]
-              BEGIN
-                 <блок операторов>
-              END;
-
-             [ <объявление|реализация процедуры>; 
-             | <объявление|реализация функции>;...];
-             END ; 
-
-
-
-Реализация пакетной процедуры с OUT параметрами
-"""""""""""""""""""""""""""""""""""""""""""""""
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
-              
-              CREATE [ OR REPLACE ] 
-              PACKAGE BODY [<схема>.] <имя пакета>
-              { IS | AS } 
-              PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
-
-              { IS | AS } [<объявление> ... ]
-              BEGIN
-                  <блок операторов>
-              END  [<имя процедуры>] ;
-
-              [ <объявление|реализация процедуры>; 
-              | <объявление|реализация функции>;...];
-              END [<имя пакета>] ;
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
-             
-             RECREATE
-             PACKAGE BODY <имя пакета>
-             AS BEGIN
-             PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
-             RETURNS (<OUT-пар.>_OUT [,...])
-             AS [<объявление> ... ]
-             BEGIN
-                <блок операторов>
-             END;
-
-             [ <объявление|реализация процедуры>; 
-             | <объявление|реализация функции>;...];
-             END ; 
-
-
-
-``DROP PACKAGE BODY``
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :greenlines: 1
-              
-              DROP PACKAGE BODY [<схема>.] <имя пакета>;
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1
-             
-             DROP PACKAGE BODY <имя пакета>;
-
-
-
-
+.. [4]
+   Конструкции операторов Oracle, которые преобразуются конвертером (с учетом разницы в синтаксисе) обозначены :green:`зеленым` цветом.
+   :red:`Красным` цветом обозначены конструкции, которые не поддерживаются Ред Базой Данных или конвертером. Неподдерживаемые конструкции
+   удаляются или комментируются.

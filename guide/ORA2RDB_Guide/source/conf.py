@@ -49,14 +49,19 @@ latex_elements = {
     \PassOptionsToPackage{pdftex}{graphicx}
     \PassOptionsToPackage{numbered}{bookmark}
     \PassOptionsToPackage{tikz}{bclogo}
+    \PassOptionsToPackage{svgnames}{xcolor}
     ''',
 'fontenc' : r'''
     \usepackage[T2A]{fontenc}
     ''',
 'fontsubstitution' : r'',
+'literal-block-env': r'lstlisting',
 'inputenc' : r'\usepackage[utf8]{inputenc}',
 'preamble': r"""
 \usepackage{defs}
+\newcommand{\DUrolered}[1]{{\color{red!40!white}#1}}
+\newcommand{\DUrolegreen}[1]{{\textcolor{green!40!black}{#1}}}
+\newcommand{\DUrolegreenbf}[1]{{\color{green!40!black}{\footnotesize\normalfont\textbf{#1}}}}
 """,
 'hyperref' : r'''
 \usepackage[colorlinks=true,linkcolor=blue]{hyperref}
@@ -148,9 +153,15 @@ comboroles_roles = {
     'ess': ['emphasis','strong'],
 }
 
+
+
 rst_prolog = """
 .. |securityversion| replace:: ``security5.fdb``
 .. |rdbversion| replace:: 5.0
 .. role:: raw-latex(raw)
    :format: latex
+.. role:: red
+.. role:: green
+.. role:: greenbf
 """
+

@@ -34,11 +34,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
     ArrayList<String> loop_index_names = new ArrayList<String>();
     TreeMap<String, String> loop_rec_name_and_cursor_name = new TreeMap<>();
     TreeMap<String, String> rowtype_rec_name_and_select_statement = new TreeMap<>();
-
+    TreeMap<String, String> exceptions = new TreeMap<>();
     StoredAnonymousBlock currentAnonymousBlock = null;
 
-    boolean containsException = false;
-    boolean exceptionExist = false;
+//    boolean containsException = false;
+//    boolean exceptionExist = false;
 
     public RewritingListener(CommonTokenStream tokens) {
         rewriter = new TokenStreamRewriter(tokens);
@@ -48,12 +48,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public String getText() {
         StringBuilder out = new StringBuilder();
 
-        out.append("CREATE EXCEPTION NO_DATA_FOUND\n" +
-                "\t'no data found';\n");
-        out.append("CREATE EXCEPTION READ_ONLY_VIEW\n" +
-                "\t'cannot perform a DML operation on a read-only view';\n");
-        out.append("ALTER DATABASE SET DEFAULT SQL SECURITY DEFINER");
-
+//        out.append("CREATE EXCEPTION NO_DATA_FOUND\n" +
+//                "\t'no data found';\n");
+//        out.append("CREATE EXCEPTION READ_ONLY_VIEW\n" +
+//                "\t'cannot perform a DML operation on a read-only view';\n");
+        for (Map.Entry<String, String> entry : exceptions.entrySet())
+            out.append("CREATE EXCEPTION ").append(entry.getKey())
+                    .append("\n\t").append("'").append(entry.getValue()).append("';").append("\n");
 
         for (Create_sequenceContext sequence : sequences)
             out.append(getRewriterText(sequence)).append("\n\n");
@@ -279,20 +280,17 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitSql_script(Sql_scriptContext ctx) {
         if (!Ora2rdb.reorder)
-            insertBefore(ctx, "CREATE EXCEPTION NO_DATA_FOUND\n" +
-                    "\t'no data found';\n" +
-                    "CREATE EXCEPTION READ_ONLY_VIEW\n" +
-                    "\t'cannot perform a DML operation on a read-only view';\n" +
-                    "ALTER DATABASE SET DEFAULT SQL SECURITY DEFINER;\n");
+            for (Map.Entry<String, String> entry : exceptions.entrySet())
+                insertBefore(ctx, "CREATE EXCEPTION " + entry.getKey() +"\n\t" + "'" + entry.getValue() + "';" + "\n");
     }
 
     @Override
     public void exitUnit_statement(Unit_statementContext ctx) {
-        if (!exceptionExist & containsException) {
-            String exception = "CREATE EXCEPTION CUSTOM_EXCEPTION 'error';";
-            insertBefore(ctx, exception + "\n\n");
-            exceptionExist = true;
-        }
+//        if (!exceptionExist & containsException) {
+//            String exception = "CREATE EXCEPTION CUSTOM_EXCEPTION 'error';";
+//            insertBefore(ctx, exception + "\n\n");
+//            exceptionExist = true;
+//        }
     }
 
     @Override
@@ -943,7 +941,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitFunction_call(Function_callContext ctx) {
         if (Ora2rdb.getRealName(getRuleText(ctx.routine_name())).equals("RAISE_APPLICATION_ERROR")) {
-            containsException = true;
+            exceptions.put("CUSTOM_EXCEPTION", "error");
+//            containsException = true;
             replace(ctx.routine_name(), "EXCEPTION CUSTOM_EXCEPTION");
             delete(ctx.function_argument().argument(0));
             delete(ctx.function_argument().COMMA(0));
@@ -1321,8 +1320,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (ctx.subquery_restriction_clause() != null) {
             if (ctx.subquery_restriction_clause().CHECK() != null)
                 newView.append("WITH CHECK OPTION ");
-            if (ctx.subquery_restriction_clause().READ() != null)
+            if (ctx.subquery_restriction_clause().READ() != null) {
                 readOnlyTrigger = makeReadOnlyTrgForView(view_name);
+                exceptions.put("READ_ONLY_VIEW", "cannot perform a DML operation on a read-only view");
+            }
             if (ctx.subquery_restriction_clause().CONSTRAINT() != null)
                 newView.append(" /* CONSTRAINT ").append(Ora2rdb.getRealName(getRuleText(ctx.subquery_restriction_clause().constraint_name())))
                         .append("*/");
@@ -1384,6 +1385,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             if_clause.append('\n').append(indentation).append("IF (ROW_COUNT = 0) THEN").append('\n');
             if_clause.append(indentation).append('\t').append("EXCEPTION NO_DATA_FOUND");
             replace(ctx, getRewriterText(ctx) + ";" + if_clause);
+            exceptions.put("NO_DATA_FOUND", "no data found");
         }
     }
 

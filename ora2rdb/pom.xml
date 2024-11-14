@@ -187,6 +187,15 @@
           <trimStackTrace>false</trimStackTrace>
           <rerunFailingTestsCount>3</rerunFailingTestsCount>
           <argLine>@{surefireArgLine} -Xmx16G --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/javax.crypto=ALL-UNNAMED -Djdk.attach.allowAttachSelf=true -XX:+StartAttachListener</argLine>
+          <statelessTestsetReporter
+                  implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+            <disable>false</disable>
+            <version>3.0.2</version>
+            <usePhrasedFileName>false</usePhrasedFileName>
+            <usePhrasedTestSuiteClassName>true</usePhrasedTestSuiteClassName>
+            <usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
+            <usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+          </statelessTestsetReporter>
         </configuration>
       </plugin>
       <plugin>

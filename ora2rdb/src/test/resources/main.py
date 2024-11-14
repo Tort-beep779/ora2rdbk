@@ -58,8 +58,14 @@ def main():
     else:
         diff = difflib.context_diff(fromlines, tolines, fromfile, tofile, fromdate, todate, n=n)
 
+    print("+++ actual", end="\n")
+    print("--- expected", end="\n")
     for line in diff:
-        print(line)
+        line = line.replace("\n", "")
+        if line.startswith("-"):
+            print("\n" + line)
+        else:
+            print(line)
 
 if __name__ == '__main__':
     main()

@@ -54,7 +54,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 //                "\t'cannot perform a DML operation on a read-only view';\n");
         for (Map.Entry<String, String> entry : exceptions.entrySet())
             out.append("CREATE EXCEPTION ").append(entry.getKey())
-                    .append("\n\t").append("'").append(entry.getValue()).append("';").append("\n");
+                    .append("\n\t'").append(entry.getValue()).append("';\n");
 
         for (Create_sequenceContext sequence : sequences)
             out.append(getRewriterText(sequence)).append("\n\n");
@@ -65,7 +65,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         ArrayList<View> views = View.sort(StorageInfo.views.values());
 
         for (View view : views)
-            out.append(getRewriterText(view.ctx)).append(";").append("\n\n");
+            out.append(getRewriterText(view.ctx)).append("\n\n");
 
         for (Comment_on_tableContext comment : comments)
             out.append(getRewriterText(comment)).append(";").append("\n\n");
@@ -1161,10 +1161,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         replace(ctx.INDEX(), AscOrDesc + ctx.INDEX());
         replace(ctx.SEMICOLON(), index.tableSpace() + ctx.SEMICOLON());
-
         if (!inactive.isEmpty())
             alterIndexCtx.append("\nALTER INDEX ").append(index_name).append(" ").append(inactive).append(";");
-        insertAfter(ctx, alterIndexCtx);
+        replace(ctx, getRewriterText(ctx) + alterIndexCtx);
 
         create_indexes.add(ctx);
     }
@@ -1330,8 +1329,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         newView.append(";").append(readOnlyTrigger);
 
-        replace(ctx, "");
-        insertAfter(ctx, newView);
+        replace(ctx, newView);
         current_view = null;
     }
 

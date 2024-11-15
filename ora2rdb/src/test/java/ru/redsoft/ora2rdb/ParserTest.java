@@ -45,7 +45,7 @@ class ParserTest {
     }
 
     void test(String inputFile) throws IOException {
-        final Path outFile =  Paths.get(System.getProperty("java.io.tmpdir"),"out.sql");
+        final Path outFile = Paths.get(System.getProperty("java.io.tmpdir"), "out.sql");
         String expectedFile = inputFile.replace(".sql", "_out.sql");
         List<String> actual;
         try (FileInputStream fs = new FileInputStream(startDirPath + inputFile);
@@ -55,7 +55,7 @@ class ParserTest {
             actual = Arrays.asList(rewritingListener.rewriter.getText()
                     .replace("\r", "").split("\n"));
             for (String line : actual) {
-                if(!line.equals(actual.get(actual.size()-1)))
+                if (!line.equals(actual.get(actual.size() - 1)))
                     fileWriter.write(line + System.lineSeparator());
                 else
                     fileWriter.write(line);
@@ -64,7 +64,7 @@ class ParserTest {
 
         List<String> expected = readFile(expectedFile);
         Patch<String> diff = DiffUtils.diff(expected, actual);
-                List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff("expected",
+        List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff("expected",
                 "actual", expected, diff, 0);
         String result = String.join("\n", unifiedDiff);
         if (!result.isEmpty()) {
@@ -90,8 +90,8 @@ class ParserTest {
 
                 process.waitFor();
                 String infoStr = "+++ actual\n" +
-                                 "--- expected\n" +
-                                 "+ \n\n";
+                        "--- expected\n" +
+                        "+ \n\n";
                 assertEquals(infoStr, difference.toString());
             } catch (IOException | InterruptedException e) {
                 throw new IOException(e);
@@ -101,7 +101,7 @@ class ParserTest {
 
     static Stream<String> argsProviderFactory() throws IOException {
         ArrayList<String> fileNameArray = new ArrayList<>();
-        for(String arg : argsArray) {
+        for (String arg : argsArray) {
             try {
                 Files.walk(Paths.get(startDirPath + arg), Integer.MAX_VALUE)
                         .filter(e -> !Files.isDirectory(e) && !e.toString().contains("_out.sql"))
@@ -110,7 +110,7 @@ class ParserTest {
                         .forEachRemaining(path -> {
                             fileNameArray.add(path.toString().replace(startDirPath, ""));
                         });
-            }catch (IOException e){
+            } catch (IOException e) {
                 throw new IOException("directory not found: " + arg);
             }
         }

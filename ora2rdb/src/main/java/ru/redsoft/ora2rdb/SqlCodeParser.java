@@ -47,7 +47,6 @@ public class SqlCodeParser {
 
     List<String> splitMetadataIntoBlocks(InputStream inputStream) {
         splittedInput = fromStreamToString(inputStream);
-
         for (int i = 0; i < splittedInput.size(); i++) {
             if (splittedInput.get(i).isEmpty()) {
                 continue;
@@ -61,6 +60,7 @@ public class SqlCodeParser {
                 startOfPackage = endOfPackage = startOfPackageBody = endOfPackageBody = indexOfPackageBlock = -1;
                 continue;
             }
+
             if (type == BlockType.UNKNOWN) {
                 if (!insidePackage)
                     type = findTheTypeOfBlock(i);
@@ -367,7 +367,7 @@ public class SqlCodeParser {
                     continue;
                 }
                 String[] lines = line.split("\\r?\\n");
-                for (String l : lines) {
+                for (String l : lines ) {
                     if (!l.isEmpty())
                         result.append(l);
                     result.append('\n');
@@ -375,6 +375,9 @@ public class SqlCodeParser {
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());
+        }
+        if (result.length() > 0 && result.charAt(result.length() - 1) == '\n') {
+            result.deleteCharAt(result.length() - 1);
         }
         return fromStringToSeparateWords(result.toString());
     }

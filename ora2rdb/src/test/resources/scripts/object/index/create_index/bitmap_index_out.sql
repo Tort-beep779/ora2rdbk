@@ -1,0 +1,1 @@
+CREATE  INDEX idx_product_status ON products(status) IN TABLESPACE PRIMARY ;

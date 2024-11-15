@@ -1,0 +1,1 @@
+create index i on countries(country_name);

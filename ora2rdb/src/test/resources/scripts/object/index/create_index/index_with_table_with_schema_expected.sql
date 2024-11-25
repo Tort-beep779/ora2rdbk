@@ -1,0 +1,1 @@
+CREATE INDEX emp_deptid_ix ON employees(department_id) IN TABLESPACE PRIMARY ;

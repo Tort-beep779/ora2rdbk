@@ -44,9 +44,34 @@ class ParserTest {
         return Files.readAllLines(Path.of(startDirPath + path), StandardCharsets.UTF_8);
     }
 
+    void testForDevelopers(String inputFile) throws IOException {
+        String expectedFile = inputFile.replace(".sql", "_expected.sql");
+        String actual;
+        try (FileInputStream fs = new FileInputStream(startDirPath + inputFile)) {
+            RewritingListener rewritingListener =
+                    Ora2rdb.convert(fs);
+            actual = rewritingListener.rewriter.getText()
+                    .replace("\r", "").replace("\n", System.lineSeparator());
+        }
+
+        List<String> expectedList = readFile(expectedFile);
+        StringBuilder stringBuilder = new StringBuilder();
+        int lastListIndex = expectedList.size() - 1;
+        String systemSeparator = System.lineSeparator();
+
+        for (String line : expectedList) {
+            stringBuilder.append(line.replace("\r", "").replace("\n", ""));
+            if (!line.equals(expectedList.get(lastListIndex)))
+                stringBuilder.append(systemSeparator);
+        }
+        String expected = stringBuilder.toString();
+        assertEquals(expected, actual);
+    }
+
+
     void test(String inputFile) throws IOException {
         final Path outFile =  Paths.get(System.getProperty("java.io.tmpdir"),"out.sql");
-        String expectedFile = inputFile.replace(".sql", "_out.sql");
+        String expectedFile = inputFile.replace(".sql", "_expected.sql");
         List<String> actual;
         try (FileInputStream fs = new FileInputStream(startDirPath + inputFile);
              FileWriter fileWriter = new FileWriter(outFile.toAbsolutePath().toString())) {
@@ -104,7 +129,7 @@ class ParserTest {
         for(String arg : argsArray) {
             try {
                 Files.walk(Paths.get(startDirPath + arg), Integer.MAX_VALUE)
-                        .filter(e -> !Files.isDirectory(e) && !e.toString().contains("_out.sql"))
+                        .filter(e -> !Files.isDirectory(e) && !e.toString().contains("_expected.sql"))
                         .collect(Collectors.toCollection(LinkedList::new))
                         .descendingIterator()
                         .forEachRemaining(path -> {
@@ -120,7 +145,8 @@ class ParserTest {
     @ParameterizedTest(name = "{arguments}")
     @MethodSource("argsProviderFactory")
     void testAllScripts(String argument) throws IOException {
-        test(argument);
+//        test(argument);
+        testForDevelopers(argument);
     }
 
 

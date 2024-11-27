@@ -145,8 +145,7 @@ class ParserTest {
     @ParameterizedTest(name = "{arguments}")
     @MethodSource("argsProviderFactory")
     void testAllScripts(String argument) throws IOException {
-//        test(argument);
-        testForDevelopers(argument);
+        test(argument);
     }
 
 

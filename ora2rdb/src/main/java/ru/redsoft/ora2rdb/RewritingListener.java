@@ -1244,7 +1244,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         StringBuilder newView = new StringBuilder();
 
         String view_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().schema_and_name().name));
-        newView.append("\nCREATE OR ALTER VIEW ").append(view_name).append(" ");
+        newView.append("CREATE OR ALTER VIEW ").append(view_name).append(" ");
         if (ctx.view_options() != null)
             if (ctx.view_options().view_alias_constraint() != null) {
                 if (!ctx.view_options().view_alias_constraint().inline_constraint().isEmpty())
@@ -1291,7 +1291,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                         .append("*/");
         }
         newView.append(";").append(readOnlyTrigger);
-
+        delete(ctx.SEMICOLON());
         replace(ctx, newView);
         current_view = null;
     }

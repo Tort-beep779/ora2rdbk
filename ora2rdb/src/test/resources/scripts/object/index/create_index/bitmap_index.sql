@@ -1,0 +1,1 @@
+CREATE BITMAP INDEX idx_product_status ON products(status);

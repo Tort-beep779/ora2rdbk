@@ -26,7 +26,7 @@
     
     CREATE [ OR REPLACE ] PROCEDURE [ <схема>. ] <имя процедуры>
        [ ( <IN|OUT параметр> [, <IN|OUT параметр>]... ) ] 
-    {IS|AS} [<объявление>;...] 
+    { IS | AS } [<объявление>;...] 
             <имя исключения> EXCEPTION;            
     BEGIN 
         <блок операторов> ... 
@@ -34,7 +34,6 @@
         EXCEPTION
            WHEN <имя исключения> THEN [<обработка исключения>]
     END [<имя процедуры>] ;
-
 
 
 Инициирование исключений
@@ -116,164 +115,304 @@
 
 .. _subsec:decl:
 
-Объявления переменных
+Блок объявлений
 -------------------------
 
 
-В процедурах, функциях, триггерах, пакетах или анонимных PSQL-блоках есть раздел с 
-объявлением необходимых элементов языка (переменных, курсоров, подпрограмм и т.д.).
+В процедурах, функциях, триггерах, пакетах или анонимных PSQL-блоках есть возможность 
+объявлять необходимые элементы языка (переменные, курсоры, подпрограммы и т.д.).
 
-Для примера представим синтаксис создания процедуры с разделом объявления. Для остальных объектов синтаксис аналогичен:
+Для примера представим синтаксис создания процедуры с блоком объявлений. 
+Для остальных объектов синтаксис аналогичен:
 
 
-.. code-block::
-    :redlines:  11,12
-    :greenlines: 1,2,3,4,5,6,7,   9,10,13,14,15,16,   18,19,20
-    :emphasize-lines: 3,4
+.. color-block::
     :caption: Oracle
     
-    CREATE [ OR REPLACE ] PROCEDURE [ <схема>. ] <имя процедуры>
-    [( <IN|OUT параметр> [, <IN|OUT параметр>]... )] 
-    { IS | AS } [ { <объявление_1>;... [<объявление_2>;]... }
-                  | <объявление_2>;... ] 
-    BEGIN 
-        ...
-    END [<имя процедуры>] ;
-
-    <объявление_1> ::= { <объявление типа коллекций> 
-                       | <объявление типа RECORD> 
-                       | <объявление типа REF CURSOR> 
-                       | <объявление типа SUBTYPE> 
-                       | <объявление курсора> 
-                       | <объявление переменных>
-                       | <объявление функции> 
-                       | <объявление процедуры>}
-
-    <объявление_2> ::= { <объявление функции> | <реализация функции> 
-                       | <объявление процедуры> | <реализация процедуры>
-                       | <объявление курсора> | <создание курсора> }
+    :green:`CREATE [OR REPLACE]` :red:`[EDITIONABLE|NONEDITIONABLE]` :green:`PROCEDURE` :red:`[<схема>.]` :green:`<имя процедуры>`
+        :green:`[ ( <IN|OUT параметр> [, <IN|OUT параметр>]... ) ]` 
+        :green:`...`
+    :green:`{ IS | AS } [` :greenbf:`<блок объявлений>` :green:`]`
+    :green:`BEGIN`
+        :green:`<блок операторов> ...`
+    :green:`END` :red:`[<имя процедуры>]` :green:`;`    
     
+    :greenbf:`<блок объявлений>` :green:`::=  { {<объявление_1>;... [<объявление_2>;]...}`
+                           :green:`| <объявление_2>;...}`
 
+    :green:`<объявление_1> ::= { <объявление типа коллекций>`
+                       :green:`| <объявление типа RECORD>`
+                       :red:`| <объявление типа REF CURSOR>`
+                       :red:`| <объявление типа SUBTYPE>`
+                       :green:`| <объявление курсора>`
+                       :green:`| <объявление переменных>`
+                       :green:`| <объявление функции>`
+                       :green:`| <объявление процедуры> }`
 
-Объявление типа коллекций
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    :green:`<объявление_2> ::= { <объявление функции> | <реализация функции>`
+                       :green:`| <объявление процедуры> | <реализация процедуры>`
+                       :green:`| <объявление курсора> | <задание курсора> }`
 
-Объявление ассоциативных массивов и их переменных
-""""""""""""""""""""""""""""""""""""""""""""""""""
+.. _subsec:collections:
 
-Синтаксис для определения, а затем объявление переменной типа Associative Arrays в Oracle.
+Объявление типов коллекций
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block::
-    :greenlines: 1,2,3,4,5,7
+PL/SQL имеет три типа коллекций:
+
+- Ассоциативный массив (Associative Array)
+- Массив переменной длины (Varray)
+- Вложенная таблица (Nested table).
+
+Массивы переменной длины и вложенные таблицы не поддерживаются РБД и не могут быть преобразованы конвертером. 
+
+Преобразование объявлений ассоциативных массивов и их переменных
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Синтаксис для объявления типа ассоциативного массива в Oracle:
+
+.. color-block::
     :caption: Oracle
     
-    TYPE <имя типа ассоц.массива> 
-    IS TABLE OF <тип данных> [ NOT NULL ] 
-    INDEX BY { VARCHAR2 (<размер>)
-             | BINARY_INTEGER 
-             | PLS_INTEGER };
+    :green:`TYPE <имя типа ассоц.массива>`
+    :green:`IS TABLE OF <тип данных> [ NOT NULL ]`
+    :green:`INDEX BY { VARCHAR2 (<размер>)`
+             :green:`| BINARY_INTEGER`
+             :green:`| PLS_INTEGER`
+             :green:`| LONG`
+             :red:`| <имя переменной>%TYPE`
+             :red:`| <имя курсора/таблицы/представления>%ROWTYPE` :green:`};`
     
-    <имя переменной> <имя типа ассоц.массива>;
+Объявление переменной типа ассоциативного массива в Oracle:
 
+.. color-block::
+    :caption: Oracle
 
-.. code-block:: 
-    :greenlines: 1,2,3,4,5
+    :green:`<имя переменной> <имя типа ассоц.массива>` 
+      :red:`[:=<выражение> | :=<вызов функции> | :=<имя переменной коллекции>]`:green:`;`
+
+При конвертации объявления ассоциативного массива выполняются следующие задачи:  
+
+1. *Создание глобальных временных таблиц*
+   
+   В чистом виде ассоциативные массивы не поддерживаются РБД. Однако, вместо их прямого использования 
+   можно создать глобальные временные таблицы (GTT).
+   Для каждой переменной ассоциативного массива формируется отдельная GTT, состоящая из двух полей: ключа (``I1``) и значения (``VAL``). 
+   При этом поле ``I1`` выполняет роль первичного ключа.
+   Тип данных для ключа может быть представлен только в виде ``VARCHAR`` (если ассоциативный массив индексирован строкой) или ``INTEGER``
+   (если ассоциативный массив индексирован целым числом). 
+   Следует отметить, что атрибуты ``%TYPE`` и ``%ROWTYPE`` не поддерживаются в РБД.
+
+   .. code-block:: 
+    :greenlines: 1,2,3,4,5,6
     :caption: Rdb
     
     CREATE GLOBAL TEMPORARY TABLE <имя переменной> (
        I1 { VARCHAR(<размер>)
-          | INTEGER } NOT NULL PRIMARY KEY,
-       VAL <тип данных> [NOT NULL]
+          | INTEGER },
+       VAL <тип данных> [NOT NULL],
+       CONSTRAINT <имя ограничения> PRIMARY KEY (I1)
     );
+  
+2. Объявление ассоциативного массива и объявление переменной типа ассоциативного массива *комментируются*. 
+
+Также при конвертации выполняется преобразование следующих операций в теле PL/SQL блока:
+
+- *Заполнение переменной типа ассоциативного массива значениями*
+
+  Поскольку вместо ассоциативного массива будет создана глобальная временная таблица (GTT), 
+  операции присваивания значений переменной типа ассоциативного массива будут заменены на 
+  вставку или обновление данных в эту GTT таблицу. Например: 
+  
+  .. list-table::
+      :class: borderless
+      
+      * - :ess:`Oracle`
+          
+          .. code-block:: sql
+             
+             city_population('Мегаполис') := 1000000;
+                                                    .
+             
+        - :ess:`toRdb`
+        
+          .. code-block:: sql
+             
+             UPDATE OR INSERT INTO CITY_POPULATION VALUES ('Мегаполис', 1000000);
+  
+- *Обращение по ключу*
+
+  Поскольку вместо ассоциативного массива будет создана глобальная временная таблица (GTT), 
+  обращение по ключу к элементам ассоциативного массива будет заменено на операцию ``SELECT``. Например:
+
+  .. list-table::
+      :class: borderless
+      
+      * - :ess:`Oracle`
+          
+          .. code-block:: sql
+             
+             l_res := city_population('Деревня');
+                                                    .
+             
+        - :ess:`toRdb`
+        
+          .. code-block:: sql
+             
+             l_res = (SELECT VAL FROM CITY_POPULATION WHERE I1 = 'Деревня');
 
 
-Объявление массивов переменной длины
-""""""""""""""""""""""""""""""""""""""
+Приведем пример конвертации функции с объявлением ассоциативного массива.
 
-В данный момент не конвертируется.
-
-
-.. code-block::
-    :redlines: 1, 2, 3, 4, 5, 6, 7, 8
+.. code-block:: sql
     :caption: Oracle
+  
+    CREATE OR REPLACE FUNCTION TEST_FUNCTION
+    RETURN NUMERIC(34, 8)
+    IS
+      TYPE population IS TABLE OF NUMBER INDEX BY VARCHAR2(64);      
+      city_population population; 
+      l_res NUMERIC(34, 8);
+    BEGIN
+      city_population('Деревня')   := 2000;
+      city_population('Райцентр')  := 750000;
+      city_population('Мегаполис') := 1000000;
+      city_population('Деревня')  := 2001;
+      l_res := city_population('Деревня')+city_population('Райцентр')+city_population('Мегаполис');
+      ... 
+      return l_res;
+    END TEST_FUNCTION;
+
+.. code-block:: sql
+    :caption: to Rdb
+  
+    CREATE GLOBAL TEMPORARY TABLE CITY_POPULATION (
+        I1 VARCHAR(64), 
+        VAL NUMERIC(34, 8),
+        CONSTRAINT PK_CITY_POPULATION PRIMARY KEY (I1)
+    );
     
-    TYPE <имя типа Varray> 
-    IS {VARRAY | [VARYING] ARRAY} (<число>)
-    OF <тип данных> [ NOT NULL ];
+    CREATE OR ALTER FUNCTION TEST_FUNCTION 
+    RETURNS NUMERIC(34, 8)
+    AS
+      /*TYPE population IS TABLE OF NUMERIC(34, 8) INDEX BY VARCHAR(64);*/
+      /*city_population  population;*/
+      DECLARE l_res NUMERIC(34, 8);
+    BEGIN
+      UPDATE OR INSERT INTO CITY_POPULATION VALUES ('Деревня', 2000);
+      UPDATE OR INSERT INTO CITY_POPULATION VALUES ('Райцентр', 750000);
+      UPDATE OR INSERT INTO CITY_POPULATION VALUES ('Мегаполис', 1000000);
+      UPDATE OR INSERT INTO CITY_POPULATION VALUES ('Деревня', 2001);
+      l_res = (SELECT VAL FROM CITY_POPULATION WHERE I1 = 'Деревня')
+              + (SELECT VAL FROM CITY_POPULATION WHERE I1 = 'Райцентр')
+              + (SELECT VAL FROM CITY_POPULATION WHERE I1 = 'Мегаполис');
+      ...
+      return l_res;
+    END /*TEST_FUNCTION*/;
 
-
-Объявление вложенных таблиц
-""""""""""""""""""""""""""""
-
-В данный момент не конвертируется.
-
-.. code-block::
-    :redlines: 1, 2
-    :caption: Oracle
-    
-    TYPE <имя типа вложенных таблиц> 
-    IS TABLE OF <тип данных> [ NOT NULL ];
 
 
 Объявление типа RECORD
 ^^^^^^^^^^^^^^^^^^^^^^^
 
+Сравнение синтаксиса объявления типа Record:
+
 .. list-table::
       :class: borderless
       
       * - :ess:`Oracle`
           
-          .. code-block::
-              :greenlines: 1, 2, 3, 4
+          .. color-block::
               
-              TYPE <имя типа Record>
-              IS RECORD(<имя поля> <тип данных> 
-                       [[NOT NULL]{:=|DEFAULT} <выражение>]
-                       [, <имя поля> <тип данных>...]...);
+              :green:`TYPE <имя типа Record>`
+              :green:`IS RECORD (<имя поля> <тип данных>` 
+                         :green:`[[NOT NULL]`
+                         :green:`{:=|DEFAULT} <выражение>]`
+                         :green:`[, <имя поля> <тип данных>...]);`
 
         - :ess:`Rdb`
         
           .. code-block:: 
-             :greenlines: 1, 2, 3, 4
+             :greenlines: 1, 2, 3, 4, 5
              
              DECLARE TYPE <имя типа Record> 
-               ( <имя поля> <тип данных> 
+             (<имя поля> <тип данных>
+              [DEFAULT <значение>]
+              [NOT NULL]
+              [, <имя поля> <тип данных>...]...);
 
-                 [, <имя поля> <тип данных> ... ]);
+При конвертации выполняются следующие задачи:  
+
+1. *Добавление ключевого слова* ``DECLARE``
+
+   В РБД объявление любого элемента (в том числе типа) начинается с ключевого слова ``DECLARE``.
+   Оно добавляется перед ключевым словом ``TYPE``.
+
+2. *Удаление ключевых слов* ``IS RECORD``
+
+3. *Замена операции присваивания* 
+   
+   В РБД значение по умолчанию устанавливается с использованием ключевого слова ``DEFAULT``. Таким образом, знак присваивания ``:=`` 
+   заменяется на ``DEFAULT``.
+
+4. *Изменение в порядке ключевых слов*
+   
+   Если задано ограничение ``NOT NULL`` и значение по умолчанию, то при конвертации меняется порядок их задания.
 
 
-..     
-    Oбъявление типа SUBTYPE
-    ^^^^^^^^^^^^^^^^^^^^^^^^
+.. code-block:: sql
+    :caption: Oracle
+  
+    DECLARE
+      TYPE DeptRecTyp IS RECORD (
+         dept_id    NUMBER(4) NOT NULL := 10,
+         dept_name  VARCHAR2(30) NOT NULL := 'Administration',
+         mgr_id     NUMBER(6) := 200,
+         loc_id     NUMBER(4) := 1700
+      ); 
+      dept_rec DeptRecTyp;
+    BEGIN
+       ...
+    END;
 
-    В настоящий момент не конвертируется.
 
-    .. code-block::
-        :redlines: 1, 2, 3, 4, 5
-        
-        SUBTYPE <имя подтипа> IS <базовый тип данных> 
-        [ <точность> [,<масштаб> ] 
-        | RANGE <нижняя граница>..<верхняя граница>
-        | CHARACTER SET <набор символов> ]
-        [ NOT NULL ];
+
+.. code-block:: sql
+    :caption: to Rdb
+  
+    EXECUTE BLOCK
+    AS 
+      DECLARE TYPE DeptRecTyp (
+        dept_id    NUMERIC(4)  default 10 NOT NULL,
+        dept_name  VARCHAR(30) default 'Administration' NOT NULL,
+        mgr_id     NUMERIC(6)  default 200,
+        loc_id     NUMERIC(4)  default 1700
+      );
+      DECLARE dept_rec DeptRecTyp;
+    BEGIN
+      ...
+    END;
+
 
 
 Объявление курсоров
 ^^^^^^^^^^^^^^^^^^^^^^
 
+Синтаксис для объявления курсора в Oracle:
           
-.. code-block::
-    :greenlines: 1, 2, 3, 4
+.. color-block::
     :caption: Oracle
     
-    CURSOR <имя курсора>
-    [( <имя параметра> [IN] <тип данных> [ { := | DEFAULT } <выражение> ] 
-    [, <имя параметра> [IN] <тип данных> [ { := | DEFAULT } <выражение>]]... )]
-    RETURN <rowtype> ;
+    :red:`CURSOR <имя курсора>` :red:`[(<список параметров курсора>)]`
+    :red:`RETURN <rowtype>;`
 
+В РБД курсоры не требуют предварительного объявления; они задаются непосредственно с помощью оператора ``SELECT``. 
+Таким образом, при конвертации строки с объявлением курсоров исключается, а конвертируется непосредственно задание курсора. 
 
-Создание курсоров
+Задание курсоров
 ^^^^^^^^^^^^^^^^^^^^^
+
+Синтаксис для задания курсора в Oracle:
 
 .. list-table::
       :class: borderless
@@ -281,35 +420,93 @@
       * - :ess:`Oracle`
           
           .. code-block::
-             :greenlines: 1,8
-             :redlines: 2,3,4,5,6,7
+             :greenlines: 1,4
+             :redlines: 2,3
               
              CURSOR <имя курсора>
-             [(<имя параметра> [IN] <тип данных> 
-               [ { := | DEFAULT } <выражение> ] 
-               [, <имя параметра> [IN] <тип данных> 
-               [ { := | DEFAULT } <выражение>]]... 
-             )]
+             [(<список параметров курсора>)]
              [RETURN <rowtype>] 
              IS <SELECT-запрос> ;
 
         - :ess:`Rdb`
         
           .. code-block:: 
-             :greenlines: 1,8
+             :greenlines: 1,4
 
-             DECLARE [VARIABLE] <имя курсора> CURSOR FOR 
-
-
+             DECLARE <имя курсора>  
 
 
+             CURSOR FOR (<SELECT-запрос>);
+
+При конвертации выполняются следующие задачи:  
+
+1. *Комментирование курсора с входными параметрами*
+   
+   В РБД не поддерживатся курсоры с входными параметрами. Поэтому при конвертации такие курсоры комментируются.
+
+2. *Удаление конструкции* ``RETURN``
+
+   В РБД конструкция ``RETURN`` отсутствует. Но её удаление никак не сказывается на работу курсора.
+
+3. *Добавление ключевого слова* ``DECLARE``
+
+   В РБД объявление любого элемента начинается с ключевого слова ``DECLARE``.
+   
+4. *Удаление ключевого слова* ``CURSOR``
+
+5. Замена ключевого слова ``IS`` на ключевые слова ``CURSOR FOR``
+
+6. *SELECT-запрос оборачивается в скобки*.
+ 
 
 
-             (<SELECT-запрос>);
+.. code-block:: sql
+  :caption: Oracle
+
+  DECLARE
+    id testt.id%TYPE;
+    num testt.num%TYPE;
+    cursor c1 RETURN testt%ROWTYPE;
+    cursor c1 RETURN testt%ROWTYPE is
+      SELECT * FROM testt;
+  BEGIN
+    OPEN c1;
+    LOOP
+      FETCH c1 INTO id, num;
+      EXIT WHEN c1%NOTFOUND;
+    END LOOP;
+    CLOSE c1;
+  END;
+
+
+.. code-block:: sql
+  :caption: to Rdb
+
+  EXECUTE BLOCK 
+  AS
+    DECLARE id TYPE OF COLUMN testt.id;
+    DECLARE num TYPE OF COLUMN testt.num;
+    DECLARE c1 CURSOR FOR
+      (SELECT * FROM testt);
+  BEGIN
+    OPEN c1;
+    WHILE (TRUE) DO 
+    BEGIN
+      FETCH c1 INTO :id, :num;
+        IF( ROW_COUNT != 1 ) 
+        THEN LEAVE;
+    END 
+    CLOSE c1;
+  END;
+
+Операторы для работы с курсорами и их преобразование описаны в следующем подразделе.
 
 
 Объявление переменных
 ^^^^^^^^^^^^^^^^^^^^^^
+
+В PL/SQL блоках можно объявлять различные переменные, каждая из которых конвертируется по своему. 
+Ниже перечислены основные типы переменных, которые можно использовать в блоке объявления:
 
 .. code-block::
     :redlines:  2,3
@@ -324,9 +521,13 @@
     | <объявление скалярной переменной>
     }
 
+Далее рассмотрим синтаксис объявления каждой из них.
 
 Объявление переменных типа коллекций
 """"""""""""""""""""""""""""""""""""""
+
+Перед объявлением переменной типа коллекции, сам тип должен быть ранее определен в том же блоке. 
+
 
 .. code-block::
     :redlines:  2,3,4,5,6,7
@@ -334,13 +535,17 @@
     :caption: Oracle
         
     <имя переменной> { <имя типа ассоц.массива> 
-                       [:=<выражение> | <вызов функции> | <имя переменной коллекции>]
+                       [:=<выражение> | :=<вызов функции> | :=<имя переменной коллекции>]
                      | <имя типа Varray> 
-                       [:= {<имя типа Varray>([<список значений>]) | <имя переменной коллекции> }]
+                       [:= <имя типа Varray>([<список значений>]) | :=<имя переменной коллекции> ]
                      | <имя типа вложенных таблиц> 
-                       [:= {<имя вложенных таблиц>([<список значений>])|<имя переменной коллекции>}]
+                       [:= <имя вложенных таблиц>([<список значений>]) | :=<имя переменной коллекции>]
                      | <имя переменной коллекции>%TYPE } ;    
 
+Объявление типов коллекций было подробно рассмотрено в :numref:`подразделе %s<subsec:collections>`. 
+В этом разделе отмечается, что в РБД аналогичные коллекции не поддерживаются, и что конвертер способен 
+преобразовать только ассоциативные массивы (в GTT таблицы). Кроме того, в этом же разделе уже описано преобразование
+объявления переменной ассоциативного массива. Поэтому в этом пункте задачи преобразования рассматриваться не будут.  
 
 Объявление констант
 """""""""""""""""""""
@@ -950,6 +1155,7 @@
 
 
 
+
 Оператор IF-THEN-ELSE 
 ------------------------
 
@@ -1065,36 +1271,7 @@
              <имя переменной> = <имя переменной>-1
              END;
 
-Оператор FOR LOOP для курсора
-------------------------------
 
-
-.. code-block::
-    :greenlines: 1,2,3,4,5,6
-    :caption: Oracle
-    
-    FOR <имя переменной типа RECORD> 
-    IN <имя курсора> 
-    [(<параметр курсора>[ [,]<параметр курсора>]...)]
-    LOOP 
-    <оператор> [<оператор>...] 
-    END LOOP [<метка>] ;
-
-        
-
-.. code-block:: 
-    :greenlines: 1,2,3,4,5,6,7,8,9
-    :caption: Rdb
-    
-    DECLARE VARIABLE <item> TYPE OF TABLE <имя курсора>;
-    ...
-    OPEN <имя курсора>;
-    FETCH <имя курсора> INTO <item>;
-    WHILE ( ROW_COUNT != 0 ) DO BEGIN
-    <оператор> [<оператор>...] 
-    FETCH <имя курсора> INTO <item>;
-    END
-    CLOSE <имя курсора>;
 
 
 
@@ -1349,48 +1526,52 @@
 ----------------------------------------    
 
 
+
 .. list-table::
       :class: borderless
       
       * - :ess:`Oracle`
           
-          .. code-block::
-             :greenlines: 1
+          .. color-block::
              
-             PRAGMA AUTONOMOUS_TRANSACTION ;
-
-                                                       .
+             :green:`PRAGMA AUTONOMOUS_TRANSACTION;`
+                                                          .
 
                   
         - :ess:`Rdb`
         
-          .. code-block:: 
-             :greenlines: 1,2,3
-             
-             IN AUTONOMOUS TRANSACTION DO 
-             BEGIN <блок psql операторов> 
-             END
-
-
-
+          .. code-block::
+            :greenlines: 1,2
+            
+            IN AUTONOMOUS TRANSACTION DO
+            BEGIN <блок psql операторов> END
+          
 
 
 Работа с курсорами
 ------------------------
 
-OPEN
-^^^^^^^^
+Ниже рассмотрены основные операции для работы с курсорами: :ref:`открытие <subsec:open>`, :ref:`закрытие <subsec:close>`, 
+:ref:`извлечение данных <subsec:fetch>`, :ref:`оператор цикла <subsec:forloopcursor>`.
+Курсоры в PL/SQL также имеют 4 атрибута, указывающих их состояние и результаты работы: 
+``%ROWCOUNT``, ``%FOUND``, ``%ISOPEN``, ``%NOTFOUND``. Их конвертация описана в подразделе :ref:`subsec:attr`.
+
+
+.. _subsec:open:
+
+Открытие курсора (``OPEN``)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Сравнение синтаксиса открытия курсора:
 
 .. list-table::
       :class: borderless
       
       * - :ess:`Oracle`
           
-          .. code-block::
-             :redlines: 2,3
-             :greenlines: 1
+          .. color-block::
              
-             OPEN <имя курсора> [(<список параметров>)] ;
+             :green:`OPEN <имя курсора>` :red:`[(<список знач. парам.>)]`:green:`;`
 
                   
         - :ess:`Rdb`
@@ -1400,9 +1581,45 @@ OPEN
              
              OPEN <имя курсора> ;
 
+:ess:`Замечание:`
 
-CLOSE
-^^^^^^^^
+- Курсоры с входными параметрами не поддерживаются в РБД и не могут быть сконвертированы.
+
+
+.. code-block:: sql
+    :caption: Oracle
+  
+    DECLARE
+      num testt.num%TYPE;
+      cursor c1 is
+        SELECT num FROM testt;
+    BEGIN
+      OPEN c1;
+      FETCH c1 into num;
+      CLOSE c1;
+    END;
+
+.. code-block:: sql
+    :caption: to Rdb
+  
+    EXECUTE BLOCK
+    AS 
+      DECLARE num TYPE OF COLUMN testt.num;
+      DECLARE c1 CURSOR FOR
+        (SELECT num FROM testt);
+    BEGIN
+      OPEN c1;
+      FETCH c1 into :num;
+      CLOSE c1;
+    END;
+
+
+.. _subsec:close:
+
+Закрытие курсора (``CLOSE``)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Сравнение синтаксиса закрытия курсора:
 
 .. list-table::
       :class: borderless
@@ -1425,12 +1642,18 @@ CLOSE
              
              CLOSE <имя курсора>;
 
-                                                        .
+             :addline:
 
+:ess:`Замечание:`
 
+- Типы ``REF CURSOR`` не поддерживаются в РБД и не могут быть сконвертированы.
 
-FETCH
-^^^^^^^
+.. _subsec:fetch:
+
+Получение данных из курсора (``FETCH``)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Сравнение синтаксиса получения данных из курсора:
 
 .. list-table::
       :class: borderless
@@ -1446,7 +1669,7 @@ FETCH
                    | :<host_cursor_variable> }
              { INTO { <переменная> [,<переменная>...]
                     | <переменная типа RECORD>} 
-             | BULK COLLECT INTO ... 
+             | BULK COLLECT INTO <список коллекций> 
                [LIMIT <числовое выражение>] 
              };
 
@@ -1463,8 +1686,365 @@ FETCH
                    | <переменная типа RECORD>}];
 
 
-                                                        .
+             :addline:
              
+
+:ess:`Замечание:`
+
+- Типы ``REF CURSOR`` не поддерживаются в РБД и не могут быть сконвертированы.
+- Конструкция ``BULK COLLECT INTO`` удаляется, т.к. РБД не поддерживает типы коллекций
+
+
+
+.. _subsec:forloopcursor:
+
+Оператор FOR LOOP для курсора
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Рассмотрим синтаксис оператора цикла ``FOR`` для курсоров:
+
+.. color-block::
+    :caption: Oracle
+    
+    :green:`FOR <имя переменной цикла> IN <имя курсора>` 
+      :red:`[(<список значений параметров>)]`
+    :green:`LOOP` 
+      :green:`<оператор> [<оператор>...]`
+    :green:`END LOOP` :red:`[<метка>]` :green:`;`
+
+
+Оператор цикла ``FOR LOOP`` для курсора автоматически создает переменную цикла типа Record и затем инициирует открытие курсора.
+
+На каждой итерации из набора результатов извлекается строка и помещается в переменную цикла, что означает, что оператор ``FOR`` 
+неявно выполняет операцию ``FETCH``. Когда строки для извлечения заканчиваются, курсор закрывается. Кроме того, курсор будет закрыт, 
+если управление передается за пределы цикла или происходит вызов исключения внутри него.
+
+Аналогичного оператора цикла для курсоров в РБД нет, поэтому при конвертации выполняются следующие задачи:
+
+1. *Замена цикла* ``FOR`` *на* ``WHILE`` 
+
+   Чтобы имитировать работу цикла ``FOR`` в Oracle, создается цикл ``WHILE`` с условием для контекстной переменной ``ROW_COUNT`` - 
+   она не должна быть нулевой. В конце цикла добавляется оператор ``FETCH`` для извлечения следующего набора данных.
+
+   .. list-table::
+      :class: borderless
+      
+      * - :ess:`Oracle`
+      
+          .. code-block::
+            :greenlines: 1, 2, 3, 4, 5
+             
+            FOR <перем. цикла> IN <имя курсора> 
+            LOOP
+               <оператор> [<оператор>...] 
+
+            END LOOP;
+  	                                                        
+        - :ess:`Rdb`
+        
+          .. code-block:: 
+             :greenlines: 1, 2, 3, 4, 5
+             
+             WHILE ( ROW_COUNT != 0 ) DO
+             BEGIN  
+              <оператор> [<оператор>...] 
+              FETCH <имя курсора> INTO <пер.цикла>;
+             END 
+
+2. *Добавление переменной цикла*
+   
+   В Oracle данные на каждой итерации извлекаются в переменную цикла (которая создается неявно). 
+   Поэтому требуется явно задать переменную цикла с типом данных записей курсора.
+
+   .. code-block:: redstatement
+    :caption: Rdb
+    :greenlines: 1
+  
+    DECLARE VARIABLE <имя пер.цикла> TYPE OF TABLE <имя курсора>;
+
+3. *Открытие курсора и извлечение первого значения*
+
+   Перед циклом ``WHILE`` требуется явно открыть курсор (``OPEN``). А также извлечь первую строку из набора данных (``FETCH``).
+
+Таким образом, преобразование конструкции ``FOR`` будет иметь следующий синтаксис:
+
+.. code-block:: 
+    :greenlines: 1,2,3,4,5,6,7,8,9, 10, 11
+    :caption: to Rdb
+    
+    DECLARE VARIABLE <имя пер.цикла> TYPE OF TABLE <имя курсора>;
+    ...
+    OPEN <имя курсора>;
+    FETCH <имя курсора> INTO <item>;
+    WHILE ( ROW_COUNT != 0 ) DO 
+    BEGIN
+      <оператор> [<оператор>...] 
+      FETCH <имя курсора> INTO <item>;
+    END
+    CLOSE <имя курсора>;
+    ... 
+
+.. code-block:: sql
+  :caption: Oracle
+
+  DECLARE
+    total_val number(6);
+    cursor c1 is
+      SELECT * FROM testt WHERE id = 2;
+  BEGIN
+    total_val := 0;
+    FOR i in c1
+    LOOP
+       total_val := total_val + i.num;
+    END LOOP;
+  END;
+
+
+.. code-block:: sql
+  :caption: to Rdb
+
+  EXECUTE BLOCK 
+  AS 
+    DECLARE total_val NUMERIC(6);
+    DECLARE c1 CURSOR FOR
+      (SELECT * FROM testt WHERE id = 2);
+    DECLARE VARIABLE C1_I TYPE OF TABLE C1;
+  BEGIN
+    total_val = 0; 
+    OPEN C1;
+    FETCH C1 INTO C1_I;
+    WHILE ( ROW_COUNT != 0 ) DO 
+    BEGIN
+       total_val = :total_val + C1_I.num;
+       FETCH C1 INTO C1_I;
+    END
+    CLOSE C1;
+  END;
+
+
+
+.. _subsec:attr:
+
+Атрибуты курсора
+^^^^^^^^^^^^^^^^^^
+
+%ROWCOUNT
+""""""""""""
+
+Атрибут ``%ROWCOUNT`` является числовым атрибутом и возвращает число строк считанных курсором на определенный момент времени. 
+В РБД существует контекстная переменная ``ROW_COUNT``,  которая указывает общее количество строк, которые были прочитаны, 
+добавлены, изменены или удалены в процессе выполнения предыдущего оператора SQL. 
+При конвертации атрибут ``%ROWCOUNT`` заменяется на неё.
+
+.. list-table::
+      :class: borderless
+      
+      * - :ess:`Oracle`
+      
+          .. code-block::
+             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+             
+             <имя курсора>%ROWCOUNT
+                                                             
+        - :ess:`Rdb`
+        
+          .. code-block:: 
+             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+             
+             ROW_COUNT
+
+
+           
+
+
+.. code-block:: sql
+   :caption: Oracle
+
+   CREATE FUNCTION TEST_ROWCOUNT
+   RETURN varchar2
+   IS
+     v_emp emp%ROWTYPE;
+     CURSOR c_emp IS
+      SELECT * FROM emp WHERE ename='SMITH';
+   BEGIN
+     OPEN c_emp;
+     FETCH c_emp INTO v_emp;
+     IF c_emp%ROWCOUNT=1 THEN
+       Return 'found';
+     ELSE
+       Return 'not found';
+     END IF;
+     CLOSE c_emp;
+   END;
+
+
+.. code-block:: sql
+  :caption: to Rdb
+
+  CREATE FUNCTION TEST_ROWCOUNT
+  RETURNS VARCHAR(32765)
+  AS
+    DECLARE VARIABLE v_emp TYPE OF TABLE emp;
+    DECLARE c_emp CURSOR FOR
+      (SELECT * FROM emp WHERE ename='SMITH');
+  BEGIN
+    OPEN c_emp;
+    FETCH c_emp INTO :v_emp;
+    IF (ROW_COUNT=1) THEN
+      Return 'found';
+    ELSE
+      Return 'not found';   
+    CLOSE c_emp;
+  END;
+
+%FOUND
+""""""""""
+
+Данный атрибут является логическим объектом, он возвращает результат ``TRUE``, если последняя операция выборки успешно 
+извлекла запись, в противном случае он вернет ``FALSE``.
+В РБД существует контекстная переменная ``ROW_COUNT``,  которая указывает общее количество строк, которые были прочитаны, 
+добавлены, изменены или удалены в процессе выполнения предыдущего оператора SQL. 
+При конвертации атрибут ``%FOUND`` заменяется на выражение ``ROW_COUNT != 0``.
+
+.. list-table::
+      :class: borderless
+      
+      * - :ess:`Oracle`
+      
+          .. code-block::
+             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+             
+             <имя курсора>%FOUND
+                                                             
+        - :ess:`Rdb`
+        
+          .. code-block:: 
+             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+             
+             ROW_COUNT != 0
+
+
+.. code-block:: sql
+   :caption: Oracle
+
+   CREATE FUNCTION TEST_ROWCOUNT
+   RETURN varchar2
+   IS
+     v_emp emp%ROWTYPE;
+     CURSOR c_emp IS
+      SELECT * FROM emp WHERE ename='SMITH';
+   BEGIN
+     OPEN c_emp;
+     FETCH c_emp INTO v_emp;
+     IF c_emp%FOUND THEN
+       Return 'found';
+     ELSE
+       Return 'not found';
+     END IF;
+     CLOSE c_emp;
+   END;
+
+
+.. code-block:: sql
+  :caption: to Rdb
+
+  CREATE FUNCTION TEST_ROWCOUNT
+  RETURNS VARCHAR(32765)
+  AS
+    DECLARE VARIABLE v_emp TYPE OF TABLE emp;
+    DECLARE c_emp CURSOR FOR
+      (SELECT * FROM emp WHERE ename='SMITH');
+  BEGIN
+    OPEN c_emp;
+    FETCH c_emp INTO :v_emp;
+    IF (ROW_COUNT != 0) THEN
+      Return 'found';
+    ELSE
+      Return 'not found';   
+    CLOSE c_emp;
+  END;
+
+
+
+%NOTFOUND
+""""""""""""
+
+Данный атрибут является логическим объектом, он возвращает результат ``TRUE``, если последняя операция выборки не смогла 
+получить какую-либо запись, в противном случае он вернет ``FALSE``.
+В РБД существует контекстная переменная ``ROW_COUNT``,  которая указывает общее количество строк, которые были прочитаны, 
+добавлены, изменены или удалены в процессе выполнения предыдущего оператора SQL. 
+При конвертации атрибут ``%NOTFOUND`` заменяется на выражение ``ROW_COUNT != 1``.
+
+
+.. list-table::
+      :class: borderless
+      
+      * - :ess:`Oracle`
+      
+          .. code-block::
+             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+             
+             <имя курсора>%NOTFOUND
+                                                             
+        - :ess:`Rdb`
+        
+          .. code-block:: 
+             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+             
+             ROW_COUNT != 1
+
+
+.. code-block:: sql
+   :caption: Oracle
+
+   CREATE FUNCTION TEST_ROWCOUNT
+   RETURN varchar2
+   IS
+     v_emp emp%ROWTYPE;
+     CURSOR c_emp IS
+      SELECT * FROM emp WHERE ename='SMITH';
+   BEGIN
+     OPEN c_emp;
+     FETCH c_emp INTO v_emp;
+     IF c_emp%NOTFOUND THEN
+       Return 'not found';
+     ELSE
+       Return 'found';
+     END IF;
+     CLOSE c_emp;
+   END;
+
+
+.. code-block:: sql
+  :caption: to Rdb
+
+  CREATE FUNCTION TEST_ROWCOUNT
+  RETURNS VARCHAR(32765)
+  AS
+    DECLARE VARIABLE v_emp TYPE OF TABLE emp;
+    DECLARE c_emp CURSOR FOR
+      (SELECT * FROM emp WHERE ename='SMITH');
+  BEGIN
+    OPEN c_emp;
+    FETCH c_emp INTO :v_emp;
+    IF (ROW_COUNT != 1) THEN
+      Return 'not found';
+    ELSE
+      Return 'found';   
+    CLOSE c_emp;
+  END;
+
+
+%ISOPEN
+""""""""
+
+Атрибут ``%ISOPEN``, который проверяет открыт ли курсор в данный момент, не может быть сконвертирован.
+
+.. code-block:: 
+   :redlines: 1
+   :caption: Oracle
+
+   <имя курсора>%ISOPEN
 
 
 Типы данных

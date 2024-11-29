@@ -1183,7 +1183,62 @@
 4. Преобразование конструкции с блоком объявлений описано в подразделе :ref:`subsec:decl`.
 
 
+Пользовательские типы данных (``Type``)
+------------------------------------------
 
+``CREATE TYPE``
+^^^^^^^^^^^^^^^^
+
+В данный момент создание пользовательских типов не может быть сконвертировано в РБД.
+
+.. color-block::
+    :caption: Oracle
+    
+    :red:`CREATE [OR REPLACE] [ EDITIONABLE | NONEDITIONABLE ] TYPE [<схема>.] <имя типа>` 
+    :red:`[ FORCE ]` 
+    :red:`[ OID 'object_identifier' ]`
+    :red:`[ SHARING = { METADATA | NONE } ]`
+    :red:`[ DEFAULT COLLATION ...]`
+    :red:`{ [ AUTHID { CURRENT_USER | DEFINER } ]`
+    :red:`| [ ACCESSIBLE BY ( <средство доступа> [, <средство доступа> ]... )] }...`
+    :red:`{ { IS | AS } { <объектный тип> | <Varray тип> | <тип вложенной таблицы> }`
+    :red:`| <объектный подтип> } ;`
+
+
+``CREATE TYPE BODY`` 
+^^^^^^^^^^^^^^^^^^^^^
+
+В данный момент создание тела пользовательских типов не может быть сконвертировано в РБД.
+
+.. color-block::
+    :caption: Oracle
+    
+    :red:`CREATE [OR REPLACE] [EDITIONABLE|NONEDITIONABLE] TYPE BODY [<схема>.] <имя типа>`
+    :red:`[ SHARING = { METADATA | NONE } ]`
+    :red:`{ IS | AS }`
+    :red:`{ <объявление процедуры/функции/конструктора>`
+    :red:`| { MAP | ORDER } MEMBER <объявление функции>`
+    :red:`}`
+    :red:`[, { <объявление процедуры/функции/конструктора>`
+       :red:`| { MAP | ORDER } MEMBER <объявление функции>`
+       :red:`}`
+    :red:`]...`
+    :red:`END;`
+
+Библиотеки внешних процедур или функций (``Library``)
+--------------------------------------------------------
+
+В данный момент создание библиотек внешних процедур или функций не может быть сконвертировано в РБД.
+
+.. color-block::
+    :caption: Oracle
+    
+    :red:`CREATE [OR REPLACE] [EDITIONABLE|NONEDITIONABLE] LIBRARY [<схема>.] <имя библиотеки>`
+    :red:`[ SHARING = { METADATA | NONE } ]`
+    :red:`{ IS | AS }`
+    :red:`{ '<полный путь>' | '<имя DDL>' IN <объект каталога для внешней таблицы> }`
+    :red:`[ AGENT '<agent_dblink>' ]`
+    :red:`[ CREDENTIAL [<схема>.]<учетные данные> ] ;`
 
 
 

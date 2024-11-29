@@ -1,0 +1,7 @@
+CREATE TRIGGER trg_after_create_table
+AFTER CREATE ON SCHEMA
+BEGIN
+    IF ORA_DICT_OBJ_TYPE = 'TABLE' THEN
+        DBMS_OUTPUT.PUT_LINE('Создана новая таблица: ' || ORA_DICT_OBJ_NAME);
+    END IF;
+END;

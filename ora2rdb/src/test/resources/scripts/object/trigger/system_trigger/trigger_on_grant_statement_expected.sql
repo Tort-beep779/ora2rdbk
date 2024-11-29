@@ -1,0 +1,10 @@
+-- Red Database support only ddl statement
+/*
+CREATE OR REPLACE TRIGGER trg_after_create_table
+AFTER GRANT ON SCHEMA
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Создана новая ddl в схеме hr: ' || ORA_DICT_OBJ_NAME);
+END;
+*/
+
+-- аналогично для TRUNCATE/REVOKE/RENAME/NOAUDIT/DISASSOCIATE STATISTICS/COMMENT/AUDIT/ASSOCIATE STATISTICS/ANALYZE

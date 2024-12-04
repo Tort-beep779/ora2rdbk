@@ -1,0 +1,5 @@
+CREATE EDITIONABLE PROCEDURE procedure_name
+IS
+BEGIN
+   DBMS_OUTPUT.PUT_LINE('some text');
+END;

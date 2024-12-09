@@ -85,7 +85,7 @@ def addline(content):
         if ":addline:" not in line:
             result.append(line)
         else:
-            line = re.sub(pattern, r'                                            .', line)
+            line = re.sub(pattern, ' ', line)
             result.append(line)
     return result
 

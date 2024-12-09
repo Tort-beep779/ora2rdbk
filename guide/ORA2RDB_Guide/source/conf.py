@@ -62,6 +62,7 @@ latex_elements = {
 \newcommand{\DUrolered}[1]{{\color{red!40!white}#1}}
 \newcommand{\DUrolegreen}[1]{{\textcolor{green!40!black}{#1}}}
 \newcommand{\DUrolegreenbf}[1]{{\color{green!40!black}{\footnotesize\normalfont\textbf{#1}}}}
+\newcommand{\DUrolepar}[1]{{\par{}}}
 """,
 'hyperref' : r'''
 \usepackage[colorlinks=true,linkcolor=blue]{hyperref}
@@ -163,5 +164,6 @@ rst_prolog = """
 .. role:: red
 .. role:: green
 .. role:: greenbf
+.. role:: par
 """
 

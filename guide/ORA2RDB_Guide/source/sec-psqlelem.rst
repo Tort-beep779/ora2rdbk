@@ -3,115 +3,7 @@
 Преобразование элементов процедурного языка PL/SQL
 ===================================================
 
-Исключения (``EXCEPTION``)
-----------------------------
 
-.. _sub:declare_exception:
-
-Объявление пользовательского исключения
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-В Oracle существуют два вида исключений:
-
-- системные исключения, объявленные в пакете ``STANDARD``. 
-- пользовательские исключения, которые явно объявляются в анонимном блоке, процедуре, функции, триггере или пакете.
-
-Рассмотрим синтаксис объявления пользовательских исключений в процедуре. Для функции всё аналогично. 
-В анонимных блоках и триггерах исключения объявляются в разделе ``DECLARE``.
-
-.. code-block::
-    :emphasize-lines: 4,7,8,9
-    :greenlines: 1,2,3,4,5,6,7,8,9,10
-    :caption: Oracle
-    
-    CREATE [ OR REPLACE ] PROCEDURE [ <схема>. ] <имя процедуры>
-       [ ( <IN|OUT параметр> [, <IN|OUT параметр>]... ) ] 
-    { IS | AS } [<объявление>;...] 
-            <имя исключения> EXCEPTION;            
-    BEGIN 
-        <блок операторов> ... 
-        RAISE <имя исключения>;
-        EXCEPTION
-           WHEN <имя исключения> THEN [<обработка исключения>]
-    END [<имя процедуры>] ;
-
-
-Инициирование исключений
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Исключение может быть инициировано в подпрограмме Oracle тремя способами:
-
-- при обнаружении ошибки;
-- командой ``RAISE``;
-- встроенной процедурой ``RAISE_APPLICATION_ERROR``.
-
-
-Команда RAISE
-""""""""""""""
-
-Чтобы разработчик имел возможность самостоятельно инициировать именованные исключения, в Oracle 
-поддерживается команда RAISE. С ее помощью можно инициировать как собственные, так и системные исключения. 
-Команда имеет три формы:
-
-.. code-block::
-
-    RAISE имя_исключения;
-    RAISE имя_пакета.имя_исключения;
-    RAISE;
-
-Первая форма (без имени пакета) может инициировать исключения, определенные в текущем блоке 
-(или в содержащем его блоке), а также системные исключения.
-
-Если исключение объявлено в пакете (но не в ``STANDARD``) и инициируется извне, имя исключения необходимо уточнить именем пакета.
-
-Третья форма ``RAISE`` не требует указывать имя исключения, но используется только в условии ``WHEN`` обработчика исключений. 
-Эта форма используется для повторного инициирования (передачи) перехваченного исключения.
-
-
-Процедура RAISE_APPLICATION_ERROR
-"""""""""""""""""""""""""""""""""""
-
-Для инициирования исключений Oracle предоставляет процедуру ``RAISE_APPLICATION_ERROR``. 
-Ее преимущество перед командой ``RAISE`` заключается в том, что она позволяет связать с исключением сообщение об ошибке.
-
-
-Обработка исключений (Exception Handler)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-             :greenlines: 1,2,3,4,5,6,7,8,9
-             
-             EXCEPTION
-               WHEN {<имя искл-я> [OR <имя искл-я>]... 
-                    | OTHERS }
-               THEN 
-                  <оператор>; [ <оператор>; ]...
-
-               [WHEN { <имя искл-я> [ OR <имя искл-я> ]... 
-                    | OTHERS }
-                THEN <оператор>; [<оператор>;]...]
-             
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1,2,3,4,5,6,7,8,9
-              
-                                                        .
-             WHEN {<имя искл-я> [, <имя искл-я> ...] 
-                  | ANY}
-             DO [BEGIN] 
-                  <оператор>; [ <оператор>; ]...
-             [END]
-             [WHEN {<имя искл-я> [, <имя искл-я>...] 
-                   | ANY}
-              DO [BEGIN] <оператор>;[<оператор>;]...[END]]
-  	 
 
 .. _subsec:decl:
 
@@ -224,42 +116,37 @@ PL/SQL имеет три типа коллекций:
   операции присваивания значений переменной типа ассоциативного массива будут заменены на 
   вставку или обновление данных в эту GTT таблицу. Например: 
   
-  .. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block:: sql
+  .. container:: twocol
+
+    .. code-block:: sql
+       :caption: Oracle
              
-             city_population('Мегаполис') := 1000000;
-                                                    .
+       city_population('Мегаполис') := 1000000;
+       :addline:
              
-        - :ess:`toRdb`
-        
-          .. code-block:: sql
-             
-             UPDATE OR INSERT INTO CITY_POPULATION VALUES ('Мегаполис', 1000000);
+    .. code-block:: sql
+       :caption: toRdb
+                  
+       UPDATE OR INSERT INTO CITY_POPULATION VALUES ('Мегаполис', 1000000);
   
 - *Обращение по ключу*
 
   Поскольку вместо ассоциативного массива будет создана глобальная временная таблица (GTT), 
   обращение по ключу к элементам ассоциативного массива будет заменено на операцию ``SELECT``. Например:
 
-  .. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block:: sql
+  .. container:: twocol
+    
+    .. code-block:: sql
+      :caption: Oracle
              
-             l_res := city_population('Деревня');
-                                                    .
+      l_res := city_population('Деревня');
+      :addline:
              
-        - :ess:`toRdb`
+    .. code-block:: sql
+      :caption: toRdb
         
-          .. code-block:: sql
-             
-             l_res = (SELECT VAL FROM CITY_POPULATION WHERE I1 = 'Деревня');
+      l_res = (SELECT VAL FROM CITY_POPULATION 
+               WHERE I1 = 'Деревня');
 
 
 Приведем пример конвертации функции с объявлением ассоциативного массива.
@@ -310,36 +197,33 @@ PL/SQL имеет три типа коллекций:
       return l_res;
     END /*TEST_FUNCTION*/;
 
-
+.. _subsec:recordtype:
 
 Объявление типа RECORD
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 Сравнение синтаксиса объявления типа Record:
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. color-block::
+.. container:: twocol
+   
+   .. color-block::
+     :caption: Oracle
               
-              :green:`TYPE <имя типа Record>`
-              :green:`IS RECORD (<имя поля> <тип данных>` 
-                         :green:`[[NOT NULL]`
-                         :green:`{:=|DEFAULT} <выражение>]`
-                         :green:`[, <имя поля> <тип данных>...]);`
+     :green:`TYPE <имя типа Record>`
+     :green:`IS RECORD (<имя поля> <тип данных>` 
+                :green:`[[NOT NULL]`
+                :green:`{:=|DEFAULT} <выражение>]`
+                :green:`[, <имя поля> <тип данных>...]);`
 
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5
+   .. code-block:: 
+     :greenlines: 1, 2, 3, 4, 5
+     :caption: Rdb
              
-             DECLARE TYPE <имя типа Record> 
-             (<имя поля> <тип данных>
-              [DEFAULT <значение>]
-              [NOT NULL]
-              [, <имя поля> <тип данных>...]...);
+     DECLARE TYPE <имя типа Record> 
+     (<имя поля> <тип данных>
+      [DEFAULT <значение>]
+      [NOT NULL]
+      [, <имя поля> <тип данных>...]...);
 
 При конвертации выполняются следующие задачи:  
 
@@ -393,7 +277,7 @@ PL/SQL имеет три типа коллекций:
       ...
     END;
 
-
+Описание конвертации объявления переменных типа Record можно найти в :numref:`подразделе %s< subsec:declrecordvar>`.
 
 Объявление курсоров
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -409,34 +293,34 @@ PL/SQL имеет три типа коллекций:
 В РБД курсоры не требуют предварительного объявления; они задаются непосредственно с помощью оператора ``SELECT``. 
 Таким образом, при конвертации строки с объявлением курсоров исключается, а конвертируется непосредственно задание курсора. 
 
+
+.. _subsec:declcursor:
+
 Задание курсоров
 ^^^^^^^^^^^^^^^^^^^^^
 
 Синтаксис для задания курсора в Oracle:
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-             :greenlines: 1,4
-             :redlines: 2,3
+  .. code-block::
+    :greenlines: 1,4
+    :redlines: 2,3
+    :caption: Oracle
               
-             CURSOR <имя курсора>
-             [(<список параметров курсора>)]
-             [RETURN <rowtype>] 
-             IS <SELECT-запрос> ;
+    CURSOR <имя курсора>
+    [(<список параметров курсора>)]
+    [RETURN <rowtype>] 
+    IS <SELECT-запрос> ;
 
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1,4
+  .. code-block:: 
+    :greenlines: 1,4
+    :caption: Rdb
 
-             DECLARE <имя курсора>  
+    DECLARE <имя курсора>  
 
 
-             CURSOR FOR (<SELECT-запрос>);
+    CURSOR FOR (<SELECT-запрос>);
 
 При конвертации выполняются следующие задачи:  
 
@@ -509,17 +393,18 @@ PL/SQL имеет три типа коллекций:
 Ниже перечислены основные типы переменных, которые можно использовать в блоке объявления:
 
 .. code-block::
-    :redlines:  2,3
-    :greenlines: 1,4,5,6,7
+    :redlines:  2,3,7
+    :greenlines: 1,4,5,6,8
     :caption: Oracle
 
-    { <объявление переменных типа коллекций>
-    | <объявление констант>
-    | <объявление переменной типа REF CURSOR>
-    | <объявление исключений>
-    | <объявление переменной типа RECORD>
-    | <объявление скалярной переменной>
-    }
+    <объявление переменных> ::= { <объявление переменных типа коллекций>
+                                | <объявление констант>
+                                | <объявление переменной типа REF CURSOR>
+                                | <объявление исключений>
+                                | <объявление переменной типа RECORD>
+                                | <объявление скалярной переменной>
+                                | [REF] <пользовательский объектный тип>
+                                }
 
 Далее рассмотрим синтаксис объявления каждой из них.
 
@@ -539,91 +424,321 @@ PL/SQL имеет три типа коллекций:
                      | <имя типа Varray> 
                        [:= <имя типа Varray>([<список значений>]) | :=<имя переменной коллекции> ]
                      | <имя типа вложенных таблиц> 
-                       [:= <имя вложенных таблиц>([<список значений>]) | :=<имя переменной коллекции>]
+                       [:= <имя вложенных таблиц>([<список значений>])|:=<имя перем-ой коллекции>]
                      | <имя переменной коллекции>%TYPE } ;    
 
 Объявление типов коллекций было подробно рассмотрено в :numref:`подразделе %s<subsec:collections>`. 
 В этом разделе отмечается, что в РБД аналогичные коллекции не поддерживаются, и что конвертер способен 
 преобразовать только ассоциативные массивы (в GTT таблицы). Кроме того, в этом же разделе уже описано преобразование
-объявления переменной ассоциативного массива. Поэтому в этом пункте задачи преобразования рассматриваться не будут.  
+объявления переменной ассоциативного массива. Поэтому в этом параграфе задачи преобразования рассматриваться не будут.  
 
-Объявление констант
-"""""""""""""""""""""
-        
+..
+   Объявление констант
+   """""""""""""""""""""
+         
+   .. code-block::
+      :redlines: 1
+      
+      <имя константы> CONSTANT <тип данных> [NOT NULL] { := | DEFAULT } <выражение> ;
+
+.. _sub:userexception:
+
+Объявление пользовательских исключений
+"""""""""""""""""""""""""""""""""""""""
+
+В Oracle существуют два вида исключений:
+
+- системные исключения, объявленные в пакете ``STANDARD``. 
+- пользовательские исключения, которые явно объявляются в анонимном блоке, процедуре, функции, триггере или пакете.
+
+Рассмотрим синтаксис объявления пользовательских исключений:
+
 .. code-block::
-    :redlines: 1
-    
-    <имя константы> CONSTANT <тип данных> [NOT NULL] { := | DEFAULT } <выражение> ;
+    :greenlines: 1
+    :caption: Oracle
+        
+    <имя исключения> EXCEPTION;  
+
+При конвертации объявлений пользовательских исключений выполняются следующие задачи:
+
+1. *Создание нового исключения*
+   
+   В отличие от Oracle пользовательские исключения в РБД создаются глобально для всех подпрограмм.
+   Поэтому вместо объявления исключения в конкретной подпрограмме, триггере, пакете или блоке, 
+   добавляется оператор создания нового исключения. При этом важно, чтобы имя исключения было уникальным:
+
+   .. code-block::
+    :greenlines: 1
+    :caption: Rdb
+        
+    CREATE EXCEPTION <имя исключения> '<текст сообщения>';
+
+2. *Удаляется объявление исключения*
+
+   В блоке объявление упоминание исключения удаляется.
 
 
-Объявление исключений
-""""""""""""""""""""""
+.. code-block:: sql
+  :caption: Oracle
 
-См. :numref:`подраздел %s <sub:declare_exception>`.
+  CREATE OR REPLACE PROCEDURE add_new_order
+     (order_id_in IN NUMBER, sales_in IN NUMBER)
+  IS
+     no_sales EXCEPTION;
+  BEGIN
+      ...
+  END;
 
 
+.. code-block:: sql
+  :caption: to Rdb
+
+  CREATE EXCEPTION no_sales_EXCEPTION_add_new_order 'error';
+  
+  CREATE OR ALTER PROCEDURE add_new_order
+     (order_id_in  NUMERIC(34, 8), sales_in  NUMERIC(34, 8))
+  AS
+  BEGIN
+     ...
+  END;
+
+
+
+Инициирование и обработка исключений описаны в подразделе :ref:`sub:declare_exception`. 
+   
+.. _subsec:declrecordvar:
 
 Объявление переменной типа RECORD
 """""""""""""""""""""""""""""""""""
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-             :redlines: 4
-             :greenlines: 1,2,3,5,6,7
+Рассмотрим все различные способы объявления переменных типа Record и сравним синтаксис после преобразования:
+
+
+:par:`c`
+
+:par:`c`
+
+.. container:: twocol
+  
+  .. code-block::
+    :redlines: 4,7
+    :greenlines: 1,2,3,5,6,8,9
+    :caption: Oracle
               
-             <имя переменной> 
-                    { <имя типа RECORD> 
-                    | <имя курсора>%ROWTYPE 
-                    | <имя переменной CURSOR REF>%ROWTYPE 
-                    | <имя таблицы>%ROWTYPE 
-                    | <имя представления>%ROWTYPE 
-                    | <имя переменной типа RECORD>%TYPE };
+    <имя переменной> 
+          { <имя типа RECORD> 
+          | <имя курсора>%ROWTYPE 
+          | <имя переменной CURSOR REF>%ROWTYPE 
+          | <имя таблицы>%ROWTYPE 
+          | <имя представления>%ROWTYPE 
+          | <имя переменной типа RECORD>%TYPE }
+    [[NOT NULL] 
+    {:= | DEFAULT} <выражение> ];
+
+  .. code-block:: 
+    :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9
+    :caption: Rdb
+
+    DECLARE [VARIABLE] <имя переменной> 
+          { <имя типа RECORD> 
+          | TYPE OF TABLE  <имя курсора>
+
+          | TYPE OF TABLE <имя таблицы> 
+          | TYPE OF TABLE <имя представления>
+          }
+    [NOT NULL] 
+    [{ = | DEFAULT } <значение по умолчанию>];
+
+При конвертации выполняются следующие задачи:
+
+1. *Добавление ключевых слов* ``DECLARE VARIABLE``
+
+   Перед именем переменной прописываются ключевые слова ``DECLARE VARIABLE``. 
+   Причем ключевое слово ``VARIABLE`` прописывать необязательно.
+
+2. *Преобразование переменной на основе типа Record*
+
+   Тип Record должен быть предварительно объявлен. Описание конвертации объявления типа Record 
+   можно найти в :numref:`подразделе %s<subsec:recordtype>`. При конвертации ничего не меняется.
+
+3. *Преобразование переменной на основе курсора*
+
+   Курсор должен быть предварительно объявлен. Описание конвертации объявления курсора
+   можно найти в :numref:`подразделе %s<subsec:declcursor>`. При конвертации атрибут ``%ROWTYPE`` заменяется на конструкцию ``TYPE OF TABLE``.
+
+4. *Преобразование переменной на основе таблицы или представления* 
+
+    При конвертации атрибут ``%ROWTYPE`` заменяется на конструкцию ``TYPE OF TABLE``.
+
+5. *Замена операции присваивания* 
+   
+   Операция присваивания значения по умолчанию ``":="`` заменяется на ``"="``.
+
+6. *Преобразование инициализации с помощью конструктора*
+
+   Если переменная типа Record инициализируется значением (по умолчанию или в теле программы) с помощью конструктора, например:
+
+   .. code-block:: sql
+    :caption: Oracle
+
+    dept_rec DeptRecTyp := DeptRecType(10, 'Administration', 200, 1700);
+  
+   То при конвертации в конструкторе имя типа заменяется на ключевое слово ``ROW``:
+
+   .. code-block:: sql
+    :caption: to Rdb
+
+    dept_rec DeptRecTyp = ROW(10, 'Administration', 200, 1700);
 
 
-        - :ess:`Rdb`    
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7
 
-             DECLARE [VARIABLE] <имя переменной> 
-                   { <имя типа RECORD> 
-                   | TYPE OF TABLE  <имя курсора>
+.. code-block:: sql
+  :caption: Oracle
 
-                   | TYPE OF TABLE <имя таблицы> 
-                   | TYPE OF TABLE <имя представления>
-                   | <имя типа RECORD> };
+  DECLARE
+    TYPE DeptRecTyp IS RECORD (
+         dept_id    NUMBER(4) NOT NULL := 10,
+         dept_name  VARCHAR2(30) NOT NULL := 'Administration',
+         mgr_id     NUMBER(6) := 200,
+         loc_id     NUMBER(4) := 1700
+      );
+    CURSOR c1 IS SELECT department_id, location_id FROM departments;
+    dept_rec1 DeptRecTyp := DeptRecTyp (20, 'Ingineer', 300, 1200);
+    dept_rec2 departments%ROWTYPE 
+    dept_rec3 c1%ROWTYPE;
+  BEGIN
+    dept_rec2 := DeptRecTyp(10, 'Administration', 200, 1700);
+  END;
+
+
+.. code-block:: sql
+  :caption: to Rdb
+
+  EXECUTE BLOCK 
+  AS 
+    DECLARE TYPE DeptRecTyp   (
+         dept_id    NUMERIC(4)  DEFAULT 10 NOT NULL,
+         dept_name  VARCHAR(30) DEFAULT 'Administration' NOT NULL,
+         mgr_id     NUMERIC(6)  DEFAULT 200,
+         loc_id     NUMERIC(4)  DEFAULT 1700
+    );
+    DECLARE c1 CURSOR FOR (SELECT department_id, location_id FROM departments);
+    DECLARE dept_rec1 DeptRecTyp = ROW(20, 'Ingineer', 300, 1200);
+    DECLARE VARIABLE dept_rec2 TYPE OF TABLE departments not null;
+    DECLARE VARIABLE dept_rec3 TYPE OF TABLE c1;  
+  BEGIN
+    dept_rec2 = ROW(10, 'Administration', 200, 1700);
+  END;
 
 
 Объявление скалярной переменной
 """"""""""""""""""""""""""""""""
 
-.. list-table::
-      :class: borderless
+Рассмотрим синтаксис объявления скалярной переменной. В Oracle их можно объявить разными способами:
+
+.. code-block::
+    :greenlines: 1, 3, 4, 7
+    :redlines: 5, 6
+    
+    <имя переменной> <тип данных> [ [NOT NULL] {:= | DEFAULT} <выражение> ];
+
+    <тип данных> ::= { <тип данных SQL>
+                     | <имя таблицы/представления>.<столбец>%TYPE
+                     | <переменная типа RECORD>.<поле>%TYPE
+                     | <скалярная переменная>%TYPE
+                     }
+  
+При конвертации объявления скалярных переменных выполняются следующие задачи:
+
+1. *Добавление ключевых слов* ``DECLARE VARIABLE``
+ 
+   Перед именем переменной указываются ключевые слова ``DECLARE VARIABLE``. 
+   Причем ключевое слово ``VARIABLE`` прописывать необязательно.
+
+2. *Замена операции присваивания* 
+   
+   Операция присваивания значения по умолчанию ``":="`` заменяется на ``"="``.
+
+3. *Преобразование переменной с типом данных SQL*
+
+   Синтаксис объявления таких переменных практически идентичен:
+
+   .. container:: twocol
+
+    .. code-block::
+      :greenlines: 1, 2, 3, 4
+      :caption: Oracle
       
-      * - :ess:`Oracle`
-          
-          .. code-block::
-             :greenlines: 1, 2, 3, 4
-              
-                                                   .
-             <имя переменной> <тип данных> 
-             [[NOT NULL] 
-             {:= | DEFAULT} <выражение> ] ;
+      :addline:
+      <имя переменной> <тип данных SQL>     
+      [[NOT NULL] 
+      {:= | DEFAULT} <выражение> ] ;             
+              	                                                        
+    .. code-block:: 
+      :greenlines: 1, 2, 3, 4
+      :caption: Rdb
+             
+      DECLARE [VARIABLE] 
+      <имя переменной> <тип данных SQL>
+      [NOT NULL] 
+      [{ = | DEFAULT } <выражение>] ;
 
-        - :ess:`Rdb`    
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4
+4. *Преобразование переменной с типом данных столбца таблицы/представления*
 
-             DECLARE [VARIABLE] 
-             <имя переменной> <тип данных>
-             [NOT NULL] 
-             [{ = | DEFAULT } <значение по умолчанию>] ;
+   Сравним синтаксис объявления таких переменных:
 
+   .. container:: twocol
+    
+    .. code-block::
+      :greenlines: 1, 2, 3, 4
+      :caption: Oracle
+             
+      <имя переменной>
+            <имя таблицы>.<столбец>%TYPE     
+      [[NOT NULL] 
+      {:= | DEFAULT} <выражение> ] ;             
+              	                                                          
+    .. code-block:: 
+      :greenlines: 1, 2, 3, 4
+      :caption: Rdb
+             
+      DECLARE [VARIABLE] <имя переменной>
+        TYPE OF COLUMN <имя таблицы>.<столбец>
+      [NOT NULL] 
+      [{ = | DEFAULT } <выражение>] ;
+
+   Как видно, атрибут ``%TYPE`` удаляется и заменяется на конструкцию ``TYPE OF COLUMN``.
+
+.. code-block:: sql
+  :caption: Oracle
+
+  DECLARE
+    sql_stmt    VARCHAR2(200);
+    dept_id     NUMBER(2) := 50;
+    dept_name   dept.name%TYPE  := 'PERSONNEL';
+    location    dept.location%TYPE default 'DALLAS';
+  BEGIN
+    sql_stmt := 'INSERT INTO dept VALUES (:1, :2, :3)';
+    EXECUTE IMMEDIATE sql_stmt USING dept_id, dept_name, location;
+  END;
+
+
+.. code-block:: sql
+  :caption: to Rdb
+
+  EXECUTE BLOCK 
+  AS 
+    DECLARE sql_stmt    VARCHAR(200);
+    DECLARE dept_id     NUMERIC(2) = 50;
+    DECLARE dept_name   TYPE OF COLUMN dept.name  = 'PERSONNEL';
+    DECLARE location    TYPE OF COLUMN dept.location default 'DALLAS';
+  BEGIN
+    sql_stmt = 'INSERT INTO dept VALUES (:A1, :A2, :A3)';
+    EXECUTE STATEMENT (:sql_stmt) (A1:= :dept_id, A2:= :dept_name, A3:= :location);
+  END;
+
+
+    
 .. _subsec:proc_decl:
 
 Объявление процедуры
@@ -644,36 +759,33 @@ PL/SQL имеет три типа коллекций:
 
 Сравнение операторов создания пакета с объявлением пакетных процедур без параметров или только с IN-параметрами:
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-          
-          .. code-block::
-              :greenlines: 1, 2, 3, 4, 5, 7, 8, 9
+.. container:: twocol
+  
+  .. code-block::
+    :greenlines: 1, 2, 3, 4, 5, 7, 8, 9
+    :caption: Oracle
               
-              CREATE [OR REPLACE] PACKAGE <имя пакета>
-              [AUTHID { CURRENT_USER | DEFINER }]
-              { IS | AS } 
-                 PROCEDURE <имя> (<IN-пар.>[,<IN-пар.>]); 
+    CREATE [OR REPLACE] PACKAGE <имя пакета>
+    [AUTHID { CURRENT_USER | DEFINER }]
+    { IS | AS } 
+        PROCEDURE <имя> (<IN-пар.>[,<IN-пар.>]); 
 
-                 [ <объявление процедуры>; 
-                 | <объявление функции>;...]
-              END ;
-
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 7, 8, 9
+        [ <объявление процедуры>; 
+        | <объявление функции>;...]
+    END ;
+      
+  .. code-block:: 
+    :greenlines: 1, 2, 3, 4, 5, 7, 8, 9
+    :caption: Rdb
              
-             CREATE [OR ALTER] PACKAGE <имя пакета>
-             [SQL SECURITY {DEFINER | INVOKER}]
-             AS BEGIN
-                PROCEDURE <имя> (<IN-пар.>[,<IN-пар.>]);
+    CREATE [OR ALTER] PACKAGE <имя пакета>
+    [SQL SECURITY {DEFINER | INVOKER}]
+    AS BEGIN
+      PROCEDURE <имя> (<IN-пар.>[,<IN-пар.>]);
 
-                [ <объявление процедуры>; 
-                | <объявление функции>;...]
-             END ; 
+      [ <объявление процедуры>; 
+      | <объявление функции>;...]
+    END ; 
 
 При конвертации объявления пакетных процедур без OUT-параметров выполняются следующие задачи:  
 
@@ -684,25 +796,22 @@ PL/SQL имеет три типа коллекций:
 
    Сравним синтаксис задания IN-параметров [2]_:
 
-   .. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-      
-          .. color-block::
+   .. container:: twocol
+    
+    .. color-block::
+      :caption: Oracle
              
-             :green:`<IN-параметр> :=` 
-                        :green:`<имя>` :red:`[IN]` :green:`<тип данных>` 
-                             :green:`[{:=|DEFAULT} <значение>]`                  
-  	                                                        
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3
+      :green:`<IN-параметр> :=` 
+                :green:`<имя>` :red:`[IN]` :green:`<тип данных>` 
+                      :green:`[{:=|DEFAULT} <значение>]`                  
+  	                                                              
+    .. code-block:: 
+      :greenlines: 1, 2, 3
+      :caption: Rdb
              
-             <IN-параметр> := 
-                       <имя> <тип данных> 
-                            [{=|DEFAULT} <значение>]     
+      <IN-параметр> := 
+                <имя> <тип данных> 
+                    [{=|DEFAULT} <значение>]     
 
    IN-параметрам можно устанавливать значения по умолчанию. Как видно, различия заключаются лишь в операторе присваивания (``:=``). 
    
@@ -716,39 +825,36 @@ PL/SQL имеет три типа коллекций:
 
 Сравнение операторов создания пакета с объявлением пакетных процедур с хотя бы одним OUT-параметром:
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-              :greenlines: 1, 2, 3, 4, 5, 8, 9, 10
-              
-              CREATE [OR REPLACE] PACKAGE <имя пакета>
-              [AUTHID { CURRENT_USER | DEFINER }]
-              { IS | AS } 
-              PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>]); 
+  .. code-block::
+    :greenlines: 1, 2, 3, 4, 5, 8, 9, 10
+    :caption: Oracle
+    
+    CREATE [OR REPLACE] PACKAGE <имя пакета>
+    [AUTHID { CURRENT_USER | DEFINER }]
+    { IS | AS } 
+    PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>]); 
 
 
-              [ <объявление процедуры>; 
-              | <объявление функции>;...];
-              END ;
+    [ <объявление процедуры>; 
+    | <объявление функции>;...];
+    END ;
 
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 8, 9, 10
-             
-             CREATE [OR ALTER] PACKAGE <имя пакета>
-             [SQL SECURITY {DEFINER | INVOKER}]
-             AS BEGIN
-             PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
-             RETURNS (<OUT-пар.>_OUT [,...]);
+      
+  .. code-block:: 
+    :greenlines: 1, 2, 3, 4, 5, 6, 8, 9, 10
+    :caption: Rdb
+    
+    CREATE [OR ALTER] PACKAGE <имя пакета>
+    [SQL SECURITY {DEFINER | INVOKER}]
+    AS BEGIN
+    PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
+    RETURNS (<OUT-пар.>_OUT [,...]);
 
-             [ <объявление процедуры>; 
-             | <объявление функции>;...]
-             END ; 
-
+    [ <объявление процедуры>; 
+    | <объявление функции>;...]
+    END ; 
 
 При конвертации объявления пакетных процедур с OUT-параметрами выполняются следующие задачи:  
 
@@ -784,40 +890,38 @@ PL/SQL имеет три типа коллекций:
 
 Сравнение синтаксиса операторов создания пакета с объявлением пакетных функций без параметров или только с IN-параметрами:
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-              :greenlines: 1, 2, 3, 4, 5, 6, 7, 9, 10, 11
-              
-              CREATE [OR REPLACE] PACKAGE <имя пакета>
-              [AUTHID { CURRENT_USER | DEFINER }]
-              { IS | AS } 
-                 FUNCTION <имя> (<IN-пар.>[,<IN-пар.>]...)
-                   RETURN <тип данных> 
-                   [DETERMINISTIC];
+  .. code-block::
+    :greenlines: 1, 2, 3, 4, 5, 6, 7, 9, 10, 11
+    :caption: Oracle
+    
+    CREATE [OR REPLACE] PACKAGE <имя пакета>
+    [AUTHID { CURRENT_USER | DEFINER }]
+    { IS | AS } 
+        FUNCTION <имя> (<IN-пар.>[,<IN-пар.>]...)
+          RETURN <тип данных> 
+          [DETERMINISTIC];
 
-                 [ <объявление процедуры>; 
-                 | <объявление функции>;...];
-              END;
+        [ <объявление процедуры>; 
+        | <объявление функции>;...];
+    END;
 
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 9, 10, 11
-             
-             CREATE [OR ALTER] PACKAGE <имя пакета>
-             [SQL SECURITY {DEFINER | INVOKER}]
-             AS BEGIN
-                FUNCTION <имя> (<IN-пар.> [,<IN-пар.>...])
-                  RETURNS <тип данных> 
-                  [DETERMINISTIC];
 
-                [ <объявление процедуры>; 
-                | <объявление функции>;...]
-             END ; 
+  .. code-block:: 
+    :greenlines: 1, 2, 3, 4, 5, 6, 7, 9, 10, 11
+    :caption: Rdb
+    
+    CREATE [OR ALTER] PACKAGE <имя пакета>
+    [SQL SECURITY {DEFINER | INVOKER}]
+    AS BEGIN
+      FUNCTION <имя> (<IN-пар.> [,<IN-пар.>...])
+        RETURNS <тип данных> 
+        [DETERMINISTIC];
+
+      [ <объявление процедуры>; 
+      | <объявление функции>;...]
+    END ; 
 
 При конвертации объявления пакетных функций без OUT-параметров выполняются следующие задачи:  
 
@@ -828,25 +932,22 @@ PL/SQL имеет три типа коллекций:
 
    Сравним синтаксис задания IN-параметров [4]_:
 
-   .. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
-      
-          .. color-block::
-             
-             :green:`<IN-параметр> :=` 
-                        :green:`<имя>` :red:`[IN]` :green:`<тип данных>` 
-                             :green:`[{:=|DEFAULT} <значение>]`                  
-  	                                                        
-        - :ess:`Rdb`
+   .. container:: twocol
+
+      .. color-block::
+        :caption: Oracle
+          
+        :green:`<IN-параметр> :=` 
+                  :green:`<имя>` :red:`[IN]` :green:`<тип данных>` 
+                        :green:`[{:=|DEFAULT} <значение>]`                  
+  	                                                               
+      .. code-block:: 
+        :greenlines: 1, 2, 3
+        :caption: Rdb
         
-          .. code-block:: 
-             :greenlines: 1, 2, 3
-             
-             <IN-параметр> := 
-                       <имя> <тип данных> 
-                            [{=|DEFAULT} <значение>]     
+        <IN-параметр> := 
+                  <имя> <тип данных> 
+                      [{=|DEFAULT} <значение>]     
 
    IN-параметрам можно устанавливать значения по умолчанию. Как видно, различия заключаются лишь в операторе присваивания (``:=``). 
    В РБД параметры, для которых установлены значения по умолчанию, должны располагаться в самом конце списка, 
@@ -863,41 +964,38 @@ PL/SQL имеет три типа коллекций:
 Сравнение синтаксиса операторов создания пакета с объявлением пакетных функций 
 с хотя бы одним OUT-параметром:
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-              :redlines: 6
-              :greenlines: 1, 2, 3, 4, 5, 7, 8, 9, 10
-              
-              CREATE [OR REPLACE] PACKAGE <имя пакета>
-              [AUTHID { CURRENT_USER | DEFINER }]
-              { IS | AS } 
-              FUNCTION <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
-              RETURN <тип возвр.данных> 
-              [DETERMINISTIC];
+  .. code-block::
+      :redlines: 6
+      :greenlines: 1, 2, 3, 4, 5, 7, 8, 9, 10
+      :caption: Oracle
+      
+      CREATE [OR REPLACE] PACKAGE <имя пакета>
+      [AUTHID { CURRENT_USER | DEFINER }]
+      { IS | AS } 
+      FUNCTION <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
+      RETURN <тип возвр.данных> 
+      [DETERMINISTIC];
 
-              [ <объявление процедуры>; 
-              | <объявление функции>;...];
-              END ;
+      [ <объявление процедуры>; 
+      | <объявление функции>;...];
+      END ;
 
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 9, 10, 11
-             
-             CREATE [OR ALTER] PACKAGE <имя пакета>
-             [SQL SECURITY {DEFINER | INVOKER}]
-             AS BEGIN
-             PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>]);
-             RETURNS (RET_VAL <тип возвр.знач.>,
-                      <OUT-параметр>_OUT [,...])
+  .. code-block:: 
+      :greenlines: 1, 2, 3, 4, 5, 6, 7, 9, 10, 11
+      :caption: Rdb
+      
+      CREATE [OR ALTER] PACKAGE <имя пакета>
+      [SQL SECURITY {DEFINER | INVOKER}]
+      AS BEGIN
+      PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>]);
+      RETURNS (RET_VAL <тип возвр.знач.>,
+              <OUT-параметр>_OUT [,...])
 
-             [ <объявление процедуры>; 
-             | <объявление функции>;...]
-             END ; 
+      [ <объявление процедуры>; 
+      | <объявление функции>;...]
+      END ; 
 
 При конвертации объявления пакетных функций с OUT параметрами выполняются следующие задачи:  
 
@@ -948,88 +1046,82 @@ PL/SQL имеет три типа коллекций:
 Реализация пакетной процедуры с IN параметрами
 """""""""""""""""""""""""""""""""""""""""""""""
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-              :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
-              
-              CREATE [ OR REPLACE ] 
-              PACKAGE BODY [<схема>.] <имя пакета>
-              { IS | AS } 
-                 PROCEDURE <имя> (<IN-пар.>[,<IN-пар.>])
-                 { IS | AS } [<объявление>]
-                 BEGIN
-                   <блок операторов>
-                 END  [<имя процедуры>] ;
+  .. code-block::
+    :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+    :caption: Oracle
+    
+    CREATE [ OR REPLACE ] 
+    PACKAGE BODY [<схема>.] <имя пакета>
+    { IS | AS } 
+        PROCEDURE <имя> (<IN-пар.>[,<IN-пар.>])
+        { IS | AS } [<объявление>]
+        BEGIN
+          <блок операторов>
+        END  [<имя процедуры>] ;
 
-                 [ <объявление|реализация процедуры>; 
-                 | <объявление|реализация функции>;...];
-              END [<имя пакета>] ;
-
-        - :ess:`Rdb`
+        [ <объявление|реализация процедуры>; 
+        | <объявление|реализация функции>;...];
+    END [<имя пакета>] ;
         
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
-             
-             RECREATE
-             PACKAGE BODY <имя пакета>
-             AS BEGIN
-                PROCEDURE <имя> (<IN-пар.>[,<IN-пар.>])
-                AS [<объявление>]
-                BEGIN
-                  <блок операторов>
-                END ;
+  .. code-block:: 
+    :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+    :caption: Rdb
+    
+    RECREATE
+    PACKAGE BODY <имя пакета>
+    AS BEGIN
+      PROCEDURE <имя> (<IN-пар.>[,<IN-пар.>])
+      AS [<объявление>]
+      BEGIN
+        <блок операторов>
+      END ;
 
-                [ <объявление|реализация процедуры>; 
-                | <объявление|реализация функции>;...];
-             END ; 
+      [ <объявление|реализация процедуры>; 
+      | <объявление|реализация функции>;...];
+    END ; 
 
 Реализация пакетной процедуры с OUT параметрами
 """""""""""""""""""""""""""""""""""""""""""""""
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-              :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
-              
-              CREATE [ OR REPLACE ] 
-              PACKAGE BODY [<схема>.] <имя пакета>
-              { IS | AS } 
-              PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
+  .. code-block::
+      :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+      :caption: Oracle
+      
+      CREATE [ OR REPLACE ] 
+      PACKAGE BODY [<схема>.] <имя пакета>
+      { IS | AS } 
+      PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
 
-              { IS | AS } [<объявление>]
-              BEGIN
-                  <блок операторов>
-              END  [<имя процедуры>] ;
+      { IS | AS } [<объявление>]
+      BEGIN
+          <блок операторов>
+      END  [<имя процедуры>] ;
 
-              [ <объявление|реализация процедуры>; 
-              | <объявление|реализация функции>;...];
-              END [<имя пакета>] ;
-
-        - :ess:`Rdb`
+      [ <объявление|реализация процедуры>; 
+      | <объявление|реализация функции>;...];
+      END [<имя пакета>] ;
         
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
-             
-             RECREATE
-             PACKAGE BODY <имя пакета>
-             AS BEGIN
-             PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
-             RETURNS (<OUT-пар.>_OUT [,...])
-             AS [<объявление>]
-             BEGIN
-                <блок операторов>
-             END;
+  .. code-block:: 
+      :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+      :caption: Rdb
+      
+      RECREATE
+      PACKAGE BODY <имя пакета>
+      AS BEGIN
+      PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
+      RETURNS (<OUT-пар.>_OUT [,...])
+      AS [<объявление>]
+      BEGIN
+        <блок операторов>
+      END;
 
-             [ <объявление|реализация процедуры>; 
-             | <объявление|реализация функции>;...];
-             END ; 
+      [ <объявление|реализация процедуры>; 
+      | <объявление|реализация функции>;...];
+      END ; 
 
 
 .. _subsec:func_defin:
@@ -1060,365 +1152,318 @@ PL/SQL имеет три типа коллекций:
 Реализация пакетной функции с IN параметрами
 """""""""""""""""""""""""""""""""""""""""""""
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-              :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
-              
-              CREATE [ OR REPLACE ] 
-              PACKAGE BODY [<схема>.] <имя пакета>
-              { IS | AS } 
-                 FUNCTION <имя> (<IN-пар.>[,<IN-пар.>]...)
-                   RETURN <тип данных> 
-                   [DETERMINISTIC]
-                 { IS | AS } [ <объявление> ]
-                 BEGIN
-                    <блок операторов> ...
-                 END [<имя процедуры>] ; 
+  .. code-block::
+    :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+    :caption: Oracle
+    
+    CREATE [ OR REPLACE ] 
+    PACKAGE BODY [<схема>.] <имя пакета>
+    { IS | AS } 
+        FUNCTION <имя> (<IN-пар.>[,<IN-пар.>]...)
+          RETURN <тип данных> 
+          [DETERMINISTIC]
+        { IS | AS } [ <объявление> ]
+        BEGIN
+          <блок операторов> ...
+        END [<имя процедуры>] ; 
 
-                 [ <объявление|реализация процедуры>; 
-                 | <объявление|реализация функции>;...];
-              END [<имя пакета>];
+        [ <объявление|реализация процедуры>; 
+        | <объявление|реализация функции>;...];
+    END [<имя пакета>];
 
-        - :ess:`Rdb`
         
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
-             
-             RECREATE
-             PACKAGE BODY <имя пакета>
-             AS BEGIN
-                FUNCTION <имя> (<IN-пар.> [,<IN-пар.>...])
-                  RETURNS <тип данных> 
-                  [DETERMINISTIC]
-                AS [<объявление>]
-                BEGIN
-                  <блок операторов>
-                END ;
+  .. code-block:: 
+    :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+    :caption: Rdb
+    
+    RECREATE
+    PACKAGE BODY <имя пакета>
+    AS BEGIN
+      FUNCTION <имя> (<IN-пар.> [,<IN-пар.>...])
+        RETURNS <тип данных> 
+        [DETERMINISTIC]
+      AS [<объявление>]
+      BEGIN
+        <блок операторов>
+      END ;
 
-                [ <объявление|реализация процедуры>; 
-                | <объявление|реализация функции>;...];
-             END ; 
+      [ <объявление|реализация процедуры>; 
+      | <объявление|реализация функции>;...];
+    END ; 
 
 Реализация пакетной функции с OUT параметрами
 """""""""""""""""""""""""""""""""""""""""""""
 
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-              :redlines: 7
-              :greenlines: 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15
-              
-              CREATE [ OR REPLACE ] 
-              PACKAGE BODY [<схема>.] <имя пакета>
-              { IS | AS } 
-                FUNCTION <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
-                RETURN <тип возвр.данных> 
+  .. code-block::
+    :redlines: 7
+    :greenlines: 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15
+    :caption: Oracle
+    
+    CREATE [ OR REPLACE ] 
+    PACKAGE BODY [<схема>.] <имя пакета>
+    { IS | AS } 
+      FUNCTION <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
+      RETURN <тип возвр.данных> 
 
-                [DETERMINISTIC]
-                { IS | AS } [<объявление>]
-                BEGIN
-                   <блок операторов>
-                END  [<имя процедуры>] ;
+      [DETERMINISTIC]
+      { IS | AS } [<объявление>]
+      BEGIN
+          <блок операторов>
+      END  [<имя процедуры>] ;
 
-                [ <объявление|реализация процедуры>; 
-                | <объявление|реализация функции>;...];
-              END [<имя пакета>];
+      [ <объявление|реализация процедуры>; 
+      | <объявление|реализация функции>;...];
+    END [<имя пакета>];
 
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-             
-             RECREATE
-             PACKAGE BODY <имя пакета>
-             AS BEGIN
-              PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
-              RETURNS ( <имя перем.><тип возвр.данных>,
-                        <OUT-пар.>_OUT ...)
+  .. code-block:: 
+    :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+    :caption: Rdb
+    
+    RECREATE
+    PACKAGE BODY <имя пакета>
+    AS BEGIN
+    PROCEDURE <имя> (<OUT-пар.>[,<IN|OUT-пар.>])
+    RETURNS ( <имя перем.><тип возвр.данных>,
+              <OUT-пар.>_OUT ...)
 
-              AS [<объявление>]
-              BEGIN
-                 <блок операторов>
-              END;
+    AS [<объявление>]
+    BEGIN
+        <блок операторов>
+    END;
 
-             [ <объявление|реализация процедуры>; 
-             | <объявление|реализация функции>;...];
-             END ; 
-
-
+    [ <объявление|реализация процедуры>; 
+    | <объявление|реализация функции>;...];
+    END ; 
 
 
 Оператор IF-THEN-ELSE 
 ------------------------
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-             :greenlines: 1,2,3,4,5,6,7,8,9,10
-             
-             IF <условие> 
-             THEN <оператор> [ <оператор> ]...
-             [ ELSIF <условие> 
-               THEN <оператор>[<оператор>]...]
+  .. code-block::
+      :greenlines: 1,2,3,4,5,6,7,8,9,10
+      :caption: Oracle
+      
+      IF <условие> 
+      THEN <оператор> [ <оператор> ]...
+      [ ELSIF <условие> 
+        THEN <оператор>[<оператор>]...]
 
-             [ ELSE <оператор> [<оператор>]...] 
-             END IF ;
+      [ ELSE <оператор> [<оператор>]...] 
+      END IF ;
                   
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1,2,3,4,5,6,7,8,9,10
-             
-             IF (<условие>)
-             THEN [BEGIN] <оператор>[<оператор>...]
-             [IF (<условие>) 
-              THEN [BEGIN]<оператор>[<оператор>]...[END]]
-             [END]
-             [ELSE [BEGIN] <оператор>[<оператор>..][END]];
-                                                         .
+  .. code-block:: 
+      :greenlines: 1,2,3,4,5,6,7,8,9,10
+      :caption: Rdb
+      
+      IF (<условие>)
+      THEN [BEGIN] <оператор>[<оператор>...]
+      [IF (<условие>) 
+      THEN [BEGIN]<оператор>[<оператор>]...[END]]
+      [END]
+      [ELSE [BEGIN] <оператор>[<оператор>..][END]];
+      :addline:
 
 
 Оператор WHILE LOOP
 ---------------------
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-             :greenlines: 1,2,3
-             
-             WHILE <выражение>
-             LOOP <оператор> [<оператор>...]
-             END LOOP [<метка>] ;
+  .. code-block::
+      :greenlines: 1,2,3
+      :caption: Oracle
+      
+      WHILE <выражение>
+      LOOP <оператор> [<оператор>...]
+      END LOOP [<метка>] ;
 
-                  
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1,2,3
-             
-             WHILE (<условие>) 
-             DO [BEGIN] <оператор> [<оператор>...]
-             [END] ;
+  .. code-block:: 
+      :greenlines: 1,2,3
+      :caption: Rdb
+      
+      WHILE (<условие>) 
+      DO [BEGIN] <оператор> [<оператор>...]
+      [END] ;
 
 
 Оператор FOR LOOP
 ---------------------
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-             :greenlines: 1,2,3,4,5
-             
-             FOR <имя переменной> 
-             IN <нижняя граница> .. <верхняя граница>
-             LOOP <оператор> [<оператор>...]
+  .. code-block::
+    :greenlines: 1,2,3,4,5
+    :caption: Oracle
+    
+    FOR <имя переменной> 
+    IN <нижняя граница> .. <верхняя граница>
+    LOOP <оператор> [<оператор>...]
 
-             END LOOP [<метка>] ;
+    END LOOP [<метка>] ;
 
-                  
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1,2,3,4,5
-             
-             <имя переменной> = <нижняя граница>;
-             WHILE (<имя переменной> <= <верхняя граница>) 
-             DO BEGIN <оператор> [<оператор>...]
-             <имя переменной> = <имя переменной>+1
-             END;
-
-
-.. list-table::
-      :class: borderless
+  .. code-block:: 
+      :greenlines: 1,2,3,4,5
+      :caption: Rdb
       
-      * - :ess:`Oracle`
+      <имя переменной> = <нижняя граница>;
+      WHILE (<имя переменной> <= <верхняя граница>) 
+      DO BEGIN <оператор> [<оператор>...]
+      <имя переменной> = <имя переменной>+1
+      END;
+
+
+.. container:: twocol
           
-          .. code-block::
-             :greenlines: 1,2,3,4,5
-             
-             FOR <имя переменной> 
-             IN REVERSE <нижн. граница>..<верх. граница>
-             LOOP <оператор> [<оператор>...]
+  .. code-block::
+    :greenlines: 1,2,3,4,5
+    :caption: Oracle
+    
+    FOR <имя переменной> 
+    IN REVERSE <нижн. граница>..<верх. граница>
+    LOOP <оператор> [<оператор>...]
 
-             END LOOP [<метка>] ;
-
-                  
-        - :ess:`Rdb`
+    END LOOP [<метка>] ;      
         
-          .. code-block:: 
-             :greenlines: 1,2,3,4,5
-             
-             <имя переменной> = <верхняя граница>;
-             WHILE (<имя переменной> >= <нижняя граница>) 
-             DO BEGIN <оператор> [<оператор>...] 
-             <имя переменной> = <имя переменной>-1
-             END;
-
-
-
+  .. code-block:: 
+    :greenlines: 1,2,3,4,5
+    :caption: Rdb
+    
+    <имя переменной> = <верхняя граница>;
+    WHILE (<имя переменной> >= <нижняя граница>) 
+    DO BEGIN <оператор> [<оператор>...] 
+    <имя переменной> = <имя переменной>-1
+    END;
 
 
 Оператор FOR LOOP для оператора SELECT
 -----------------------------------------
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-             :greenlines: 1,2,3,4
-             
-             FOR <имя переменной типа RECORD> 
-             IN (<SELECT-запрос>)
-             LOOP <оператор> [<оператор>...] 
-             END LOOP [<метка>] ;
+  .. code-block::
+    :greenlines: 1,2,3,4
+    :caption: Oracle
+    
+    FOR <имя переменной типа RECORD> 
+    IN (<SELECT-запрос>)
+    LOOP <оператор> [<оператор>...] 
+    END LOOP [<метка>] ;
 
-                  
-        - :ess:`Rdb`
         
-          .. code-block:: 
-             :greenlines: 1,2,3,4
-             
-             FOR <оператор SELECT>
-             INTO [:]<имя переменной типа RECORD>
-             DO <оператор> [<оператор>...] 
-             ;
+  .. code-block:: 
+    :greenlines: 1,2,3,4
+    :caption: Rdb
+    
+    FOR <оператор SELECT>
+    INTO [:]<имя переменной типа RECORD>
+    DO <оператор> [<оператор>...] 
+    ;
 
 
 Оператор LOOP
 ---------------
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-             :greenlines: 1,2,3
-             
-             LOOP 
-               <оператор> [<оператор>...]
-             END LOOP [<метка>] ;
+  .. code-block::
+    :greenlines: 1,2,3
+    :caption: Oracle
+    
+    LOOP 
+      <оператор> [<оператор>...]
+    END LOOP [<метка>] ;
 
-                  
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1,2,3
-             
-             WHILE (TRUE)
-             DO [BEGIN] <оператор> [<оператор>...]
-             [END] ;
+  .. code-block:: 
+      :greenlines: 1,2,3
+      :caption: Rdb
+      
+      WHILE (TRUE)
+      DO [BEGIN] <оператор> [<оператор>...]
+      [END] ;
 
 
 Оператор простого CASE
 -----------------------
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-             :greenlines: 1,2,3,4,5
-             
-             CASE <поисковое выражение>
-             WHEN <выражение 1> THEN <результат 1> ;
-             [WHEN <выражение 2> THEN <результат 2>;]...
-             [ELSE <значение по умолчанию>;]
-             END CASE [<<метка>>];
+  .. code-block::
+    :greenlines: 1,2,3,4,5
+    :caption: Oracle
+    
+    CASE <поисковое выражение>
+    WHEN <выражение 1> THEN <результат 1> ;
+    [WHEN <выражение 2> THEN <результат 2>;]...
+    [ELSE <значение по умолчанию>;]
+    END CASE [<<метка>>];
 
-                  
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1,2,3,4,5
-             
-             CASE <поисковое выражение>
-             WHEN <выражение 1> THEN <результат 1>
-             [WHEN <выражение 2> THEN <результат 2>]...
-             [ELSE <значение по умолчанию>]
-             END;
+  .. code-block:: 
+      :greenlines: 1,2,3,4,5
+      :caption: Rdb
+      
+      CASE <поисковое выражение>
+      WHEN <выражение 1> THEN <результат 1>
+      [WHEN <выражение 2> THEN <результат 2>]...
+      [ELSE <значение по умолчанию>]
+      END;
 
 
 Оператор поискового CASE
 --------------------------
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-             :greenlines: 1,2,3,4,5
-             
-             CASE
-             WHEN <лог.выражение_1> THEN <результат_1>;
-             [WHEN <лог.выражение_2> THEN <результат_2>;]
-             [ELSE <выражение по умолчанию>;]
-             END CASE [<<метка>>] ;
+  .. code-block::
+    :greenlines: 1,2,3,4,5
+    :caption: Oracle
+    
+    CASE
+    WHEN <лог.выражение_1> THEN <результат_1>;
+    [WHEN <лог.выражение_2> THEN <результат_2>;]
+    [ELSE <выражение по умолчанию>;]
+    END CASE [<<метка>>] ;
 
-                  
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1,2,3,4,5
+  .. code-block:: 
+      :greenlines: 1,2,3,4,5
+      :caption: Rdb
 
-             CASE
-             WHEN <лог.выражение_1> THEN <результат_1>
-             [WHEN <лог.выражение_2> THEN <результат_2>]..
-             [ELSE <выражение по умолчанию>]
-             END
+      CASE
+      WHEN <лог.выражение_1> THEN <результат_1>
+      [WHEN <лог.выражение_2> THEN <результат_2>]..
+      [ELSE <выражение по умолчанию>]
+      END
 
 
 Операторы перехода
 -------------------
 
 
-
-
-
 Оператор EXIT
 ^^^^^^^^^^^^^^
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-             :greenlines: 1
-             :redlines: 2
-             
-             EXIT [<метка>] 
-             [WHEN <булево выражение>] ;
+  .. code-block::
+    :greenlines: 1
+    :redlines: 2
+    :caption: Oracle
+    
+    EXIT [<метка>] 
+    [WHEN <булево выражение>] ;
 
-                  
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1
-             
-             EXIT;
-                                                  .
+  .. code-block:: 
+    :greenlines: 1
+    :caption: Rdb
+    
+    EXIT;
+    :addline:
 
 
 
@@ -1426,26 +1471,23 @@ PL/SQL имеет три типа коллекций:
 Оператор CONTINUE
 ^^^^^^^^^^^^^^^^^^^
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-             :greenlines: 1
-             :redlines: 2
-             
-             CONTINUE [<метка>] 
-             [WHEN <булево выражение>] ;
+  .. code-block::
+      :greenlines: 1
+      :redlines: 2
+      :caption: Oracle
+      
+      CONTINUE [<метка>] 
+      [WHEN <булево выражение>] ;
 
-                  
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1
-             
-             CONTINUE [<метка>];
-                                                   .
+
+  .. code-block:: 
+      :greenlines: 1
+      :caption: Rdb
+      
+      CONTINUE [<метка>];
+      :addline:
 
 
 
@@ -1458,23 +1500,19 @@ PL/SQL имеет три типа коллекций:
 Операция присваивания
 -----------------------
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-             :greenlines: 1
-             
-             <имя переменной> := <выражение>;
+  .. code-block::
+      :greenlines: 1
+      :caption: Oracle
+      
+      <имя переменной> := <выражение>;
 
-                  
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1
-             
-             <имя переменной> = <выражение>;
+  .. code-block:: 
+      :greenlines: 1
+      :caption: Rdb
+      
+      <имя переменной> = <выражение>;
 
 
 
@@ -1497,29 +1535,25 @@ PL/SQL имеет три типа коллекций:
     ] ;
 
                   
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-             :greenlines: 1,2
-             :redlines: 3
-             
-             EXECUTE IMMEDIATE '<оператор>'
-             [INTO { <имя перем-ой> [, <имя перем-ой>...]
-                   | <перемення типа RECORD>}];
+  .. code-block::
+    :greenlines: 1,2
+    :redlines: 3
+    :caption: Oracle
+    
+    EXECUTE IMMEDIATE '<оператор>'
+    [INTO { <имя перем-ой> [, <имя перем-ой>...]
+          | <перемення типа RECORD>}];
 
-                  
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1,2
-             :redlines: 3
-             
-             EXECUTE STATEMENT '<оператор>'
-             [INTO {[:]<имя перем-ой> [,[:]<имя перем-ой>]
-                   | <перемення типа RECORD> } ]
+  .. code-block:: 
+    :greenlines: 1,2
+    :redlines: 3
+    :caption: Rdb
+    
+    EXECUTE STATEMENT '<оператор>'
+    [INTO {[:]<имя перем-ой> [,[:]<имя перем-ой>]
+          | <перемення типа RECORD> } ]
 
 
 Оператор Pragma AUTONOMOUS_TRANSACTION
@@ -1527,29 +1561,282 @@ PL/SQL имеет три типа коллекций:
 
 
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. color-block::
-             
-             :green:`PRAGMA AUTONOMOUS_TRANSACTION;`
-                                                          .
+  .. color-block::
+    :caption: Oracle
+    
+    :green:`PRAGMA AUTONOMOUS_TRANSACTION;`:par:`c`
+    
 
-                  
-        - :ess:`Rdb`
-        
-          .. code-block::
-            :greenlines: 1,2
-            
-            IN AUTONOMOUS TRANSACTION DO
-            BEGIN <блок psql операторов> END
+  .. code-block::
+    :greenlines: 1,2
+    :caption: Rdb
+    
+    IN AUTONOMOUS TRANSACTION DO
+    BEGIN <блок psql операторов> END
+
+
+.. _sub:declare_exception:
+
+Работа с исключениями
+---------------------------
+
+В Oracle существуют два вида исключений:
+
+- системные исключения, объявленные в пакете ``STANDARD`` (например, ``NO_DATA_FOUND``, ``TOO_MANY_ROWS``, ``ZERO_DIVIDE`` и др.). 
+- пользовательские исключения, которые явно объявляются в анонимном блоке, процедуре, функции, триггере или пакете.
+
+Преобразование объявления пользовательских исключений рассмотрено в :numref:`подразделе %s <sub:userexception>`. 
+
+В РБД все исключения создаются глобально и видны каждой подпрограмме.
+Если при обработке PL/SQL блока (подпрограммы, пакета, триггера) встречаются системные исключения, 
+то при конвертации они создаются с одноименным именем в начале скрипта:
+
+.. _exam:new_exception:
+
+.. code-block:: sql
+  :caption: Oracle
+   
+  DECLARE
+     l_company_id INTEGER;
+  BEGIN
+     IF l_company_id IS NULL
+     THEN
+        RAISE VALUE_ERROR;
+     END IF;
+  END;
+
+.. code-block:: sql
+  :caption: to Rdb
+
+  CREATE EXCEPTION VALUE_ERROR 'ошибка числа или значения';
+  
+  EXECUTE BLOCK
+  AS 
+    DECLARE l_company_id INTEGER;
+  BEGIN
+    IF (:l_company_id IS NULL)
+    THEN
+        EXCEPTION VALUE_ERROR;
+  END;
+
+
+Ниже рассмотрены операции инициирования исключительных ситуаций и их обработка.
+
+Инициирование исключений
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Исключение может быть инициировано в подпрограмме Oracle тремя способами:
+
+- при обнаружении ошибки;
+- командой ``RAISE``;
+- встроенной процедурой ``RAISE_APPLICATION_ERROR``.
+
+Команда RAISE
+""""""""""""""
+
+Чтобы разработчик имел возможность самостоятельно инициировать именованные исключения, в Oracle 
+поддерживается команда ``RAISE``. С ее помощью можно инициировать как собственные, так и системные исключения. 
+Команда имеет три формы:
+
+.. code-block::
+   :greenlines: 1,2,3
+   :caption: Oracle
+
+   RAISE <имя_исключения>;
+   RAISE <имя_пакета.имя_исключения>;
+   RAISE;
+
+Первая форма (без имени пакета) может инициировать исключения, определенные в текущем блоке 
+(или в содержащем его блоке), а также системные исключения.
+
+Если исключение объявлено в пакете (но не в ``STANDARD``) и инициируется извне, имя исключения необходимо уточнить именем пакета.
+
+Третья форма ``RAISE`` не требует указывать имя исключения, но используется только в условии ``WHEN`` обработчика исключений. 
+Эта форма используется для повторного инициирования (передачи) перехваченного исключения.
+
+Команда ``RAISE`` аналогична оператору ``EXCEPTION`` в РБД:
+
+.. code-block::
+   :greenlines: 1
+   :caption: to Rdb
+
+   EXCEPTION <имя_исключения>;
+
+Пример можно найти :ref:`выше<exam:new_exception>`.
+
+
+Процедура RAISE_APPLICATION_ERROR
+"""""""""""""""""""""""""""""""""""
+
+Для инициирования исключений Oracle предоставляет процедуру ``RAISE_APPLICATION_ERROR``. 
+
+.. container:: twocol
+      
+  .. code-block::
+    :greenlines: 1, 2, 3, 4
+    :caption: Oracle
+
+    RAISE_APPLICATION_ERROR ( <код ошибки>, 
+                              '<текст ошибки>');
+    :addline:
+                                          
+  .. code-block:: 
+    :greenlines: 1, 2, 3 
+    :caption: Rdb
+    
+    CREATE EXCEPTION CUSTOM_EXCEPTION 'error';
+    ...
+    EXCEPTION CUSTOM_EXCEPTION('<текст ошиб.>');
+
+
+Ее преимущество перед командой ``RAISE`` заключается в том, что она позволяет связать с исключением сообщение об ошибке.
+
+При конвертации процедуры ``RAISE_APPLICATION_ERROR`` выполняются следующие задачи:
+
+1. *Создание нового исключения*
+
+   Если в коде встречаются процедуры ``RAISE_APPLICATION_ERROR``, создается исключение с именем ``CUSTOM_EXCEPTION``.
+2. *Замена на оператор*  ``EXCEPTION``
+
+   Вызов исключения процедурой ``RAISE_APPLICATION_ERROR`` заменяется оператором ``EXCEPTION CUSTOM_EXCEPTION`` с тем же текстом ошибки.
+
+
+.. code-block:: sql
+  :caption: Oracle
+
+  begin
+    raise_application_error(-20134, 'Неправильный номер паспорта');
+  end;
+
+.. code-block:: sql
+  :caption: to Rdb
+
+  CREATE EXCEPTION CUSTOM_EXCEPTION 'error';
+  
+  EXECUTE BLOCK 
+  AS
+  BEGIN
+     EXCEPTION CUSTOM_EXCEPTION ('Неправильный номер паспорта');
+  END;
+
+
+Обработка исключений (Exception Handler)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Для обработки ошибочных ситуаций базы данных и пользовательских исключений в PL/SQL используется конструкция ``EXCEPTION-WHEN-THEN``.
+Для РБД существует аналогичная конструкция ``WHEN-DO``, которая также добавляется в конце блока.
+
+.. container:: twocol
           
+  .. code-block::
+    :greenlines: 1,2,3,4,5,6,7,8,9,10
+    :caption: Oracle
+    
+    EXCEPTION
+      WHEN { <имя искл-я> 
+            [OR <имя искл-я>]... 
+          | OTHERS }
+      THEN 
+        <оператор>; [ <оператор>; ]...
+
+      [WHEN { <имя искл-я> [ OR <имя искл-я> ]... 
+          | OTHERS }
+      THEN <оператор>; [<оператор>;]...]
+      
+  .. code-block:: 
+    :greenlines: 1,2,3,4,5,6,7,8,9,10
+    :caption: Rdb
+    
+    /*EXCEPTION*/
+    WHEN { EXCEPTION <имя искл-я> 
+          [, EXCEPTION <имя искл-я> ...] 
+        | ANY }
+    DO [BEGIN] 
+        <оператор>; [ <оператор>; ]...
+    [END]
+    [WHEN {<имя искл-я> [, <имя искл-я>...] 
+          | ANY}
+    DO [BEGIN] <оператор>;[<оператор>;]...[END]]
+  	 
+При конвертации блока обработки исключений выполняются следующие задачи: 
+
+1. *Комментируется ключевое слово* ``EXCEPTION``
+   
+   Перед блоками ``WHEN`` ключевое слово ``EXCEPTION`` в РБД не применяется.
+2. *Добавление* ``EXCEPTION`` *перед именем исключения*
+   
+   В Oracle исключения перечисляются просто по имени, в РБД перед именем исключения добавляется ключевое слово ``EXCEPTION``.
+   
+3. *Замена логического оператора* ``OR`` 
+   
+   Если после ключевого слова ``WHEN`` перечисляются несколько исключений, то операторы ``OR`` заменяется на запятые.
+4. *Замена ключевого слова* ``OTHERS``
+   
+   Заменяется на аналогичное ему ``ANY``.
+5. *Замена ключевого слова* ``THEN``
+   
+   Заменяется на аналогичное ``DO BEGIN ... END``.
+
+.. code-block:: sql
+  :caption: Oracle
+
+  CREATE OR REPLACE PROCEDURE add_new_order
+    (order_id_in IN NUMBER, sales_in IN NUMBER)
+  IS
+    no_sales EXCEPTION;
+    bad_sales EXCEPTION;
+  BEGIN
+    IF sales_in = 0 THEN
+       RAISE no_sales;
+    ELSIF sales_in < 0 THEN
+       RAISE bad_sales;
+    ELSE
+       INSERT INTO orders (order_id, total_sales )
+       VALUES ( order_id_in, sales_in );
+    END IF;
+  EXCEPTION
+    WHEN no_sales or bad_sales THEN
+       raise_application_error (-20001,'У вас должны быть продажи по заказу, для закрытия заказа.');
+    WHEN OTHERS THEN
+       raise_application_error (-20002,'Произошла ошибка при добавлении заказа.');
+  END;
+
+
+.. code-block:: sql
+  :caption: to Rdb
+
+  CREATE EXCEPTION NO_SALES 'error';
+  CREATE EXCEPTION BAD_SALES 'error';
+  CREATE EXCEPTION CUSTOM_EXCEPTION 'error';
+
+  CREATE OR ALTER PROCEDURE add_new_order
+     (order_id_in  NUMERIC(34, 8), sales_in  NUMERIC(34, 8))
+  AS
+  BEGIN
+     IF (:sales_in = 0) THEN
+       EXCEPTION no_sales;
+     ELSE IF (:sales_in < 0) THEN
+       EXCEPTION bad_sales;
+     ELSE
+       INSERT INTO orders (order_id, total_sales )
+       VALUES ( :order_id_in, :sales_in );
+
+     /*EXCEPTION*/
+     WHEN EXCEPTION NO_SALES, EXCEPTION BAD_SALES DO
+     BEGIN
+       EXCEPTION CUSTOM_EXCEPTION ('У вас должны быть продажи по заказу, для закрытия заказа.');
+     END
+     WHEN ANY DO
+     BEGIN
+        EXCEPTION CUSTOM_EXCEPTION ('Произошла ошибка при добавлении заказа.');
+     END
+  END;
 
 
 Работа с курсорами
-------------------------
+-------------------
 
 Ниже рассмотрены основные операции для работы с курсорами: :ref:`открытие <subsec:open>`, :ref:`закрытие <subsec:close>`, 
 :ref:`извлечение данных <subsec:fetch>`, :ref:`оператор цикла <subsec:forloopcursor>`.
@@ -1564,22 +1851,18 @@ PL/SQL имеет три типа коллекций:
 
 Сравнение синтаксиса открытия курсора:
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. color-block::
-             
-             :green:`OPEN <имя курсора>` :red:`[(<список знач. парам.>)]`:green:`;`
+  .. color-block::
+    :caption: Oracle
+      
+      :green:`OPEN <имя курсора>` :red:`[(<список знач. парам.>)]`:green:`;` 
 
-                  
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1
-             
-             OPEN <имя курсора> ;
+  .. code-block:: 
+      :greenlines: 1
+      :caption: Rdb
+      
+      OPEN <имя курсора> ;
 
 :ess:`Замечание:`
 
@@ -1621,28 +1904,25 @@ PL/SQL имеет три типа коллекций:
 
 Сравнение синтаксиса закрытия курсора:
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-             :redlines: 2,3
-             :greenlines: 1
-             
-             CLOSE { <имя курсора> 
-                   | <имя переменной типа REF CURSOR> 
-                   | :<host_cursor_variable> } ;
+  .. code-block::
+    :redlines: 2,3
+    :greenlines: 1
+    :caption: Oracle
+    
+    CLOSE { <имя курсора> 
+          | <имя переменной типа REF CURSOR> 
+          | :<host_cursor_variable> } ;
 
-                  
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1
-             
-             CLOSE <имя курсора>;
 
-             :addline:
+  .. code-block:: 
+    :greenlines: 1
+    :caption: Rdb
+    
+    CLOSE <имя курсора>;
+
+    :addline:
 
 :ess:`Замечание:`
 
@@ -1655,38 +1935,34 @@ PL/SQL имеет три типа коллекций:
 
 Сравнение синтаксиса получения данных из курсора:
 
-.. list-table::
-      :class: borderless
-      
-      * - :ess:`Oracle`
+.. container:: twocol
           
-          .. code-block::
-             :redlines: 2,3,6,7
-             :greenlines: 1,4,5,8
-             
-             FETCH { <курсор>
-                   | <переменная курсора>
-                   | :<host_cursor_variable> }
-             { INTO { <переменная> [,<переменная>...]
-                    | <переменная типа RECORD>} 
-             | BULK COLLECT INTO <список коллекций> 
-               [LIMIT <числовое выражение>] 
-             };
+  .. code-block::
+      :redlines: 2,3,6,7
+      :greenlines: 1,4,5,8
+      :caption: Oracle
+      
+      FETCH { <курсор>
+            | <переменная курсора>
+            | :<host_cursor_variable> }
+      { INTO { <переменная> [,<переменная>...]
+            | <переменная типа RECORD>} 
+      | BULK COLLECT INTO <список коллекций> 
+        [LIMIT <числовое выражение>] 
+      };
 
-                  
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1,4,5
-             
-             FETCH <курсор>
-
-
-             [INTO { [:]<переменная>[,[:]<переменная>...]
-                   | <переменная типа RECORD>}];
+  .. code-block:: 
+      :greenlines: 1,4,5
+      :caption: Rdb
+      
+      FETCH <курсор>
 
 
-             :addline:
+      [INTO { [:]<переменная>[,[:]<переменная>...]
+            | <переменная типа RECORD>}];
+
+
+      :addline:
              
 
 :ess:`Замечание:`
@@ -1726,30 +2002,27 @@ PL/SQL имеет три типа коллекций:
    Чтобы имитировать работу цикла ``FOR`` в Oracle, создается цикл ``WHILE`` с условием для контекстной переменной ``ROW_COUNT`` - 
    она не должна быть нулевой. В конце цикла добавляется оператор ``FETCH`` для извлечения следующего набора данных.
 
-   .. list-table::
-      :class: borderless
+   .. container:: twocol
       
-      * - :ess:`Oracle`
-      
-          .. code-block::
-            :greenlines: 1, 2, 3, 4, 5
-             
-            FOR <перем. цикла> IN <имя курсора> 
-            LOOP
-               <оператор> [<оператор>...] 
-
-            END LOOP;
-  	                                                        
-        - :ess:`Rdb`
+    .. code-block::
+      :greenlines: 1, 2, 3, 4, 5
+      :caption: Oracle
         
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5
-             
-             WHILE ( ROW_COUNT != 0 ) DO
-             BEGIN  
-              <оператор> [<оператор>...] 
-              FETCH <имя курсора> INTO <пер.цикла>;
-             END 
+      FOR <перем. цикла> IN <имя курсора> 
+      LOOP
+          <оператор> [<оператор>...] 
+
+      END LOOP;
+
+    .. code-block:: 
+      :greenlines: 1, 2, 3, 4, 5
+      :caption: Rdb
+      
+      WHILE ( ROW_COUNT != 0 ) DO
+      BEGIN  
+      <оператор> [<оператор>...] 
+      FETCH <имя курсора> INTO <пер.цикла>;
+      END 
 
 2. *Добавление переменной цикла*
    
@@ -1836,25 +2109,21 @@ PL/SQL имеет три типа коллекций:
 добавлены, изменены или удалены в процессе выполнения предыдущего оператора SQL. 
 При конвертации атрибут ``%ROWCOUNT`` заменяется на неё.
 
-.. list-table::
-      :class: borderless
+.. container:: twocol
       
-      * - :ess:`Oracle`
-      
-          .. code-block::
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-             
-             <имя курсора>%ROWCOUNT
-                                                             
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-             
-             ROW_COUNT
+  .. code-block::
+    :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+    :caption: Oracle
+    
+    <имя курсора>%ROWCOUNT
+                                                      
+  .. code-block:: 
+    :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+    :caption: Rdb
+    
+    ROW_COUNT
 
-
-           
+         
 
 
 .. code-block:: sql
@@ -1906,22 +2175,19 @@ PL/SQL имеет три типа коллекций:
 добавлены, изменены или удалены в процессе выполнения предыдущего оператора SQL. 
 При конвертации атрибут ``%FOUND`` заменяется на выражение ``ROW_COUNT != 0``.
 
-.. list-table::
-      :class: borderless
+.. container:: twocol
       
-      * - :ess:`Oracle`
-      
-          .. code-block::
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-             
-             <имя курсора>%FOUND
-                                                             
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-             
-             ROW_COUNT != 0
+  .. code-block::
+    :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+    :caption: Oracle
+    
+    <имя курсора>%FOUND
+
+  .. code-block:: 
+    :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+    :caption: Rdb
+    
+    ROW_COUNT != 0
 
 
 .. code-block:: sql
@@ -1976,22 +2242,19 @@ PL/SQL имеет три типа коллекций:
 При конвертации атрибут ``%NOTFOUND`` заменяется на выражение ``ROW_COUNT != 1``.
 
 
-.. list-table::
-      :class: borderless
+.. container:: twocol
       
-      * - :ess:`Oracle`
-      
-          .. code-block::
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-             
-             <имя курсора>%NOTFOUND
-                                                             
-        - :ess:`Rdb`
-        
-          .. code-block:: 
-             :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-             
-             ROW_COUNT != 1
+  .. code-block::
+    :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+    :caption: Oracle
+    
+    <имя курсора>%NOTFOUND
+                                                    
+  .. code-block:: 
+    :greenlines: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+    :caption: Rdb
+    
+    ROW_COUNT != 1
 
 
 .. code-block:: sql

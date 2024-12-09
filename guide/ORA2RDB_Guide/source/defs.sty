@@ -58,6 +58,8 @@
 \tcbuselibrary{most}
 
 
+
+
 % чтобы разделы в оглавлении были не жирным а обычным шрифтом
 \makeatletter 
 \renewcommand*\l@section[2]{% 
@@ -183,7 +185,7 @@
 	   pre_border-radius=5pt,
 	   pre_border-TeXcolor = black!90,
 	   pre_background-TeXcolor = white!98!black,
-	   pre_box-shadow = 1pt 1pt,
+	   pre_box-shadow = 0.9pt 0.9pt,
 	   pre_box-shadow-TeXcolor=gray!90,
 	   pre_padding=-0.5pt,
 	   pre_padding-left=-4pt,
@@ -255,7 +257,7 @@
 
 \makeatletter 
 \def\dottednumberline#1{\hb@xt@\@tempdima{#1}}
-\renewcommand{\l@paragraph}[2]{{\@dottedtocline{2}{8.6em}{2em}{#1}{#2}}}
+\renewcommand{\l@paragraph}[2]{{\@dottedtocline{2}{7em}{4em}{#1}{#2}}}
 \makeatother
 
 
@@ -274,7 +276,7 @@
 	nobreak=false,
 	rightmargin=0pt,
 	align=right, 
-	shadowcolor=gray!90,
+	shadowcolor=black!90,
 	linecolor=black!90,
 	linewidth=0.3pt,
 }
@@ -285,3 +287,7 @@
 
 \renewenvironment{sphinxalltt}[1]
 {\begin{mdframed}\begin{alltt}\small}{\end{alltt}\end{mdframed}} % рамка для parsed-literal
+
+
+\newenvironment{sphinxclasstwocol}
+{\begin{multicols}{2}\raggedright}{\raggedcolumns\end{multicols}}

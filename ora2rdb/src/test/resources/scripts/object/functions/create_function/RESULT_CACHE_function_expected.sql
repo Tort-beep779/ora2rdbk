@@ -1,0 +1,6 @@
+CREATE FUNCTION loan_info_for_name (NAME_IN VARCHAR)
+    RETURNS NUMERIC
+AS
+BEGIN
+
+END ;

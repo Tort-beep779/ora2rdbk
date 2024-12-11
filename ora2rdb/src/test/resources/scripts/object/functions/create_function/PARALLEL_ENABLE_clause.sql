@@ -1,0 +1,6 @@
+CREATE FUNCTION pipe_employees
+    RETURN NUMBER
+        PARALLEL_ENABLE  IS
+BEGIN
+    null;
+END;

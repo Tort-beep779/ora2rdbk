@@ -1,0 +1,7 @@
+CREATE FUNCTION loan_info_for_name (NAME_IN VARCHAR2)
+    RETURN NUMBER
+        RESULT_CACHE
+IS
+BEGIN
+    NULL;
+END ;

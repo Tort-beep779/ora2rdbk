@@ -1,0 +1,6 @@
+CREATE FUNCTION pipe_employees
+    RETURNS NUMERIC
+    AS
+BEGIN
+
+END;

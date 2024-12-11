@@ -1,6 +1,6 @@
-CREATE OR ALTER PROCEDURE procedure_name
+CREATE PROCEDURE procedure_name
     SQL SECURITY DEFINER
-    AS
+AS
 BEGIN
-   RDB$TRACE_MSG('some text' , false);
+
 END;

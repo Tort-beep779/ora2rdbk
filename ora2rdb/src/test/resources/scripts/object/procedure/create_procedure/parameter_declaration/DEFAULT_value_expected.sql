@@ -1,9 +1,6 @@
-CREATE OR ALTER PROCEDURE pr
-    (
-    first_name_in VARCHAR DEFAULT 'IVAN'
-    )
+CREATE OR ALTER PROCEDURE pr (first_name_in VARCHAR DEFAULT 'IVAN')
     SQL SECURITY DEFINER
-    AS
+AS
 BEGIN
-	RDB$TRACE_MSG(first_name_in, false);
+
 END;

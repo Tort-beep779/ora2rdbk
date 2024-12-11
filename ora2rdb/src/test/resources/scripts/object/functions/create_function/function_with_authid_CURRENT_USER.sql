@@ -1,7 +1,7 @@
 CREATE FUNCTION degree
     RETURN NUMBER
         authid current_user
-   IS
+IS
 BEGIN
 null;
 END;

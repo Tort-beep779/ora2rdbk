@@ -1,8 +1,5 @@
-CREATE PROCEDURE pr
-(
- first_name_in VARCHAR DEFAULT 'IVAN'
- )
+CREATE PROCEDURE pr ( first_name_in VARCHAR DEFAULT 'IVAN')
 IS
 BEGIN
-    DBMS_OUTPUT.PUT_LINE(first_name_in);
+    null;
 END;

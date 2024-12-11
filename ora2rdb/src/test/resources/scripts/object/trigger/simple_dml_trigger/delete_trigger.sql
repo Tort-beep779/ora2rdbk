@@ -1,6 +1,6 @@
-create or replace trigger tr_turtles_bue
-before delete
-on turtles
-begin
- DBMS_OUTPUT.PUT_LINE('update turtles');
-end;
+CREATE TRIGGER TR_TURTLES_BUE
+BEFORE DELETE
+ON TURTLES
+BEGIN
+NULL;
+END;

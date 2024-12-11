@@ -1,9 +1,11 @@
--- Warning: this is a row trigger
-create or ALTER trigger tr_turtles_bue
-before insert
-on turtles
+-- WARNING: THIS IS A ROW TRIGGER
+CREATE TRIGGER TR_TURTLES_BUE
+BEFORE INSERT
+ON TURTLES
 AS
 BEGIN
-    IF (new.name = 'Сплинтер' and old.essence = 'Крыса' and new.essence = 'Сэнсэй') THEN
-        DBMS_OUTPUT.PUT_LINE('update turtles');
+    IF (NEW.NAME = 'СПЛИНТЕР' AND OLD.ESSENCE = 'КРЫСА' AND NEW.ESSENCE = 'СЭНСЭЙ') THEN BEGIN
+
+    END
+
 END;

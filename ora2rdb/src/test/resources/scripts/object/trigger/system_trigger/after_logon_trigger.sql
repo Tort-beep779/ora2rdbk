@@ -1,5 +1,5 @@
-CREATE TRIGGER logon_trigger
+CREATE TRIGGER LOGON_TRIGGER
 AFTER LOGON ON DATABASE
 BEGIN
-   DBMS_OUTPUT.PUT_LINE('User logged into the database.');
-END logon_trigger;
+   NULL
+END;

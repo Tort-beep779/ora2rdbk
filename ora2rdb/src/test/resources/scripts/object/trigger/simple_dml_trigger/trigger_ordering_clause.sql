@@ -1,14 +1,14 @@
-create or replace TRIGGER t
-  before INSERT
+CREATE TRIGGER T
+  BEFORE INSERT
 ON TURTLES
-  follows t2
+  FOLLOWS T2
 BEGIN
-      DBMS_OUTPUT.PUT_LINE('trigger t is worked');
+NULL;
 END;
 
-create or replace TRIGGER t2
-  before INSERT
+CREATE TRIGGER T2
+  BEFORE INSERT
 ON TURTLES
 BEGIN
-    DBMS_OUTPUT.PUT_LINE('trigger t2 is worked');
+NULL;
 END;

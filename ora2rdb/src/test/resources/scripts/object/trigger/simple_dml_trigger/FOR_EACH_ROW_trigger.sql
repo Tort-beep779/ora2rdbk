@@ -1,6 +1,6 @@
-create or replace trigger tr_turtles_bue
-before insert on turtles
-for each row
-begin
-    DBMS_OUTPUT.PUT_LINE('update turtles');
-end;
+CREATE TRIGGER TR_TURTLES_BUE
+BEFORE INSERT ON TURTLES
+FOR EACH ROW
+BEGIN
+    NULL;
+END;

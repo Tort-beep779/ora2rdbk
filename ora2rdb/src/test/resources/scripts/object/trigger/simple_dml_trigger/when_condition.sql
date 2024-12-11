@@ -1,9 +1,9 @@
-create or replace trigger tr_turtles_bue
-before insert
-on turtles
-when (
- new.name = 'Сплинтер' and old.essence = 'Крыса' and new.essence = 'Сэнсэй'
+CREATE TRIGGER TR_TURTLES_BUE
+BEFORE INSERT
+ON TURTLES
+WHEN (
+ NEW.NAME = 'СПЛИНТЕР' AND OLD.ESSENCE = 'КРЫСА' AND NEW.ESSENCE = 'СЭНСЭЙ'
 )
-begin
- DBMS_OUTPUT.PUT_LINE('update turtles');
-end;
+BEGIN
+NULL;
+END;

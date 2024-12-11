@@ -1,19 +1,19 @@
--- Warning: this is a row trigger
-create or alter TRIGGER t
-  before
-    INSERT
-  ON TURTLES
-  position 1
-as BEGIN
-      RDB$TRACE_MSG('trigger t is worked'  , false);
+-- WARNING: THIS IS A ROW TRIGGER
+CREATE TRIGGER T
+  BEFORE INSERT
+ON TURTLES
+  POSITION 1
+AS
+BEGIN
+
 END;
--- Warning: this is a row trigger
-create or alter TRIGGER t2
-  before
-    INSERT
-  ON TURTLES
-  position 0
-as BEGIN
-      RDB$TRACE_MSG('trigger t2 is worked'  , false);
+
+-- WARNING: THIS IS A ROW TRIGGER
+CREATE TRIGGER T2
+  BEFORE INSERT
+ON TURTLES
+  POSITION 0
+AS
+BEGIN
+
 END;
--- обязательно задать подицию для каждого триггера

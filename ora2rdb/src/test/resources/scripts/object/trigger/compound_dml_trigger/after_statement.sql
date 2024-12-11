@@ -1,4 +1,4 @@
-create or replace trigger comp_test
+CREATE TRIGGER comp_test
 for insert or update or delete on emp_test
     compound trigger
     after statement is begin

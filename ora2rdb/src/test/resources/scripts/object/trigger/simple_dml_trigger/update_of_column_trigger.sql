@@ -1,6 +1,6 @@
-create or replace trigger tr_turtles_bue
-before update of essence
-       on turtles
-begin
- RDB$TRACE_MSG('trigger on turtles is worked' , false);
-end;
+CREATE TRIGGER TR_TURTLES_BUE
+BEFORE UPDATE OF ESSENCE
+       ON TURTLES
+BEGIN
+NULL;
+END;

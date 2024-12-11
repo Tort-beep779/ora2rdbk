@@ -1,0 +1,6 @@
+CREATE FUNCTION get_bal(acc_no IN NUMBER)
+    RETURN NUMBER
+        IS
+BEGIN
+    NULL;
+END;

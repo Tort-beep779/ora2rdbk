@@ -1,0 +1,6 @@
+CREATE FUNCTION hr.get_bal
+   RETURN NUMBER
+   IS
+BEGIN
+    NULL;
+END;

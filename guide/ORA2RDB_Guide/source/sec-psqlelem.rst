@@ -1469,56 +1469,322 @@ PL/SQL имеет три типа коллекций:
      :r = FUN_RET_VAL;
    END;
 
-Оператор IF-THEN-ELSE 
+Оператор ``IF`` 
 ------------------------
+
+Оператор ``IF`` в Oracle имеет следующую структуру:
+
+.. code-block::
+    :greenlines: 1,2,3,4,5,6,7,8,9,10
+    :caption: Oracle
+    
+    IF <условие_1> 
+    THEN <группа_операторов_1>
+    [ ELSIF <условие_2> 
+      THEN <группа_операторов_2>]
+    [ ELSIF <условие_3> 
+      THEN <группа_операторов_3>]
+    ...
+    [ ELSE <группа_операторов_else> ]
+    END IF;
+
+Рассмотрим разные варианты применения оператора и сравним синтаксис с СУБД Ред База Данных.
+
+
+Преобразование оператора ``IF`` без условия ``ELSIF``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Сравним синтаксис оператора ``IF-THEN-ELSE``:
 
 .. container:: twocol
           
   .. code-block::
-      :greenlines: 1,2,3,4,5,6,7,8,9,10
+      :greenlines: 1,2,3,4
       :caption: Oracle
       
-      IF <условие> 
-      THEN <оператор> [ <оператор> ]...
-      [ ELSIF <условие> 
-        THEN <оператор>[<оператор>]...]
-
-      [ ELSE <оператор> [<оператор>]...] 
-      END IF ;
+      IF <условие_1> 
+      THEN <группа_операторов_1>
+      [ELSE <группа_операторов_else>]
+      END IF;
                   
   .. code-block:: 
-      :greenlines: 1,2,3,4,5,6,7,8,9,10
+      :greenlines: 1,2,3
       :caption: Rdb
       
-      IF (<условие>)
-      THEN [BEGIN] <оператор>[<оператор>...]
-      [IF (<условие>) 
-      THEN [BEGIN]<оператор>[<оператор>]...[END]]
-      [END]
-      [ELSE [BEGIN] <оператор>[<оператор>..][END]];
+      IF (<условие_1>)
+      THEN [BEGIN] <группа_операторов_1> [END]
+      [ELSE [BEGIN] <группа_операторов_else> [END]]
       :addline:
+
+При конвертации оператора ``IF-THEN-ELSE`` выполняются следующие задачи:
+
+1. *Условие заключается в скобки*
+   
+   В РБД условие ``IF`` должно быть заключено в круглые скобки.
+
+2. *Объединение операторов в блок* ``BEGIN-END``
+
+   Если в группе операторов, следующих за ключевым словом ``THEN`` или ``ELSE``, 
+   содержится более одного оператора, то эта группа заключается в блок ``BEGIN-END``.
+
+3. *Удаление* ``END IF;``
+   
+   В РБД ключевые слова ``END IF;`` отсутствуют в операторе ``IF``.
+
+.. container:: twocol
+
+  .. code-block:: sql
+    :caption: Oracle
+
+    DECLARE
+      PROCEDURE p ( sales  NUMBER, 
+                    quota  NUMBER, 
+                    emp_id NUMBER)
+      IS
+        bonus  NUMBER := 0;
+        updated  VARCHAR2(3) := 'No';
+      BEGIN
+        IF sales > (quota + 200) 
+        THEN
+          bonus := (sales - quota)/4;
+          updated := 'Yes';
+        ELSE
+          IF sales > quota 
+          THEN
+            bonus := 50;
+            updated := 'Yes';
+          ELSE
+            bonus := 0;
+          END IF;
+        END IF;
+        UPDATE emplo
+          SET salary = salary + bonus
+          WHERE employee_id = emp_id ;
+      END p;
+    BEGIN
+      p(10100, 10000, 120);
+      p(10500, 10000, 121);
+      p(9500, 10000, 122);
+    END;
+
+  .. code-block:: sql
+    :caption: to Rdb
+
+    EXECUTE BLOCK AS    
+      DECLARE PROCEDURE p (sales NUMERIC(34, 8), 
+                           quota NUMERIC(34, 8), 
+                           emp_id NUMERIC(34, 8))
+      AS
+        DECLARE bonus  NUMERIC(34, 8) = 0;
+        DECLARE updated  VARCHAR(3) = 'No';
+      BEGIN
+        IF (:sales > (:quota + 200)) 
+        THEN BEGIN
+          bonus = (:sales - :quota)/4;
+          updated = 'Yes';
+        END
+        ELSE
+          IF (:sales > :quota) 
+          THEN BEGIN
+            bonus = 50;
+            updated = 'Yes';
+          END
+          ELSE
+            bonus = 0;
+        UPDATE emplo
+          SET salary = salary + :bonus
+          WHERE employee_id = :emp_id ;
+      END /*p*/
+    BEGIN
+      EXECUTE PROCEDURE p(10100, 10000, 120);
+      EXECUTE PROCEDURE p(10500, 10000, 121);
+      EXECUTE PROCEDURE p(9500, 10000, 122);
+    END;
+
+Преобразование оператора ``IF`` c условием ``ELSIF``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Сравним синтаксис оператора ``IF-THEN-ELSIF-ELSE``:
+
+.. container:: twocol
+          
+  .. code-block::
+    :greenlines: 1,2,3,4,5,6,7,8,9,10, 11
+    :caption: Oracle
+    
+    IF <условие_1> 
+    THEN <группа_операторов_1>
+    ELSIF <условие_2> 
+
+    THEN <группа_операторов_2>
+    ELSIF <условие_3> 
+
+    THEN <группа_операторов_3>
+    ...
+    [ ELSE <группа_операторов_else> ]
+    END IF;
+                  
+  .. code-block:: 
+    :greenlines: 1,2,3,4,5,6,7,8,9,10
+    :caption: Rdb
+      
+    IF (<условие_1>)
+    THEN [BEGIN] <группа_операторов_1> [END]
+    ELSE 
+      IF (<условие_2>)
+      THEN [BEGIN] <группа_операторов_2> [END]
+      ELSE 
+        IF (<условие_3>)
+        THEN [BEGIN] <группа_операторов_3> [END]
+        ...
+        [ELSE [BEGIN] <группа_операт_else> [END]]
+    :addline:
+
+
+При конвертации оператора ``IF-THEN-ELSE`` c условием ``ELSIF`` выполняются следующие задачи:
+
+1. *Преобразование во вложенный оператор* ``IF-THEN-ELSE``
+   
+   Ввиду отсутствия в РБД конструкции ``ELSIF``, оператор ``IF`` преобразуется во вложенный (``ELSE-IF``). 
+
+2. *Условия заключается в скобки*
+   
+   В РБД условия ``IF`` и ``ELSIF`` должны быть заключены в круглые скобки.
+
+3. *Объединение операторов в блок* ``BEGIN-END``
+
+   Если в группе операторов, следующих за ключевым словом ``THEN`` или ``ELSE``, 
+   содержится более одного оператора, то эта группа заключается в блок ``BEGIN-END``.
+
+4. *Удаление* ``END IF;``
+   
+   В РБД ключевые слова ``END IF;`` отсутствуют в операторе ``IF``.
+
+.. container:: twocol
+
+  .. code-block:: sql
+    :caption: Oracle
+
+    CREATE FUNCTION grade_meaning (grade CHAR)
+    RETURN VARCHAR2
+    IS
+      pass BOOLEAN := True;
+      res char(15) := '';
+    BEGIN
+      IF grade = 'A' THEN
+        res := 'Excellent'; pass := True;
+      ELSIF grade = 'B' THEN
+        res := 'Very Good'; pass := True;
+      ELSIF grade = 'C' THEN
+        res := 'Good'; pass := True;
+      ELSIF grade = 'D' THEN
+        res := 'Fair'; pass := False;
+      ELSIF grade = 'F' THEN
+        res := 'Poor'; pass := False;
+      ELSE
+        res := 'Error'; pass := False;
+      END IF;
+      RETURN res;
+    END;
+
+  .. code-block:: sql
+    :caption: to Rdb
+
+    CREATE FUNCTION grade_meaning (grade CHAR)
+    RETURNS VARCHAR(32765)
+    AS
+      DECLARE pass BOOLEAN = True;
+      DECLARE res char(15) = '';
+    BEGIN
+      IF (:grade = 'A') THEN
+      BEGIN res = 'Excellent'; pass = True; END
+      ELSE IF (:grade = 'B') THEN
+      BEGIN res = 'Very Good'; pass = True; END
+      ELSE IF (:grade = 'C') THEN 
+      BEGIN res = 'Good'; pass = True; END
+      ELSE IF (:grade = 'D') THEN 
+      BEGIN res = 'Fair'; pass = False; END
+      ELSE IF (:grade = 'F') THEN 
+      BEGIN res = 'Poor'; pass = False; END
+      ELSE 
+      BEGIN res = 'Error'; pass = False; END
+
+      RETURN res;
+    END;
 
 
 Оператор WHILE LOOP
 ---------------------
 
+Сравним синтаксис оператора цикла ``WHILE``:
+
 .. container:: twocol
           
-  .. code-block::
-      :greenlines: 1,2,3
+  .. color-block::
       :caption: Oracle
       
-      WHILE <выражение>
-      LOOP <оператор> [<оператор>...]
-      END LOOP [<метка>] ;
+      :green:`WHILE <условие>`
+      :green:`LOOP`
+        :green:`<группа_операторов>`
+      :green:`END LOOP` :red:`[<метка>]` :green:`;`
 
   .. code-block:: 
       :greenlines: 1,2,3
       :caption: Rdb
       
       WHILE (<условие>) 
-      DO [BEGIN] <оператор> [<оператор>...]
-      [END] ;
+      DO 
+        [BEGIN] <группа_операторов> [END]
+      :addline:
+
+При конвертации оператора ``WHILE`` выполняются следующие задачи:
+
+1. *Условие заключается в скобки*
+
+   В РБД условное выражение после ключевого слова ``WHILE`` должно быть заключено в круглые скобки.
+
+2. *Замена ключевого слова* ``LOOP``
+   
+   Ключевое слово ``LOOP`` заменяется на ключевое слово ``DO``.
+
+3. *Объединение операторов в блок* ``BEGIN-END``
+
+   Если в группе операторов, следующих за ключевым словом ``LOOP``, 
+   содержится более одного оператора, то эта группа заключается в блок ``BEGIN-END``.
+
+4. *Удаление* ``END LOOP;``
+   
+   В РБД ключевые слова ``END LOOP;`` не применяются.
+
+5. *Метка комментируется*
+
+   Если в конце оператора присутствует метка, она комментируется.
+
+.. container:: twocol
+          
+  .. code-block:: sql
+     :caption: Oracle
+
+     DECLARE
+       counter NUMBER := 1;
+     BEGIN
+       WHILE counter <= 5
+       LOOP
+         counter := counter + 1;
+       END LOOP;
+     END;
+
+  .. code-block:: sql
+     :caption: to RDB
+
+     EXECUTE BLOCK AS 
+       DECLARE counter NUMERIC(34, 8) = 1;
+     BEGIN
+       WHILE (:counter <= 5) 
+       DO BEGIN
+         counter = :counter + 1;
+       END
+     END;
 
 
 Оператор FOR LOOP

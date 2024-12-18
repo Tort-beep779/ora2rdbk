@@ -63,6 +63,8 @@ latex_elements = {
 \newcommand{\DUrolegreen}[1]{{\textcolor{green!40!black}{#1}}}
 \newcommand{\DUrolegreenbf}[1]{{\color{green!40!black}{\footnotesize\normalfont\textbf{#1}}}}
 \newcommand{\DUrolepar}[1]{{\par{}}}
+\newcommand{\DUrolenewline}[1]{{ }}
+\newcommand{\DUrolenoindent}[1]{{\setlength{\parindent}{0pt}#1}}
 """,
 'hyperref' : r'''
 \usepackage[colorlinks=true,linkcolor=blue]{hyperref}
@@ -165,5 +167,7 @@ rst_prolog = """
 .. role:: green
 .. role:: greenbf
 .. role:: par
+.. role:: newline
+.. role:: noindent
 """
 

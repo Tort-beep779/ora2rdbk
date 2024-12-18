@@ -1671,16 +1671,16 @@ PL/SQL имеет три типа коллекций:
       pass BOOLEAN := True;
       res char(15) := '';
     BEGIN
-      IF grade = 'A' THEN
-        res := 'Excellent'; pass := True;
-      ELSIF grade = 'B' THEN
-        res := 'Very Good'; pass := True;
-      ELSIF grade = 'C' THEN
-        res := 'Good'; pass := True;
-      ELSIF grade = 'D' THEN
-        res := 'Fair'; pass := False;
-      ELSIF grade = 'F' THEN
-        res := 'Poor'; pass := False;
+      IF grade = 'A' 
+      THEN res := 'Excellent'; pass := True;
+      ELSIF grade = 'B'
+      THEN res := 'Very Good'; pass := True;
+      ELSIF grade = 'C'
+      THEN res := 'Good'; pass := True;
+      ELSIF grade = 'D' 
+      THEN res := 'Fair'; pass := False;
+      ELSIF grade = 'F' 
+      THEN res := 'Poor'; pass := False;
       ELSE
         res := 'Error'; pass := False;
       END IF;
@@ -1696,22 +1696,21 @@ PL/SQL имеет три типа коллекций:
       DECLARE pass BOOLEAN = True;
       DECLARE res char(15) = '';
     BEGIN
-      IF (:grade = 'A') THEN
-      BEGIN res = 'Excellent'; pass = True; END
-      ELSE IF (:grade = 'B') THEN
-      BEGIN res = 'Very Good'; pass = True; END
-      ELSE IF (:grade = 'C') THEN 
-      BEGIN res = 'Good'; pass = True; END
-      ELSE IF (:grade = 'D') THEN 
-      BEGIN res = 'Fair'; pass = False; END
-      ELSE IF (:grade = 'F') THEN 
-      BEGIN res = 'Poor'; pass = False; END
+      IF (grade = 'A')
+      THEN BEGIN res='Excellent';pass=True; END
+      ELSE IF (grade = 'B') 
+      THEN BEGIN res='Very Good';pass=True; END
+      ELSE IF (grade = 'C') 
+      THEN BEGIN res = 'Good'; pass = True; END
+      ELSE IF (grade = 'D') 
+      THEN BEGIN res = 'Fair'; pass = False; END
+      ELSE IF (grade = 'F') 
+      THEN BEGIN res = 'Poor'; pass = False; END
       ELSE 
-      BEGIN res = 'Error'; pass = False; END
+        BEGIN res = 'Error'; pass = False; END
 
       RETURN res;
     END;
-
 
 Оператор WHILE LOOP
 ---------------------
@@ -1790,149 +1789,539 @@ PL/SQL имеет три типа коллекций:
 Оператор FOR LOOP
 ---------------------
 
-.. container:: twocol
-          
-  .. code-block::
-    :greenlines: 1,2,3,4,5
-    :caption: Oracle
-    
-    FOR <имя переменной> 
-    IN <нижняя граница> .. <верхняя граница>
-    LOOP <оператор> [<оператор>...]
-
-    END LOOP [<метка>] ;
-
-  .. code-block:: 
-      :greenlines: 1,2,3,4,5
-      :caption: Rdb
-      
-      <имя переменной> = <нижняя граница>;
-      WHILE (<имя переменной> <= <верхняя граница>) 
-      DO BEGIN <оператор> [<оператор>...]
-      <имя переменной> = <имя переменной>+1
-      END;
-
+В Oracle/PLSQL цикл ``FOR LOOP`` позволяет выполнить код повторно в течение фиксированного количества раз.
+В РБД подобного оператора не существует, но его можно легко заменить на оператор ``WHILE-DO``.
+Рассмотрим синтаксис преобразования оператора ``FOR LOOP`` в ``WHILE-DO``.
 
 .. container:: twocol
           
-  .. code-block::
-    :greenlines: 1,2,3,4,5
+  .. color-block::
     :caption: Oracle
     
-    FOR <имя переменной> 
-    IN REVERSE <нижн. граница>..<верх. граница>
-    LOOP <оператор> [<оператор>...]
+    :green:`FOR <имя переменной>`
+       :green:`IN <нижняя граница> .. <верхняя граница>`
+    :green:`LOOP`
+         :green:`<группа_операторов>`
+    :green:`END LOOP` :red:`[<метка>]` :green:`;`
 
-    END LOOP [<метка>] ;      
-        
+    :par:`d` 
+
   .. code-block:: 
-    :greenlines: 1,2,3,4,5
+    :greenlines: 1,2,3,4,5,6,7,8
     :caption: Rdb
     
+    DECLARE <имя переменной> INTEGER;
+    ...
+    <имя переменной> = <нижняя граница>;
+    WHILE (<имя переменной> <= <верхняя граница>) 
+    DO BEGIN
+         <группа_операторов>
+         <имя переменной> = <имя переменной> + 1; 
+       END      
+
+При конвертации оператора ``FOR-LOOP`` выполняются следующие задачи:
+
+1. *Объявление переменной счетчика цикла*
+   
+   Оператор цикла ``FOR LOOP`` автоматически создает переменную цикла целочисленного типа.
+   В блоке объявлений создаётся переменная цикла типа ``Integer``. Ей присваивается начальное значение - ``<нижняя граница>``.
+   
+2. *Замена цикла* ``FOR`` *на* ``WHILE`` 
+
+   Чтобы имитировать работу цикла ``FOR`` в Oracle, создается цикл ``WHILE`` с условием для переменной цикла - 
+   она не должна превышать ``<верхнюю границу>``. В конце цикла значение переменной увеличивается на единицу.
+3. *Метка комментируется*
+
+   Если в конце оператора присутствует метка, она комментируется.
+
+.. code-block:: sql
+  :caption: Oracle
+
+  DECLARE
+    v_employees employees%ROWTYPE;
+    CURSOR c1 is SELECT * FROM employees;
+  BEGIN
+    OPEN c1;
+    FOR wei IN 1..10 LOOP
+      FETCH c1 INTO v_employees;
+      EXIT WHEN c1%NOTFOUND;
+    END LOOP;
+    CLOSE c1;
+  END;
+
+.. code-block:: sql
+  :caption: to Rdb
+
+  EXECUTE BLOCK 
+  AS 
+    DECLARE VARIABLE v_employees TYPE OF TABLE employees;
+    DECLARE c1 CURSOR FOR (SELECT * FROM employees);
+    DECLARE VARIABLE i INTEGER;
+  BEGIN
+    OPEN c1;
+    i = 1;
+    WHILE ( i  <=  10) DO
+    BEGIN 
+      FETCH c1 INTO :v_employees;
+      IF( ROW_COUNT != 1 ) THEN LEAVE;
+      i = i + 1;
+    END
+    CLOSE c1;
+  END;
+
+
+Счетчик цикла может считаться в обратном порядке, если указано ключевое слово ``REVERSE``.
+Рассмотрим синтаксис преобразования оператора ``FOR REVERSE LOOP`` в ``WHILE-DO``.
+
+.. container:: twocol
+          
+  .. color-block::
+    :caption: Oracle
+    
+    :green:`FOR <имя переменной>`
+    :green:`IN REVERSE <нижняя граница>..<верхняя граница>`
+    :green:`LOOP`
+         :green:`<группа_операторов>`
+    :green:`END LOOP` :red:`[<метка>]` :green:`;`
+
+    :par:`d`     
+        
+  .. code-block:: 
+    :greenlines: 1,2,3,4,5,6,7,8
+    :caption: Rdb
+    
+    DECLARE <имя переменной> INTEGER;
+    ...
     <имя переменной> = <верхняя граница>;
     WHILE (<имя переменной> >= <нижняя граница>) 
-    DO BEGIN <оператор> [<оператор>...] 
-    <имя переменной> = <имя переменной>-1
-    END;
+    DO BEGIN 
+         <группа_операторов>
+         <имя переменной> = <имя переменной> - 1; 
+       END
+
+При конвертации оператора ``FOR-LOOP`` выполняются следующие задачи:
+
+1. *Объявление переменной счетчика цикла*
+   
+   В блоке объявлений создаётся переменная цикла типа ``Integer``. Ей присваивается начальное значение - ``<верхняя граница>``.
+   
+2. *Замена цикла* ``FOR`` *на* ``WHILE``
+
+   Чтобы имитировать работу цикла ``FOR`` в Oracle, создается цикл ``WHILE`` с условием для переменной цикла - 
+   она должна превышать ``<нижнюю границу>``. В конце цикла значение переменной уменьшается на единицу.
+3. *Метка комментируется*
+
+   Если в конце оператора присутствует метка, она комментируется.
 
 
 Оператор FOR LOOP для оператора SELECT
 -----------------------------------------
 
+Сравним синтаксис оператора цикла ``FOR`` с оператором ``SELECT``:
+
 .. container:: twocol
           
-  .. code-block::
-    :greenlines: 1,2,3,4
+  .. color-block::
     :caption: Oracle
     
-    FOR <имя переменной типа RECORD> 
-    IN (<SELECT-запрос>)
-    LOOP <оператор> [<оператор>...] 
-    END LOOP [<метка>] ;
+    :green:`FOR <имя переменной типа RECORD>` 
+    :green:`IN (<SELECT-запрос>)`
+    :green:`LOOP <группа_операторов>`
+    :green:`END LOOP` :red:`[<метка>]` :green:`;`
+    :newline:`R`
 
         
   .. code-block:: 
-    :greenlines: 1,2,3,4
+    :greenlines: 1,2,3,4,5
     :caption: Rdb
     
-    FOR <оператор SELECT>
+    DECLARE <имя переменной> TYPE OF TABLE...;
+    ... 
+    FOR <SELECT-запрос>
     INTO [:]<имя переменной типа RECORD>
-    DO <оператор> [<оператор>...] 
-    ;
+    DO [BEGIN] <группа_операторов> [END]
+
+
+Оператор цикла ``FOR LOOP`` для оператора ``SELECT`` автоматически создает переменную цикла типа Record.
+На каждой итерации из набора результатов извлекается строка и помещается в переменную цикла. 
+Аналогичный оператор есть в РБД, но переменную цикла должна быть объявлена заранее.
+
+При конвертации оператора ``FOR LOOP`` выполняются следующие задачи:
+
+1. *Объявление переменной цикла*
+
+   Необходимо объявить переменную цикла типа Record.
+   
+2. *Замена* ``FOR IN`` *на* ``FOR INTO``
+   
+   В РБД Select-запрос записывается после ключевого слова ``FOR`` без скобок.
+   А переменная цикла - после ключевого слова ``INTO``.
+
+3. *Замена ключевого слова* ``LOOP``
+   
+   Ключевое слово ``LOOP`` заменяется на ключевое слово ``DO``.
+
+4. *Объединение операторов в блок* ``BEGIN-END``
+
+   Если в группе операторов, следующих за ключевым словом ``LOOP``, 
+   содержится более одного оператора, то эта группа заключается в блок ``BEGIN-END``.
+
+5. *Удаление* ``END LOOP;``
+   
+   В РБД ключевые слова ``END LOOP;`` не применяются.
+
+6. *Метка комментируется*
+
+   Если в конце оператора присутствует метка, она комментируется.
+
+.. container:: twocol
+
+  .. code-block:: sql
+    :caption: Oracle
+
+    BEGIN
+      FOR book_rec 
+      IN (SELECT * FROM books)
+      LOOP
+        show_usage (book_rec);
+      END LOOP;
+    END;
+
+
+  .. code-block:: sql
+    :caption: to Rdb
+
+    EXECUTE BLOCK AS 
+      DECLARE book_rec TYPE OF TABLE books;
+    BEGIN
+      FOR SELECT * FROM books
+      INTO :book_rec DO
+        show_usage(:book_rec);
+    END;
 
 
 Оператор LOOP
 ---------------
 
+В Oracle/PLSQL цикл ``LOOP`` позволяет выполнить код повторно в течение неопределенного количества раз.
+Оператор ``LOOP`` завершается, когда оператор внутри цикла передает управление за пределы цикла или вызывает исключение.
+В РБД подобного оператора не существует, но его можно легко заменить на оператор ``WHILE-DO``.
+Рассмотрим синтаксис преобразования оператора ``LOOP`` в ``WHILE-DO``.
+
 .. container:: twocol
           
-  .. code-block::
-    :greenlines: 1,2,3
+  .. color-block::
     :caption: Oracle
     
-    LOOP 
-      <оператор> [<оператор>...]
-    END LOOP [<метка>] ;
+    :green:`LOOP` 
+      :green:`<группа_операторов>`
+    :green:`END LOOP` :red:`[<метка>]` :green:`;`
 
   .. code-block:: 
-      :greenlines: 1,2,3
-      :caption: Rdb
-      
-      WHILE (TRUE)
-      DO [BEGIN] <оператор> [<оператор>...]
-      [END] ;
+    :greenlines: 1,2,3
+    :caption: Rdb
+     
+    WHILE (TRUE)
+    DO [BEGIN] <группа_операторов> [END]
+    :addline:
+
+При конвертации оператора ``LOOP`` выполняются следующие задачи:
+  
+1. *Замена цикла* ``LOOP`` *на* ``WHILE-DO`` 
+
+   Чтобы имитировать работу цикла ``LOOP`` в Oracle, создается цикл ``WHILE-DO`` с условием ``(TRUE)``. 
+
+2. *Объединение операторов в блок* ``BEGIN-END``
+
+   Если в группе операторов, следующих за ключевым словом ``LOOP``, 
+   содержится более одного оператора, то эта группа заключается в блок ``BEGIN-END``.
+
+3. *Удаление* ``END LOOP;``
+   
+   В РБД ключевые слова ``END LOOP;`` не применяются.
+
+4. *Метка комментируется*
+
+   Если в конце оператора присутствует метка, она комментируется.
+
+.. container:: twocol
+
+  .. code-block:: sql
+    :caption: Oracle
+
+    DECLARE
+      i PLS_INTEGER := 0;
+      j PLS_INTEGER := 0;
+    BEGIN
+      LOOP
+        i := i + 1;
+        LOOP
+          j := j + 1;
+          EXIT WHEN (j > 3);
+        END LOOP;
+        EXIT WHEN (i > 2);
+      END LOOP;
+    END;
+
+  .. code-block:: sql
+    :caption: to Rdb
+
+    EXECUTE BLOCK AS 
+      DECLARE i INTEGER = 0;
+      DECLARE j INTEGER = 0;
+    BEGIN
+      WHILE (TRUE) 
+      DO BEGIN
+        i = :i + 1;
+        WHILE (TRUE) 
+        DO BEGIN
+          j = :j + 1;
+          IF (:j > 3) THEN LEAVE; END 
+        IF (:i > 2) THEN LEAVE; END 
+    END;
+
+..
+  Этот подраздел следует переместить в другой раздел - со встроенными функциями
 
 
-Оператор простого CASE
+.. _subsec:casefunc:
+
+Функция ``CASE``
 -----------------------
 
+В Oracle ``CASE`` может являться как *условным оператором*, так и *условной функцией*.
+В РБД существует только *условная функция* ``CASE`` со схожим синтаксисом. 
+Поэтому конвертация оператора ``CASE`` и функции ``CASE`` будет рассматриваться отдельно и сильно отличаться. 
+Конвертация оператора ``CASE`` рассматривается в :numref:`подразделе %s<subsec:casestat>`.
+
+Условная функция ``CASE`` может быть простой и поисковой. Сравним синтаксисы этих функций:
+
+.. unindented_list::
+
+  - :ess:`Простой CASE`
+
+    .. container:: twocol
+              
+      .. color-block::
+        :caption: Oracle
+        
+        :green:`CASE <поисковое выражение>`
+        :green:`WHEN <значение 1> THEN <результат 1>`
+        :green:`[WHEN <значение 2> THEN <результат 2>]`
+        :green:`...`
+        :green:`[ELSE <результат по умолчанию>]`
+        :green:`END`
+
+      .. code-block:: 
+        :greenlines: 1,2,3,4,5,6
+        :caption: Rdb
+        
+        CASE <поисковое выражение>
+        WHEN <значение 1> THEN <результат 1>
+        [WHEN <значение 2> THEN <результат 2>]...
+        ...
+        [ELSE <результат по умолчанию>]
+        END
+
+  - :ess:`Поисковый CASE`
+
+    .. container:: twocol
+              
+      .. color-block::
+        :caption: Oracle
+        
+        :green:`CASE`
+        :green:`WHEN <лог.выражение_1> THEN <результат_1>`
+        :green:`[WHEN <лог.выражение_2> THEN <результат_2>]`
+        :green:`...`
+        :green:`[ELSE <результат по умолчанию>]`
+        :green:`END`
+
+      .. code-block:: 
+        :greenlines: 1,2,3,4,5,6
+        :caption: Rdb
+
+        CASE
+        WHEN <лог.выражение_1> THEN <результат_1>
+        [WHEN <лог.выражение_2> THEN <результат_2>]
+        ...
+        [ELSE <результат по умолчанию>]
+        END
+
+Как видно, оба этих варианта функции ``CASE`` идентичны и не требуют конвертации.
+
 .. container:: twocol
           
-  .. code-block::
-    :greenlines: 1,2,3,4,5
+  .. code-block:: sql
     :caption: Oracle
     
-    CASE <поисковое выражение>
-    WHEN <выражение 1> THEN <результат 1> ;
-    [WHEN <выражение 2> THEN <результат 2>;]...
-    [ELSE <значение по умолчанию>;]
-    END CASE [<<метка>>];
+    select name,
+           age,
+           case upper(sex)
+             when 'M' then 'Male'
+             when 'F' then 'Female'
+             else 'Unknown'
+           end,
+           religion
+    from people;
 
-  .. code-block:: 
-      :greenlines: 1,2,3,4,5
-      :caption: Rdb
+  .. code-block:: sql
+    :caption: Rdb
+
+    select name,
+           age,
+           case upper(sex)
+             when 'M' then 'Male'
+             when 'F' then 'Female'
+             else 'Unknown'
+           end,
+           religion
+    from people;
+
+
+.. _subsec:casestat:
+
+Оператор ``CASE``
+-----------------------
+
+В Oracle ``CASE`` может являться как *условным оператором*, так и *условной функцией*.
+В РБД существует только *условная функция* ``CASE``. 
+Но оператор ``CASE`` может успешно конвертироваться в условный оператор ``IF``. 
+Конвертация функции ``CASE`` рассматривается в :numref:`подразделе %s<subsec:casefunc>`.
+
+Условный оператор ``CASE`` в Oracle может быть простым и поисковым. Рассмотрим их синтаксис и синтаксис преобразования:
+
+.. unindented_list::
+
+  - :ess:`Простой CASE`
+
+    .. container:: twocol
+              
+      .. color-block::
+        :caption: Oracle
+        
+        :green:`CASE <поисковое выражение>`
+        :green:`WHEN <значение 1>`
+        :green:`THEN <группа_операторов_1> ;`
+        :green:`[WHEN <значение 2>`
+        :green:`THEN <группа_операторов_2>;]`
+        :green:`...`
+        :green:`[ELSE <группа операторов по умолчанию>;]`
+        :green:`END CASE` :red:`[<<метка>>]` :green:`;`
+
+      .. code-block:: 
+        :greenlines: 1,2,3,4,5,6,7
+        :caption: Rdb
+        
+        :addline:
+        IF (<поисковое выражение> = <значение 1>)
+        THEN [BEGIN] <группа_операторов_1> [END]
+        [ELSE IF (<поисковое выражение>=<значение2>)
+        THEN [BEGIN] <группа_операторов_2> [END]
+        ...        ]
+        [ELSE [BEGIN] <гр. опер. по умолч.> [END]]
+        :addline:
+
+  - :ess:`Поисковый CASE`
+
+    .. container:: twocol
+              
+      .. color-block::
+        :caption: Oracle
+        
+        :green:`CASE`
+        :green:`WHEN <лог.выражение_1>` 
+        :green:`THEN <группа_операторов_1>`
+        :green:`[WHEN <лог.выражение_2>`
+        :green:`THEN <группа_операторов_2>]`
+        :green:`...`
+        :green:`[ELSE <группа операторов по умолчанию>]`
+        :green:`END CASE` :red:`[<<метка>>]` :green:`;`
+
+      .. code-block:: 
+        :greenlines: 1,2,3,4,5,6,7
+        :caption: Rdb
+
+        :addline:
+        IF (<лог.выражение_1>)
+        THEN [BEGIN] <группа_операторов_1> [END]
+        [ELSE IF (<лог.выражение_2>)
+        THEN [BEGIN] <группа_операторов_2> [END]
+        ... ]
+        [ELSE [BEGIN] <гр. опер. по умолч.> [END]]
+        :addline:
+
+При конвертации оператора ``CASE`` выполняются следующие задачи:
+  
+1. *Полная замена оператора* ``CASE`` *на вложенный* ``IF-ELSE`` 
+
+   В качестве условий оператора ``IF`` выступают:
+   
+   - для простого ``CASE``: ``<поисковое выражение> = <значение N>``
+   - для поискового ``CASE``: ``<лог.выражение_N>``
+
+2. *Объединение операторов в блок* ``BEGIN-END``
+
+   Если в группе операторов, следующих за ключевым словом ``THEN``, 
+   содержится более одного оператора, то эта группа заключается в блок ``BEGIN-END``.
+
+3. *Удаление* ``END CASE;``
+
+4. *Метка комментируется* 
+
+   Если в конце оператора присутствует метка, она комментируется.
+
+.. container:: twocol
+
+  .. code-block:: sql
+    :caption: Oracle
+
+    CREATE FUNCTION grade_meaning (grade CHAR)
+    RETURN VARCHAR2
+    IS
+      pass BOOLEAN := True;
+      res char(15) := '';
+    BEGIN
+      CASE grade
+        WHEN 'A' 
+          THEN res := 'Excellent'; pass := True;
+        WHEN 'B' 
+          THEN res := 'Very Good'; pass := True;
+        WHEN 'C' 
+          THEN res := 'Good'; pass := True;
+        WHEN 'D' 
+          THEN res := 'Fair'; pass := False;
+        WHEN 'F' 
+          THEN res := 'Poor'; pass := False;
+        ELSE res := 'Error'; pass := False;
+      END CASE;
+      RETURN res;
+    END;
+
+  .. code-block:: sql
+    :caption: to Rdb
+
+    CREATE FUNCTION grade_meaning (grade CHAR)
+    RETURNS VARCHAR(32765)
+    AS
+      DECLARE pass BOOLEAN = True;
+      DECLARE res char(15) = '';
+    BEGIN
+
+      IF (grade = 'A')
+      THEN BEGIN res='Excellent';pass=True; END
+      ELSE IF (grade = 'B') 
+      THEN BEGIN res='Very Good';pass=True; END
+      ELSE IF (grade = 'C') 
+      THEN BEGIN res = 'Good'; pass = True; END
+      ELSE IF (grade = 'D') 
+      THEN BEGIN res = 'Fair'; pass = False; END
+      ELSE IF (grade = 'F') 
+      THEN BEGIN res = 'Poor'; pass = False; END
+      ELSE BEGIN res = 'Error'; pass = False; END
       
-      CASE <поисковое выражение>
-      WHEN <выражение 1> THEN <результат 1>
-      [WHEN <выражение 2> THEN <результат 2>]...
-      [ELSE <значение по умолчанию>]
-      END;
-
-
-Оператор поискового CASE
---------------------------
-
-.. container:: twocol
-          
-  .. code-block::
-    :greenlines: 1,2,3,4,5
-    :caption: Oracle
-    
-    CASE
-    WHEN <лог.выражение_1> THEN <результат_1>;
-    [WHEN <лог.выражение_2> THEN <результат_2>;]
-    [ELSE <выражение по умолчанию>;]
-    END CASE [<<метка>>] ;
-
-  .. code-block:: 
-      :greenlines: 1,2,3,4,5
-      :caption: Rdb
-
-      CASE
-      WHEN <лог.выражение_1> THEN <результат_1>
-      [WHEN <лог.выражение_2> THEN <результат_2>]..
-      [ELSE <выражение по умолчанию>]
-      END
+      RETURN res;
+    END;
 
 
 Операторы перехода

@@ -1,0 +1,13 @@
+/*ERROR: RED DATABASE SUPPORT ONE LEVEL OF NESTING*/
+CREATE PROCEDURE pr AS
+    /*PROCEDURE nested_pr IS
+        PROCEDURE nested_pr_2 IS
+            BEGIN
+                null;
+            END;
+    BEGIN
+        null;
+    END;*/
+BEGIN
+
+END;

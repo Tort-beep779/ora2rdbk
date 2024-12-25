@@ -1,0 +1,9 @@
+CREATE FUNCTION function_name
+    RETURNS BOOLEAN
+    SQL SECURITY DEFINER
+    AS
+    DECLARE cursor_name CURSOR FOR
+        (SELECT * FROM employees);
+BEGIN
+
+END;

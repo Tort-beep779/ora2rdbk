@@ -1,12 +1,12 @@
-CREATE FUNCTION func
+CREATE FUNCTION FUNC
     RETURN VARCHAR2
 AS
-    function local_func return number;
-    function local_func return number
+    FUNCTION LOCAL_FUNC RETURN NUMBER;
+    FUNCTION LOCAL_FUNC RETURN NUMBER
         AS
-        begin
-            null;
-        end;
+        BEGIN
+            NULL;
+        END;
 BEGIN
-    null;
+    NULL;
 END;

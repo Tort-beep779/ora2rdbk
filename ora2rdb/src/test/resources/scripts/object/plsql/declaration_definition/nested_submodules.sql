@@ -1,12 +1,13 @@
-CREATE PROCEDURE pr AS
-    PROCEDURE nested_pr IS
-        PROCEDURE nested_pr_2 IS
+CREATE PROCEDURE PR
+    AS
+    PROCEDURE NESTED_PR IS
+        PROCEDURE NESTED_PR_2 IS
         BEGIN
-            null;
+            NULL;
         END;
     BEGIN
-        null;
+        NULL;
     END;
 BEGIN
-    null;
+    NULL;
 END;

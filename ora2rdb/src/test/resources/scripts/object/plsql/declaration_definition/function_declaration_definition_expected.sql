@@ -1,12 +1,13 @@
-CREATE FUNCTION func
-    RETURNS VARCHAR
+CREATE FUNCTION FUNC
+    RETURNS VARCHAR(32765)
+    SQL SECURITY DEFINER
 AS
-    declare function  local_func returns numeric;
-	declare function local_func returns numeric
+    DECLARE FUNCTION  LOCAL_FUNC RETURNS NUMERIC(34, 8);
+	DECLARE FUNCTION LOCAL_FUNC RETURNS NUMERIC(34, 8)
         AS
-        begin
+        BEGIN
 
-        end
+        END
 BEGIN
 
 END;

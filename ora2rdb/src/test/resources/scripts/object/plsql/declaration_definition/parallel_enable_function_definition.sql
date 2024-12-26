@@ -1,11 +1,11 @@
-CREATE FUNCTION func
+CREATE FUNCTION FUNC
     RETURN VARCHAR2
         AS
-    function local_func return number PARALLEL_ENABLE
+    FUNCTION LOCAL_FUNC RETURN NUMBER PARALLEL_ENABLE
         AS
-        begin
-            null;
-        end;
+        BEGIN
+            NULL;
+        END;
 BEGIN
-    null;
+    NULL;
 END;

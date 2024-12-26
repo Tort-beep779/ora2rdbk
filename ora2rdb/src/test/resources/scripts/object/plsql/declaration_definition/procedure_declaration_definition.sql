@@ -1,12 +1,12 @@
-CREATE FUNCTION func
+CREATE FUNCTION FUNC
     RETURN VARCHAR2
 AS
-    procedure local_prcd;
-    procedure local_prcd
+    PROCEDURE LOCAL_PRCD;
+    PROCEDURE LOCAL_PRCD
         AS
-        begin
-            null;
-        end;
+        BEGIN
+            NULL;
+        END;
 BEGIN
-    null;
+    NULL;
 END;

@@ -1,11 +1,12 @@
-CREATE FUNCTION func
-    RETURNS VARCHAR
+CREATE FUNCTION FUNC
+    RETURNS VARCHAR(32765)
+    SQL SECURITY DEFINER
 AS
-    DECLARE procedure local_prcd
+    DECLARE PROCEDURE LOCAL_PRCD
         AS
-        begin
+        BEGIN
 
-        end
+        END
 BEGIN
 
 END;

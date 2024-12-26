@@ -1,11 +1,11 @@
-CREATE FUNCTION func
+CREATE FUNCTION FUNC
     RETURN VARCHAR2
         AS
-    function local_func return number RESULT_CACHE
+    FUNCTION LOCAL_FUNC RETURN NUMBER RESULT_CACHE
         AS
-        begin
-            null;
-        end;
+        BEGIN
+            NULL;
+        END;
 BEGIN
-    null;
+    NULL;
 END;

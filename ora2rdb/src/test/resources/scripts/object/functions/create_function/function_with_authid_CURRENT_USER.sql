@@ -1,7 +1,7 @@
-CREATE FUNCTION degree
+CREATE FUNCTION DEGREE
     RETURN NUMBER
-        authid current_user
+        AUTHID CURRENT_USER
 IS
 BEGIN
-null;
+NULL;
 END;

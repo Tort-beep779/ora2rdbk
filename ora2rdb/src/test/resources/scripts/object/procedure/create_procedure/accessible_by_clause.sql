@@ -1,6 +1,6 @@
-CREATE PROCEDURE combine_and_format_names
-accessible by (another_procedure)
+CREATE PROCEDURE COMBINE_AND_FORMAT_NAMES
+ACCESSIBLE BY (ANOTHER_PROCEDURE)
 IS
 BEGIN
-   null;
+   NULL;
 END;

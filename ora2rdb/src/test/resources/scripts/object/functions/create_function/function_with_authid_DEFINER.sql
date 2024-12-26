@@ -1,7 +1,7 @@
-CREATE FUNCTION degree
+CREATE FUNCTION DEGREE
    RETURN NUMBER
-   authid definer
+   AUTHID DEFINER
 IS
 BEGIN
-    null;
+    NULL;
 END;

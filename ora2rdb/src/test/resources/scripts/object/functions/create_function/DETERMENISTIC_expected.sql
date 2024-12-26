@@ -1,9 +1,9 @@
-CREATE FUNCTION betwnstr (
-    string_in      VARCHAR,
-    start_in       INTEGER,
-    end_in         INTEGER
+CREATE FUNCTION BETWNSTR (
+    STRING_IN      VARCHAR(32765),
+    START_IN       INTEGER,
+    END_IN         INTEGER
 )
-    RETURNS VARCHAR
+    RETURNS VARCHAR(32765)
     DETERMINISTIC
     SQL SECURITY DEFINER
 AS

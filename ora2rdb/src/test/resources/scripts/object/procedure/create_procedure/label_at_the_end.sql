@@ -1,5 +1,5 @@
-CREATE PROCEDURE another_procedure
+CREATE PROCEDURE ANOTHER_PROCEDURE
 IS
 BEGIN
-    null;
-END another_procedure;
+    NULL;
+END ANOTHER_PROCEDURE;

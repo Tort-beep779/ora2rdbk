@@ -1,0 +1,10 @@
+CREATE FUNCTION function_name
+    RETURNS BOOLEAN
+    SQL SECURITY DEFINER
+    AS
+    DECLARE cur CURSOR FOR
+        (SELECT * FROM employees);
+	 DECLARE VARIABLE cur_rec TYPE OF TABLE cur;
+BEGIN
+
+END;

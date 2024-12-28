@@ -28,16 +28,42 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ParserTest {
 
     static String startDirPath = "src/test/resources/scripts/";
-    static ArrayList<String> argsArray = new ArrayList<String>();
-    @BeforeAll
-    static void getArguments() {
-        Arrays.stream(System.getProperty("testSuite", "").split(","))
+    static ArrayList<String> testSuite = new ArrayList<String>();
+    static ArrayList<String> ignoreSuite = new ArrayList<String>();
+
+
+    static void checkValid(ArrayList<String> input) throws IOException {
+        for (String arg : input)
+            if (!Files.exists(Paths.get(startDirPath + arg.replaceAll("/$", ""))))
+                throw new IOException("Directory not found: " + arg);
+    }
+
+    static ArrayList<String> getParameters(String key) throws IOException {
+        ArrayList<String> result = new ArrayList<String>();
+        Arrays.stream(System.getProperty(key, "").split(","))
                 .forEach(arg -> {
                     arg = arg.replace(" ", "");
-                    if (!arg.endsWith("/"))
+                    if (!arg.isEmpty() && !arg.endsWith("/")) {
                         arg = arg.concat("/");
-                    argsArray.add(arg);
+                    }
+                    result.add(arg);
                 });
+        checkValid(result);
+        return result;
+    }
+
+    @BeforeAll
+    static void initialiseSuite() throws IOException {
+        testSuite = getParameters("testSuite");
+        ignoreSuite = getParameters("ignoreSuite");
+    }
+
+    static boolean ignored(String inputFile) {
+
+        return ignoreSuite.stream()
+                .filter(e -> !e.isEmpty())
+                .filter(e -> Files.isDirectory(Paths.get(startDirPath + e)))
+                .anyMatch(e -> inputFile.contains(e));
     }
 
     private List<String> readFile(String path) throws IOException {
@@ -126,9 +152,10 @@ class ParserTest {
 
     static Stream<String> argsProviderFactory() throws IOException {
         ArrayList<String> fileNameArray = new ArrayList<>();
-        for (String arg : argsArray) {
+        for (String arg : testSuite) {
             try {
                 Files.walk(Paths.get(startDirPath + arg), Integer.MAX_VALUE)
+                        .filter(e -> !ignored(e.toString()))
                         .filter(e -> !Files.isDirectory(e) && !e.toString().contains("_expected.sql"))
                         .collect(Collectors.toCollection(LinkedList::new))
                         .descendingIterator()

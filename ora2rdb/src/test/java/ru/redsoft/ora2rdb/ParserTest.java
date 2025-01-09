@@ -2,7 +2,6 @@ package ru.redsoft.ora2rdb;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -95,29 +94,23 @@ class ParserTest {
     }
 
 
-    void test(String inputFile) throws IOException {
+    void test(String inputFile) throws Exception {
         final Path outFile = Paths.get(System.getProperty("java.io.tmpdir"), "out.sql");
         String expectedFile = inputFile.replace(".sql", "_expected.sql");
-        List<String> actual;
-        try (FileInputStream fs = new FileInputStream(startDirPath + inputFile);
-             FileWriter fileWriter = new FileWriter(outFile.toAbsolutePath().toString())) {
-            RewritingListener rewritingListener =
-                    Ora2rdb.convert(fs);
-            actual = Arrays.asList(rewritingListener.rewriter.getText()
-                    .replace("\r", "").split("\n"));
-            for (String line : actual) {
-                if (!line.equals(actual.get(actual.size() - 1)))
-                    fileWriter.write(line + System.lineSeparator());
-                else
-                    fileWriter.write(line);
-            }
+        Path inputFilePath = Paths.get(startDirPath + inputFile);
+        try {
+            Ora2rdb.main(new String[]{inputFilePath.toAbsolutePath().toString(), "-o", outFile.toAbsolutePath().toString()});
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
+        List<String> actual = Files.readAllLines(outFile, StandardCharsets.UTF_8);
         List<String> expected = readFile(expectedFile);
         Patch<String> diff = DiffUtils.diff(expected, actual);
         List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff("expected",
                 "actual", expected, diff, 0);
         String result = String.join("\n", unifiedDiff);
+
         if (!result.isEmpty()) {
             ProcessBuilder processBuilder = new ProcessBuilder("python3",
                     "src/test/resources/main.py",
@@ -171,7 +164,7 @@ class ParserTest {
 
     @ParameterizedTest(name = "{arguments}")
     @MethodSource("argsProviderFactory")
-    void testAllScripts(String argument) throws IOException {
+    void testAllScripts(String argument) throws Exception {
         test(argument);
     }
 

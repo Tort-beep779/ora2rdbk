@@ -1,0 +1,9 @@
+CREATE SHARDED TABLE products (
+    prod_id NUMBER NOT NULL,
+    category_id NUMBER NOT NULL,
+    name VARCHAR2(50),
+    price NUMBER(10,2)
+)
+PARTITION BY CONSISTENT HASH (prod_id, category_id)
+PARTITIONS AUTO
+TABLESPACE SET ts3;

@@ -1,0 +1,9 @@
+CREATE IMMUTABLE BLOCKCHAIN TABLE immutable_blockchain_transactions (
+    transaction_id NUMBER GENERATED ALWAYS AS IDENTITY,
+    transaction_date TIMESTAMP,
+    amount NUMBER(10,2),
+    description VARCHAR2(100)
+)
+NO DROP UNTIL 1 DAYS IDLE
+NO DELETE UNTIL 16 DAYS AFTER INSERT
+HASHING USING "SHA2_512" VERSION "v1";

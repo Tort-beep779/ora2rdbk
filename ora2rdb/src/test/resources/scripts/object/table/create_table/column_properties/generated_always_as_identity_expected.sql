@@ -1,0 +1,3 @@
+CREATE TABLE employees (
+    employee_id NUMERIC GENERATED ALWAYS AS IDENTITY
+);

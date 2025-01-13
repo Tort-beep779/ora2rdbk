@@ -1,7 +1,7 @@
-CREATE TRIGGER comp_test
-for insert or update or delete on emp_test
-    compound trigger
-    after statement is begin
-        DBMS_OUTPUT.PUT_LINE('before statement');
-    end after statement;
-end;
+CREATE TRIGGER COMP_TEST
+FOR INSERT OR UPDATE OR DELETE ON EMP_TEST
+    COMPOUND TRIGGER
+    AFTER STATEMENT IS BEGIN
+        NULL;
+    END AFTER STATEMENT;
+END;

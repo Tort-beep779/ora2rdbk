@@ -1,0 +1,4 @@
+CREATE TABLE CHECK_TABLE (
+    age  NUMBER,
+    CONSTRAINT chk_age CHECK (age >= 18)
+);

@@ -1,2 +1,0 @@
---Sample test
---This is an Oracle sql script that is being converted incorrectly

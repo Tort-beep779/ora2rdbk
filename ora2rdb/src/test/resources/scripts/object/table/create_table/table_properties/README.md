@@ -91,6 +91,25 @@ SEGMENT CREATION { IMMEDIATE | DEFERRED }
 (таблица, неявный индекс и сегменты LOB) не создается до тех пор, пока строки не будут вставлены в таблицу.
 
 ----------------------------------------------------------------
+### sharing_clause.sql
+```sql
+SHARING = { METADATA | NONE }
+```
+`METADATA`- Разделяет метаданные, но ее данные уникальны для каждого контейнера.  
+Этот тип объекта называется общим объектом приложения, связанным с метаданными.  
+
+`NONE`- Объект не является разделенным.
+SHARING предложение может применяться только к следующим операторам SQL:
+* CREATE FUNCTION Statement
+* CREATE LIBRARY Statement
+* CREATE PROCEDURE Statement
+* CREATE PACKAGE Statement
+* CREATE TRIGGER Statement
+* CREATE TYPE Statement
+
+ Однако в операторе CREATE TABLE можно указать `SHARING = NONE`
+
+----------------------------------------------------------------
 ### storage.sql
 ```sql
     STORAGE (

@@ -148,6 +148,7 @@ class ParserTest {
         for (String arg : testSuite) {
             try {
                 Files.walk(Paths.get(startDirPath + arg), Integer.MAX_VALUE)
+                        .filter(e -> e.toString().contains(".sql"))
                         .filter(e -> !ignored(e.toString()))
                         .filter(e -> !Files.isDirectory(e) && !e.toString().contains("_expected.sql"))
                         .collect(Collectors.toCollection(LinkedList::new))

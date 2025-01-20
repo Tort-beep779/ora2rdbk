@@ -1,0 +1,12 @@
+CREATE GLOBAL TEMPORARY TABLE TEAM (
+    VAL VARCHAR(15)
+);
+
+EXECUTE BLOCK
+    AS
+    /*TYPE Foursome IS VARRAY(4) OF VARCHAR(15);*/
+
+    /*team Foursome*/
+BEGIN
+
+END;

@@ -1,0 +1,26 @@
+DECLARE
+-- Define a record type
+TYPE employee_record IS RECORD (
+        emp_id NUMBER,
+        emp_name VARCHAR2(50),
+        emp_salary NUMBER
+    );
+
+    -- Define a collection (nested table) to store records
+    TYPE emp_table IS TABLE OF employee_record;
+    employees emp_table;  -- Declare the collection variable
+
+BEGIN
+    -- Initialize the collection with records
+    employees := emp_table(
+        employee_record(1001, 'John Doe', 50000),
+        employee_record(1002, 'Jane Smith', 60000)
+    );
+
+    -- Iterate over the collection and display record details
+FOR i IN 1..employees.COUNT LOOP
+        DBMS_OUTPUT.PUT_LINE('ID: ' || employees(i).emp_id ||
+                             ', Name: ' || employees(i).emp_name ||
+                             ', Salary: ' || employees(i).emp_salary);
+END LOOP;
+END;

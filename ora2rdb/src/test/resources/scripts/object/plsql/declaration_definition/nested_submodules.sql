@@ -1,0 +1,13 @@
+CREATE PROCEDURE PR
+    AS
+    PROCEDURE NESTED_PR IS
+        PROCEDURE NESTED_PR_2 IS
+        BEGIN
+            NULL;
+        END;
+    BEGIN
+        NULL;
+    END;
+BEGIN
+    NULL;
+END;

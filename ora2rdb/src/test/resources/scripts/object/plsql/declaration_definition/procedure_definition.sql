@@ -1,0 +1,11 @@
+CREATE FUNCTION FUNC
+    RETURN VARCHAR2
+AS
+    PROCEDURE LOCAL_PRCD
+        AS
+        BEGIN
+            NULL;
+        END;
+BEGIN
+    NULL;
+END;

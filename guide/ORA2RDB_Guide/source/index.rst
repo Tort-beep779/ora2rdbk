@@ -3,7 +3,7 @@ Welcome to SQL_Guide's documentation!
 ============================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
    sec-about_this_guide
    sec-install

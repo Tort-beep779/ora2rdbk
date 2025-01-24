@@ -233,7 +233,7 @@ PL/SQL имеет три типа коллекций:
 
 2. *Удаление ключевых слов* ``IS RECORD``
 
-3. *Замена операции присваивания* 
+3. *Замена операции присваивания*
    
    В РБД значение по умолчанию устанавливается с использованием ключевого слова ``DEFAULT``. Таким образом, знак присваивания ``:=`` 
    заменяется на ``DEFAULT``.
@@ -276,7 +276,7 @@ PL/SQL имеет три типа коллекций:
       ...
     END;
 
-Описание конвертации объявления переменных типа Record можно найти в :numref:`подразделе %s< subsec:declrecordvar>`.
+Описание конвертации объявления переменных типа Record можно найти в :numref:`подразделе %s <subsec:declrecordvar>`.
 
 Объявление курсоров
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -540,7 +540,7 @@ PL/SQL имеет три типа коллекций:
 
     DECLARE [VARIABLE] <имя переменной> 
           { <имя типа RECORD> 
-          | TYPE OF TABLE  <имя курсора>
+          | TYPE OF TABLE <имя курсора>
 
           | TYPE OF TABLE <имя таблицы> 
           | TYPE OF TABLE <имя представления>
@@ -623,12 +623,13 @@ PL/SQL имеет три типа коллекций:
     );
     DECLARE c1 CURSOR FOR (SELECT department_id, location_id FROM departments);
     DECLARE dept_rec1 DeptRecTyp = ROW(20, 'Ingineer', 300, 1200);
-    DECLARE VARIABLE dept_rec2 TYPE OF TABLE departments not null;
+    DECLARE VARIABLE dept_rec2 TYPE OF TABLE departments;
     DECLARE VARIABLE dept_rec3 TYPE OF TABLE c1;  
   BEGIN
     dept_rec2 = ROW(10, 'Administration', 200, 1700);
   END;
 
+.. _subsec:scalardatatypes:
 
 Объявление скалярной переменной
 """"""""""""""""""""""""""""""""
@@ -681,6 +682,8 @@ PL/SQL имеет три типа коллекций:
       <имя переменной> <тип данных SQL>
       [NOT NULL] 
       [{ = | DEFAULT } <выражение>] ;
+   
+   Описание конвертации типов данных SQL можно найти в :numref:`подразделе %s <sec:datatypes>`.
 
 4. *Преобразование переменной с типом данных столбца таблицы/представления*
 
@@ -1935,7 +1938,9 @@ PL/SQL имеет три типа коллекций:
     :greenlines: 1,2,3,4,5
     :caption: Rdb
     
-    DECLARE <имя переменной> TYPE OF TABLE...;
+    DECLARE <имя переменной>_TEMP_CURSOR 
+                   CURSOR FOR (SELECT-запрос);
+    DECLARE <имя переменной> TYPE OF TABLE <имя переменной>_TEMP_CURSOR ;
     ... 
     FOR <SELECT-запрос>
     INTO [:]<имя переменной типа RECORD>
@@ -1950,7 +1955,8 @@ PL/SQL имеет три типа коллекций:
 
 1. *Объявление переменной цикла*
 
-   Необходимо объявить переменную цикла типа Record.
+   Если в выборке оператора SELECT присутствуют не все поля таблицы,
+   то объявляется курсор. А также объявляется переменная типа курсора.
    
 2. *Замена* ``FOR IN`` *на* ``FOR INTO``
    
@@ -2327,61 +2333,340 @@ PL/SQL имеет три типа коллекций:
 Операторы перехода
 -------------------
 
-
 Оператор EXIT
 ^^^^^^^^^^^^^^
 
+В Oracle оператор ``EXIT`` без метки завершает выполнение текущего цикла (``LOOP, FOR LOOP, WHILE LOOP``). 
+Если при этом указана метка, то оператор ``EXIT`` завершает выполнение цикла, который был идентифицирован данной меткой. 
+В РБД существует аналогичный оператор — ``LEAVE``, который работает по тому же принципу.
+
 .. container:: twocol
-          
+
   .. code-block::
     :greenlines: 1
-    :redlines: 2
     :caption: Oracle
     
-    EXIT [<метка>] 
-    [WHEN <булево выражение>] ;
+    EXIT [<метка>];
 
-  .. code-block:: 
+  .. code-block::
     :greenlines: 1
     :caption: Rdb
     
-    EXIT;
-    :addline:
+    LEAVE [<метка>];
 
+Если используется условие ``WHEN``, оператор ``EXIT`` выполняется лишь в том случае, когда верно заданное условие ``<условие>``. 
+В РБД аналогичное поведение можно реализовать с помощью условного оператора ``IF``.
 
+.. container:: twocol
 
+  .. code-block::
+    :greenlines: 1, 2
+    :caption: Oracle
+    
+    EXIT [<метка>] 
+    WHEN <условие> ;
+  
+  .. code-block::
+    :greenlines: 1, 2
+    :caption: Rdb
+    
+    IF (<условие>)
+    THEN LEAVE [<метка>];
+
+Таким образом, при конвертации оператора ``EXIT`` выполняются следующие задачи:
+
+1. *Замена ключевого слова* ``EXIT``
+   
+   Ключевое слово ``EXIT`` заменяется на ключевое слово ``LEAVE``.
+
+2. *Замена предложения* ``WHEN``
+
+   Вместо необязательного предложения ``WHEN`` используется условный оператор ``IF-THEN``, 
+   который проверяет заданное ``<условие>`` на истинность.
+
+.. code-block:: sql
+  :caption: Oracle
+    
+  CREATE FUNCTION F1
+  RETURN varchar2
+  IS
+    x NUMBER := 0;
+    res varchar2(1000) := '';
+  BEGIN
+    <<second_loop>>
+    WHILE TRUE LOOP
+      res := res || '  Inside second loop:  x = ' || TO_CHAR(x);
+      x := x + 1;
+      <<first_loop>>
+      LOOP
+        res := res || '  Inside first loop:  x = ' || TO_CHAR(x);
+        x := x + 1;
+        IF x > 3 THEN
+          EXIT second_loop;
+        END IF;
+      END LOOP first_loop;
+      res := res || '  After first loop:  x = ' || TO_CHAR(x);
+      EXIT second_loop when x > 8;
+    END LOOP second_loop;
+    res := res || '  After second loop:  x = ' || TO_CHAR(x);
+    RETURN res;
+  END;
+
+.. code-block:: sql
+  :caption: Rdb
+
+  CREATE FUNCTION F1
+  RETURNS VARCHAR(32765) 
+  AS
+    DECLARE x NUMERIC(34, 8) = 0;
+    DECLARE res VARCHAR(1000) = '';
+  BEGIN
+    second_loop:
+    WHILE (TRUE) DO 
+    BEGIN
+      res = :res || '  Inside second loop:  x = ' || CAST(:x as varchar(32));
+      x = :x + 1;
+      first_loop:
+      WHILE (TRUE) DO 
+      BEGIN
+        res = :res || '  Inside first loop:  x = ' || CAST(:x as varchar(32));
+        x = :x + 1;
+        IF (:x > 3) 
+        THEN LEAVE second_loop;
+      END /*first_loop*/
+      res = :res || '  After first loop:  x = ' || CAST(:x as varchar(32));
+      IF( :x > 8 ) 
+      THEN LEAVE second_loop;
+    END
+    res = :res || '  After second loop:  x = ' || CAST(:x as varchar(32));
+    RETURN res;
+  END;
 
 Оператор CONTINUE
 ^^^^^^^^^^^^^^^^^^^
 
+В Oracle оператор ``CONTINUE`` без метки моментально запускает новую итерацию текущего цикла (``LOOP, FOR LOOP, WHILE LOOP``). 
+Если при этом указана метка, то оператор ``CONTINUE`` начинает новую итерацию цикла, который был идентифицирован данной меткой. 
+В РБД также существует оператор ``CONTINUE``, который работает по тому же принципу.
+
+.. container:: twocol
+
+  .. code-block::
+    :greenlines: 1
+    :caption: Oracle
+    
+    CONTINUE [<метка>];
+
+  .. code-block::
+    :greenlines: 1
+    :caption: Rdb
+    
+    CONTINUE [<метка>];
+
+Если используется условие ``WHEN``, оператор ``CONTINUE`` выполняется лишь в том случае, когда верно заданное условие ``<условие>``. 
+В РБД аналогичное поведение можно реализовать с помощью условного оператора ``IF``.
+
 .. container:: twocol
           
   .. code-block::
-      :greenlines: 1
-      :redlines: 2
+      :greenlines: 1,2
       :caption: Oracle
       
       CONTINUE [<метка>] 
-      [WHEN <булево выражение>] ;
-
+      WHEN <условие> ;
 
   .. code-block:: 
-      :greenlines: 1
+      :greenlines: 1,2
       :caption: Rdb
       
-      CONTINUE [<метка>];
-      :addline:
+      IF (<условие>)
+      THEN CONTINUE [<метка>];
 
+Таким образом, при конвертации оператора ``CONTINUE`` выполняются следующие задачи:
+
+1. *Замена предложения* ``WHEN``
+
+   Вместо необязательного предложения ``WHEN`` используется условный оператор ``IF-THEN``, 
+   который проверяет заданное ``<условие>`` на истинность.
+
+.. code-block:: sql
+  :caption: Oracle
+    
+  CREATE FUNCTION F2
+  RETURN varchar2
+  IS
+    x NUMBER := 0;
+    res varchar2(1000) := '';
+  BEGIN
+      <<first_loop>>
+      LOOP
+        x := x + 1;
+        CONTINUE first_loop WHEN x < 3;
+        res := res || '  Inside first loop:  x = ' || TO_CHAR(x);
+        EXIT WHEN x = 5;
+      END LOOP first_loop;
+      res := res || '  After first loop:  x = ' || TO_CHAR(x);
+    RETURN res;
+  END;
+
+.. code-block:: sql
+  :caption: Rdb
+
+  CREATE FUNCTION F2
+  RETURNS VARCHAR(32765)
+  AS
+    DECLARE x NUMERIC(34, 8) = 0;
+    DECLARE res VARCHAR(1000) = '';
+  BEGIN
+    first_loop:
+    WHILE (TRUE) DO 
+    BEGIN
+      x = :x + 1;
+      IF (:x < 3)
+      THEN CONTINUE first_loop;
+      res = :res || '  Inside first loop:  x = ' || CAST(:x as varchar(32));
+      IF (:x = 5) THEN LEAVE;
+    END /*first_loop*/
+    res = :res || '  After first loop:  x = ' || CAST(:x as varchar(32));
+    RETURN res;
+  END;
+
+Оператор GOTO
+^^^^^^^^^^^^^^^^^^^
+
+В РБД отсутствует оператор ``GOTO``, поэтому при конвертации он комментируется.
+
+.. code-block::
+  :redlines: 1
+  :caption: Oracle
+  
+  GOTO <метка>;
+
+Кроме операторов ``LEAVE`` и ``CONTINUE``, в РБД существуют и другие операторы перехода: ``EXIT`` и ``SUSPEND``.
 
 
 Вызов процедуры
 -------------------
 
+Вызов хранимой процедуры PL/SQL Oracle может быть выполнен разными способами:
 
+1. с использованием оператора ``CALL``;
+
+   .. code-block::
+    :greenlines: 1
+    :caption: Oracle
+    
+    CALL <имя процедуры> [(<список параметров>)];   
+
+2. с использованием оператора ``EXECUTE``;
+  
+   .. code-block::
+    :greenlines: 1
+    :caption: Oracle
+    
+    EXECUTE <имя процедуры> [(<список параметров>)];   
+
+3. внутри PL/SQL блоков обращением по имени.
+
+   .. code-block::
+    :greenlines: 1,2,3,4,5,6
+    :caption: Oracle
+    
+    ...
+    BEGIN
+    ...
+      <имя процедуры> [(<список параметров>)];   
+    ...
+    END;
+
+Если процедура не имеет параметров, она может вызываться с пустыми круглыми скобками или без них.
+
+Преобразование вызовов процедур отличается в зависимости от наличия в них OUT-параметров.
+
+Преобразование вызовов процедур без OUT-параметров
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Для вызова хранимой процедуры без выходных параметров в РБД используется следующий оператор:
+
+.. code-block::
+  :greenlines: 1
+  :caption: Rdb
+  
+  EXECUTE PROCEDURE <имя процедуры> [(<список IN-параметров>)];   
+
+Таким образом, любая операция с вызовом процедуры без выходных параметров конвертируется в этот оператор.
+
+Если процедура не имеет параметров, она может вызываться с пустыми круглыми скобками или без них.
+
+
+Преобразование вызовов процедур с OUT-параметрами
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Для вызова хранимой процедуры с выходными параметрами в РБД используется следующий оператор:
+
+.. code-block::
+  :greenlines: 1,2
+  :caption: Rdb
+  
+  EXECUTE PROCEDURE <имя процедуры> [(<список IN-параметров>)]
+  RETURNING_VALUES (<список OUT-параметров>);   
+
+Таким образом, любая операция с вызовом процедуры с выходными параметрами конвертируется в этот оператор.
+Если в процедуре присутствует параметр ``IN OUT``, то он попадает в список IN- и OUT- параметров.
+
+.. code-block:: sql
+  :caption: Oracle
+  
+  CREATE OR REPLACE PROCEDURE PROC1(sm IN OUT NUMBER) 
+  AS
+    s NUMBER(15, 2);
+  BEGIN
+    FOR rec IN (SELECT salary FROM employee)
+    LOOP
+        s := rec.salary;
+        sm := sm + s;
+    END LOOP;
+  END PROC1;
+
+  DECLARE
+    v_sm NUMBER(15, 2) := 999;
+  BEGIN
+    PROC1(v_sm);
+  END;
+
+.. code-block:: sql
+  :caption: Rdb
+
+  CREATE OR ALTER PROCEDURE PROC1(sm NUMERIC(34, 8))
+  RETURNS (SM_OUT NUMERIC(34, 8))
+  AS
+    DECLARE s NUMERIC(15, 2);
+    DECLARE VARIABLE rec_TEMP_CURSOR CURSOR FOR (SELECT salary FROM employee);
+    DECLARE VARIABLE rec TYPE OF TABLE rec_TEMP_CURSOR;
+  BEGIN
+    FOR (SELECT salary FROM employee) INTO rec 
+    DO BEGIN    
+      s = rec.salary;
+      sm = :sm + :s;
+    END 
+    SM_OUT = SM;
+  END;
+
+  EXECUTE BLOCK 
+  AS
+    DECLARE v_sm NUMERIC(15, 2) = 999;
+  BEGIN
+    EXECUTE PROCEDURE pr1(:v_sm) RETURNING_VALUES (:v_sm);
+  END;
 
 
 Операция присваивания
 -----------------------
+
+Операция присваивания используется для задания значений переменным. 
+В PL/SQL (Oracle) операция присваивания осуществляется с использованием оператора ``:=``. 
+
+В PSQL (РБД) операция используется оператор ``=`` для присваивания значений переменным. 
 
 .. container:: twocol
           
@@ -2397,73 +2682,318 @@ PL/SQL имеет три типа коллекций:
       
       <имя переменной> = <выражение>;
 
+.. code-block:: sql
+  :caption: Oracle
 
+  DECLARE 
+    wages          NUMBER;
+    hours_worked   NUMBER := 40;
+    hourly_salary  NUMBER := 22.50;
+    bonus          NUMBER := 150;
+    country        VARCHAR2(128);
+    counter        NUMBER := 0;
+    done           BOOLEAN;
+    valid_id       BOOLEAN;
+    emp_rec1       employees%ROWTYPE;
+    emp_rec2       employees%ROWTYPE;
+    TYPE commissions IS TABLE OF NUMBER INDEX BY PLS_INTEGER;
+    comm_tab       commissions;
+  BEGIN 
+    wages := (hours_worked * hourly_salary) + bonus;
+    country := 'France';
+    country := UPPER('Canada');
+    done := (counter > 100);
+    valid_id := TRUE;
+    emp_rec1.first_name := 'Antonio';
+    emp_rec1.last_name := 'Ortiz';
+    emp_rec1 := emp_rec2;
+    comm_tab(5) := 20000 * 0.15;
+  END;
+
+.. code-block:: sql
+  :caption: Rdb
+
+  CREATE GLOBAL TEMPORARY TABLE COMM_TAB (
+        I1 INTEGER,
+        VAL NUMERIC(34, 8),
+        CONSTRAINT PK_COMM_TAB PRIMARY KEY (I1)
+  );
+
+  EXECUTE BLOCK 
+  AS 
+    DECLARE wages          NUMERIC(34, 8);
+    DECLARE hours_worked   NUMERIC(34, 8) = 40;
+    DECLARE hourly_salary  NUMERIC(34, 8) = 22.50;
+    DECLARE bonus          NUMERIC(34, 8) = 150;
+    DECLARE country        VARCHAR(128);
+    DECLARE counter        NUMERIC(34, 8) = 0;
+    DECLARE done           BOOLEAN;
+    DECLARE valid_id       BOOLEAN;
+    DECLARE VARIABLE emp_rec1 TYPE OF TABLE employees;
+    DECLARE VARIABLE emp_rec2 TYPE OF TABLE employees;
+  BEGIN
+    wages = (:hours_worked * :hourly_salary) + :bonus;
+    country = 'France';
+    country = UPPER('Canada');
+    done = (:counter > 100);
+    valid_id = TRUE;
+    emp_rec1.first_name = 'Antonio';
+    emp_rec1.last_name = 'Ortiz';
+    emp_rec1 = :emp_rec2;
+    UPDATE OR INSERT INTO COMM_TAB VALUES (5, 20000 * 0.15);
+  END;
 
 Оператор EXECUTE IMMEDIATE
 ----------------------------------
 
-          
-.. code-block::
-    :redlines: 3,4,5,6,7,8
-    :greenlines: 1,2,9
-    
-    EXECUTE IMMEDIATE '<оператор>'
-    [ { INTO { <имя переменной> [, <имя переменной> ]... | <перемення типа RECORD> } 
-      | BULK COLLECT INTO { <коллекция>|<:host_array>}
-        [, {<коллекция>|<:host_array> } ]... 
-      } [USING [IN|OUT|IN OUT] <аргумент привязки> [ [,] [[IN|OUT|IN OUT] <аргумент привязки> ]...]]
-    | USING [IN|OUT|IN OUT] <аргумент привязки> [ [,] [[IN|OUT|IN OUT] <аргумент привязки> ]...] 
-      [ { RETURNING | RETURN } { INTO ... | BULK COLLECT INTO ... } ]
-    | { RETURNING | RETURN } { INTO ... | BULK COLLECT INTO ... } 
-    ] ;
+В Oracle/PLSQL оператор ``EXECUTE IMMEDIATE`` подготавливает (анализирует) и немедленно выполняет 
+динамический SQL-запрос или анонимный PL/SQL блок.
+Основным аргументом ``EXECUTE IMMEDIATE`` является строка, содержащая SQL-запрос для выполнения.   
 
-                  
-.. container:: twocol
-          
-  .. code-block::
-    :greenlines: 1,2
-    :redlines: 3
-    :caption: Oracle
-    
-    EXECUTE IMMEDIATE '<оператор>'
-    [INTO { <имя перем-ой> [, <имя перем-ой>...]
-          | <перемення типа RECORD>}];
+Опциональный синтаксис оператора может немного варьироваться. Ниже приведены два различных 
+варианта синтаксиса оператора ``EXECUTE IMMEDIATE``.
 
-  .. code-block:: 
-    :greenlines: 1,2
-    :redlines: 3
-    :caption: Rdb
-    
-    EXECUTE STATEMENT '<оператор>'
-    [INTO {[:]<имя перем-ой> [,[:]<имя перем-ой>]
-          | <перемення типа RECORD> } ]
+.. color-block::
+  :caption: Oracle
+  
+  :green:`EXECUTE IMMEDIATE '<динамический оператор SQL>'`
+  :green:`[ { INTO { <имя переменной> [, <имя переменной> ]... | <переменная типа RECORD> }`
+     :red:`| BULK COLLECT INTO { <коллекция>|<:host_array>}[, {<коллекция>|<:host_array> } ]...`
+    :green:`} [USING [IN|OUT|IN OUT] <аргумент привязки> [ [,] [[IN|OUT|IN OUT] <аргумент привязки> ]...]] ];`
 
+.. color-block::
+  :caption: Oracle
+  
+  :green:`EXECUTE IMMEDIATE '<динамический оператор SQL>'`
+  :green:`[ USING [IN|OUT|IN OUT] <аргумент привязки> [ [,] [[IN|OUT|IN OUT] <аргумент привязки> ]...]]`
+    :green:`[ { RETURNING | RETURN } { INTO { <имя переменной> ... | <переменная типа RECORD> }` 
+                              :red:`| BULK COLLECT INTO ...` :green:`} ];`
 
-Оператор Pragma AUTONOMOUS_TRANSACTION
-----------------------------------------    
+:ess:`Замечания:`
 
+- Предложение ``BULK COLLECT INTO`` не имеет аналогов в РБД и не может быть сконвертировано.
 
+Преобразование оператора EXECUTE IMMEDIATE
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Оператор Oracle ``EXECUTE IMMEDIATE`` конвертируется в оператор РБД ``EXECUTE STATEMENT``:
 
 .. container:: twocol
           
   .. color-block::
     :caption: Oracle
     
-    :green:`PRAGMA AUTONOMOUS_TRANSACTION;`:par:`c`
-    
+    :green:`EXECUTE IMMEDIATE '<оператор>'`
 
-  .. code-block::
-    :greenlines: 1,2
+    :green:`[INTO { <имя перем-ой> [, <имя перем-ой>...]`
+          :green:`| <переменная типа RECORD>}]`
+    :green:`[USING [IN`:red:`|OUT|IN OUT`:green:`] <аргумент привязки>`
+    :green:`[[,][[IN`:red:`|OUT|IN OUT`:green:`] <аргумент привязки> ]...]];`
+
+  .. code-block:: 
+    :greenlines: 1,2,3,4,5
     :caption: Rdb
     
-    IN AUTONOMOUS TRANSACTION DO
-    BEGIN <блок psql операторов> END
+    EXECUTE STATEMENT ('<оператор>') 
+    [(<имя пар-ра>:=<аргумент привязки>[,...])]
+    [INTO { [:]<имя перем-ой> [,[:]<имя перем-ой>]
+          | <перемення типа RECORD> } ]
+    
+    :addline:
+
+При конвертации оператора ``EXECUTE IMMEDIATE`` выполняются следующие задачи:
+
+1. *Замена ключевого слова* ``IMMEDIATE``
+
+   В РБД аналогичный оператор имеет название ``EXECUTE STATEMENT``.
+
+2. *Заключение строки SQL-запроса в скобки*
+
+   В РБД, если запрос параметризованный, то его нужно заключать в круглые скобки. 
+   Если запрос не параметризованный, то скобки не обязательны.
+   
+3. *Удаление предложения* ``USING``
+
+   Если запрос параметризованный (с IN-параметрами), то вместо предложения ``USING``
+   создается список с присваиванием значений параметров. Список таких присваиваний заключается 
+   в круглые скобки и ставится после SQL-запроса. Присваивание значений параметров должно 
+   осуществляться при помощи специального оператора « := ».
+   
+
+   Если предложение ``USING`` содержит OUT-параметры, то ???
+
+
+.. code-block:: sql
+  :caption: Oracle
+  
+  CREATE OR REPLACE PROCEDURE create_dept (
+     deptid IN OUT NUMBER,
+     dname  IN     VARCHAR2,
+     mgrid  IN     NUMBER,
+     locid  IN     NUMBER
+  ) AS
+  BEGIN
+     deptid := departments_seq.NEXTVAL;
+     INSERT INTO departments (
+       department_id,
+       department_name,
+       manager_id,
+       location_id)
+     VALUES (deptid, dname, mgrid, locid);
+  END;
+
+  DECLARE
+     plsql_block VARCHAR2(500);
+     new_deptid  NUMBER(4);
+     new_dname   VARCHAR2(30) := 'Advertising';
+     new_mgrid   NUMBER(6)    := 200;
+     new_locid   NUMBER(4)    := 1700;
+  BEGIN
+     plsql_block := 'BEGIN create_dept(:a, :b, :c, :d); END;';
+     EXECUTE IMMEDIATE plsql_block
+        USING new_deptid, new_dname, new_mgrid, new_locid;
+  END;
+
+.. code-block:: sql
+  :caption: Rdb
+
+  CREATE OR ALTER PROCEDURE create_dept (
+     deptid   NUMERIC(34, 8),
+     dname    VARCHAR(32765),
+     mgrid    NUMERIC(34, 8),
+     locid    NUMERIC(34, 8)
+  ) 
+  AS
+  BEGIN
+     deptid = 100;
+     INSERT INTO departments (
+       department_id,
+       department_name,
+       manager_id,
+       location_id)
+     VALUES (:deptid, :dname, :mgrid, :locid);
+  END;
+
+  EXECUTE BLOCK 
+  AS 
+     DECLARE plsql_block VARCHAR(500);
+     DECLARE new_deptid  NUMERIC(4);
+     DECLARE new_dname   VARCHAR(30) = 'Advertising';
+     DECLARE new_mgrid   NUMERIC(6)    = 200;
+     DECLARE new_locid   NUMERIC(4)    = 1700;
+  BEGIN
+     plsql_block = 'EXECUTE PROCEDURE create_dept (:a, :b, :c, :d)';
+     EXECUTE STATEMENT (:plsql_block) (a := :new_deptid, b := :new_dname, c := :new_mgrid, d := new_locid);
+  END;
+
+
+Директива Pragma AUTONOMOUS_TRANSACTION
+----------------------------------------    
+
+Директива ``PRAGMA AUTONOMOUS_TRANSACTION`` в Oracle используется для обозначения, что в рамках 
+текущей процедуры, или анонимного блока, или функции, или триггера (далее просто процедуры) будет выполняться 
+автономная транзакция. Это означает, что внутри такой процедуры можно 
+работать с отдельной транзакцией, которая не зависит от основной транзакции, в которой 
+эта процедура была вызвана.
+
+.. color-block::
+  :caption: Oracle
+  
+  :green:`PRAGMA AUTONOMOUS_TRANSACTION;`
+    
+Данный оператор добавляется в блоке объявлений.
+
+Внутри автономной процедуры  может быть зафиксировано несколько автономных транзакций.
+Так, первый оператор SQL в автономной процедуры начинает транзакцию. Когда одна транзакция 
+завершается (то есть выполняется ``COMMIT;`` или ``ROLLBACK;``), следующий оператор SQL начинает другую транзакцию. 
+Все операторы SQL, выполненные с момента последнего коммита или роллбэка, составляют текущую транзакцию. 
+Для управления автономными транзакциями используйте следующие операторы, которые применяются только к текущей (активной) транзакции:
+
+- ``COMMIT``
+- ``ROLLBACK``
+- ``SAVEPOINT``
+- ``SET TRANSACTION``
+
+В РБД существует аналогичная возможность выполнить блок операторов в автономной транзакции. 
+Для этого используется оператор ``IN AUTONOMOUS TRANSACTION `` внутри тела PSQL подпрограмм.
+
+.. code-block::
+  :greenlines: 1,2, 3, 4
+  :caption: Rdb
+  
+  IN AUTONOMOUS TRANSACTION DO
+  BEGIN 
+    <блок PSQL-операторов> 
+  END
+
+Если код выполняется успешно, то автономная транзакция будет закоммичена (автоматически).
+
+Таким образом, при конвертации оператора ``PRAGMA AUTONOMOUS_TRANSACTION`` выполняются следующие задачи:
+
+1. *Удаление директивы из блока объявлений*
+
+   Директива ``PRAGMA AUTONOMOUS_TRANSACTION;`` удаляется.
+
+2. *Добавление оператора* ``IN AUTONOMOUS TRANSACTION``
+
+   Каждая группа PSQL-операторов внутри тела функции, процедуры, блока или триггера, которая составляет новую автономную транзакцию,
+   оборачивается в конструкцию:
+
+   .. code-block::
+     :greenlines: 1,2
+     
+     IN AUTONOMOUS TRANSACTION DO
+     BEGIN ... END
+  
+3. *Удаление оператора* ``COMMIT``
+
+   В РБД любая автономная транзакция (при успешном выполнении кода) будет закомичена автоматически.
+
+3. Конвертирование операторов управления автономными транзакциями ``ROLLBACK``, ``SAVEPOINT``, ``SET TRANSACTION``
+   
+   ???
+
+.. container:: twocol
+
+  .. code-block:: sql
+    :caption: Oracle
+
+    CREATE OR REPLACE PROCEDURE lower_salary
+      (emp_id NUMBER, amount NUMBER)
+    AUTHID DEFINER 
+    AS
+      PRAGMA AUTONOMOUS_TRANSACTION;
+    BEGIN
+
+
+      UPDATE employees
+      SET salary = salary - amount
+      WHERE employee_id = emp_id;
+      COMMIT;
+    END lower_salary;
+
+  .. code-block:: sql
+    :caption: Rdb
+
+    CREATE OR ALTER PROCEDURE lower_salary
+     (emp_id NUMERIC(34,8), amount NUMERIC(34,8))
+    SQL SECURITY DEFINER  
+    AS    
+
+    BEGIN
+      IN AUTONOMOUS TRANSACTION DO 
+      BEGIN
+        UPDATE employees
+        SET salary = salary - :amount
+        WHERE employee_id = :emp_id;
+      END
+    END /*lower_salary*/;
 
 
 .. _sub:declare_exception:
 
 Работа с исключениями
----------------------------
+-----------------------
 
 В Oracle существуют два вида исключений:
 
@@ -2478,31 +3008,33 @@ PL/SQL имеет три типа коллекций:
 
 .. _exam:new_exception:
 
-.. code-block:: sql
-  :caption: Oracle
-   
-  DECLARE
-     l_company_id INTEGER;
-  BEGIN
-     IF l_company_id IS NULL
-     THEN
-        RAISE VALUE_ERROR;
-     END IF;
-  END;
+.. container:: twocol
 
-.. code-block:: sql
-  :caption: to Rdb
+  .. code-block:: sql
+    :caption: Oracle
+    
+    DECLARE
+      l_company_id INTEGER;
+    BEGIN
+      IF l_company_id IS NULL
+      THEN
+          RAISE VALUE_ERROR;
+      END IF;
+    END;
+    :addline:
 
-  CREATE EXCEPTION VALUE_ERROR 'ошибка числа или значения';
-  
-  EXECUTE BLOCK
-  AS 
-    DECLARE l_company_id INTEGER;
-  BEGIN
-    IF (:l_company_id IS NULL)
-    THEN
-        EXCEPTION VALUE_ERROR;
-  END;
+  .. code-block:: sql
+    :caption: to Rdb
+
+    CREATE EXCEPTION 
+        VALUE_ERROR 'ошибка числа или значения';    
+    EXECUTE BLOCK
+    AS 
+      DECLARE l_company_id INTEGER;
+    BEGIN
+      IF (:l_company_id IS NULL)
+      THEN EXCEPTION VALUE_ERROR;
+    END;
 
 
 Ниже рассмотрены операции инициирования исключительных ситуаций и их обработка.
@@ -2528,7 +3060,7 @@ PL/SQL имеет три типа коллекций:
    :caption: Oracle
 
    RAISE <имя_исключения>;
-   RAISE <имя_пакета.имя_исключения>;
+   RAISE <имя_пакета>.<имя_исключения>;
    RAISE;
 
 Первая форма (без имени пакета) может инициировать исключения, определенные в текущем блоке 
@@ -2926,7 +3458,7 @@ PL/SQL имеет три типа коллекций:
 
 .. code-block:: 
     :greenlines: 1,2,3,4,5,6,7,8,9, 10, 11
-    :caption: to Rdb
+    :caption: Rdb
     
     DECLARE VARIABLE <имя пер.цикла> TYPE OF TABLE <имя курсора>;
     ...
@@ -3196,35 +3728,235 @@ PL/SQL имеет три типа коллекций:
 Типы данных
 ---------------
 
-.. code-block::
-    :redlines: 1,2,3,5,8,10,11,13,14,15
-    :greenlines: 4,6,7,9,12,16
+В PL/SQL Oracle параметры и переменные могут быть объявлены следующих типов [4]_:
+
+.. color-block::
+    :caption: Oracle
     
-    { <имя типа Varray>
-    | <имя типа вложенных таблиц>
-    | [REF] <пользовательский тип>
-    | <имя типа RECORD>
-    | <имя типа REF CURSOR>
-    | <тип данных SQL>
-    | <имя курсора>%ROWTYPE
-    | <переменная курсора>%ROWTYPE
-    | <имя таблицы/представления>%ROWTYPE
-    | <переменная типа коллекции>%TYPE
-    | <переменная курсора>%TYPE
-    | <имя таблицы/представления>.<столбец>%TYPE
-    | <имя экземпляра ADT>%TYPE
-    | <переменная типа RECORD>[.<поле>]%TYPE
-    | <скалярная переменная>%TYPE
-    }
+    :green:`... <имя переменной/параметра> ... <тип данных> ...` 
+    
+    :green:`<тип данных> := {` :red:`<имя типа Varray>`
+                    :red:`| <имя типа вложенных таблиц>`
+                    :red:`| [REF] <пользовательский тип>`
+                    :green:`| <имя типа RECORD>`
+                    :red:`| <имя типа REF CURSOR>`
+                    :green:`| <тип данных SQL>`
+                    :green:`| <имя курсора>%ROWTYPE`
+                    :red:`| <переменная курсора>%ROWTYPE`
+                    :green:`| <имя таблицы/представления>%ROWTYPE`
+                    :red:`| <переменная типа коллекции>%TYPE`
+                    :red:`| <переменная курсора>%TYPE`
+                    :green:`| <имя таблицы/представления>.<столбец>%TYPE`
+                    :red:`| <имя экземпляра ADT>%TYPE`
+                    :red:`| <переменная типа RECORD>[.<поле>]%TYPE`
+                    :red:`| <скалярная переменная>%TYPE`
+                    :green:`}`
+
+Далее рассмотрим только те типы данных, которые преобразуются 
+конвертером и поддерживаются Ред Базой Данных.
+
+.. unindented_list::
+  
+  - :ess:`Имя типа Record`
+    
+    Рассмотрим преобразование типа данных Record при задании параметра (или объявлении переменной):
+
+    .. code-block::
+      :greenlines: 1
+      :caption: Oracle
+                
+      ... <имя переменной/параметра> ... <имя типа Record> ...
+
+    .. code-block:: 
+      :greenlines: 1
+      :caption: Rdb
+
+      ... <имя переменной/параметра> ... <имя типа Record> ...
+
+    Тип Record должен быть предварительно объявлен. Описание конвертации объявления типа Record 
+    можно найти в :numref:`подразделе %s<subsec:recordtype>`. При конвертации ничего не меняется.  
+
+    Описание конвертации объявления переменных типа Record можно найти в :numref:`подразделе %s <subsec:declrecordvar>`.
+
+    .. code-block:: sql
+      :caption: Oracle
+
+      DECLARE
+        TYPE DeptRecTyp IS RECORD (
+            dept_id    NUMBER(4) NOT NULL := 10,
+            dept_name  VARCHAR2(30) NOT NULL := 'Administration',
+            mgr_id     NUMBER(6) := 200,
+            loc_id     NUMBER(4) := 1700
+          );
+        dept_rec1 DeptRecTyp := DeptRecTyp (20, 'Ingineer', 300, 1200);
+      BEGIN
+        NULL;
+      END;
 
 
+    .. code-block:: sql
+      :caption: to Rdb
 
-- :ess:`Имя типа RECORD`
-- :ess:`Тип данных SQL`
-- :ess:`Имя курсора%ROWTYPE`
-- :ess:`Имя таблицы/представления%ROWTYPE`
-- :ess:`Имя таблицы/представления.столбец%TYPE`
+      EXECUTE BLOCK 
+      AS 
+        DECLARE TYPE DeptRecTyp   (
+            dept_id    NUMERIC(4)  DEFAULT 10 NOT NULL,
+            dept_name  VARCHAR(30) DEFAULT 'Administration' NOT NULL,
+            mgr_id     NUMERIC(6)  DEFAULT 200,
+            loc_id     NUMERIC(4)  DEFAULT 1700
+        );
+        DECLARE dept_rec DeptRecTyp = ROW(20, 'Ingineer', 300, 1200);
+      BEGIN
+      END;
 
+  - :ess:`Тип данных SQL`
+
+    Рассмотрим преобразование типов данных SQL при задании параметра (или объявлении переменной):
+  
+    .. code-block::
+      :greenlines: 1
+      :caption: Oracle
+                
+      ... <имя переменной/параметра> ... <тип данных SQL> ...
+
+    .. code-block:: 
+      :greenlines: 1
+      :caption: Rdb
+
+      ... <имя переменной/параметра> ... <тип данных SQL> ...
+
+    Описание конвертации типов данных SQL можно найти в :numref:`подразделе %s <sec:datatypes>`.
+
+    Описание конвертации скалярных типов данных можно найти в :numref:`подразделе %s <subsec:scalardatatypes>`.
+
+  - :ess:`Имя курсора%ROWTYPE`
+
+    Рассмотрим преобразование типов данных на основе курсора при задании параметра (или объявлении переменной):
+   
+    .. code-block::
+      :greenlines: 1
+      :caption: Oracle
+                
+      ... <имя переменной/параметра> ... <имя курсора>%ROWTYPE ...
+
+    .. code-block:: 
+      :greenlines: 1
+      :caption: Rdb
+
+      ... <имя переменной/параметра> ... TYPE OF TABLE <имя курсора> ...
+
+    Курсор должен быть предварительно объявлен. Описание конвертации объявления курсора
+    можно найти в :numref:`подразделе %s <subsec:declcursor>`. При конвертации атрибут ``%ROWTYPE`` заменяется на конструкцию ``TYPE OF TABLE``.
+
+    Описание конвертации объявления переменных типа Record можно найти в :numref:`подразделе %s <subsec:declrecordvar>`.
+
+    .. code-block:: sql
+      :caption: Oracle
+
+      DECLARE
+        CURSOR c1 IS SELECT department_id, location_id FROM departments;
+        dept_rec c1%ROWTYPE;
+      BEGIN
+        NULL;
+      END;
+
+
+    .. code-block:: sql
+      :caption: to Rdb
+
+      EXECUTE BLOCK 
+      AS 
+        DECLARE c1 CURSOR FOR (SELECT department_id, location_id FROM departments);
+        DECLARE dept_rec TYPE OF TABLE c1;  
+      BEGIN        
+      END;
+
+  - :ess:`Имя таблицы/представления%ROWTYPE`
+
+    Рассмотрим преобразование типов данных на основе таблицы/представления при задании параметра (или объявлении переменной):
+       
+    .. code-block::
+      :greenlines: 1,2
+      :caption: Oracle
+                
+      ... <имя переменной/параметра> ... <имя таблицы>%ROWTYPE ...
+      ... <имя переменной/параметра> ... <имя представления>%ROWTYPE ...
+
+    .. code-block:: 
+      :greenlines: 1,2
+      :caption: Rdb
+
+      ... <имя переменной/параметра> ... TYPE OF TABLE <имя таблицы> ...
+      ... <имя переменной/параметра> ... TYPE OF TABLE <имя представления> ...
+
+    При конвертации атрибут ``%ROWTYPE`` заменяется на конструкцию ``TYPE OF TABLE``.
+
+    Описание конвертации объявления переменных типа Record можно найти в :numref:`подразделе %s <subsec:declrecordvar>`.
+
+    .. code-block:: sql
+      :caption: Oracle
+
+      DECLARE
+
+        dept_rec departments%ROWTYPE 
+      BEGIN
+        NULL;
+      END;
+
+    .. code-block:: sql
+      :caption: to Rdb
+
+      EXECUTE BLOCK 
+      AS 
+        DECLARE dept_rec TYPE OF TABLE departments;
+      BEGIN
+
+      END;
+
+  - :ess:`Имя таблицы/представления.столбец%TYPE`
+
+    Рассмотрим преобразование скалярного типа данных на основе столбца таблицы/представления при задании параметра (или объявлении переменной):
+    
+    .. code-block::
+      :greenlines: 1,2
+      :caption: Oracle
+                
+      ... <имя переменной/параметра> ... <имя таблицы>.<столбец>%TYPE ...
+      ... <имя переменной/параметра> ... <имя представления>.<столбец>%TYPE ...
+
+    .. code-block:: 
+      :greenlines: 1,2
+      :caption: Rdb
+
+      ... <имя переменной/параметра> ... TYPE OF COLUMN <имя таблицы>.<столбец>...
+      ... <имя переменной/параметра> ... TYPE OF COLUMN <имя представления>.<столбец>...
+
+    Как видно, атрибут ``%TYPE`` удаляется и заменяется на конструкцию ``TYPE OF COLUMN``.
+
+    Описание конвертации скалярных типов данных можно найти в :numref:`подразделе %s <subsec:scalardatatypes>`.
+
+    .. code-block:: sql
+      :caption: Oracle
+
+      DECLARE
+        dept_name   dept.name%TYPE  := 'PERSONNEL';
+        location    dept.location%TYPE default 'DALLAS';
+      BEGIN
+        sql_stmt := 'INSERT INTO dept VALUES (:1, :2)';
+        EXECUTE IMMEDIATE sql_stmt USING dept_name, location;
+      END;
+
+    .. code-block:: sql
+      :caption: to Rdb
+
+      EXECUTE BLOCK 
+      AS 
+        DECLARE dept_name   TYPE OF COLUMN dept.name  = 'PERSONNEL';
+        DECLARE location    TYPE OF COLUMN dept.location default 'DALLAS';
+      BEGIN
+        sql_stmt = 'INSERT INTO dept VALUES (:A1, :A2)';
+        EXECUTE STATEMENT (:sql_stmt) (A1:= :dept_name, A2:= :location);
+      END;
 
 .. [1]
    Конструкции операторов Oracle, которые преобразуются конвертером (с учетом разницы в синтаксисе) обозначены :green:`зеленым` цветом.
@@ -3240,3 +3972,8 @@ PL/SQL имеет три типа коллекций:
    Конструкции операторов Oracle, которые преобразуются конвертером (с учетом разницы в синтаксисе) обозначены :green:`зеленым` цветом.
    :red:`Красным` цветом обозначены конструкции, которые не поддерживаются Ред Базой Данных или конвертером. Неподдерживаемые конструкции
    удаляются или комментируются.
+
+.. [4]
+   Типы данных Oracle, которые преобразуются конвертером (с учетом разницы в синтаксисе) обозначены :green:`зеленым` цветом.
+   :red:`Красным` цветом обозначены типы данных, которые не поддерживаются Ред Базой Данных или конвертером. 
+   Неподдерживаемые типы данных комментируются ???.

@@ -10,7 +10,8 @@ import java.util.stream.Stream;
 
 public class RewritingListener extends PlSqlParserBaseListener {
 
-    static final int SPACES_TYPE = 2288;
+    static final int SPACES_TYPE = PlSqlLexer.SPACES;
+
     TokenStreamRewriter rewriter;
     CommonTokenStream tokens;
 
@@ -37,9 +38,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
     TreeMap<String, String> exceptions = new TreeMap<>();
     StoredAnonymousBlock currentAnonymousBlock = null;
 
-//    boolean containsException = false;
-//    boolean exceptionExist = false;
-
     public RewritingListener(CommonTokenStream tokens) {
         rewriter = new TokenStreamRewriter(tokens);
         this.tokens = tokens;
@@ -48,10 +46,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public String getText() {
         StringBuilder out = new StringBuilder();
 
-//        out.append("CREATE EXCEPTION NO_DATA_FOUND\n" +
-//                "\t'no data found';\n");
-//        out.append("CREATE EXCEPTION READ_ONLY_VIEW\n" +
-//                "\t'cannot perform a DML operation on a read-only view';\n");
         for (Map.Entry<String, String> entry : exceptions.entrySet())
             out.append("CREATE EXCEPTION ").append(entry.getKey())
                     .append("\n\t'").append(entry.getValue()).append("';\n");
@@ -79,13 +73,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
         for (String create_temporary_table : create_temporary_tables)
             out.append(create_temporary_table);
 
-        boolean plsql = !create_functions.isEmpty() ||
-                !create_procedures.isEmpty() ||
-                !create_triggers.isEmpty();
-
-//        if (plsql)
-//            out.append("SET TERM ^ ;\n\n");
-
         for (Create_function_bodyContext create_function : create_functions)
             out.append(getRewriterText(create_function)).append("\n\n");
 
@@ -94,9 +81,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         for (Create_triggerContext create_trigger : create_triggers)
             out.append(getRewriterText(create_trigger)).append("\n\n");
-
-//        if (plsql)
-//            out.append("SET TERM ; ^\n\n");
 
         for (Alter_triggerContext alter_trigger : alter_triggers)
             out.append(getRewriterText(alter_trigger)).append("\n\n");
@@ -127,31 +111,26 @@ public class RewritingListener extends PlSqlParserBaseListener {
     void replace(ParserRuleContext ctx, Object text) {
         if (ctx != null)
             rewriter.replace(ctx.start, ctx.stop, text);
-        sisoutRewriter();
     }
 
     void replace(TerminalNode term, Object text) {
         if (term != null)
             rewriter.replace(term.getSymbol(), text);
-        sisoutRewriter();
     }
 
     void delete(ParserRuleContext ctx) {
         if (ctx != null)
             rewriter.delete(ctx.start, ctx.stop);
-        sisoutRewriter();
     }
 
     void delete(TerminalNode term) {
         if (term != null)
             rewriter.delete(term.getSymbol());
-        sisoutRewriter();
     }
 
     void delete(List<? extends ParserRuleContext> ctx_list) {
         if (!ctx_list.isEmpty())
             rewriter.delete(ctx_list.get(0).start, ctx_list.get(ctx_list.size() - 1).stop);
-        sisoutRewriter();
     }
 
     Token getPreviousToken(Token token) {
@@ -220,13 +199,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
     }
 
-    void sisoutRewriter() {
-
-//        System.out.println("\n==========================================");
-//        System.out.println(rewriter.getText());
-//        System.out.println("==========================================\n");
-    }
-
     void commentBlock(int start_tok_idx, int stop_tok_idx) {
         rewriter.insertBefore(start_tok_idx, "/*");
         rewriter.insertAfter(stop_tok_idx, "*/");
@@ -281,16 +253,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitSql_script(Sql_scriptContext ctx) {
         if (!Ora2rdb.reorder)
             for (Map.Entry<String, String> entry : exceptions.entrySet())
-                insertBefore(ctx, "CREATE EXCEPTION " + entry.getKey() +"\n\t" + "'" + entry.getValue() + "';" + "\n");
-    }
-
-    @Override
-    public void exitUnit_statement(Unit_statementContext ctx) {
-//        if (!exceptionExist & containsException) {
-//            String exception = "CREATE EXCEPTION CUSTOM_EXCEPTION 'error';";
-//            insertBefore(ctx, exception + "\n\n");
-//            exceptionExist = true;
-//        }
+                insertBefore(ctx, "CREATE EXCEPTION " + entry.getKey() + "\n\t" + "'" + entry.getValue() + "';" + "\n");
     }
 
     @Override
@@ -1487,7 +1450,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             temp_tables_ddl.append(table_ddl).append("\n\n");
 
         if (!Ora2rdb.reorder)
-            replace(ctx, temp_tables_ddl + "\n" + getRewriterText(ctx) + "\n");
+            replace(ctx, temp_tables_ddl + "\n" + getRewriterText(ctx));
         else
             create_temporary_tables.add(temp_tables_ddl.toString());
 
@@ -1840,7 +1803,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             temp_tables_ddl.append(table_ddl).append("\n\n");
 
         if (!Ora2rdb.reorder)
-            replace(ctx, temp_tables_ddl + "\n" + getRewriterText(ctx) + "\n");
+            replace(ctx, temp_tables_ddl + "\n" + getRewriterText(ctx));
         else
             create_temporary_tables.add(temp_tables_ddl.toString());
         popScope();
@@ -1965,7 +1928,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             temp_tables_ddl.append(table_ddl).append("\n\n");
 
         if (!Ora2rdb.reorder)
-            replace(ctx, temp_tables_ddl + "\n" + getRewriterText(ctx) + "\n");
+            replace(ctx, temp_tables_ddl + "\n" + getRewriterText(ctx));
         else
             create_temporary_tables.add(temp_tables_ddl.toString());
 
@@ -2214,7 +2177,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             temp_tables_ddl.append(table_ddl).append("\n\n");
 
         if (!Ora2rdb.reorder)
-            replace(ctx, temp_tables_ddl + "\n" + getRewriterText(ctx) + "\n");
+            replace(ctx, temp_tables_ddl + "\n" + getRewriterText(ctx));
         else
             create_temporary_tables.add(temp_tables_ddl.toString());
 

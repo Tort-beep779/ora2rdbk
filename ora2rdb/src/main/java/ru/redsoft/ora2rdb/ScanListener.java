@@ -40,7 +40,7 @@ public class ScanListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitCreate_package_body(Create_package_bodyContext ctx){
+    public void exitCreate_package_body(Create_package_bodyContext ctx) {
         current_package_name = null;
     }
 
@@ -50,10 +50,10 @@ public class ScanListener extends PlSqlParserBaseListener {
         String name;
         name = Ora2rdb.getRealName(ctx.tableview_name().schema_and_name().name.getText());
         table.setName(name);
-        for( Relational_propertyContext rela_prop :ctx.relational_table().relational_property()){
-            if(rela_prop.column_definition() == null)
+        for (Relational_propertyContext rela_prop : ctx.relational_table().relational_property()) {
+            if (rela_prop.column_definition() == null)
                 continue;
-            if(rela_prop.column_definition().datatype() != null)
+            if (rela_prop.column_definition().datatype() != null)
                 table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
                         Ora2rdb.getRealName(rela_prop.column_definition().datatype().getText())
                 );
@@ -121,7 +121,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                     StorageInfo.index_names.add(new Index(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()), null, null, null, true));
                 else if (out_of_line_constraint_ctx.foreign_key_clause() != null) {
                     if (out_of_line_constraint_ctx.foreign_key_clause().FOREIGN() != null)
-                        StorageInfo.index_names.add(new Index(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()), null, null,null, true));
+                        StorageInfo.index_names.add(new Index(Ora2rdb.getRealName(out_of_line_constraint_ctx.constraint_name().getText()), null, null, null, true));
                 }
             }
         }
@@ -133,11 +133,11 @@ public class ScanListener extends PlSqlParserBaseListener {
         String name;
         name = Ora2rdb.getRealName(ctx.trigger_name().schema_and_name().name.getText());
         storedTrigger.setName(name);
-        if(ctx.simple_dml_trigger() != null){
+        if (ctx.simple_dml_trigger() != null) {
             Simple_dml_triggerContext simpleDmlTrigger = ctx.simple_dml_trigger();
-            if(simpleDmlTrigger.dml_event_clause() != null){
+            if (simpleDmlTrigger.dml_event_clause() != null) {
                 Dml_event_clauseContext dmlEventClause = simpleDmlTrigger.dml_event_clause();
-                if(dmlEventClause.tableview_name() != null){
+                if (dmlEventClause.tableview_name() != null) {
                     String table_name;
                     table_name = Ora2rdb.getRealName(dmlEventClause.tableview_name().schema_and_name().name.getText());
 
@@ -148,17 +148,17 @@ public class ScanListener extends PlSqlParserBaseListener {
             }
         }
 
-        if(ctx.trigger_body().trigger_block() != null) {
+        if (ctx.trigger_body().trigger_block() != null) {
             Trigger_blockContext trigger_block = ctx.trigger_body().trigger_block();
-            for (Declare_specContext declare_spec : trigger_block.declare_spec()){
-                if(declare_spec.variable_declaration() != null){
+            for (Declare_specContext declare_spec : trigger_block.declare_spec()) {
+                if (declare_spec.variable_declaration() != null) {
                     String param_name = Ora2rdb.getRealName(declare_spec.variable_declaration().identifier().getText());
                     String param_type = Ora2rdb.getRealName(declare_spec.variable_declaration().type_spec().getText());
                     storedTrigger.setDeclaredVariables(param_name, param_type);
                 }
             }
-            for (Declare_specContext declare_spec : trigger_block.declare_spec()){
-                if(declare_spec.variable_declaration() != null){
+            for (Declare_specContext declare_spec : trigger_block.declare_spec()) {
+                if (declare_spec.variable_declaration() != null) {
                     String param_name = Ora2rdb.getRealName(declare_spec.variable_declaration().identifier().getText());
                     String param_type = Ora2rdb.getRealName(declare_spec.variable_declaration().type_spec().getText());
                     storedTrigger.setDeclaredVariables(param_name, param_type);
@@ -175,7 +175,7 @@ public class ScanListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void enterCreate_index (Create_indexContext ctx){
+    public void enterCreate_index(Create_indexContext ctx) {
         String index_name;
         index_name = Ora2rdb.getRealName(ctx.index_name().schema_and_name().name.getText());
         String uniqueStatement = "";
@@ -203,7 +203,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                     }
         String tableName = Ora2rdb.getRealName(ctx.table_index_clause().tableview_name().schema_and_name().name.getText()) + alias;
 
-        Index index = new Index(index_name, uniqueStatement, tableSpace,tableName, false);
+        Index index = new Index(index_name, uniqueStatement, tableSpace, tableName, false);
         StorageInfo.index_names.add(index);
     }
 
@@ -216,8 +216,8 @@ public class ScanListener extends PlSqlParserBaseListener {
         storedProcedure.setName(procedureName);
         storedProcedure.setPackage_name(current_package_name);
 
-        if(ctx.parameter() != null){
-            for(int i = 0; i < ctx.parameter().size(); i++ ){
+        if (ctx.parameter() != null) {
+            for (int i = 0; i < ctx.parameter().size(); i++) {
                 storedProcedure.setParameters(i, ctx.parameter(i), !ctx.parameter(i).OUT().isEmpty());
             }
         }
@@ -240,12 +240,12 @@ public class ScanListener extends PlSqlParserBaseListener {
         storedProcedure.setName(procedureName);
         storedProcedure.setPackage_name(current_package_name);
 
-        if(ctx.parameter() != null){
-            for(int i = 0; i < ctx.parameter().size(); i++ ){
+        if (ctx.parameter() != null) {
+            for (int i = 0; i < ctx.parameter().size(); i++) {
                 storedProcedure.setParameters(i, ctx.parameter(i), !ctx.parameter(i).OUT().isEmpty());
             }
         }
-        if(!storedBlocksStack.isEmpty()) {
+        if (!storedBlocksStack.isEmpty()) {
             storedProcedure.setParent(storedBlocksStack.peek());
             storedBlocksStack.peek().setChildren(storedProcedure);
         }
@@ -268,13 +268,13 @@ public class ScanListener extends PlSqlParserBaseListener {
 
         storedFunction.setName(functionName);
         storedFunction.setPackage_name(current_package_name);
-        if(ctx.type_spec().datatype() != null)
+        if (ctx.type_spec().datatype() != null)
             storedFunction.setFunction_returns_type(Ora2rdb.getRealName(ctx.type_spec().datatype().native_datatype_element().getText()));
         else
             storedFunction.setFunction_returns_type(Ora2rdb.getRealName(ctx.type_spec().getText()));
         storedFunction.setConvert_function_return_type(getConvertType(ctx.type_spec()));
-        if(ctx.parameter() != null){
-            for(int i = 0; i < ctx.parameter().size(); i++ ){
+        if (ctx.parameter() != null) {
+            for (int i = 0; i < ctx.parameter().size(); i++) {
                 storedFunction.setParameters(i, ctx.parameter(i), !ctx.parameter(i).OUT().isEmpty());
             }
         }
@@ -283,7 +283,7 @@ public class ScanListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitCreate_function_body(Create_function_bodyContext ctx){
+    public void exitCreate_function_body(Create_function_bodyContext ctx) {
         StorageInfo.stored_blocks_list.add(storedBlocksStack.pop());
     }
 
@@ -294,18 +294,18 @@ public class ScanListener extends PlSqlParserBaseListener {
 
         storedFunction.setName(functionName);
         storedFunction.setPackage_name(current_package_name);
-        if(ctx.type_spec().datatype() != null)
+        if (ctx.type_spec().datatype() != null)
             storedFunction.setFunction_returns_type(Ora2rdb.getRealName(ctx.type_spec().datatype().native_datatype_element().getText()));
         else
             storedFunction.setFunction_returns_type(Ora2rdb.getRealName(ctx.type_spec().getText()));
         storedFunction.setConvert_function_return_type(getConvertType(ctx.type_spec()));
-        if(ctx.parameter() != null){
-            for(int i = 0; i < ctx.parameter().size(); i++ ){
+        if (ctx.parameter() != null) {
+            for (int i = 0; i < ctx.parameter().size(); i++) {
                 storedFunction.setParameters(i, ctx.parameter(i), !ctx.parameter(i).OUT().isEmpty());
             }
         }
 
-        if(!storedBlocksStack.isEmpty()){
+        if (!storedBlocksStack.isEmpty()) {
             storedFunction.setParent(storedBlocksStack.peek());
             storedBlocksStack.peek().setChildren(storedFunction);
         }
@@ -314,7 +314,7 @@ public class ScanListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitFunction_body(Function_bodyContext ctx){
+    public void exitFunction_body(Function_bodyContext ctx) {
         StorageInfo.stored_blocks_list.add(storedBlocksStack.pop());
     }
 
@@ -323,7 +323,7 @@ public class ScanListener extends PlSqlParserBaseListener {
         FinderBlockCall finder = new FinderBlockCall();
         String name;
         String package_name;
-        if(ctx.routine_name().id_expression(0) != null){
+        if (ctx.routine_name().id_expression(0) != null) {
             name = Ora2rdb.getRealName(ctx.routine_name().id_expression(0).getText());
             package_name = Ora2rdb.getRealName(ctx.routine_name().identifier().getText());
         } else {
@@ -334,7 +334,7 @@ public class ScanListener extends PlSqlParserBaseListener {
         finder.setPackage_name(package_name);
         finder.setArea_package_name(current_package_name);
 
-        if (ctx.function_argument() != null && !storedBlocksStack.isEmpty() ) {
+        if (ctx.function_argument() != null && !storedBlocksStack.isEmpty()) {
             String arg_name;
             for (int i = 0; i < ctx.function_argument().argument().size(); i++) {
                 arg_name = Ora2rdb.getRealParameterName(ctx.function_argument().argument(i).getText());
@@ -345,13 +345,13 @@ public class ScanListener extends PlSqlParserBaseListener {
                 );
             }
         }
-        if(!storedBlocksStack.isEmpty()) {
+        if (!storedBlocksStack.isEmpty()) {
             List<StoredBlock> tempList = storedBlocksStack.peek().getChildren().stream()
                     .filter(e -> e.equalsIgnoreParent(finder, true)).collect(Collectors.toList());
-            if(tempList.size() > 1)
+            if (tempList.size() > 1)
                 tempList.stream().filter(e -> e.equalsIgnoreParent(finder, false))
                         .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
-            else if(!tempList.isEmpty())
+            else if (!tempList.isEmpty())
                 finder.setParent(tempList.get(0).getParent());
         }
         StoredBlock storedBlock;
@@ -360,7 +360,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                         .filter(e -> e.getPackage_name() != null)
                         .filter(e -> e.equal(finder, true))
                         .collect(Collectors.toList());
-        if(tempList.size() > 1)
+        if (tempList.size() > 1)
             storedBlock = tempList.stream()
                     .filter(e -> e.equal(finder, false))
                     .findFirst().orElse(null);
@@ -368,7 +368,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                 .findFirst().orElse(null);
 
 
-        if(storedBlock == null) {
+        if (storedBlock == null) {
             tempList = StorageInfo.stored_blocks_list.stream()
                     .filter(e -> e.equal(finder, true))
                     .collect(Collectors.toList());
@@ -379,22 +379,21 @@ public class ScanListener extends PlSqlParserBaseListener {
             } else storedBlock = tempList.stream()
                     .findFirst().orElse(null);
         }
-        if(storedBlock != null && !storedBlocksStack.isEmpty())
-            if(!storedBlocksStack.peek().getCalledStorageBlocks().contains(storedBlock))
+        if (storedBlock != null && !storedBlocksStack.isEmpty())
+            if (!storedBlocksStack.peek().getCalledStorageBlocks().contains(storedBlock))
                 storedBlocksStack.peek().setCalledStorageBlocks(storedBlock);
     }
 
     @Override
     public void enterGeneral_element_part(General_element_partContext ctx) {
-        if(ctx.function_argument() != null){
+        if (ctx.function_argument() != null) {
             FinderBlockCall finder = new FinderBlockCall();
             String name;
             String package_name;
-            if(!ctx.PERIOD().isEmpty()){
+            if (!ctx.PERIOD().isEmpty()) {
                 name = Ora2rdb.getRealName(ctx.id_expression(1).getText());
                 package_name = Ora2rdb.getRealName(ctx.id_expression(0).getText());
-            }
-            else{
+            } else {
                 name = Ora2rdb.getRealName(ctx.id_expression(0).getText());
                 package_name = null;
             }
@@ -414,13 +413,13 @@ public class ScanListener extends PlSqlParserBaseListener {
                 }
             }
 
-            if(!storedBlocksStack.isEmpty()) {
+            if (!storedBlocksStack.isEmpty()) {
                 List<StoredBlock> tempList = storedBlocksStack.peek().getChildren().stream()
                         .filter(e -> e.equalsIgnoreParent(finder, true)).collect(Collectors.toList());
-                if(tempList.size() > 1)
+                if (tempList.size() > 1)
                     tempList.stream().filter(e -> e.equalsIgnoreParent(finder, false))
                             .findFirst().ifPresent(child -> finder.setParent(child.getParent()));
-                else if(!tempList.isEmpty())
+                else if (!tempList.isEmpty())
                     finder.setParent(tempList.get(0).getParent());
             }
 
@@ -430,14 +429,14 @@ public class ScanListener extends PlSqlParserBaseListener {
                             .filter(e -> e.getPackage_name() != null)
                             .filter(e -> e.equal(finder, true))
                             .collect(Collectors.toList());
-            if(tempList.size() > 1)
+            if (tempList.size() > 1)
                 storedBlock = tempList.stream()
                         .filter(e -> e.equal(finder, false))
                         .findFirst().orElse(null);
             else storedBlock = tempList.stream()
                     .findFirst().orElse(null);
 
-            if(storedBlock == null) {
+            if (storedBlock == null) {
                 tempList = StorageInfo.stored_blocks_list.stream()
                         .filter(e -> e.equal(finder, true))
                         .collect(Collectors.toList());
@@ -448,8 +447,8 @@ public class ScanListener extends PlSqlParserBaseListener {
                 } else storedBlock = tempList.stream()
                         .findFirst().orElse(null);
             }
-            if(storedBlock != null && !storedBlocksStack.isEmpty())
-                if(!storedBlocksStack.peek().getCalledStorageBlocks().contains(storedBlock))
+            if (storedBlock != null && !storedBlocksStack.isEmpty())
+                if (!storedBlocksStack.peek().getCalledStorageBlocks().contains(storedBlock))
                     storedBlocksStack.peek().setCalledStorageBlocks(storedBlock);
         }
     }
@@ -463,10 +462,11 @@ public class ScanListener extends PlSqlParserBaseListener {
 
             StorageInfo.package_constant_names.add(ctx.identifier().getText());
         }
-        if(!storedBlocksStack.isEmpty()){
+        if (!storedBlocksStack.isEmpty()) {
             storedBlocksStack.peek().setDeclaredVariables(ctx);
         }
     }
+
     @Override
     public void enterCreate_view(Create_viewContext ctx) {
         StorageInfo.views.put(Ora2rdb.getRealName(ctx.tableview_name().schema_and_name().name.getText()), new View(ctx));

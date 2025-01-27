@@ -2,7 +2,6 @@ package ru.redsoft.ora2rdb;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -28,16 +27,42 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ParserTest {
 
     static String startDirPath = "src/test/resources/scripts/";
-    static ArrayList<String> argsArray = new ArrayList<String>();
-    @BeforeAll
-    static void getArguments() {
-        Arrays.stream(System.getProperty("testSuite", "").split(","))
+    static ArrayList<String> testSuite = new ArrayList<String>();
+    static ArrayList<String> ignoreSuite = new ArrayList<String>();
+
+
+    static void checkValid(ArrayList<String> input) throws IOException {
+        for (String arg : input)
+            if (!Files.exists(Paths.get(startDirPath + arg.replaceAll("/$", ""))))
+                throw new IOException("Directory not found: " + arg);
+    }
+
+    static ArrayList<String> getParameters(String key) throws IOException {
+        ArrayList<String> result = new ArrayList<String>();
+        Arrays.stream(System.getProperty(key, "").split(","))
                 .forEach(arg -> {
                     arg = arg.replace(" ", "");
-                    if (!arg.endsWith("/"))
+                    if (!arg.isEmpty() && !arg.endsWith("/")) {
                         arg = arg.concat("/");
-                    argsArray.add(arg);
+                    }
+                    result.add(arg);
                 });
+        checkValid(result);
+        return result;
+    }
+
+    @BeforeAll
+    static void initialiseSuite() throws IOException {
+        testSuite = getParameters("testSuite");
+        ignoreSuite = getParameters("ignoreSuite");
+    }
+
+    static boolean ignored(String inputFile) {
+
+        return ignoreSuite.stream()
+                .filter(e -> !e.isEmpty())
+                .filter(e -> Files.isDirectory(Paths.get(startDirPath + e)))
+                .anyMatch(e -> inputFile.contains(e));
     }
 
     private List<String> readFile(String path) throws IOException {
@@ -69,29 +94,23 @@ class ParserTest {
     }
 
 
-    void test(String inputFile) throws IOException {
-        final Path outFile =  Paths.get(System.getProperty("java.io.tmpdir"),"out.sql");
+    void test(String inputFile) throws Exception {
+        final Path outFile = Paths.get(System.getProperty("java.io.tmpdir"), "out.sql");
         String expectedFile = inputFile.replace(".sql", "_expected.sql");
-        List<String> actual;
-        try (FileInputStream fs = new FileInputStream(startDirPath + inputFile);
-             FileWriter fileWriter = new FileWriter(outFile.toAbsolutePath().toString())) {
-            RewritingListener rewritingListener =
-                    Ora2rdb.convert(fs);
-            actual = Arrays.asList(rewritingListener.rewriter.getText()
-                    .replace("\r", "").split("\n"));
-            for (String line : actual) {
-                if(!line.equals(actual.get(actual.size()-1)))
-                    fileWriter.write(line + System.lineSeparator());
-                else
-                    fileWriter.write(line);
-            }
+        Path inputFilePath = Paths.get(startDirPath + inputFile);
+        try {
+            Ora2rdb.main(new String[]{inputFilePath.toAbsolutePath().toString(), "-o", outFile.toAbsolutePath().toString()});
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
+        List<String> actual = Files.readAllLines(outFile, StandardCharsets.UTF_8);
         List<String> expected = readFile(expectedFile);
         Patch<String> diff = DiffUtils.diff(expected, actual);
-                List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff("expected",
+        List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff("expected",
                 "actual", expected, diff, 0);
         String result = String.join("\n", unifiedDiff);
+
         if (!result.isEmpty()) {
             ProcessBuilder processBuilder = new ProcessBuilder("python3",
                     "src/test/resources/main.py",
@@ -115,8 +134,8 @@ class ParserTest {
 
                 process.waitFor();
                 String infoStr = "+++ actual\n" +
-                                 "--- expected\n" +
-                                 "+ \n\n";
+                        "--- expected\n" +
+                        "+ \n\n";
                 assertEquals(infoStr, difference.toString());
             } catch (IOException | InterruptedException e) {
                 throw new IOException(e);
@@ -126,16 +145,18 @@ class ParserTest {
 
     static Stream<String> argsProviderFactory() throws IOException {
         ArrayList<String> fileNameArray = new ArrayList<>();
-        for(String arg : argsArray) {
+        for (String arg : testSuite) {
             try {
                 Files.walk(Paths.get(startDirPath + arg), Integer.MAX_VALUE)
+                        .filter(e -> e.toString().contains(".sql"))
+                        .filter(e -> !ignored(e.toString()))
                         .filter(e -> !Files.isDirectory(e) && !e.toString().contains("_expected.sql"))
                         .collect(Collectors.toCollection(LinkedList::new))
                         .descendingIterator()
                         .forEachRemaining(path -> {
                             fileNameArray.add(path.toString().replace(startDirPath, ""));
                         });
-            }catch (IOException e){
+            } catch (IOException e) {
                 throw new IOException("directory not found: " + arg);
             }
         }
@@ -144,7 +165,7 @@ class ParserTest {
 
     @ParameterizedTest(name = "{arguments}")
     @MethodSource("argsProviderFactory")
-    void testAllScripts(String argument) throws IOException {
+    void testAllScripts(String argument) throws Exception {
         test(argument);
     }
 

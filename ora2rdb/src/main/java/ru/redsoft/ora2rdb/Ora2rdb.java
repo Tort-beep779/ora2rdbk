@@ -51,7 +51,7 @@ public class Ora2rdb {
         SqlCodeParser sqlCodeParser = new SqlCodeParser();
         List<String> splitBlocks = sqlCodeParser.splitMetadataIntoBlocks(is);
 
-        StringBuilder mergedBlocks = convertSplitBlocks(splitBlocks,sqlCodeParser);
+        StringBuilder mergedBlocks = convertSplitBlocks(splitBlocks, sqlCodeParser);
 
         CharStream input = CharStreams.fromString(mergedBlocks.toString());
         PlSqlLexer lexer = new PlSqlLexer(input);
@@ -77,7 +77,7 @@ public class Ora2rdb {
         return converter;
     }
 
-    private static StringBuilder convertSplitBlocks(List<String> splitBlocks,SqlCodeParser sqlCodeParser) {
+    private static StringBuilder convertSplitBlocks(List<String> splitBlocks, SqlCodeParser sqlCodeParser) {
         Map<Integer, List<String>> mapWithBlocksInPackages = sqlCodeParser.getBlocksInPackage();
         StringBuilder mergedBlocks = new StringBuilder();
         int numberOfBlock = 0;
@@ -87,7 +87,7 @@ public class Ora2rdb {
                 List<String> listWithBlocks = mapWithBlocksInPackages.get(numberOfBlock);
                 for (int id = 0; id < listWithBlocks.size() - 2; id++) {
                     String startOfPackage = packageBodyStart;
-                    if (sqlCodeParser.checkIfPragmaDeclaration(listWithBlocks.get(id))){
+                    if (sqlCodeParser.checkIfPragmaDeclaration(listWithBlocks.get(id))) {
                         startOfPackage = packageStart;
                     }
                     String singleBlockInPackage = tryToParseBlock(startOfPackage + " " + listWithBlocks.get(id) + " " + packageEnd).toString();

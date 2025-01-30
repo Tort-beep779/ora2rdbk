@@ -1,0 +1,1 @@
+select last_name AS "emp" from employees;

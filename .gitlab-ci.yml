@@ -82,7 +82,7 @@ build_docs:
     SPHINXBUILD: sphinx-build
   image: registry.red-soft.biz:5000/docker-images/3rdparty/texlive:TL2024-2024-11-17-full-sphinx
   before_script:
-    - /venv/bin/pip3 install sphinxnotes-any
+    - /venv/bin/pip3 install sphinxnotes-any sphinxnotes.comboroles
     - mkdir -p dist/guide
   script:
     - cd guide/ORA2RDB_Guide

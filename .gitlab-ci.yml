@@ -1,6 +1,8 @@
 stages:
   - prepare
+  - build_docs
   - build_and_test
+  - deploy_docs
   - deploy
   - publish
 
@@ -66,6 +68,25 @@ prepare:release:
   only:
     - tags
 
+build_docs:
+  tags:
+    - docker
+    - builder
+    - x86_64
+  stage: build_docs
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - dist/
+  variables:
+    SPHINXBUILD: sphinx-build
+  image: registry.red-soft.biz:5000/docker-images/3rdparty/texlive:TL2024-2024-11-17-full-sphinx
+  before_script:
+    - mkdir -p dist/guide
+  script:
+    - cd guide/ORA2RDB_Guide
+    - make latexpdf
+    - cp build/latex/ORA2RDB_Guide.pdf ../dist/guide/ORA2RDB_Guide.pdf
 build_and_test:
   tags:
     - docker
@@ -92,6 +113,18 @@ build_and_test:
   script:
     - git submodule update --init
     - mvn $MAVEN_CLI_OPTS -f "${CI_PROJECT_DIR}"/pom.xml test -Pdeploy-internal -DreleaseHubBuildVersion=$VERSION  -DfailIfNoTests=false
+
+deploy_docs:
+  tags:
+    - docker
+    - builder
+    - x86_64
+  stage: deploy_docs
+  images: registry.red-soft.biz:5000/utils/red-release-manager/client:master
+  before_script:
+    - export VERSION=`cat .ci/version`
+  script:
+    - relmanager_client -1 addartifact ${RELEASE_HUB_PROJECT} ${VERSION} ru.redsoft.ora2rdb:ORA2RDB_Guide:${VERSION}:pdf /dist/guide/ORA2RDB_Guide.pdf
 
 .deploy_template_jdk11: &deploy_template_jdk11
   tags:

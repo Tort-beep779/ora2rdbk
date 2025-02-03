@@ -121,7 +121,7 @@ deploy_docs:
     - builder
     - x86_64
   stage: deploy_docs
-  images: registry.red-soft.biz:5000/utils/red-release-manager/client:master
+  image: registry.red-soft.biz:5000/utils/red-release-manager/client:master
   before_script:
     - export VERSION=`cat .ci/version`
   script:

@@ -33,6 +33,7 @@ variables:
   script:
     - mkdir .ci
     - echo ${VERSION} > .ci/version
+    - echo ${DOCS_VERSION} > .ci/docs_version
     - echo ${BRANCH} > .ci/branch
     - echo ${CONTEXT} > .ci/context
     - mvn $MAVEN_CLI_OPTS releasehub-build:register -Pdeploy-internal -DreleaseHubBuildOnlyCreate -DreleaseHubBuildVersion=$VERSION -DreleaseHubBuildContext=${CONTEXT} -DreleaseHubBuildBranch=${BRANCH} -DreleaseHubBuildCommit=${CI_COMMIT_SHA} -DreleaseHubBuildCIURL=${CI_URL}
@@ -49,6 +50,7 @@ prepare:snapshot:
     - VERSION=$(mvn $MAVEN_CLI_OPTS -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec|sed 's/\(.*\)-.*/\1/')
     - "[ \"$REAL_VERSION\" = \"${VERSION}-SNAPSHOT\" ] || (echo Stopping build. Expected ${VERSION}-SNAPSHOT version. Create tag for this commit!; exit 1)"
     - mvn $MAVEN_CLI_OPTS -q --non-recursive releasehub-build:buildno -Pdeploy-internal -DreleaseHubBuildVersion=${VERSION}-SNAPSHOT
+    - export DOCS_VERSION=${VERSION}-SNAPSHOT
     - export BUILDNO=$(mvn $MAVEN_CLI_OPTS -q --non-recursive releasehub-build:buildno -Pdeploy-internal -DreleaseHubBuildVersion=${VERSION}-SNAPSHOT)
     - export VERSION=${VERSION}-SNAPSHOT.${BUILDNO}
     - export BRANCH=${CI_COMMIT_REF_NAME}
@@ -62,6 +64,7 @@ prepare:release:
     - apk --update add maven
     - VERSION_IN_POM=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
     - export VERSION=$(echo ${CI_COMMIT_TAG}|sed 's/v//')
+    - export DOCS_VERSION=${VERSION}
     - export BRANCH=${TAG_BRANCH}
     - export CONTEXT=tag
     - "[ \"$VERSION\" = \"$VERSION_IN_POM\" ] || (echo Project version in pom.xml and tag do not match!; exit 1)"
@@ -125,9 +128,10 @@ deploy_docs:
   image: registry.red-soft.biz:5000/utils/red-release-manager/client:master
   before_script:
     - export VERSION=`cat .ci/version`
+    - export DOCS_VERSION=`cat .ci/docs_version`
   script:
     - TS=$(date '+%Y%M%d%H%M%S')
-    - relmanager_client -1 addartifact ${RELEASE_HUB_PROJECT} ${VERSION} ru.redsoft.ora2rdb:ORA2RDB_Guide:${VERSION}-${TS}:pdf dist/guide/ORA2RDB_Guide.pdf
+    - relmanager_client -1 addartifact ${RELEASE_HUB_PROJECT} ${VERSION} ru.redsoft.ora2rdb:ORA2RDB_Guide:${DOCS_VERSION}-${TS}:pdf dist/guide/ORA2RDB_Guide.pdf
 
 .deploy_template_jdk11: &deploy_template_jdk11
   tags:

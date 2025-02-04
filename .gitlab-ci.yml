@@ -87,7 +87,8 @@ build_docs:
   script:
     - cd guide/ORA2RDB_Guide
     - make latexpdf
-    - cp build/latex/ORA2RDB_Guide.pdf ../dist/guide/ORA2RDB_Guide.pdf
+    - cp build/latex/ORA2RDB_Guide.pdf ../../dist/guide/ORA2RDB_Guide.pdf
+
 build_and_test:
   tags:
     - docker

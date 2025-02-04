@@ -126,7 +126,7 @@ deploy_docs:
   before_script:
     - export VERSION=`cat .ci/version`
   script:
-    - relmanager_client -1 addartifact ${RELEASE_HUB_PROJECT} ${VERSION} ru.redsoft.ora2rdb:ORA2RDB_Guide:${VERSION}:pdf /dist/guide/ORA2RDB_Guide.pdf
+    - relmanager_client -1 addartifact ${RELEASE_HUB_PROJECT} ${VERSION} ru.redsoft.ora2rdb:ORA2RDB_Guide:${VERSION}:pdf dist/guide/ORA2RDB_Guide.pdf
 
 .deploy_template_jdk11: &deploy_template_jdk11
   tags:

@@ -1,7 +1,7 @@
 CREATE GLOBAL TEMPORARY TABLE SALARIES (
-                                           K VARCHAR(64),
-                                           VAL NUMERIC(34, 8),
-                                           CONSTRAINT PK_CITY_POPULATION PRIMARY KEY (K)
+    K VARCHAR(64),
+    VAL NUMERIC(34, 8),
+    CONSTRAINT PK_CITY_POPULATION PRIMARY KEY (K)
 );
 
 EXECUTE BLOCK

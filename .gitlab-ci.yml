@@ -35,7 +35,7 @@ variables:
     - echo ${VERSION_IN_POM} > .ci/version_in_pom
     - echo ${BRANCH} > .ci/branch
     - echo ${CONTEXT} > .ci/context
-    - echo ${STAGE] > .ci/stage
+    - echo ${STAGE} > .ci/stage
   artifacts:
     expire_in: 1 day
     paths:

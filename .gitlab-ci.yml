@@ -100,7 +100,7 @@ build_and_test:
     expire_in: 1 day
     paths:
       - dist/
-      - test_result/
+      - test-results/
   variables:
     JAVA_HOME: /usr/java11
     M2_HOME: /opt/apache-maven-${MAVEN_VERSION}/
@@ -134,9 +134,10 @@ deploy:
   stage: deploy
   image: registry.red-soft.biz:5000/utils/red-release-manager/client:master
   before_script:
-    - echo $VERSION > .ci/version
-    - echo $BRANCH > .ci/branch
-    - echo $CONTEXT > .ci/context
+    - export VERSION=`cat .ci/version`
+    - export CONTEXT=`cat .ci/context`
+    - export BRANCH=`cat .ci/branch`
+    - export STAGE=`cat .ci/stage`
   script:
     - test -d test-results && for f in $(find test-results -maxdepth 1 -name \*.xml); do printf "testpack $(basename ${f/.xml})\nfile $f\nend\n"; done >> .ci/artifacts || true
     - |

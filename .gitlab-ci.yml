@@ -111,7 +111,7 @@ build_and_test:
     - yum install -y expect java-11-openjdk git $EXTRA_DEPENDENCIES
     - yum install -y https://dl.min.io/client/mc/release/linux-amd64/archive/mcli-20210613174822.0.0.x86_64.rpm
     - mkdir -p dist/target
-    - mkdir -p test_result
+    - mkdir -p test-results
     - pushd /opt
     - wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
     - tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz

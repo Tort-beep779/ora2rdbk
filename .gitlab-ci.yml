@@ -88,7 +88,7 @@ build_docs:
     - cd guide/ORA2RDB_Guide
     - make latexpdf
     - export VERSION=`cat .ci/version`
-    - tar -czf ../../dist/guide/ORA2RDB_Guide.tar.gz build/latex/ORA2RDB_Guide${VERSION}.pdf
+    - tar -czf ../../dist/guide/ORA2RDB_Guide${VERSION}.tar.gz build/latex/ORA2RDB_Guide${VERSION}.pdf
 
 build_and_test:
   tags:

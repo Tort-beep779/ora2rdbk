@@ -52,7 +52,6 @@ prepare:snapshot:
     - export BRANCH=${CI_COMMIT_REF_NAME}
     - export CONTEXT=commit
     - export STAGE=snapshot
-
   except:
     - tags
 
@@ -84,11 +83,14 @@ build_docs:
   before_script:
     - /venv/bin/pip3 install sphinxnotes-any sphinxnotes.comboroles
     - mkdir -p dist/guide
+    - mkdir -p ora2rdb-docs-$VERSION
     - export VERSION=`cat .ci/version`
   script:
-    - cd guide/ORA2RDB_Guide
+    - pushd guide/ORA2RDB_Guide
     - make latexpdf
-    - tar -czf ../../dist/guide/ORA2RDB_Guide-${VERSION}.tar.gz build/latex/ORA2RDB_Guide.pdf
+    - popd
+    - cp guide/ORA2RDB_Guide/build/latex/ORA2RDB_Guide.pdf ora2rdb-docs-${VERSION}/ORA2RDB_Guide-${VERSION}.pdf
+    - tar -czf dist/guide/ora2rdb-docs-${VERSION}.tar.gz ora2rdb-docs-${VERSION}/ORA2RDB_Guide-${VERSION}.pdf
 
 build_and_test:
   tags:

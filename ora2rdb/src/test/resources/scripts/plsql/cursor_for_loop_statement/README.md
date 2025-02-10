@@ -18,7 +18,7 @@
 
 **statements** - код выполняющийся при каждом прохождении через цикл.
 
-### [ cursor_for_loop_references_virtual_columns.sql]( cursor_for_loop_references_virtual_columns.sql)
+### [cursor_for_loop_references_virtual_columns.sql](cursor_for_loop_references_virtual_columns.sql)
 
 В этом тесте используются псевдозаписи **AS ...**  . Поэтому необходимо 
 объявить две переменные, названия которых совпадают с именами псевдозаписей 

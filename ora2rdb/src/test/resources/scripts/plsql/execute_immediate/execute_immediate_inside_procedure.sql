@@ -1,0 +1,5 @@
+CREATE PROCEDURE exec_DDL (ddl_string IN VARCHAR2)
+    IS
+BEGIN
+    EXECUTE IMMEDIATE ddl_string;
+END;

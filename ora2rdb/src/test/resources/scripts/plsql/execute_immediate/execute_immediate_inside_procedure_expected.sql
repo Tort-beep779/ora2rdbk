@@ -1,0 +1,6 @@
+CREATE PROCEDURE exec_DDL (ddl_string  VARCHAR(32765))
+    SQL SECURITY DEFINER
+    AS
+BEGIN
+    EXECUTE STATEMENT (:ddl_string);
+END;

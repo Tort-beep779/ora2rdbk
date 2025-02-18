@@ -6,6 +6,6 @@ CURSOR C1 IS
 BEGIN
     FOR ITEM IN C1
       LOOP
-        ITEM.LAST_NAME;
+        NULL;
     END LOOP;
 END;

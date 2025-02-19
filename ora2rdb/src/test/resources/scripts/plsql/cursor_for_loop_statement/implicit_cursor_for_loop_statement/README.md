@@ -2,6 +2,8 @@
 
 Объявить переменные, по которым делается выборка .В эти переменные считывать данные.
 
+----------------------------------------
+
 ### Ожидаемый результат для теста [implicit_cursor_for_loop_statement_inside_anonymous_block.sql](implicit_cursor_for_loop_statement_inside_anonymous_block.sql)
 
     EXECUTE BLOCK
@@ -17,6 +19,8 @@
         
         END
     END;
+
+----------------------------------------
 
 
 ### Ожидаемый результат для теста [implicit_cursor_for_loop_statement_inside_function.sql](implicit_cursor_for_loop_statement_inside_function.sql)
@@ -37,6 +41,8 @@
     END; 
 
 
+----------------------------------------
+
 
 ### Ожидамеый результат для теста [implicit_cursor_for_loop_statement_inside_procedure.sql](implicit_cursor_for_loop_statement_inside_procedure.sql)
     CREATE PROCEDURE P_Grade_meaning1
@@ -52,6 +58,10 @@
     
         END
     END; 
+
+
+----------------------------------------
+
 
 ### Ожидаемый результат для теста [implicit_cursor_for_loop_statement_inside_trigger.sql](implicit_cursor_for_loop_statement_inside_trigger.sql)
 
@@ -70,6 +80,8 @@
         
         END
     END /*T_Grade_meaning1*/;
+
+----------------------------------------
 
 
 ### Ожидаемый результат для теста [implicit_cursor_for_loop_statement_inside_package.sql](implicit_cursor_for_loop_statement_inside_package.sql)

@@ -5,6 +5,6 @@ BEGIN
       RAISE salary_too_high;   -- raise exception
     END IF;
     EXCEPTION
-        WHEN salary_too_high THEN  -- start handling exception
-          RAISE;  -- reraise current exception (exception name is optional)
+        WHEN salary_too_high THEN
+          RAISE;  -- reraise current exception
 END;

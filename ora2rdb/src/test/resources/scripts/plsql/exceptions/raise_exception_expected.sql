@@ -1,4 +1,5 @@
 CREATE EXCEPTION salary_too_high 'salary_too_high exception';
+
 EXECUTE BLOCK
     AS
     /*salary_too_high   EXCEPTION;*/

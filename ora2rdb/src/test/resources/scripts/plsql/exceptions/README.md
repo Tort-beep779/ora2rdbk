@@ -2,6 +2,7 @@
 
 [Официальная документация](https://docs.oracle.com/en/database/oracle/oracle-database/21/lnpls/plsql-error-handling.html#GUID-E91802C5-02CB-477F-8A58-89982BBBA5FF)
 
+-------------------------
 
 ### Обьявление именованных исключений 
 
@@ -82,6 +83,7 @@
 - приложение инициирует исключение командой RAISE;
 - исключение инициируется встроенной процедурой RAISE_APPLICATION_ERROR.
 
+----------------------
 #### Команда RAISE
 
 * RAISE имя_исключения;
@@ -221,4 +223,20 @@
 | TOO_MANY_ROWS           | SING_SELECT_ERR                                                 |
 | VALUE_ERROR             |                                                                 |
 | ZERO_DIVIDE             | EXCEPTION_FLOAT_DIVIDE_BY_ZERO EXCEPTION_INTEGER_DIVIDE_BY_ZERO |
+
+-------------------------
+
+### [pragma_exception_init_with_when_statement.sql](pragma_exception_init_with_when_statement.sql)
+
+В ORACLE можно привязать код ошибки к своему исключению. Пример 
+
+    invalid_month EXCEPTION;
+    PRAGMA EXCEPTION_INIT (invalid_month, -1843);
+
+И если программа завершится с этим кодом, можно обработать это исключение 
+по его имени 
+
+    WHEN invalid_month THEN ...
+
+В РБД аналога PRAGMA EXCEPTION_INIT нет и не ясно как конвертировать подобные случаи 
 

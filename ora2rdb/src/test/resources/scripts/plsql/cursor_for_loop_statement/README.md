@@ -2,6 +2,8 @@
 
 **CURSOR FOR LOOP** можно использовать тогда, когда вы хотите выгрузить и обработать каждую запись курсора. CURSOR FOR LOOP завершится, когда все записи будут извлечены в курсор.
 
+-----------------------------
+
 ### Синтаксис 
 
     FOR record_index in cursor_name
@@ -17,6 +19,8 @@
 **cursor_name** - имя курсора, из которого вы хотите извлечь записи.
 
 **statements** - код выполняющийся при каждом прохождении через цикл.
+
+-----------------------------
 
 ### [cursor_for_loop_references_virtual_columns.sql](cursor_for_loop_references_virtual_columns.sql)
 
@@ -47,6 +51,8 @@
 , так как она составляется по сути из двух переменных 
 
 
+-----------------------------
+
 ### [passing_parameters_to_explicit_cursor_for_loop_statement.sql](passing_parameters_to_explicit_cursor_for_loop_statement.sql)
 
 В ORACLE можно передать параметры в курсор. При конвертации такой курсор комментируется 
@@ -73,6 +79,9 @@
         
         END
     END;
+
+-----------------------------
+
 
 ### [refer_to_a_variable_inside_for_loop.sql](refer_to_a_variable_inside_for_loop.sql)
 
@@ -108,6 +117,10 @@
             LAST_NAME = 'MIKE';  -- REFER TO VARIABLE
         END
     END;
+
+
+-----------------------------
+
 
 ### [subquery_in_from_clause_of_parent_query.sql](subquery_in_from_clause_of_parent_query.sql)
 

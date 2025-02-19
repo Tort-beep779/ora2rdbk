@@ -15,5 +15,5 @@ BEGIN
 	        IF( (:j > 5) ) THEN LEAVE inner_loop  ;
 	        IF( ((:i * :j) > 15) ) THEN LEAVE outer_loop ;
     END  /*inner_loop*/
-END  /*outer_loop*/
+  END  /*outer_loop*/
 END;

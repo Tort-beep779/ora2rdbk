@@ -1,16 +1,16 @@
 stages:
   - prepare
+  - build_docs
   - build_and_test
   - deploy
-  - publish
 
 cache:
   key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
   paths:
     - .m2/repository/
     - target/
-
 variables:
+  MAVEN_VERSION: 3.8.8
   GIT_SUBMODULE_STRATEGY: recursive
   RELEASE_HUB_PROJECT: ora2rdb
   CI_URL: ${CI_PROJECT_URL}/pipelines/${CI_PIPELINE_ID}
@@ -27,13 +27,15 @@ variables:
     - builder
     - x86_64
   stage: prepare
-  image: openjdk:8-jdk-alpine
+  image: registry.red-soft.biz:5000/utils/red-release-manager/client:master
   script:
     - mkdir .ci
+    - m4 -DVERSION=${VERSION} ci/artifacts.m4 > .ci/artifacts
     - echo ${VERSION} > .ci/version
+    - echo ${VERSION_IN_POM} > .ci/version_in_pom
     - echo ${BRANCH} > .ci/branch
     - echo ${CONTEXT} > .ci/context
-    - mvn $MAVEN_CLI_OPTS releasehub-build:register -Pdeploy-internal -DreleaseHubBuildOnlyCreate -DreleaseHubBuildVersion=$VERSION -DreleaseHubBuildContext=${CONTEXT} -DreleaseHubBuildBranch=${BRANCH} -DreleaseHubBuildCommit=${CI_COMMIT_SHA} -DreleaseHubBuildCIURL=${CI_URL}
+    - echo ${STAGE} > .ci/stage
   artifacts:
     expire_in: 1 day
     paths:
@@ -42,29 +44,53 @@ variables:
 prepare:snapshot:
   <<: *prepare_template
   before_script:
-    - apk --update add maven
-    - REAL_VERSION=$(mvn $MAVEN_CLI_OPTS -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
     - VERSION=$(mvn $MAVEN_CLI_OPTS -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec|sed 's/\(.*\)-.*/\1/')
-    - "[ \"$REAL_VERSION\" = \"${VERSION}-SNAPSHOT\" ] || (echo Stopping build. Expected ${VERSION}-SNAPSHOT version. Create tag for this commit!; exit 1)"
-    - mvn $MAVEN_CLI_OPTS -q --non-recursive releasehub-build:buildno -Pdeploy-internal -DreleaseHubBuildVersion=${VERSION}-SNAPSHOT
-    - export BUILDNO=$(mvn $MAVEN_CLI_OPTS -q --non-recursive releasehub-build:buildno -Pdeploy-internal -DreleaseHubBuildVersion=${VERSION}-SNAPSHOT)
+    - BUILDNO=$(relmanager_client genbuildno ${RELEASE_HUB_PROJECT} ${VERSION}-SNAPSHOT)
+    - export VERSION_IN_POM=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+    - "[ \"$VERSION_IN_POM\" = \"${VERSION}-SNAPSHOT\" ] || (echo Stopping build. Expected ${VERSION}-SNAPSHOT version but version in pom is ${VERSION_IN_POM}. Create tag for this commit!; exit 1)"
     - export VERSION=${VERSION}-SNAPSHOT.${BUILDNO}
     - export BRANCH=${CI_COMMIT_REF_NAME}
     - export CONTEXT=commit
+    - export STAGE=snapshot
   except:
     - tags
 
 prepare:release:
   <<: *prepare_template
   before_script:
-    - apk --update add maven
-    - VERSION_IN_POM=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
+    - export VERSION_IN_POM=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec)
     - export VERSION=$(echo ${CI_COMMIT_TAG}|sed 's/v//')
     - export BRANCH=${TAG_BRANCH}
     - export CONTEXT=tag
+    - export STAGE=release
     - "[ \"$VERSION\" = \"$VERSION_IN_POM\" ] || (echo Project version in pom.xml and tag do not match!; exit 1)"
   only:
     - tags
+
+build_docs:
+  tags:
+    - docker
+    - builder
+    - x86_64
+  stage: build_docs
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - dist/
+  variables:
+    SPHINXBUILD: sphinx-build
+  image: registry.red-soft.biz:5000/docker-images/3rdparty/texlive:TL2024-2024-11-17-full-sphinx
+  before_script:
+    - /venv/bin/pip3 install sphinxnotes-any sphinxnotes.comboroles
+    - export VERSION=`cat .ci/version`
+    - mkdir -p dist/guide
+    - mkdir -p ora2rdb-docs-${VERSION}
+  script:
+    - pushd guide/ORA2RDB_Guide
+    - make latexpdf
+    - popd
+    - cp guide/ORA2RDB_Guide/build/latex/ORA2RDB_Guide.pdf ora2rdb-docs-${VERSION}/ORA2RDB_Guide-${VERSION}.pdf
+    - tar -czf dist/guide/ora2rdb-docs-${VERSION}.tar.gz ora2rdb-docs-${VERSION}/ORA2RDB_Guide-${VERSION}.pdf
 
 build_and_test:
   tags:
@@ -72,9 +98,13 @@ build_and_test:
     - tester
     - x86_64
   stage: build_and_test
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - dist/
+      - test-results/
   variables:
     JAVA_HOME: /usr/java11
-    MAVEN_VERSION: 3.8.8
     M2_HOME: /opt/apache-maven-${MAVEN_VERSION}/
   image:
     name: registry.red-soft.biz:5000/docker-images/rdbbuildenv:rdb5-8
@@ -82,71 +112,45 @@ build_and_test:
     - echo proxy=$http_proxy >> /etc/yum.conf
     - yum install -y expect java-11-openjdk git $EXTRA_DEPENDENCIES
     - yum install -y https://dl.min.io/client/mc/release/linux-amd64/archive/mcli-20210613174822.0.0.x86_64.rpm
+    - mkdir -p dist/target
+    - mkdir -p test-results
     - pushd /opt
     - wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
     - tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
     - popd
     - export PATH=${M2_HOME}/bin:${PATH}
     - export VERSION=`cat .ci/version`
+    - export VERSION_IN_POM=`cat .ci/version_in_pom`
     - ln -s `update-alternatives --display jre_11_openjdk | sed -n '2p;3q' | awk -F\" '{split($1, v, " ");printf("%s", v[5])}'` /usr/java11
   script:
     - git submodule update --init
-    - mvn $MAVEN_CLI_OPTS -f "${CI_PROJECT_DIR}"/pom.xml test -Pdeploy-internal -DreleaseHubBuildVersion=$VERSION  -DfailIfNoTests=false
+    - mvn $MAVEN_CLI_OPTS -f "${CI_PROJECT_DIR}"/pom.xml package -DfailIfNoTests=false
+    - cp ora2rdb/target/ora2rdb-${VERSION_IN_POM}.jar dist/target/ora2rdb-${VERSION}.jar
+    - ci/junit_merge.sh -i ora2rdb/target/surefire-reports -o test-results/TEST-ora2rdb-${VERSION}.xml
 
-.deploy_template_jdk11: &deploy_template_jdk11
+deploy:
   tags:
     - docker
     - builder
     - x86_64
   stage: deploy
-  variables:
-    MAVEN_VERSION: 3.8.8
-    M2_HOME: /opt/apache-maven-${MAVEN_VERSION}/
-  image:
-    name: openjdk:11-jdk-buster
-    entrypoint: []
+  image: registry.red-soft.biz:5000/utils/red-release-manager/client:master
   before_script:
-    - apt update -y
-    - apt install ca-certificates-java -y
-    - apt update -y
-    - pushd /opt
-    - wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
-    - tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
-    - popd
-    - export PATH=${M2_HOME}/bin:${PATH}
     - export VERSION=`cat .ci/version`
-    - export BRANCH=`cat .ci/branch`
     - export CONTEXT=`cat .ci/context`
-
-deploy_jdk11:internal:
-  <<: *deploy_template_jdk11
-  stage: deploy
-  script:
-    - mvn $MAVEN_CLI_OPTS deploy -Pdeploy-internal -Dmaven.test.skip.exec -DreleaseHubBuildVersion=$VERSION
-
-publish:
-  tags:
-    - docker
-    - builder
-    - x86_64
-  stage: publish
-  variables:
-    MAVEN_VERSION: 3.8.8
-    M2_HOME: /opt/apache-maven-${MAVEN_VERSION}/
-  image:
-    name: openjdk:11-jdk-buster
-    entrypoint: []
-  before_script:
-    - apt update -y
-    - apt install ca-certificates-java -y
-    - apt update -y
-    - pushd /opt
-    - wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
-    - tar xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz
-    - popd
-    - export PATH=${M2_HOME}/bin:${PATH}
-    - export VERSION=`cat .ci/version`
     - export BRANCH=`cat .ci/branch`
-    - export CONTEXT=`cat .ci/context`
+    - export STAGE=`cat .ci/stage`
   script:
-    - mvn $MAVEN_CLI_OPTS --non-recursive releasehub-build:publish -Pdeploy-internal -DreleaseHubBuildVersion=$VERSION
+    - test -d test-results && for f in $(find test-results -maxdepth 1 -name \*.xml); do printf "testpack $(basename ${f/.xml})\nfile $f\nend\n"; done >> .ci/artifacts || true
+    - |
+      for d in $(find test-results/* -maxdepth 1 -type d | sed 's/test-results\///'); do
+        printf "testpack $d\n";
+        for t in $(find test-results/$d -name \*.xml); do
+          printf "file $t\n";
+        done;
+        printf "end\n";
+      done >> .ci/artifacts || true
+    - relmanager_client deploy ${RELEASE_HUB_PROJECT} ${VERSION} --artifacts .ci/artifacts --ci_url ${CI_URL} --context ${CONTEXT} --branch ${BRANCH} --commit ${CI_COMMIT_SHA} --stage ${STAGE}
+  only:
+    variables:
+      - $RELEASE_HUB_KEY

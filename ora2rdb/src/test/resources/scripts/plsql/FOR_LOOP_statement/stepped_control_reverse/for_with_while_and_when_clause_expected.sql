@@ -1,0 +1,153 @@
+/* Процедура */
+CREATE PROCEDURE P_For_With_While_and_When
+AS
+  DECLARE summa INTEGER = 0;
+  DECLARE i_FOR1 INTEGER;
+  DECLARE bound_i_FOR1 INTEGER;
+BEGIN
+  i_FOR1 = 10;
+  bound_i_FOR1 = 1;
+  WHILE (i_FOR1 >= bound_i_FOR1) DO
+  BEGIN 
+    IF (NOT(i_FOR1 > 5)) THEN LEAVE;
+    IF (NOT (i_FOR1 != 8)) THEN                       
+    BEGIN 
+      i_FOR1 = i_FOR1 - 1; 
+      CONTINUE;
+    END
+    summa = :summa + :i_FOR1;
+    i_FOR1 = i_FOR1 - 1;
+  END
+  i_FOR1 = bound_i_FOR1;
+END; 
+
+/* Функция */
+CREATE FUNCTION F_For_With_While_and_When
+RETURNS INTEGER
+AS
+  DECLARE summa INTEGER = 0;
+  DECLARE i_FOR1 INTEGER;
+  DECLARE bound_i_FOR1 INTEGER;
+BEGIN
+  i_FOR1 = 10;
+  bound_i_FOR1 = 1;
+  WHILE (i_FOR1 >= bound_i_FOR1) DO
+  BEGIN 
+    IF (NOT(i_FOR1 > 5)) THEN LEAVE;
+    IF (NOT (i_FOR1 != 8)) THEN                       
+    BEGIN 
+      i_FOR1 = i_FOR1 - 1; 
+      CONTINUE;
+    END
+    summa = :summa + :i_FOR1;
+    i_FOR1 = i_FOR1 - 1;
+  END
+  i_FOR1 = bound_i_FOR1;
+  RETURN summa;  -- 32
+END; 
+
+/* Пакет */
+CREATE OR ALTER PACKAGE Pack_For_With_While_and_When
+AS BEGIN
+   FUNCTION PF_For_With_While_and_When
+   RETURNS INTEGER;
+   PROCEDURE PP_For_With_While_and_When; 
+END; 
+
+/* Тело пакета */
+RECREATE PACKAGE BODY Pack_For_With_While_and_When
+AS BEGIN
+   FUNCTION PF_For_With_While_and_When
+   RETURNS INTEGER
+   AS
+     DECLARE summa INTEGER = 0;
+     DECLARE i_FOR1 INTEGER;
+     DECLARE bound_i_FOR1 INTEGER;
+   BEGIN
+     i_FOR1 = 10;
+     bound_i_FOR1 = 1;
+     WHILE (i_FOR1 >= bound_i_FOR1) DO
+     BEGIN 
+       IF (NOT(i_FOR1 > 5)) THEN LEAVE;
+       IF (NOT (i_FOR1 != 8)) THEN                       
+       BEGIN 
+         i_FOR1 = i_FOR1 - 1; 
+         CONTINUE;
+       END
+       summa = :summa + :i_FOR1;
+       i_FOR1 = i_FOR1 - 1;
+     END
+     i_FOR1 = bound_i_FOR1;
+     RETURN summa;
+   END
+
+   PROCEDURE PP_For_With_While_and_When
+   AS
+     DECLARE summa INTEGER = 0;
+     DECLARE i_FOR1 INTEGER;
+     DECLARE bound_i_FOR1 INTEGER;
+   BEGIN
+     i_FOR1 = 10;
+     bound_i_FOR1 = 1;
+     WHILE (i_FOR1 >= bound_i_FOR1) DO
+     BEGIN 
+       IF (NOT(i_FOR1 > 5)) THEN LEAVE;
+       IF (NOT (i_FOR1 != 8)) THEN                       
+       BEGIN 
+         i_FOR1 = i_FOR1 - 1; 
+         CONTINUE;
+       END
+       summa = :summa + :i_FOR1;
+       i_FOR1 = i_FOR1 - 1;
+     END
+     i_FOR1 = bound_i_FOR1;
+   END
+END; 
+
+/* Триггер DML */
+CREATE OR ALTER TRIGGER T_For_With_While_and_When
+  AFTER INSERT 
+  ON students
+AS
+  DECLARE summa INTEGER = 0;
+  DECLARE i_FOR1 INTEGER;
+  DECLARE bound_i_FOR1 INTEGER;
+BEGIN
+  i_FOR1 = 10;
+  bound_i_FOR1 = 1;
+  WHILE (i_FOR1 >= bound_i_FOR1) DO
+  BEGIN 
+    IF (NOT(i_FOR1 > 5)) THEN LEAVE;
+    IF (NOT (i_FOR1 != 8)) THEN                       
+    BEGIN 
+      i_FOR1 = i_FOR1 - 1; 
+      CONTINUE;
+    END
+    summa = :summa + :i_FOR1;
+    i_FOR1 = i_FOR1 - 1;
+  END
+  i_FOR1 = bound_i_FOR1;
+END;
+
+/* Анонимный блок */
+EXECUTE BLOCK 
+AS
+  DECLARE summa INTEGER = 0;
+  DECLARE i_FOR1 INTEGER;
+  DECLARE bound_i_FOR1 INTEGER;
+BEGIN
+  i_FOR1 = 10;
+  bound_i_FOR1 = 1;
+  WHILE (i_FOR1 >= bound_i_FOR1) DO
+  BEGIN 
+    IF (NOT(i_FOR1 > 5)) THEN LEAVE;
+    IF (NOT (i_FOR1 != 8)) THEN                       
+    BEGIN 
+      i_FOR1 = i_FOR1 - 1; 
+      CONTINUE;
+    END
+    summa = :summa + :i_FOR1;
+    i_FOR1 = i_FOR1 - 1;
+  END
+  i_FOR1 = bound_i_FOR1;
+END; 

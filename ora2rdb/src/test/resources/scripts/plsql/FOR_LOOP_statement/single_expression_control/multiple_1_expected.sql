@@ -1,0 +1,219 @@
+/* Процедура */
+CREATE PROCEDURE P_Multiple1
+AS
+  DECLARE summa INTEGER = 0;
+  DECLARE power INTEGER;
+  DECLARE i_FOR1 INTEGER;
+  DECLARE bound_i_FOR1 INTEGER;
+BEGIN
+  power = 7;
+  WHILE (1=1) DO
+  BEGIN 
+    i_FOR1 = power+1;
+    IF (NOT (power < 20)) THEN LEAVE;
+    summa = :summa + :i_FOR1;
+    power = power + 1;
+  END
+  WHILE (1=1) DO
+  BEGIN 
+    i_FOR1 = 21;
+    summa = :summa + :i_FOR1;
+    power = power + 1;
+    LEAVE;
+  END
+  i_FOR1 = 1;
+  bound_i_FOR1 = 3;
+  WHILE (i_FOR1 <= bound_i_FOR1) DO
+  BEGIN 
+    summa = :summa + :i_FOR1;
+    power = power + 1;
+    i_FOR1 = i_FOR1 + 1; 
+  END
+  i_FOR1 = bound_i_FOR1;
+END; 
+
+/* Функция */
+CREATE FUNCTION F_Multiple1
+RETURNS INTEGER
+AS
+  DECLARE summa INTEGER = 0;
+  DECLARE power INTEGER;
+  DECLARE i_FOR1 INTEGER;
+  DECLARE bound_i_FOR1 INTEGER;
+BEGIN
+  power = 7;
+  WHILE (1=1) DO
+  BEGIN 
+    i_FOR1 = power+1;
+    IF (NOT (power < 20)) THEN LEAVE;
+    summa = :summa + :i_FOR1;
+    power = power + 1;
+  END
+  WHILE (1=1) DO
+  BEGIN 
+    i_FOR1 = 21;
+    summa = :summa + :i_FOR1;
+    power = power + 1;
+    LEAVE;
+  END
+  i_FOR1 = 1;
+  bound_i_FOR1 = 3;
+  WHILE (i_FOR1 <= bound_i_FOR1) DO
+  BEGIN 
+    summa = :summa + :i_FOR1;
+    power = power + 1;
+    i_FOR1 = i_FOR1 + 1; 
+  END
+  i_FOR1 = bound_i_FOR1;
+  RETURN summa; 
+END; 
+
+/* Пакет */
+CREATE OR ALTER PACKAGE Pack_Multiple1
+AS BEGIN
+   FUNCTION PF_Multiple1
+   RETURNS INTEGER;
+   PROCEDURE PP_Multiple1; 
+END; 
+
+/* Тело пакета */
+RECREATE PACKAGE BODY Pack_Multiple1
+AS BEGIN
+   FUNCTION PF_Multiple1
+   RETURNS INTEGER
+   AS
+     DECLARE summa INTEGER = 0;
+     DECLARE power INTEGER;
+     DECLARE i_FOR1 INTEGER;
+     DECLARE bound_i_FOR1 INTEGER;
+   BEGIN
+     power = 7;
+     WHILE (1=1) DO
+     BEGIN 
+       i_FOR1 = power+1;
+       IF (NOT (power < 20)) THEN LEAVE;
+       summa = :summa + :i_FOR1;
+       power = power + 1;
+     END
+     WHILE (1=1) DO
+     BEGIN 
+       i_FOR1 = 21;
+       summa = :summa + :i_FOR1;
+       power = power + 1;
+       LEAVE;
+     END
+     i_FOR1 = 1;
+     bound_i_FOR1 = 3;
+     WHILE (i_FOR1 <= bound_i_FOR1) DO
+     BEGIN 
+       summa = :summa + :i_FOR1;
+       power = power + 1;
+       i_FOR1 = i_FOR1 + 1; 
+     END
+     i_FOR1 = bound_i_FOR1;
+     RETURN summa;
+   END
+
+   PROCEDURE PP_Multiple1
+   AS
+     DECLARE summa INTEGER = 0;
+     DECLARE power INTEGER;
+     DECLARE i_FOR1 INTEGER;
+     DECLARE bound_i_FOR1 INTEGER;
+   BEGIN
+     power = 7;
+     WHILE (1=1) DO
+     BEGIN 
+       i_FOR1 = power+1;
+       IF (NOT (power < 20)) THEN LEAVE;
+       summa = :summa + :i_FOR1;
+       power = power + 1;
+     END
+     WHILE (1=1) DO
+     BEGIN 
+       i_FOR1 = 21;
+       summa = :summa + :i_FOR1;
+       power = power + 1;
+       LEAVE;
+     END
+     i_FOR1 = 1;
+     bound_i_FOR1 = 3;
+     WHILE (i_FOR1 <= bound_i_FOR1) DO
+     BEGIN 
+       summa = :summa + :i_FOR1;
+       power = power + 1;
+       i_FOR1 = i_FOR1 + 1; 
+     END
+     i_FOR1 = bound_i_FOR1;
+   END
+END; 
+
+/* Триггер DML */
+CREATE OR ALTER TRIGGER T_Multiple1
+  AFTER INSERT 
+  ON students
+AS
+  DECLARE summa INTEGER = 0;
+  DECLARE power INTEGER;
+  DECLARE i_FOR1 INTEGER;
+  DECLARE bound_i_FOR1 INTEGER;
+BEGIN
+  power = 7;
+  WHILE (1=1) DO
+  BEGIN 
+    i_FOR1 = power+1;
+    IF (NOT (power < 20)) THEN LEAVE;
+    summa = :summa + :i_FOR1;
+    power = power + 1;
+  END
+  WHILE (1=1) DO
+  BEGIN 
+    i_FOR1 = 21;
+    summa = :summa + :i_FOR1;
+    power = power + 1;
+    LEAVE;
+  END
+  i_FOR1 = 1;
+  bound_i_FOR1 = 3;
+  WHILE (i_FOR1 <= bound_i_FOR1) DO
+  BEGIN 
+    summa = :summa + :i_FOR1;
+    power = power + 1;
+    i_FOR1 = i_FOR1 + 1; 
+  END
+  i_FOR1 = bound_i_FOR1;
+END;
+
+/* Анонимный блок */
+EXECUTE BLOCK 
+AS
+  DECLARE summa INTEGER = 0;
+  DECLARE power INTEGER;
+  DECLARE i_FOR1 INTEGER;
+  DECLARE bound_i_FOR1 INTEGER;
+BEGIN
+  power = 7;
+  WHILE (1=1) DO
+  BEGIN 
+    i_FOR1 = power+1;
+    IF (NOT (power < 20)) THEN LEAVE;
+    summa = :summa + :i_FOR1;
+    power = power + 1;
+  END
+  WHILE (1=1) DO
+  BEGIN 
+    i_FOR1 = 21;
+    summa = :summa + :i_FOR1;
+    power = power + 1;
+    LEAVE;
+  END
+  i_FOR1 = 1;
+  bound_i_FOR1 = 3;
+  WHILE (i_FOR1 <= bound_i_FOR1) DO
+  BEGIN 
+    summa = :summa + :i_FOR1;
+    power = power + 1;
+    i_FOR1 = i_FOR1 + 1; 
+  END
+  i_FOR1 = bound_i_FOR1;
+END; 

@@ -1,0 +1,1 @@
+UPDATE books SET (TITLE, PAGE_COUNT) = (select 'C' , 500 from dual);

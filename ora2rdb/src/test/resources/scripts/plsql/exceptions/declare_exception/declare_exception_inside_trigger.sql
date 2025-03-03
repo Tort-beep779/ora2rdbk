@@ -1,0 +1,9 @@
+CREATE TRIGGER T_Grade_meaning1
+    AFTER INSERT
+    ON EMPLOYEES
+    FOR EACH ROW
+DECLARE
+    invalid_company_id EXCEPTION;
+BEGIN
+    NULL;
+END;

@@ -1,4 +1,5 @@
 CREATE EXCEPTION invalid_month 'invalid_month exception';
+
 CREATE PROCEDURE my_procedure
 AS
     /*invalid_month EXCEPTION;*/

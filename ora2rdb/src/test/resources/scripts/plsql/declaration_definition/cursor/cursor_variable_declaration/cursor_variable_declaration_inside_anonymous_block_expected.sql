@@ -1,0 +1,8 @@
+EXECUTE BLOCK
+AS
+    DECLARE cur CURSOR FOR
+        (SELECT * FROM employees);
+	DECLARE VARIABLE cur_rec TYPE OF TABLE cur;
+BEGIN
+
+END;

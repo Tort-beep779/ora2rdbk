@@ -1,0 +1,1 @@
+select ALL last_name from employees;

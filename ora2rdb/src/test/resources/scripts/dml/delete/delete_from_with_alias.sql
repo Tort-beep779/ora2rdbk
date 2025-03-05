@@ -1,0 +1,1 @@
+DELETE FROM BOOKS b where b.page_count = 150;

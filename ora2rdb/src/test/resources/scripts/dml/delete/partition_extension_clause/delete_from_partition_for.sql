@@ -1,0 +1,1 @@
+DELETE FROM books PARTITION for (600);

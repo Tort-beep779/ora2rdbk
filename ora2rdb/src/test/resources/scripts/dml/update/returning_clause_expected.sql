@@ -6,6 +6,6 @@ SQL SECURITY DEFINER
 BEGIN
     UPDATE "BOOKS"
         SET "PAGE_COUNT" = "PAGE_COUNT" + 20
-        WHERE "PAGE_COUNT" =  650
+        WHERE "PAGE_COUNT" > 800
     RETURNING "PAGE_COUNT", "TITLE" INTO :v_new_pages, :v_title;
 END;

@@ -1,1 +1,3 @@
-/*https://citforum.ru/database/oracle/materialized_views_2/*/
+/*
+https://citforum.ru/database/oracle/materialized_views_2/
+ */

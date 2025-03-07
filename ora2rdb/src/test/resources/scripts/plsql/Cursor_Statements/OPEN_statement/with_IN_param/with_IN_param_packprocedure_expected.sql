@@ -1,0 +1,26 @@
+CREATE PACKAGE PackP_Open_With_Param
+SQL SECURITY DEFINER
+AS BEGIN
+    PROCEDURE PP_Open_With_Param;
+END;
+
+CREATE PACKAGE BODY PackP_Open_With_Param
+AS
+BEGIN
+    PROCEDURE PP_Open_With_Param
+    AS
+      DECLARE c1_v1 CURSOR FOR (SELECT id FROM test_table WHERE num < 10 AND res = 'OK');
+      DECLARE c1_v2 CURSOR FOR (SELECT id FROM test_table WHERE num < 5 AND res = 'POOR');
+      DECLARE c1_v3 CURSOR FOR (SELECT id FROM test_table WHERE num < 2 AND res = 'POOR');
+      DECLARE c1_v4 CURSOR FOR (SELECT id FROM test_table WHERE num < 3 AND res = 'OK');
+    BEGIN
+      OPEN c1_v1;
+      CLOSE c1_v1;
+      OPEN c1_v2;
+      CLOSE c1_v2;
+      OPEN c1_v3;
+      CLOSE c1_v3;
+      OPEN c1_v4;
+      CLOSE c1_v4;
+    END
+END;

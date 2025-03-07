@@ -1,0 +1,9 @@
+CREATE TRIGGER T_Open_Without_Param
+BEFORE INSERT ON EMPLOYEES
+FOR EACH ROW
+DECLARE
+  cursor c1 is SELECT num FROM test_table;
+BEGIN
+  OPEN c1;
+  CLOSE c1;
+END;

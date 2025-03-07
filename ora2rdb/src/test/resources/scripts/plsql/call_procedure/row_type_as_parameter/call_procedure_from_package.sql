@@ -1,0 +1,24 @@
+CREATE PACKAGE CALLING_PACKAGE
+AS
+   FUNCTION CALLING_FUNCTION RETURN NUMBER;
+   PROCEDURE CALLING_PROCEDURE;
+END CALLING_PACKAGE;
+
+CREATE PACKAGE BODY CALLING_PACKAGE
+AS
+   FUNCTION CALLING_FUNCTION
+   RETURN NUMBER
+   IS
+        record_variable pkg.my_record;
+    BEGIN
+         PROCEDURE_NAME(record_variable);   -- call procedure
+    END;
+
+   PROCEDURE CALLING_PROCEDURE
+    IS
+        record_variable pkg.my_record;
+    BEGIN
+        PROCEDURE_NAME(record_variable);   -- call procedure
+    END;
+
+END CALLING_PACKAGE;

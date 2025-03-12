@@ -1,0 +1,8 @@
+CREATE PROCEDURE P_Null_In_For
+IS
+BEGIN
+  FOR i IN 1..3
+  LOOP
+    NULL;
+  END LOOP;
+END;

@@ -1,0 +1,6 @@
+BEGIN
+  FOR i IN 1..3
+  LOOP
+    NULL;
+  END LOOP;
+END; 

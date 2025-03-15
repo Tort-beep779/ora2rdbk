@@ -1,4 +1,4 @@
-CREATE TABLE immutable_transactions (
+CREATE IMMUTABLE TABLE immutable_transactions (
     transaction_id NUMBER GENERATED ALWAYS AS IDENTITY,
     amount NUMBER(10,2),
     description VARCHAR2(100)

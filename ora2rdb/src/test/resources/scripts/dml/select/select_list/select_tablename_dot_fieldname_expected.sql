@@ -1,0 +1,1 @@
+select employee.last_name from employee;

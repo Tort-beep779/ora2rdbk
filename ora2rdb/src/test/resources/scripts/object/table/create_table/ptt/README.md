@@ -1,6 +1,6 @@
 ### [create_private_temporary_table_default_on_commit.sql](create_private_temporary_table_default_on_commit.sql)
 
-PRIVATE TEMPORARY TABLE - создание это таблицы и её данные видны только в рамках сессии или транзакции
+**PRIVATE TEMPORARY TABLE** - создание это таблицы и её данные видны только в рамках сессии или транзакции
 
 -----------------------------------------------------------------------
 

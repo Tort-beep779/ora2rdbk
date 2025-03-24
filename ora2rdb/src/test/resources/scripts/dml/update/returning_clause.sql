@@ -1,0 +1,10 @@
+CREATE PROCEDURE PROCEDURE_NAME
+    IS
+    v_new_pages NUMBER;
+    v_title VARCHAR2(100);
+BEGIN
+    UPDATE "HR"."BOOKS"
+        SET "PAGE_COUNT" = "PAGE_COUNT" + 20
+        WHERE "PAGE_COUNT" > 800
+    RETURNING "PAGE_COUNT", "TITLE" INTO v_new_pages, v_title;
+END;

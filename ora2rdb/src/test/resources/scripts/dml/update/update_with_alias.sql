@@ -1,0 +1,1 @@
+UPDATE BOOKS b SET b.TITLE = 'Java';

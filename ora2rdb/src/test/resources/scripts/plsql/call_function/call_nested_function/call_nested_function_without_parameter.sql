@@ -1,0 +1,15 @@
+CREATE FUNCTION FUNCTION_NAME
+RETURN VARCHAR2
+IS
+    ret_val_n_f VARCHAR2(20);
+
+    FUNCTION NESTED_FUNCTION_NAME
+    RETURN VARCHAR2
+    IS
+    BEGIN
+        RETURN 'nested_f';
+    END;
+BEGIN
+    ret_val_n_f := FUNCTION_NAME.NESTED_FUNCTION_NAME;
+    return 'value' || ret_val_n_f;
+END;

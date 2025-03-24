@@ -1,0 +1,15 @@
+CREATE PACKAGE PackP_Return_Stat
+SQL SECURITY DEFINER
+AS BEGIN
+    PROCEDURE PP_Return_Stat;
+END;
+
+CREATE PACKAGE BODY PackP_Return_Stat
+AS
+BEGIN
+    PROCEDURE PP_Return_Stat
+    AS
+    BEGIN
+      EXIT;
+    END
+END;

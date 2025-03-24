@@ -1,0 +1,140 @@
+/* ПРИМЕР ИСПОЛЬЗОВАНИЯ ОПЕРАТОРА FORALL */
+
+CREATE OR REPLACE TYPE name_varray AS VARRAY(100) OF VARCHAR2(13);
+CREATE OR REPLACE TYPE number_varray AS VARRAY(100) OF NUMBER;
+
+CREATE TABLE books (
+    isbn VARCHAR2(13) PRIMARY KEY,
+    title VARCHAR2(100),
+    page_count NUMBER
+);
+
+INSERT INTO books (isbn, title, page_count) VALUES ('9780134685991', 'Effective Java', 416);
+INSERT INTO books (isbn, title, page_count) VALUES ('9780321356680', 'Java Concurrency in Practice', 384);
+INSERT INTO books (isbn, title, page_count) VALUES ('9780596009205', 'Head First Java', 688);
+
+
+CREATE OR REPLACE PROCEDURE order_books (
+    isbns_in IN name_varray,
+    new_counts_in IN number_varray)
+IS
+BEGIN
+    FORALL indx IN isbns_in.FIRST .. isbns_in.LAST
+        UPDATE books
+        SET page_count = new_counts_in(indx)
+        WHERE isbn = isbns_in(indx);
+END;
+/
+
+
+DECLARE
+    isbns name_varray := name_varray('9780134685991', '9780321356680', '9780596009205');
+    new_counts number_varray := number_varray(500, 400, 700);
+BEGIN
+    order_books(isbns, new_counts);
+END;
+/
+
+
+select * from books;
+
+
+---------------------------------------------------------------------------------------------
+
+/* Использование секции RETURNING в команде FORALL */
+
+-- Создание типов данных
+CREATE OR REPLACE TYPE dlist_t AS TABLE OF NUMBER;
+CREATE OR REPLACE TYPE enolist_t AS TABLE OF NUMBER;
+
+-- Создание таблицы employees
+CREATE TABLE employees (
+    employee_id NUMBER PRIMARY KEY,
+    first_name VARCHAR2(50),
+    last_name VARCHAR2(50),
+    department_id NUMBER
+);
+
+-- Вставка тестовых данных
+INSERT INTO employees (employee_id, first_name, last_name, department_id) VALUES (1, 'John', 'Doe', 10);
+INSERT INTO employees (employee_id, first_name, last_name, department_id) VALUES (2, 'Jane', 'Smith', 20);
+INSERT INTO employees (employee_id, first_name, last_name, department_id) VALUES (3, 'Alice', 'Johnson', 10);
+INSERT INTO employees (employee_id, first_name, last_name, department_id) VALUES (4, 'Bob', 'Brown', 30);
+INSERT INTO employees (employee_id, first_name, last_name, department_id) VALUES (5, 'Charlie', 'Davis', 20);
+
+-- Создание функции
+CREATE OR REPLACE FUNCTION remove_emps_by_dept (deptlist IN dlist_t)
+    RETURN enolist_t
+IS
+    enolist enolist_t;
+BEGIN
+    FORALL aDept IN deptlist.FIRST..deptlist.LAST
+        DELETE FROM employees
+        WHERE department_id = deptlist(aDept)
+        RETURNING employee_id BULK COLLECT INTO enolist;
+    RETURN enolist;
+END;
+/
+
+-- Пример вызова функции
+DECLARE
+    deptlist dlist_t := dlist_t(10, 20); -- Удаляем сотрудников из отделов 10 и 20
+    enolist enolist_t;
+BEGIN
+    enolist := remove_emps_by_dept(deptlist);
+
+    -- Вывод удаленных employee_id
+    FOR i IN enolist.FIRST..enolist.LAST LOOP
+        DBMS_OUTPUT.PUT_LINE('Удален сотрудник с ID: ' || enolist(i));
+    END LOOP;
+END;
+/
+
+-- Проверка результата
+SELECT * FROM employees;
+
+
+
+----------------------------------------------------------------------------------
+/* секция SAVE EXCEPTIONS */
+
+
+DECLARE
+   bulk_errors   EXCEPTION;
+   PRAGMA EXCEPTION_INIT (bulk_errors, -24381);
+   TYPE namelist_t IS TABLE OF employees.last_name%TYPE;
+
+   enames_with_errors   namelist_t
+      := namelist_t ('ABC',
+           'DEF',
+           NULL, /* Last name cannot be NULL */
+           'LITTLE',
+           RPAD ('BIGBIGGERBIGGEST', 250, 'ABC'), /* Value too long */
+           'SMITHIE'
+          );
+BEGIN
+   FORALL indx IN enames_with_errors.FIRST .. enames_with_errors.LAST
+      SAVE EXCEPTIONS
+      EXECUTE IMMEDIATE
+	    'UPDATE employees SET last_name = :new_name'
+         USING enames_with_errors (indx);
+EXCEPTION
+   WHEN bulk_errors
+   THEN
+      DBMS_OUTPUT.put_line ('Updated ' || SQL%ROWCOUNT || ' rows.');
+
+      FOR indx IN 1 .. SQL%BULK_EXCEPTIONS.COUNT
+      LOOP
+        DBMS_OUTPUT.PUT_LINE ('Error '
+              || indx
+              || ' occurred during '
+              || 'iteration '
+              || SQL%BULK_EXCEPTIONS (indx).ERROR_INDEX
+              || ' updating name to '
+              || enames_with_errors (SQL%BULK_EXCEPTIONS (indx).ERROR_INDEX);
+        DBMS_OUTPUT.PUT_LINE ('Oracle error is '
+               || SQLERRM (  -1 * SQL%BULK_EXCEPTIONS (indx).ERROR_CODE)
+              );
+      END LOOP;
+END;
+/

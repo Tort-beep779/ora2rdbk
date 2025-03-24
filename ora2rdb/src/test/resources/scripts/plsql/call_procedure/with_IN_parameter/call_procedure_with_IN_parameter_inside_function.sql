@@ -1,0 +1,8 @@
+CREATE FUNCTION CALLING_FUNCTION_NAME
+RETURN VARCHAR2
+    IS
+    in_value VARCHAR2(50);
+BEGIN
+    in_value := 'in_value';
+    PROCEDURE_NAME(in_value);
+END;

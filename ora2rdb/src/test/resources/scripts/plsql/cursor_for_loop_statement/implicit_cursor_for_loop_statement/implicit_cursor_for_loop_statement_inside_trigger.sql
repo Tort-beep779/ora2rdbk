@@ -1,0 +1,14 @@
+CREATE OR REPLACE TRIGGER T_Grade_meaning1
+  AFTER INSERT
+  ON EMPLOYEE
+  FOR EACH ROW
+DECLARE
+BEGIN
+    FOR ITEM IN (
+        SELECT LAST_NAME, EMP_NO
+        FROM EMPLOYEE
+      )
+        LOOP
+            NULL;
+    END LOOP;
+END T_Grade_meaning1;

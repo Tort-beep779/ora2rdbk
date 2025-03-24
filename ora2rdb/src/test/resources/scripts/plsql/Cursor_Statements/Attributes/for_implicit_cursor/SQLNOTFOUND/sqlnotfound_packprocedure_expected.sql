@@ -1,0 +1,18 @@
+CREATE PACKAGE PackP_Sqlnotfound
+SQL SECURITY DEFINER
+AS BEGIN
+    PROCEDURE PP_Sqlnotfound;
+END;
+
+CREATE PACKAGE BODY PackP_Sqlnotfound
+AS
+BEGIN
+    PROCEDURE PP_Sqlnotfound
+    AS
+      DECLARE tmp BOOLEAN;
+    BEGIN
+      tmp = DECODE(ROW_COUNT, 0, TRUE, FALSE);
+      UPDATE employees SET SALARY = SALARY * 1.1 WHERE SALARY <= 60000;
+      tmp = DECODE(ROW_COUNT, 0, TRUE, FALSE);
+    END
+END;

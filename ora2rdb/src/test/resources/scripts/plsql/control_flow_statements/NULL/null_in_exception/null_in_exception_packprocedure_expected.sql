@@ -1,0 +1,20 @@
+CREATE EXCEPTION CUSTOM_EXCEPTION 'error';
+
+CREATE PACKAGE PackP_Null_In_Exception
+SQL SECURITY DEFINER
+AS BEGIN
+    PROCEDURE PP_Null_In_Exception;
+END;
+
+CREATE PACKAGE BODY PackP_Null_In_Exception
+AS
+BEGIN
+    PROCEDURE PP_Null_In_Exception
+    AS
+    BEGIN
+      EXCEPTION CUSTOM_EXCEPTION( 'Неправильный номер');
+      /*EXCEPTION*/
+      WHEN ANY DO BEGIN
+      END
+    END
+END;

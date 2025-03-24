@@ -1,0 +1,10 @@
+CREATE TRIGGER T_Grade_meaning1
+    AFTER INSERT
+    ON EMPLOYEES
+    FOR EACH ROW
+DECLARE
+    past_due  EXCEPTION;
+    PRAGMA EXCEPTION_INIT (past_due, -20000);
+BEGIN
+    RAISE_APPLICATION_ERROR(-20000, 'Account past due.');
+END;

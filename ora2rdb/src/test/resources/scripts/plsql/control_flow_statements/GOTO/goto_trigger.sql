@@ -1,0 +1,11 @@
+CREATE TRIGGER T_Goto
+BEFORE INSERT ON EMPLOYEES
+FOR EACH ROW
+DECLARE
+  i PLS_INTEGER;
+BEGIN
+  GOTO first_label;
+  i := 10; 
+  <<first_label>>
+  i := 1;
+END;

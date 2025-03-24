@@ -1,0 +1,15 @@
+CREATE EXCEPTION USER_EXCEPTION 'exception USER_EXCEPTION';
+CREATE EXCEPTION USER_EXCEPTION_2 'exception USER_EXCEPTION_2';
+
+CREATE OR ALTER PROCEDURE LOC_VAR AS
+    /*user_exception EXCEPTION;*/
+    /*user_exception_2 EXCEPTION;*/
+BEGIN
+    IF (TRUE) THEN
+        EXCEPTION user_exception_2;
+/*EXCEPTION*/
+    WHEN EXCEPTION user_exception, EXCEPTION user_exception_2 DO
+        BEGIN
+
+        END
+END;

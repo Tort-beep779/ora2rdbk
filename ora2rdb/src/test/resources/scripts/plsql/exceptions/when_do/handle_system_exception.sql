@@ -1,0 +1,11 @@
+CREATE OR REPLACE PROCEDURE LOC_VAR
+    IS
+    var_ number := 5;
+BEGIN
+    IF TRUE THEN
+        var_ := var_ /0;
+END IF;
+EXCEPTION
+    WHEN ZERO_DIVIDE THEN
+        NULL;
+END;

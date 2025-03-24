@@ -1,0 +1,7 @@
+EXECUTE BLOCK
+AS
+  DECLARE c1 CURSOR FOR (SELECT num FROM test_table);
+BEGIN
+  OPEN c1;
+  CLOSE c1;
+END;

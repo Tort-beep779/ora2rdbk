@@ -1,0 +1,21 @@
+CREATE PACKAGE PackF_Null_In_While
+SQL SECURITY DEFINER
+AS BEGIN
+   FUNCTION PF_Null_In_While 
+   RETURNS VARCHAR(32765);
+END;
+
+CREATE PACKAGE BODY PackF_Null_In_While
+AS BEGIN
+   FUNCTION PF_Null_In_While
+   RETURNS VARCHAR(32765)
+   AS
+     DECLARE i INTEGER = 1;
+   BEGIN
+     WHILE (i < 10) DO 
+     BEGIN
+       i = i + 1;
+     END
+   RETURN '';
+   END
+END;

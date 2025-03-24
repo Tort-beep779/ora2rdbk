@@ -1,0 +1,19 @@
+CREATE PACKAGE PackF_Null_In_For
+AS
+   FUNCTION PF_Null_In_For 
+   RETURN VARCHAR2;
+END;
+
+CREATE PACKAGE BODY PackF_Null_In_For
+AS
+   FUNCTION PF_Null_In_For
+   RETURN VARCHAR2
+   IS
+   BEGIN
+     FOR i IN 1..3
+     LOOP
+       NULL;
+     END LOOP;
+     RETURN '';
+   END;
+END;

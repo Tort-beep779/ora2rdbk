@@ -1,0 +1,26 @@
+CREATE OR REPLACE PACKAGE CALLING_PACKAGE
+AS
+   FUNCTION CALLING_FUNCTION RETURN VARCHAR2;
+   PROCEDURE CALLING_PROCEDURE;
+END CALLING_PACKAGE;
+
+CREATE OR REPLACE PACKAGE BODY CALLING_PACKAGE
+AS
+   FUNCTION CALLING_FUNCTION
+   RETURN VARCHAR2
+   IS
+        out_value_from_function VARCHAR2(50);
+        return_value_from_function VARCHAR(50);
+    BEGIN
+        return_value_from_function := PACKAGE_NAME.FUNCTION_NAME(out_value_from_function); -- call function
+    RETURN out_value_from_function;
+   END;
+
+   PROCEDURE CALLING_PROCEDURE
+    IS
+        out_value_from_function VARCHAR2(50);
+        return_value_from_function VARCHAR(50);
+    BEGIN
+        return_value_from_function := PACKAGE_NAME.FUNCTION_NAME(out_value_from_function); -- call function
+    END;
+END CALLING_PACKAGE;

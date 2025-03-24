@@ -1,0 +1,5 @@
+BEGIN
+  FOR i IN 1..3 LOOP
+    CONTINUE WHEN i = 1;
+  END LOOP;
+END; 

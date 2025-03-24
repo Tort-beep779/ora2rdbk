@@ -1,0 +1,8 @@
+CREATE FUNCTION CALLING_FUNCTION
+RETURNS NUMERIC(34,8)
+SQL SECURITY DEFINER
+AS
+    DECLARE record_variable pkg.my_record;
+BEGIN
+    EXECUTE PROCEDURE PROCEDURE_NAME(:record_variable);   -- call procedure
+END;

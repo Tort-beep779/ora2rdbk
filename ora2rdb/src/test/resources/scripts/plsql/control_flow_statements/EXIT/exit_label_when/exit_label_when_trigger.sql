@@ -1,0 +1,12 @@
+CREATE TRIGGER T_Exit_Label_When
+BEFORE INSERT ON EMPLOYEES
+FOR EACH ROW
+DECLARE
+  x NUMBER := 0;
+BEGIN
+  <<while1>>
+  WHILE (x != 5) LOOP
+    x := x + 1;
+    EXIT while1 WHEN x > 4;
+  END LOOP;
+END;

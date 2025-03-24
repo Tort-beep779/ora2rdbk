@@ -1,0 +1,8 @@
+CREATE FUNCTION test_f
+RETURN BOOLEAN
+IS
+    invalid_company_id EXCEPTION;
+BEGIN
+    NULL;
+RETURN TRUE;
+END;

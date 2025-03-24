@@ -1,0 +1,18 @@
+CREATE PACKAGE PackF_Exit_When
+AS
+   FUNCTION PF_Exit_When 
+   RETURN VARCHAR2;
+END;
+
+CREATE PACKAGE BODY PackF_Exit_When
+AS
+   FUNCTION PF_Exit_When
+   RETURN VARCHAR2
+   IS
+   BEGIN
+     FOR i IN 1..3 LOOP
+       EXIT WHEN i = 3;  
+     END LOOP;
+     RETURN '';
+   END;
+END;

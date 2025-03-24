@@ -25,14 +25,14 @@ consistent хэш
 
 ### [create_sharded_table_partitions_number.sql](create_sharded_table_partitions_number.sql)
 
-аналогично как в тесте [create_sharded_table_partition_hash.sql](create_sharded_table_partition_hash.sql)
+Аналогично как в тесте [create_sharded_table_partition_hash.sql](create_sharded_table_partition_hash.sql)
 только задано ограниченное количество партиций (16)
 
 --------------------------------------------------------
 
 ### [create_sharded_table_reference_partition.sql](create_sharded_table_reference_partition.sql)
 
-создает шардированную таблицу с использованием сектионирование по ссылке
+Создает шардированную таблицу с использованием сектионирование по ссылке
 
 **PARTITION BY REFERENCE (fk_customer);** - Указывает, что таблица orders будет секционирована по схеме, унаследованной от таблицы customers, на основе внешнего ключа fk_customer.
 

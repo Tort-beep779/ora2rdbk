@@ -1,0 +1,5 @@
+BEGIN
+  FOR i IN 1..3 LOOP
+    EXIT WHEN i = 3;
+  END LOOP;
+END; 

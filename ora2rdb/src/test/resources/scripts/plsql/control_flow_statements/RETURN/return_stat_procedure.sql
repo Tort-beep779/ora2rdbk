@@ -1,0 +1,5 @@
+CREATE PROCEDURE P_Return_Stat
+IS
+BEGIN
+  RETURN;
+END;

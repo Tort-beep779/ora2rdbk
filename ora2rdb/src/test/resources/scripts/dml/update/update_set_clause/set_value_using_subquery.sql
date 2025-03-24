@@ -1,0 +1,1 @@
+UPDATE BOOKS SET TITLE = (select 'C++' from RDB$DATABASE);

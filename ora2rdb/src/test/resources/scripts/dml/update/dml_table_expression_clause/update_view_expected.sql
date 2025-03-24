@@ -1,0 +1,1 @@
+UPDATE v_books set PAGE_COUNT = 0;

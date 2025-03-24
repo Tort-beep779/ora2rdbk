@@ -1,0 +1,17 @@
+CREATE FUNCTION FUNCTION_NAME
+RETURNS VARCHAR(32765)
+SQL SECURITY DEFINER
+AS
+     DECLARE ret_val_n_f VARCHAR(20);
+     DECLARE in_val_n_f VARCHAR(20);
+
+    DECLARE FUNCTION NESTED_FUNCTION_NAME(in_param VARCHAR(32765))
+    RETURNS VARCHAR(32765)
+    AS
+    BEGIN
+        RETURN in_param;
+    END
+BEGIN
+    ret_val_n_f = NESTED_FUNCTION_NAME(:in_val_n_f);
+    return ret_val_n_f || :in_val_n_f;
+END;

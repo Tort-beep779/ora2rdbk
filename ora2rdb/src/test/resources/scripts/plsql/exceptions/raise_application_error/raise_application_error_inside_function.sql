@@ -1,0 +1,9 @@
+CREATE FUNCTION test_f
+    RETURN BOOLEAN
+    IS
+        past_due  EXCEPTION;
+        PRAGMA EXCEPTION_INIT (past_due, -20000);
+BEGIN
+    RAISE_APPLICATION_ERROR(-20000, 'Account past due.');
+RETURN TRUE;
+END;

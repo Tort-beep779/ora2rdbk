@@ -14,22 +14,22 @@ As an input grammar Ora2rdb takes [Grammars-v4](http://git.red-soft.biz/red-data
 of formal grammars written for ANTLR v4. 
 
 
-### Installation
+### How to build
 
 Ora2rdb requires at least a Java 8 JDK installed and maven.
 To build a project you need create a jar file:
 
     $ mvn package
 
-To run Ora2rdb go to target directory
+The jar file will be created in the target directory
 
-    $ cd modules/ora2rdb/target
-
-And run:
-
-    $ java -jar Ora2rdb.jar 
+    modules/ora2rdb/target
 
 ### How to use
+
+Run Ora2rdb:
+
+    $ java -jar Ora2rdb.jar 
 
 There is how to use Ora2rdb converter. 
 

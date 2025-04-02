@@ -1,0 +1,1 @@
+SELECT NLS_UPPER('große') FROM DUAL;

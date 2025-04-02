@@ -1,0 +1,1 @@
+SELECT REGEXP_REPLACE('abcd1234efgh5678', '([[:alpha:]]+)([0-9]+)', '\1') FROM DUAL;

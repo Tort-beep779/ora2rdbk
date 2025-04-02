@@ -1,0 +1,1 @@
+select JSON_OBJECTAGG (KEY option_r VALUE id STRICT) from options;

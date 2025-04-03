@@ -59,7 +59,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                 );
             else
                 table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
-                        Ora2rdb.getRealName(rela_prop.column_definition().type_name().getText())
+                        Ora2rdb.getRealName(rela_prop.column_definition().regular_id().getText())
                 );
 
         }
@@ -319,15 +319,15 @@ public class ScanListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void enterFunction_call(Function_callContext ctx) {
+    public void enterCall_statement(Call_statementContext ctx) {
         FinderBlockCall finder = new FinderBlockCall();
         String name;
         String package_name;
-        if (ctx.routine_name().id_expression(0) != null) {
-            name = Ora2rdb.getRealName(ctx.routine_name().id_expression(0).getText());
-            package_name = Ora2rdb.getRealName(ctx.routine_name().identifier().getText());
+        if (ctx.routine_name(0).id_expression(0) != null) {
+            name = Ora2rdb.getRealName(ctx.routine_name(0).id_expression(0).getText());
+            package_name = Ora2rdb.getRealName(ctx.routine_name(0).identifier().getText());
         } else {
-            name = Ora2rdb.getRealName(ctx.routine_name().identifier().getText());
+            name = Ora2rdb.getRealName(ctx.routine_name(0).identifier().getText());
             package_name = null;
         }
         finder.setName(name);
@@ -336,8 +336,8 @@ public class ScanListener extends PlSqlParserBaseListener {
 
         if (ctx.function_argument() != null && !storedBlocksStack.isEmpty()) {
             String arg_name;
-            for (int i = 0; i < ctx.function_argument().argument().size(); i++) {
-                arg_name = Ora2rdb.getRealParameterName(ctx.function_argument().argument(i).getText());
+            for (int i = 0; i < ctx.function_argument(0).argument().size(); i++) {
+                arg_name = Ora2rdb.getRealParameterName(ctx.function_argument(0).argument(i).getText());
                 finder.setParameters(
                         i,
                         arg_name,

@@ -259,7 +259,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitRelational_table(Relational_tableContext ctx) {
         deleteSPACESAbut(ctx.physical_properties());
-        delete(ctx.column_properties());
+        if(!ctx.table_properties().isEmpty())
+            delete(ctx.table_properties().column_properties());
         delete(ctx.physical_properties());
     }
 
@@ -457,20 +458,20 @@ public class RewritingListener extends PlSqlParserBaseListener {
         delete(ctx.PERIOD());
     }
 
-    private StoredBlock findFunctionCall(Function_callContext ctx) {
+    private StoredBlock findFunctionCall(Call_statementContext ctx) {
         FinderBlockCall finder = new FinderBlockCall();
-        if (ctx.routine_name().id_expression(0) != null) {
-            finder.setName(Ora2rdb.getRealName(ctx.routine_name().id_expression(0).getText()));
-            finder.setPackage_name(Ora2rdb.getRealName(ctx.routine_name().identifier().getText()));
+        if (ctx.routine_name(0).id_expression(0) != null) {
+            finder.setName(Ora2rdb.getRealName(ctx.routine_name(0).id_expression(0).getText()));
+            finder.setPackage_name(Ora2rdb.getRealName(ctx.routine_name(0).identifier().getText()));
         } else {
-            finder.setName(Ora2rdb.getRealName(ctx.routine_name().identifier().getText()));
+            finder.setName(Ora2rdb.getRealName(ctx.routine_name(0).identifier().getText()));
             finder.setPackage_name(null);
         }
         finder.setArea_package_name(current_package_name);
         if (ctx.function_argument() != null && !storedBlocksStack.isEmpty()) {
             String arg_name;
-            for (int i = 0; i < ctx.function_argument().argument().size(); i++) {
-                arg_name = Ora2rdb.getRealParameterName(ctx.function_argument().argument(i).getText());
+            for (int i = 0; i < ctx.function_argument( 0).argument().size(); i++) {
+                arg_name = Ora2rdb.getRealParameterName(ctx.function_argument(0).argument(i).getText());
                 finder.setParameters(
                         i,
                         arg_name,
@@ -482,8 +483,8 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (currentAnonymousBlock != null)
             if (!currentAnonymousBlock.getIsNested() && ctx.function_argument() != null) {
                 String arg_name;
-                for (int i = 0; i < ctx.function_argument().argument().size(); i++) {
-                    arg_name = Ora2rdb.getRealParameterName(ctx.function_argument().argument(i).getText());
+                for (int i = 0; i < ctx.function_argument(0).argument().size(); i++) {
+                    arg_name = Ora2rdb.getRealParameterName(ctx.function_argument(0).argument(i).getText());
                     finder.setParameters(
                             i,
                             arg_name,
@@ -902,18 +903,18 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitFunction_call(Function_callContext ctx) {
-        if (Ora2rdb.getRealName(getRuleText(ctx.routine_name())).equals("RAISE_APPLICATION_ERROR")) {
+    public void exitCall_statement(Call_statementContext ctx) {
+        if (Ora2rdb.getRealName(getRuleText(ctx.routine_name(0))).equals("RAISE_APPLICATION_ERROR")) {
             exceptions.put("CUSTOM_EXCEPTION", "error");
 //            containsException = true;
-            replace(ctx.routine_name(), "EXCEPTION CUSTOM_EXCEPTION");
-            delete(ctx.function_argument().argument(0));
-            delete(ctx.function_argument().COMMA(0));
+            replace(ctx.routine_name(0), "EXCEPTION CUSTOM_EXCEPTION");
+            delete(ctx.function_argument(0).argument(0));
+            delete(ctx.function_argument(0).COMMA(0));
         }
         convertFunctionCall(ctx);
     }
 
-    private void convertFunctionCall(Function_callContext ctx) {
+    private void convertFunctionCall(Call_statementContext ctx) {
         StoredBlock storedBlock = findFunctionCall(ctx);
         if (storedBlock != null) {
             if (storedBlock instanceof StoredFunction) {
@@ -925,7 +926,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 else
                     replace(ctx, "EXECUTE PROCEDURE " + getRewriterText(ctx));
         } else {
-            String name = Ora2rdb.getRealName(ctx.routine_name().getText());
+            String name = Ora2rdb.getRealName(ctx.routine_name(0).getText());
             storedBlock = StorageInfo.stored_blocks_list.stream().filter(e -> e.getName().equals(name)).findFirst().orElse(null);
             if (storedBlock instanceof StoredProcedure)
                 replace(ctx, "EXECUTE PROCEDURE " + getRewriterText(ctx));
@@ -933,7 +934,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     }
 
-    private void convertFunctionWithOutParameters(Function_callContext ctx, StoredFunction storedFunction) {
+    private void convertFunctionWithOutParameters(Call_statementContext ctx, StoredFunction storedFunction) {
         StringBuilder selectQuery = new StringBuilder();
         if (storedFunction != null) {
 
@@ -953,9 +954,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
             for (int i : storedFunction.getParameters().keySet()) {
                 if (storedFunction.getParameters().get(i).isOut()) {
                     if (!Objects.equals(i, storedFunction.getParameters().lastKey()))
-                        selectQuery.append(ctx.function_argument().argument(i).getText()).append(", ");
+                        selectQuery.append(ctx.function_argument(0).argument(i).getText()).append(", ");
                     else
-                        selectQuery.append(ctx.function_argument().argument(i).getText());
+                        selectQuery.append(ctx.function_argument(0).argument(i).getText());
                 }
             }
 
@@ -970,7 +971,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
     }
 
-    private void convertProcedureWithOutParameters(Function_callContext ctx, StoredProcedure storedProcedure) {
+    private void convertProcedureWithOutParameters(Call_statementContext ctx, StoredProcedure storedProcedure) {
         if (storedProcedure != null) {
             StringBuilder selectQuery = new StringBuilder();
             selectQuery.append("SELECT ");
@@ -988,9 +989,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
             for (int i : storedProcedure.getParameters().keySet()) {
                 if (storedProcedure.getParameters().get(i).isOut()) {
                     if (!Objects.equals(i, storedProcedure.getParameters().lastKey()))
-                        selectQuery.append(ctx.function_argument().argument(i).getText()).append(", ");
+                        selectQuery.append(ctx.function_argument(0).argument(i).getText()).append(", ");
                     else
-                        selectQuery.append(ctx.function_argument().argument(i).getText());
+                        selectQuery.append(ctx.function_argument(0).argument(i).getText());
                 }
             }
             replace(ctx, selectQuery.toString());
@@ -1724,7 +1725,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitSql_plus_command_wrapper(Sql_plus_command_wrapperContext ctx) {
+    public void exitSql_plus_command(Sql_plus_commandContext ctx) {
         if (ctx.PROMPT_MESSAGE() != null)
             commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
         else

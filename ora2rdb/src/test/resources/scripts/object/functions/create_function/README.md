@@ -13,7 +13,7 @@ language_c
 
 ---------------------------------------------------
 
-### [EDITIONABLE_NONEDITIONABLE_function.sql](EDITIONABLE_NONEDITIONABLE_function.sql)
+### [EDITIONABLE_function.sql](EDITIONABLE_function.sql)
 
     [ EDITIONABLE | NONEDITIONABLE ]
 

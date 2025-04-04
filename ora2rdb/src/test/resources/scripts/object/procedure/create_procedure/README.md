@@ -40,7 +40,7 @@
 
 -------------------------------------------------------------
 
-### [EDITIONABLE_NONEDITIONABLE_procedure_expected.sql](EDITIONABLE_NONEDITIONABLE_procedure_expected.sql)
+### [EDITIONABLE_procedure_expected.sql](EDITIONABLE_procedure_expected.sql)
 
     [ EDITIONABLE | NONEDITIONABLE ]
 

@@ -1,0 +1,7 @@
+CREATE OR ALTER PACKAGE PACKAGE_NAME
+SQL SECURITY DEFINER
+AS BEGIN
+/*
+    [-unconvertible global_variable NUMBER];
+*/
+END /*PACKAGE_NAME*/;

@@ -1,0 +1,1 @@
+DELETE FROM [-unconvertible (SELECT TITLE FROM BOOKS)];

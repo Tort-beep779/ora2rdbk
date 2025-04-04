@@ -1,1 +1,6 @@
-https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-D3E92FD8-5FE4-4CEA-9CB8-CC9277A74429
+/*CREATE TABLE scubagear
+     (id NUMERIC(34, 8),
+      name VARCHAR (60))
+   [-unconvertible PARTITION BY HASH (id)
+   PARTITIONS 4
+   STORE IN (gear1, gear2, gear3, gear4)];*/

@@ -1,0 +1,1 @@
+/*CREATE INDEX idx_personnel ON [-unconvertible CLUSTER personnel];*/

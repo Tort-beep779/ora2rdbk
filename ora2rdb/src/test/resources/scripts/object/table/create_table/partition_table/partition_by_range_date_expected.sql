@@ -1,1 +1,13 @@
-https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-66D19C36-C512-48DE-88B4-AFC6CCACDFEB
+/*CREATE TABLE sales
+  ( prod_id       NUMERIC(6)
+  , cust_id       NUMERIC(34, 8)
+  , time_id       DATE
+  )
+ [-unconvertible PARTITION BY RANGE (time_id)
+ ( PARTITION s1 VALUES LESS THAN (TO_DATE('01-04-2006','dd-mm-yyyy'))
+    TABLESPACE tb1 STORAGE (INITIAL 20K NEXT 10K)
+  ,PARTITION s2 VALUES LESS THAN (TO_DATE('01-06-2006','dd-mm-yyyy'))
+    TABLESPACE tb2 STORAGE (INITIAL 20K NEXT 10K)
+  ,PARTITION s3 VALUES LESS THAN (MAXVALUE)
+ )
+ ENABLE ROW MOVEMENT];*/

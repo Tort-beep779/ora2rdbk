@@ -46,21 +46,23 @@ public class ScanListener extends PlSqlParserBaseListener {
 
     @Override
     public void enterCreate_table(Create_tableContext ctx) {
+        if(ctx.relational_table() == null)
+            return;
         Table table = new Table();
         String name;
-        name = Ora2rdb.getRealName(ctx.tableview_name().schema_and_name().name.getText());
+        name = Ora2rdb.getRealName(ctx.schema_and_name().name.getText());
         table.setName(name);
-        for (Relational_propertyContext rela_prop : ctx.relational_table().relational_property()) {
-            if (rela_prop.column_definition() == null)
-                continue;
-            if (rela_prop.column_definition().datatype() != null)
-                table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
-                        Ora2rdb.getRealName(rela_prop.column_definition().datatype().getText())
-                );
-            else
-                table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
-                        Ora2rdb.getRealName(rela_prop.column_definition().regular_id().getText())
-                );
+            for (Relational_propertyContext rela_prop : ctx.relational_table().relational_property()) {
+                if (rela_prop.column_definition() == null)
+                    continue;
+                if (rela_prop.column_definition().datatype() != null)
+                    table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
+                            Ora2rdb.getRealName(rela_prop.column_definition().datatype().getText())
+                    );
+                else
+                    table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
+                            Ora2rdb.getRealName(rela_prop.column_definition().regular_id().getText())
+                    );
 
         }
         StorageInfo.tables.add(table);
@@ -334,7 +336,7 @@ public class ScanListener extends PlSqlParserBaseListener {
         finder.setPackage_name(package_name);
         finder.setArea_package_name(current_package_name);
 
-        if (ctx.function_argument() != null && !storedBlocksStack.isEmpty()) {
+        if (ctx.function_argument(0) != null && !storedBlocksStack.isEmpty()) {
             String arg_name;
             for (int i = 0; i < ctx.function_argument(0).argument().size(); i++) {
                 arg_name = Ora2rdb.getRealParameterName(ctx.function_argument(0).argument(i).getText());

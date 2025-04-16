@@ -1,0 +1,7 @@
+/*CREATE OR ALTER TRIGGER dept_emplist_tr
+  BEFORE INSERT ON [-unconvertible RS-228312 NESTED TABLE emplist OF dept_view]
+SQL SECURITY DEFINER
+AS
+BEGIN
+
+END;*/

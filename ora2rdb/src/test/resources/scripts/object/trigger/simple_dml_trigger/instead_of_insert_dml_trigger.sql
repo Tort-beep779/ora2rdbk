@@ -1,5 +1,5 @@
-CREATE TRIGGER ORDER_INFO_INSERT
-   INSTEAD OF INSERT ON ORDER_INFO
-BEGIN
-NULL;
-END;
+create or replace trigger instead_of_tr 
+instead of insert on emp_v
+begin
+    NULL;
+end;

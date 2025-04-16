@@ -2167,7 +2167,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitCreate_trigger(Create_triggerContext ctx) {
         String indentation = getIndentation(ctx);
         replace(ctx.REPLACE(), "ALTER");
-        deleteSPACESLeft(ctx.trigger_body());
+        /*deleteSPACESLeft(ctx.trigger_body());*/
 
         insertBefore(ctx.trigger_body(), indentation + "\nAS\n");
 //        replace(ctx.SEMICOLON(), "^");

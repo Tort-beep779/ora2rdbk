@@ -1,0 +1,6 @@
+CREATE OR REPLACE TRIGGER dept_emplist_tr
+  INSTEAD OF INSERT ON NESTED TABLE emplist OF dept_view
+  FOR EACH ROW
+BEGIN
+    NULL;
+END;

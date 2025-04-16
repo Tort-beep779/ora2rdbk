@@ -1,7 +1,7 @@
 CREATE TRIGGER T
-  INSTEAD OF
+INSTEAD OF
     INSERT OR UPDATE OR DELETE
 ON V -- V ЭТО  ПРЕДСТАВЛЕНИЕ
 BEGIN
-
+    NULL;
 END;

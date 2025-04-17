@@ -1,0 +1,10 @@
+SELECT LPAD ('Hello' , 12) FROM DUAL;
+SELECT LPAD ('World' , 12, ',') FROM DUAL;
+SELECT LPAD ('Hello' , 12, '') FROM DUAL;
+SELECT LPAD ('World' , 12, 'abc') FROM DUAL;
+SELECT LPAD ('Hello' , 12, 'abcdefghij') FROM DUAL;
+SELECT LPAD ('World' , 2) FROM DUAL;
+SELECT LPAD ('World' , 2, '') FROM DUAL;
+SELECT LPAD ('Hello' , 2, ',') FROM DUAL;
+SELECT LPAD ('World' , 0) FROM DUAL;
+SELECT LPAD ('World' , -1) FROM DUAL;

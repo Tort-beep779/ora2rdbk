@@ -1,0 +1,3 @@
+select TITLE from BOOKS
+INTERSECT ALL
+select TITLE from BOOKS;

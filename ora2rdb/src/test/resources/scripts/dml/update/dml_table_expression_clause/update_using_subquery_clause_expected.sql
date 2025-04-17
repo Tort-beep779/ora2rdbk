@@ -1,0 +1,1 @@
+update [-unconvertible (select TITLE from books)] set TITLE = 'C#';

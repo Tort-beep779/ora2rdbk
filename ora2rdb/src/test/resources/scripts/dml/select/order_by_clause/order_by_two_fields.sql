@@ -1,4 +1,3 @@
-SELECT *
-FROM employees
-WHERE job_id = 'PU_CLERK'
-ORDER BY salary DESC, last_name;
+SELECT empno, ename, sal, comm AS sum_total
+FROM emp
+order by  sal DESC, comm;

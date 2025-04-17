@@ -1,1 +1,12 @@
-https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-D3E92FD8-5FE4-4CEA-9CB8-CC9277A74429
+/*CREATE TABLE sales (
+    sale_id NUMERIC(34, 8) PRIMARY KEY,
+    sale_date DATE,
+    amount NUMERIC(34, 8),
+    customer_id NUMERIC(34, 8)
+)
+[-unconvertible PARTITION BY RANGE (sale_date)
+INTERVAL (NUMTOYMINTERVAL(1, 'MONTH'))
+STORE IN (tb1)
+(
+    PARTITION p_initial VALUES LESS THAN (TO_DATE('2023-01-01', 'YYYY-MM-DD'))
+)];*/

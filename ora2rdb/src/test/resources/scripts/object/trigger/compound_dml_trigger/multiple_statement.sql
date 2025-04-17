@@ -1,4 +1,4 @@
-CREATE TABLE incremented_values (n NUMBER)
+CREATE TABLE incremented_values (n NUMBER);
 
 CREATE OR REPLACE TRIGGER compounder FOR
    UPDATE OR INSERT OR DELETE

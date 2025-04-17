@@ -1,0 +1,1 @@
+DELETE FROM books [-unconvertible PARTITION (books_medium)];

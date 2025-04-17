@@ -1,1 +1,10 @@
-https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-D3E92FD8-5FE4-4CEA-9CB8-CC9277A74429
+/*CREATE TABLE sales_auto_list
+(
+   salesman_id   NUMERIC(5),
+   salesman_name VARCHAR(30),
+   sales_state   VARCHAR(20),
+   sales_amount  NUMERIC(10),
+   sales_date    DATE
+)
+ [-unconvertible PARTITION BY LIST (sales_state) AUTOMATIC
+ (PARTITION P_CAL VALUES ('CALIFORNIA'))];*/

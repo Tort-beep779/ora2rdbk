@@ -30,6 +30,7 @@
 
 ### [partition_by_hash_no_store_in.sql](partition_by_hash_no_store_in.sql)
 
+https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-D3E92FD8-5FE4-4CEA-9CB8-CC9277A74429
 
 **PARTITION BY HASH(department_id) PARTITIONS 16** - данные будут распределены по значения хэша
 и будут храниться в табличном пространстве по умолчанию
@@ -37,6 +38,8 @@
 ------------------------------------------------------------
 
 ### [partition_by_hash_par_in_TS.sql](partition_by_hash_par_in_TS.sql)
+
+https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-D3E92FD8-5FE4-4CEA-9CB8-CC9277A74429
 
 **STORAGE (INITIAL 10K)** - указывает размер, который выделяется под таблицу 
 
@@ -54,6 +57,8 @@
     PARTITION BY HASH (id)
     PARTITIONS 4
     STORE IN (gear1, gear2, gear3, gear4);
+
+https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-D3E92FD8-5FE4-4CEA-9CB8-CC9277A74429
 
 Данные в таблице распределяются по 4 партициям, которые будут храниться в табличных пространствах
 (gear1, gear2, gear3, gear4)
@@ -73,6 +78,10 @@
 
     PARTITION BY LIST (sales_state) AUTOMATIC
     (PARTITION P_CAL VALUES ('CALIFORNIA')
+
+https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-D3E92FD8-5FE4-4CEA-9CB8-CC9277A74429
+
+
 **PARTITION BY LIST** - похоже на PARTITION BY RANGE. Только можно передать список (list) значений для каждой партиции
 
 **AUTOMATIC** -  указываает, что БД будет создавать новые партиции при вставке данных, значение которых не совпадает со
@@ -90,6 +99,8 @@
     PARTITION q1_ca_direct VALUES ('CA','D'),
     PARTITION rest VALUES (DEFAULT)
     );
+
+https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-D3E92FD8-5FE4-4CEA-9CB8-CC9277A74429
 
 Данные в таблице распределяются по партициям, основываясь на значениях из списка(list)
 
@@ -122,11 +133,24 @@
     INMEMORY MEMCOMPRESS FOR CAPACITY LOW,
     PARTITION rest VALUES (DEFAULT);
 
+https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-01B3A14E-BC74-49D2-B719-B2D8B7692C97
+
 **INMEMORY MEMCOMPRESS** - данные партиции будут храниться в INMEMORY MEMCOMPRESS Store 
 
 **FOR CAPACITY HIGH** - данные будут храниться с высокой степенью сжатия
 
 **FOR CAPACITY LOW** - данные будут храниться с низкой степенью сжатия
+
+------------------------------------------------------------
+
+### [partition_by_list_with_default_partition.sql](partition_by_list_with_default_partition.sql)
+
+https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-D3E92FD8-5FE4-4CEA-9CB8-CC9277A74429
+
+------------------------------------------------------------
+### [partition_by_range_date.sql](partition_by_range_date.sql)
+
+https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-66D19C36-C512-48DE-88B4-AFC6CCACDFEB
 
 ------------------------------------------------------------
 
@@ -196,6 +220,8 @@ PARTITION BY RANGE - удобно использовать когда данны
 
     INTERVAL (NUMTOYMINTERVAL(1, 'MONTH'))
 
+https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-D3E92FD8-5FE4-4CEA-9CB8-CC9277A74429
+
 Указывает, что Oracle будет автоматически создавать новые секции с интервалом в 1 месяц.
 
 Пользователь должен создать как минимум одну партицию (by range) . 
@@ -203,6 +229,9 @@ PARTITION BY RANGE - удобно использовать когда данны
 ------------------------------------------------------------
 
 ### [partition_by_reference.sql](partition_by_reference.sql)
+
+https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-9D7149B6-A2FF-47CA-8F00-47CBFD33F82B
+
 
 Пример создания Reference-Partitioned  таблицы
 

@@ -1,1 +1,10 @@
-https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-01B3A14E-BC74-49D2-B719-B2D8B7692C97
+/*CREATE TABLE list_customers
+   ( customer_id             NUMERIC(6)
+   , nls_territory           VARCHAR(30)
+   , cust_email              VARCHAR(40))
+   [-unconvertible PARTITION BY LIST (nls_territory) (
+   PARTITION asia VALUES ('CHINA', 'THAILAND')
+         INMEMORY MEMCOMPRESS FOR CAPACITY HIGH,
+   PARTITION europe VALUES ('GERMANY', 'ITALY', 'SWITZERLAND')
+         INMEMORY MEMCOMPRESS FOR CAPACITY LOW,
+   PARTITION rest VALUES (DEFAULT)];*/

@@ -1,0 +1,1 @@
+SELECT SOUNDEX ('smith') FROM DUAL;

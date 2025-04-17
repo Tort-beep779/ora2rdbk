@@ -1,7 +1,7 @@
 SELECT department_id, department_name
 FROM   departments
 WHERE  department_id <= 30
-    MINUS
+MINUS
 SELECT department_id, department_name
 FROM   departments
 WHERE  department_id >= 20

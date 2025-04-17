@@ -1,1 +1,3 @@
-https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-D3E92FD8-5FE4-4CEA-9CB8-CC9277A74429
+/*CREATE TABLE departments_hash (department_id NUMERIC(4) NOT NULL,
+             department_name VARCHAR(30))
+    [-unconvertible PARTITION BY HASH(department_id) PARTITIONS 16];*/

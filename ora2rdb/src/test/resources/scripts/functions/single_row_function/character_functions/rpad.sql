@@ -1,0 +1,10 @@
+SELECT RPAD ('Hello' , 12) FROM DUAL;
+SELECT RPAD ('World' , 12, ',') FROM DUAL;
+SELECT RPAD ('Hello' , 12, '') FROM DUAL;
+SELECT RPAD ('World' , 12, 'abc') FROM DUAL;
+SELECT RPAD ('Hello' , 12, 'abcdefghij') FROM DUAL;
+SELECT RPAD ('World' , 2) FROM DUAL;
+SELECT RPAD ('World' , 2, '') FROM DUAL;
+SELECT RPAD ('Hello' , 2, ',') FROM DUAL;
+SELECT RPAD ('World' , 0) FROM DUAL;
+SELECT RPAD ('World' , -1) FROM DUAL;

@@ -1,0 +1,7 @@
+DECLARE
+    TYPE Foursome IS VARRAY(4) OF VARCHAR2(15) NOT NULL;
+
+    team Foursome;
+BEGIN
+   NULL;
+END;

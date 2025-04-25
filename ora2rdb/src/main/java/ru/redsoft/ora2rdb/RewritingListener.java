@@ -264,10 +264,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
         delete(ctx.physical_properties());
     }
 
-    @Override
-    public void exitCreate_table(Create_tableContext ctx) {
+
+    private void convertRelationTable(Create_tableContext ctx){
         String table_name;
-        table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().schema_and_name().name));
+        table_name = Ora2rdb.getRealName(getRuleText(ctx.schema_and_name().name));
 
         if (StorageInfo.table_not_null_cols.containsKey(table_name)) {
             TreeSet<String> columns_set = StorageInfo.table_not_null_cols.get(table_name);
@@ -321,6 +321,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 }
             }
         }
+    }
+
+    @Override
+    public void exitCreate_table(Create_tableContext ctx) {
+        if(ctx.relational_table() != null)
+            convertRelationTable(ctx);
     }
 
     @Override
@@ -468,7 +474,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             finder.setPackage_name(null);
         }
         finder.setArea_package_name(current_package_name);
-        if (ctx.function_argument() != null && !storedBlocksStack.isEmpty()) {
+        if (ctx.function_argument(0) != null && !storedBlocksStack.isEmpty()) {
             String arg_name;
             for (int i = 0; i < ctx.function_argument( 0).argument().size(); i++) {
                 arg_name = Ora2rdb.getRealParameterName(ctx.function_argument(0).argument(i).getText());
@@ -481,7 +487,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         // for anonymous block
         if (currentAnonymousBlock != null)
-            if (!currentAnonymousBlock.getIsNested() && ctx.function_argument() != null) {
+            if (!currentAnonymousBlock.getIsNested() && ctx.function_argument(0) != null) {
                 String arg_name;
                 for (int i = 0; i < ctx.function_argument(0).argument().size(); i++) {
                     arg_name = Ora2rdb.getRealParameterName(ctx.function_argument(0).argument(i).getText());
@@ -732,33 +738,35 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         if (ctx.id_expression().size() == 1) {
             Id_expressionContext id_expr_ctx = ctx.id_expression(0);
+            if (id_expr_ctx.regular_id() != null) {
+                Regular_idContext reg_id = id_expr_ctx.regular_id();
+                if (reg_id.non_reserved_keywords_pre12c() != null) {
 
-            if (id_expr_ctx.regular_id().non_reserved_keywords_pre12c() != null) {
+                    if (reg_id.non_reserved_keywords_pre12c().TO_NUMBER() != null) {
+                        replace(reg_id.non_reserved_keywords_pre12c().TO_NUMBER(), "CAST");
+                        delete(ctx.function_argument().RIGHT_PAREN());
+                        insertAfter(ctx.function_argument(), " AS NUMERIC)");
+                    }
 
-                if (id_expr_ctx.regular_id().non_reserved_keywords_pre12c().TO_NUMBER() != null) {
-                    replace(id_expr_ctx.regular_id().non_reserved_keywords_pre12c().TO_NUMBER(), "CAST");
-                    delete(ctx.function_argument().RIGHT_PAREN());
-                    insertAfter(ctx.function_argument(), " AS NUMERIC)");
-                }
+                    if (reg_id.non_reserved_keywords_pre12c().TO_DATE() != null) {
+                        replace(reg_id.non_reserved_keywords_pre12c().TO_DATE(), "CAST");
+                        delete(ctx.function_argument().RIGHT_PAREN());
+                        insertAfter(ctx.function_argument(), " AS TIMESTAMP)");
 
-                if (id_expr_ctx.regular_id().non_reserved_keywords_pre12c().TO_DATE() != null) {
-                    replace(id_expr_ctx.regular_id().non_reserved_keywords_pre12c().TO_DATE(), "CAST");
-                    delete(ctx.function_argument().RIGHT_PAREN());
-                    insertAfter(ctx.function_argument(), " AS TIMESTAMP)");
-
-                    if (ctx.function_argument().argument().size() > 1) {
-                        for (int i = 1; i < ctx.function_argument().argument().size(); i++) {
-                            delete(ctx.function_argument().COMMA(i - 1));
-                            delete(ctx.function_argument().argument(i));
+                        if (ctx.function_argument().argument().size() > 1) {
+                            for (int i = 1; i < ctx.function_argument().argument().size(); i++) {
+                                delete(ctx.function_argument().COMMA(i - 1));
+                                delete(ctx.function_argument().argument(i));
+                            }
                         }
                     }
-                }
 
-                if (id_expr_ctx.regular_id().non_reserved_keywords_pre12c().INSTR() != null) {
-                    replace(id_expr_ctx.regular_id().non_reserved_keywords_pre12c().INSTR(), "POSITION");
-                    String tempArgument = ctx.function_argument().argument(0).getText();
-                    replace(ctx.function_argument().argument(0), ctx.function_argument().argument(1).getText());
-                    replace(ctx.function_argument().argument(1), tempArgument);
+                    if (reg_id.non_reserved_keywords_pre12c().INSTR() != null) {
+                        replace(reg_id.non_reserved_keywords_pre12c().INSTR(), "POSITION");
+                        String tempArgument = ctx.function_argument().argument(0).getText();
+                        replace(ctx.function_argument().argument(0), ctx.function_argument().argument(1).getText());
+                        replace(ctx.function_argument().argument(1), tempArgument);
+                    }
                 }
             }
         }
@@ -2663,11 +2671,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitReturn_statement(Return_statementContext ctx) {
-        String returnVal = getRewriterText(ctx.expression());
 
-        if (returnVal.startsWith(":"))
-            replace(ctx.expression(), returnVal.substring(1));
+        if(ctx.expression() != null) {
+            String returnVal = getRewriterText(ctx.expression());
 
+            if (returnVal.startsWith(":"))
+                replace(ctx.expression(), returnVal.substring(1));
+        }
         StoredFunction storedFunction;
         if (!storedBlocksStack.isEmpty()) {
             if (storedBlocksStack.peek() instanceof StoredFunction) {

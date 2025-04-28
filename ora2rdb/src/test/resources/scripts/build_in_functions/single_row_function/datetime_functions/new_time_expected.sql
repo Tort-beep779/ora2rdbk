@@ -1,0 +1,3 @@
+/*
+SELECT [-unconvertible NEW_TIME(TO_DATE('11-10-09 01:23:45', 'MM-DD-YY HH24:MI:SS'), 'AST', 'PST')] FROM DUAL;
+*/

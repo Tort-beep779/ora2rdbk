@@ -1,0 +1,3 @@
+/*
+SELECT [-unconvertible NLS_COLLATION_ID('BINARY_CI')] FROM DUAL; 
+*/

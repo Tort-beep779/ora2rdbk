@@ -1,0 +1,24 @@
+
+CREATE FUNCTION LTRIM_CUSTOM (str1 VARCHAR(150), str2 VARCHAR(150) = ' ') 
+RETURNS VARCHAR(150) 
+AS
+  DECLARE current_char CHAR(1);
+BEGIN
+  IF (str2 || 'R' = 'R' OR str1 || 'R' = 'R') THEN
+    RETURN NULL;
+  WHILE ( CHAR_LENGTH(str1) > 0) DO
+  BEGIN
+    current_char = LEFT(str1, 1);
+    IF (POSITION(current_char IN str2) > 0 ) THEN
+      str1 = SUBSTRING(str1 FROM 2);
+    ELSE RETURN str1;
+  END
+  RETURN str1;
+END;
+
+
+SELECT LTRIM_CUSTOM('<=====>BROWNING<=====>', '<>=') FROM RDB$DATABASE;
+SELECT LTRIM_CUSTOM('<=====><=====>', '<>=') FROM RDB$DATABASE;
+SELECT LTRIM_CUSTOM('  _ hello') FROM RDB$DATABASE;
+SELECT LTRIM_CUSTOM('hello', '') FROM RDB$DATABASE;
+SELECT LTRIM_CUSTOM('', 'hello') FROM RDB$DATABASE;

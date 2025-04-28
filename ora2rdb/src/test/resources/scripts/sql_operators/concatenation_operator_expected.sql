@@ -1,0 +1,1 @@
+select 'Name of book is ' || TITLE  from books;

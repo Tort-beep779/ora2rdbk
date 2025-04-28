@@ -1,0 +1,6 @@
+EXECUTE BLOCK
+    AS
+    DECLARE VARIABLE rec1 TYPE OF TABLE employees;
+BEGIN
+
+END;

@@ -1,0 +1,3 @@
+/*
+SELECT [-unconvertible NUMTOYMINTERVAL(34, 'MONTH')] FROM DUAL;
+*/

@@ -1,4 +1,4 @@
-DECLARE
+ DECLARE
     cursor_variable pkg.cursor_type;
     return_value_from_function NUMBER;
 BEGIN

@@ -1,0 +1,1 @@
+SELECT ln(6.3) FROM DUAL;

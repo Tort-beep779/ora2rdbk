@@ -15,7 +15,7 @@ AS BEGIN
    */
    BEGIN
    /*
-     GOTO first_label;
+     [-unconvertible GOTO] first_label;
      i := 10; 
      <<first_label>>
      i := 1;

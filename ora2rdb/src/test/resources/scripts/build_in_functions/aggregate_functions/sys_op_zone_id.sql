@@ -1,0 +1,3 @@
+SELECT SYS_OP_ZONE_ID(rowid)
+  FROM sales
+  GROUP BY SYS_OP_ZONE_ID(rowid);

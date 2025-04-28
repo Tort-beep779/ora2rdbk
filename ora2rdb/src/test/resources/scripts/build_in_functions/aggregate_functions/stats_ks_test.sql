@@ -1,0 +1,3 @@
+SELECT stats_ks_test(cust_gender, amount_sold, 'STATISTIC') ks_statistic
+  FROM sh.customers c, sh.sales s
+  WHERE c.cust_id = s.cust_id;

@@ -1,0 +1,3 @@
+/*
+SELECT [-unconvertible NUMTODSINTERVAL(1500, 'HOUR')] FROM DUAL;
+*/

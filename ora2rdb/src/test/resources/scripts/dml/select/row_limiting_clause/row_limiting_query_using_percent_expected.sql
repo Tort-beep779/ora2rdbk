@@ -1,5 +1,5 @@
-/* Use a value instead of a percentage
-/*SELECT employee_id, last_name, salary
+/* Use a value instead of a percentage */
+SELECT employee_id, last_name, salary
 FROM employees
 ORDER BY salary
-    FETCH FIRST 5 PERCENT ROWS ONLY;*/
+    FETCH FIRST 5 [-unconvertible PERCENT] ROWS ONLY;

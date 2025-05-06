@@ -1,9 +1,6 @@
 package ru.redsoft.ora2rdb;
 
-import java.util.ArrayList;
-import java.util.Stack;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 public class PLSQLBlock {
     ArrayList<String> package_constant_names = new ArrayList<>();
@@ -17,6 +14,9 @@ public class PLSQLBlock {
     TreeMap<String, ArrayType> array_types = new TreeMap<String, ArrayType>();
     TreeMap<String, String> array_to_table = new TreeMap<String, String>();
     ArrayList<String> temporary_tables_ddl = new ArrayList<String>();
+    ReferencingAttributes trigger_referencing_attributes = new ReferencingAttributes();
+    boolean commentBlock = false;
+    List<String> trigger_ddl_event = new ArrayList<>();
 
     public void setStatement(PlSqlParser.StatementContext ctx) {
         this.statement = ctx;
@@ -39,8 +39,12 @@ public class PLSQLBlock {
      class ReplaceRecordName {
         String old_record_name;
         String new_record_name;
-
     }
+    class ReferencingAttributes{
+        String oldValue;
+        String newValue;
+    }
+
     void pushReplaceRecordName(String old_record_name, String new_record_name){
         ReplaceRecordName replaceRecordName = new ReplaceRecordName();
         replaceRecordName.old_record_name = old_record_name;

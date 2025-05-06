@@ -9,6 +9,7 @@ public class ScanListener extends PlSqlParserBaseListener {
     Stack<StoredBlock> storedBlocksStack = new Stack<>();
     String currentProcedureName;
     String current_package_name = null;
+    StoredTrigger current_trigger = null;
 
     @Override
     public void enterCreate_package_body(Create_package_bodyContext ctx) {
@@ -168,12 +169,59 @@ public class ScanListener extends PlSqlParserBaseListener {
             }
         }
         storedBlocksStack.push(storedTrigger);
-
     }
 
     @Override
     public void exitCreate_trigger(Create_triggerContext ctx) {
         StorageInfo.stored_blocks_list.add(storedBlocksStack.pop());
+    }
+
+    @Override
+    public void exitTrigger_ordering_clause(Trigger_ordering_clauseContext ctx) {
+        StoredTrigger currentTrigger = (StoredTrigger) storedBlocksStack.peek();
+        if (ctx.FOLLOWS() != null){
+            for (Trigger_nameContext stmt : ctx.trigger_name()){
+                StoredTrigger storedTrigger = findStorageTrigger(Ora2rdb.getRealName(stmt.getText()));
+                storedTrigger.setPositionToZeroIfNecessary();
+                currentTrigger.increasePosition(storedTrigger.getPosition());
+            }
+        }
+        if (ctx.PRECEDES() != null){
+            for (Trigger_nameContext stmt : ctx.trigger_name()){
+                StoredTrigger storedTrigger = findStorageTrigger(Ora2rdb.getRealName(stmt.getText()));
+
+                currentTrigger.setFollowingTrigger(storedTrigger.getName());
+                currentTrigger.setPositionToZeroIfNecessary();
+
+                storedTrigger.increasePosition(currentTrigger.getPosition());
+
+                findFollowingTrigger(storedTrigger);
+            }
+        }
+    }
+
+    @Override
+    public void exitTrigger_edition_clause(Trigger_edition_clauseContext ctx) {
+        StoredTrigger currentTrigger = (StoredTrigger) storedBlocksStack.peek();
+        currentTrigger.edition_clause = true;
+    }
+
+    private StoredTrigger findStorageTrigger(String trigger_name){
+        StoredTrigger storedTrigger = new StoredTrigger();
+        storedTrigger.setName(trigger_name);
+        return (StoredTrigger) StorageInfo.stored_blocks_list.stream()
+                .filter(e -> e.equal(storedTrigger))
+                .findFirst().orElse(null);
+    }
+
+
+    private void findFollowingTrigger (StoredTrigger trigger){
+        if (trigger.getFollowingTrigger() != null){
+            StoredTrigger followingTr = findStorageTrigger(trigger.getFollowingTrigger());
+            followingTr.increasePosition(trigger.getPosition());
+            findFollowingTrigger(findStorageTrigger(trigger.getFollowingTrigger()));
+        }
+        return;
     }
 
     @Override

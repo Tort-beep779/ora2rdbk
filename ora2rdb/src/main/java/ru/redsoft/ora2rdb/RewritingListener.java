@@ -6,7 +6,6 @@ import ru.redsoft.ora2rdb.PlSqlParser.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class RewritingListener extends PlSqlParserBaseListener {
 
@@ -1715,8 +1714,33 @@ public class RewritingListener extends PlSqlParserBaseListener {
         String var = getRuleText(ctx);
         String upper = var.toUpperCase();
 
-        if (upper.startsWith(":OLD.") || upper.startsWith(":NEW."))
-            replace(ctx, var.substring(1));
+//        if (upper.startsWith(":OLD.") || upper.startsWith(":NEW."))
+//            replace(ctx, var.substring(1));
+
+        if (current_plsql_block != null) {
+            if (current_plsql_block.trigger_referencing_attributes.oldValue != null) {
+                for (int i = 0; i < ctx.BINDVAR().size(); i++) {
+                    String alias = Ora2rdb.getRealName(ctx.BINDVAR(i).getText());
+                    if (alias.startsWith(":"))
+                        alias = alias.substring(1);
+
+                    if (Objects.equals(alias, current_plsql_block.trigger_referencing_attributes.oldValue)) {
+                        replace(ctx.BINDVAR(i), "OLD");
+                    }
+                }
+            }
+            if (current_plsql_block.trigger_referencing_attributes.newValue != null) {
+                for (int i = 0; i < ctx.BINDVAR().size(); i++) {
+                    String alias = Ora2rdb.getRealName(ctx.BINDVAR(i).getText());
+                    if (alias.startsWith(":"))
+                        alias = alias.substring(1);
+
+                    if (Objects.equals(alias, current_plsql_block.trigger_referencing_attributes.newValue)) {
+                        replace(ctx.BINDVAR(i), "NEW");
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -2105,8 +2129,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 break;
             }
         }
-
-
     }
 
     @Override
@@ -2160,7 +2182,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
         popScope();
     }
 
-
     @Override
     public void exitTrigger_name(Trigger_nameContext ctx) {
     }
@@ -2173,22 +2194,137 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitCreate_trigger(Create_triggerContext ctx) {
+        StoredTrigger current_trigger = (StoredTrigger) storedBlocksStack.peek();
+
+        if (current_trigger == null)
+            return;
+
         String indentation = getIndentation(ctx);
         replace(ctx.REPLACE(), "ALTER");
         /*deleteSPACESLeft(ctx.trigger_body());*/
-
-        insertBefore(ctx.trigger_body(), indentation + "\nAS\n");
-//        replace(ctx.SEMICOLON(), "^");
+        //        replace(ctx.SEMICOLON(), "^");
 
         StringBuilder temp_tables_ddl = new StringBuilder();
 
         for (String table_ddl : current_plsql_block.temporary_tables_ddl)
             temp_tables_ddl.append(table_ddl).append("\n\n");
 
+
+        // delete default collation clause
+        if (ctx.default_collation_clause() != null) {
+            delete(ctx.default_collation_clause());
+            deleteSPACESLeft(ctx.default_collation_clause());
+        }
+
+        // delete SHARING clause
+        if (ctx.trigger_sharing_clause() != null) {
+            delete(ctx.trigger_sharing_clause());
+            deleteSPACESLeft(ctx.trigger_sharing_clause());
+        }
+
+        if (ctx.instead_of_dml_trigger() != null) {
+            replace(ctx.instead_of_dml_trigger().INSTEAD(), "BEFORE");
+            delete(ctx.instead_of_dml_trigger().OF());
+            deleteSPACESLeft(ctx.instead_of_dml_trigger().OF());
+
+            if (ctx.instead_of_dml_trigger().DISABLE() != null)
+                insertAfter(ctx, "\nALTER TRIGGER " + Ora2rdb.getRealName(ctx.trigger_name().getText()) + " INACTIVE;");
+
+            delete(ctx.instead_of_dml_trigger().DISABLE());
+            delete(ctx.instead_of_dml_trigger().ENABLE());
+        }
+
+        // set the position of trigger
+        String position = "";
+        if (current_trigger.getPosition() != -1) {
+            position = "\nPOSITION " + current_trigger.getPosition();
+        }
+
+        insertBefore(ctx.trigger_body(), indentation + position + "\nSQL SECURITY DEFINER\nAS\n");
+
+        if (ctx.simple_dml_trigger() != null) {
+            if (ctx.simple_dml_trigger().for_each_row() == null) {
+                replace(ctx, " -unconvertible  RS-228329 \n" + getRewriterText(ctx));
+                current_plsql_block.commentBlock = true;
+            }
+            if (ctx.simple_dml_trigger().DISABLE() != null)
+                insertAfter(ctx, "\nALTER TRIGGER " + Ora2rdb.getRealName(ctx.trigger_name().getText()) + " INACTIVE;");
+
+            delete(ctx.simple_dml_trigger().DISABLE());
+            delete(ctx.simple_dml_trigger().ENABLE());
+        }
+
+        if (ctx.compound_dml_trigger() != null) {
+            replace(ctx.compound_dml_trigger(), "[-unconvertible RS-228297 " + getRewriterText(ctx.compound_dml_trigger()));
+            insertAfter(ctx.trigger_body().compound_trigger_block(), "]");
+            current_plsql_block.commentBlock = true;
+
+            if (ctx.compound_dml_trigger().DISABLE() != null)
+                insertAfter(ctx, "\nALTER TRIGGER " + Ora2rdb.getRealName(ctx.trigger_name().getText()) + " INACTIVE;");
+
+            delete(ctx.compound_dml_trigger().DISABLE());
+            delete(ctx.compound_dml_trigger().ENABLE());
+        }
+
+        if (ctx.non_dml_trigger() != null) {
+            if (ctx.non_dml_trigger().DISABLE() != null)
+                insertAfter(ctx, "\nALTER TRIGGER " + Ora2rdb.getRealName(ctx.trigger_name().getText()) + " INACTIVE;");
+
+            delete(ctx.non_dml_trigger().DISABLE());
+            delete(ctx.non_dml_trigger().ENABLE());
+
+            if (ctx.non_dml_trigger().INSTEAD() != null) {
+                insertBefore(ctx.non_dml_trigger(), "[-unconvertible RS-228348 ");
+                insertAfter(ctx.non_dml_trigger(), "]");
+                current_plsql_block.commentBlock = true;
+            } else {
+                boolean checkDDL = false;
+                for (Non_dml_eventContext stmt : ctx.non_dml_trigger().non_dml_event()) {
+                    if (stmt.database_event() != null) {
+                        if (stmt.database_event().LOGON() != null) {
+                            replace(stmt.database_event().LOGON(), "ON CONNECT");
+                        } else if (stmt.database_event().LOGOFF() != null) {
+                            replace(stmt.database_event().LOGOFF(), "ON DISCONNECT");
+                        } else {
+                            insertBefore(stmt.database_event(), "[-unconvertible RS-228336 ");
+                            insertAfter(stmt.database_event(), "]");
+                            current_plsql_block.commentBlock = true;
+                        }
+                        delete(ctx.non_dml_trigger().AFTER());
+                        delete(ctx.non_dml_trigger().BEFORE());
+                    }
+                    if (stmt.ddl_event() != null) {
+                        if (stmt.ddl_event().CREATE() != null || stmt.ddl_event().ALTER() != null
+                                || stmt.ddl_event().DROP() != null || stmt.ddl_event().DDL() != null && !checkDDL) {
+                            replace(stmt.ddl_event(), " ANY DDL STATEMENT");
+                            checkDDL = true;
+                        } else {
+                            insertBefore(stmt.ddl_event(), "[-unconvertible RS-228339 ");
+                            insertAfter(stmt.ddl_event(), "]");
+                            current_plsql_block.commentBlock = true;
+                        }
+                    }
+                }
+            }
+            delete(ctx.non_dml_trigger().ON());
+            delete(ctx.non_dml_trigger().SCHEMA());
+            delete(ctx.non_dml_trigger().schema_name());
+            delete(ctx.non_dml_trigger().PLUGGABLE());
+            delete(ctx.non_dml_trigger().DATABASE());
+        }
+
         if (!Ora2rdb.reorder)
-            replace(ctx, temp_tables_ddl + "\n" + getRewriterText(ctx));
+            replace(ctx, temp_tables_ddl + getRewriterText(ctx));
         else
             create_temporary_tables.add(temp_tables_ddl.toString());
+
+        if (current_plsql_block.commentBlock) {
+            commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+        }
+
+        if (current_trigger.edition_clause) {
+            insertBefore(ctx, "/*IT WAS A CROSSEDITION TRIGGER*/\n");
+        }
 
         popScope();
         create_triggers.add(ctx);
@@ -2197,7 +2333,47 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitReferencing_clause(Referencing_clauseContext ctx) {
-        commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+        if (current_plsql_block != null) {
+            for (int i = 0; i < ctx.referencing_element().size(); i++) {
+                Referencing_elementContext stmt = ctx.referencing_element().get(i);
+                if (stmt.NEW() != null) {
+                    current_plsql_block.trigger_referencing_attributes.newValue = Ora2rdb.getRealName(stmt.column_alias().identifier().getText());
+                }
+                if (stmt.OLD() != null) {
+                    current_plsql_block.trigger_referencing_attributes.oldValue = Ora2rdb.getRealName(stmt.column_alias().identifier().getText());
+                }
+                if (stmt.PARENT() != null) {
+                    replace(stmt.PARENT(), "[-unconvertible RS-228325 " + stmt.PARENT());
+                    replace(stmt.column_alias(), getRewriterText(stmt.column_alias()) + "]");
+                    current_plsql_block.commentBlock = true;
+                    return;
+                }
+            }
+        }
+        delete(ctx);
+        deleteSPACESLeft(ctx);
+    }
+
+    @Override
+    public void exitNon_dml_trigger(Non_dml_triggerContext ctx) {
+        if (current_plsql_block != null) {
+             for (Non_dml_eventContext stmt : ctx.non_dml_event()){
+                if (stmt.ddl_event() != null) {
+                    if (stmt.ddl_event().CREATE() != null && ctx.INSTEAD() == null)
+                        current_plsql_block.trigger_ddl_event.add("CREATE");
+                    if (stmt.ddl_event().ALTER() != null)
+                        current_plsql_block.trigger_ddl_event.add("ALTER");
+                    if (stmt.ddl_event().DROP() != null)
+                        current_plsql_block.trigger_ddl_event.add("DROP");
+                }
+            }
+        }
+    }
+
+    @Override
+    public void exitTrigger_edition_clause(Trigger_edition_clauseContext ctx) {
+        delete(ctx);
+        deleteSPACESLeft(ctx);
     }
 
     @Override
@@ -2228,6 +2404,19 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (ctx.column_list() != null) {
             delete(ctx.column_list().column_name());
         }
+    }
+
+    @Override
+    public void exitDml_event_nested_clause(Dml_event_nested_clauseContext ctx) {
+        replace(ctx, "[-unconvertible RS-228312 " + getRewriterText(ctx) + "]");
+        if (current_plsql_block != null)
+            current_plsql_block.commentBlock = true;
+    }
+
+    @Override
+    public void exitTrigger_ordering_clause(Trigger_ordering_clauseContext ctx) {
+        delete(ctx);
+        deleteSPACESLeft(ctx);
     }
 
     @Override
@@ -2272,6 +2461,20 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
             if (ctx.seq_of_statements().statement().size() > 1)
                 insertBefore(ctx.END(), "END\n");
+        }
+        if (current_plsql_block != null && !current_plsql_block.trigger_ddl_event.isEmpty()) {
+            StringBuilder execute_condition = new StringBuilder();
+            execute_condition.append("\nIF (");
+            StringBuilder update_condition = new StringBuilder();
+            for (int i = 0; i < current_plsql_block.trigger_ddl_event.size(); i++) {
+                if (i != 0)
+                    update_condition.append(" OR ");
+                update_condition.append("RDB$GET_CONTEXT ('DDL_TRIGGER','EVENT_TYPE') = ").append("'")
+                        .append(current_plsql_block.trigger_ddl_event.get(i)).append("'");
+            }
+            execute_condition.append(update_condition).append(") THEN").append("\nBEGIN");
+            insertAfter(ctx.BEGIN(), execute_condition);
+            insertBefore(ctx.END(), "\nEND\n");
         }
     }
 
@@ -2716,6 +2919,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
                     stmt_ctx.loop_statement() != null ||
                     stmt_ctx.body() != null)
                 delete(ctx.SEMICOLON(i));
+            if (stmt_ctx.null_statement() != null) {
+                delete(stmt_ctx.null_statement());
+                delete(ctx.SEMICOLON(i));
+//                deleteSPACESLeft(stmt_ctx.null_statement());
+            }
         }
         popScope();
     }

@@ -1,0 +1,24 @@
+DECLARE
+    TYPE Roster IS TABLE OF VARCHAR2(15);
+    names Roster := Roster('D Caruso', 'J Hamil', 'D Piro', 'R Singh');
+    i number;
+BEGIN
+    i := names.FIRST;
+    names.DELETE(names.LAST); -- удаляем последний элемент коллекции (4-й)
+    names.EXTEND; -- расширяем пространтсво под один элемент
+    names(names.LAST) := 'ALEX'; -- присваиваем последнему (5-му) элементу новое значение
+
+  WHILE i IS NOT NULL LOOP
+      DBMS_OUTPUT.PUT('names.(' || i || ') = ');
+      DBMS_OUTPUT.PUT_LINE(NVL(TO_CHAR(names(i)), 'NULL'));
+      i := names.NEXT(i);
+END LOOP;
+END;
+
+-- РЕЗУЛЬТАТ
+-- names.(1) = D Caruso
+-- names.(2) = J Hamil
+-- names.(3) = D Piro
+-- names.(5) = ALEX
+
+-- 4 -ой элемент удалился, но индекс не пересчитался - коллекция разреженная 

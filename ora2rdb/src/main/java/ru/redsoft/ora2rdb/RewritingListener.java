@@ -631,7 +631,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         String type;
 
-        if (ctx.type_spec().datatype() != null)
+        if (ctx.type_spec().datatype() != null && ctx.type_spec().datatype().native_datatype_element()!= null)
             type = Ora2rdb.getRealName(
                     ctx.type_spec().datatype().native_datatype_element().getText());
         else
@@ -1958,7 +1958,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.IS(), "AS");
         delete(ctx.SEMICOLON());
         StoredProcedure currentProcedure = (StoredProcedure) storedBlocksStack.peek();
-        String procedure_name = currentProcedure.getName();//todo
+//        String procedure_name = currentProcedure.getName();//todo
         String getWhiteSpace = getIndentation(ctx) + "  ";
 
         if (currentProcedure.containOutParameters()) {

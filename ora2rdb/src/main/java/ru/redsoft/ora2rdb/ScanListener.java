@@ -270,7 +270,7 @@ public class ScanListener extends PlSqlParserBaseListener {
 
         storedFunction.setName(functionName);
         storedFunction.setPackage_name(current_package_name);
-        if (ctx.type_spec().datatype() != null)
+        if (ctx.type_spec().datatype() != null && ctx.type_spec().datatype().native_datatype_element()!= null)
             storedFunction.setFunction_returns_type(Ora2rdb.getRealName(ctx.type_spec().datatype().native_datatype_element().getText()));
         else
             storedFunction.setFunction_returns_type(Ora2rdb.getRealName(ctx.type_spec().getText()));

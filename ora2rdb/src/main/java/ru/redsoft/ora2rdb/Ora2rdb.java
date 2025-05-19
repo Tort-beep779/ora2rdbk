@@ -196,8 +196,6 @@ public class Ora2rdb {
             return;
         }
 
-        //RewritingVisitor rv = new RewritingVisitor(parser);
-
         if (output_file != null) {
             try {
                 ps = new PrintStream(output_file);

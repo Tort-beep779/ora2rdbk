@@ -12,6 +12,6 @@ DECLARE
 BEGIN
 FOR DEPT IN C1
     LOOP
-
+        NULL;
     END LOOP;
 END;

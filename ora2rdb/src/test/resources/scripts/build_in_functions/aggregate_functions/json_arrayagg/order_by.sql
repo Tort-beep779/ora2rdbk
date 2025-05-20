@@ -1,0 +1,1 @@
+select json_arrayagg (option_r order by id returning varchar2(50)) from options;

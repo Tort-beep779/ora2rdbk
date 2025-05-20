@@ -1,0 +1,1 @@
+SELECT TRUNC(date'2015-01-10', 'year') FROM DUAL;

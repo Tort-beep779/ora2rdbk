@@ -1,0 +1,1 @@
+DELETE FROM SALES [-unconvertible SUBPARTITION (sales_2022_north)];

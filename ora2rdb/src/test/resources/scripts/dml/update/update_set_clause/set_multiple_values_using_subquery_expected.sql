@@ -1,0 +1,1 @@
+UPDATE books SET (TITLE, PAGE_COUNT) = [-unconvertible (select 'C' , 500 from dual)];

@@ -1,0 +1,6 @@
+/*
+SELECT [-unconvertible TRANSLATE ('Hello World' USING CHAR_CS)] FROM DUAL;
+*/
+/*
+SELECT [-unconvertible TRANSLATE ('Hello World' USING NCHAR_CS)] FROM DUAL;
+*/

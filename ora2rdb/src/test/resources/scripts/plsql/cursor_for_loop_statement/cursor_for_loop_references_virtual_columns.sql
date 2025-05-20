@@ -4,7 +4,7 @@ FOR item IN (
     salary * 10                    AS dream_salary
     FROM employees
   ) LOOP
-        item.full_name = 'UNKNOWN';
-        item.dream_salary = 0;
+        item.full_name := 'UNKNOWN';
+        item.dream_salary := 0;
     END LOOP;
 END;

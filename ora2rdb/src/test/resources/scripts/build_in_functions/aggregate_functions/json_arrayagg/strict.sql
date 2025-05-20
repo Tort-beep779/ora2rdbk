@@ -1,0 +1,1 @@
+select json_arrayagg (option_r returning varchar2(50) STRICT) from options;

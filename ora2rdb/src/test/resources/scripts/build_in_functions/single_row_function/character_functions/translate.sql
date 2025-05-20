@@ -1,0 +1,5 @@
+SELECT TRANSLATE('1234efg', '1234', 'xyz') FROM DUAL;
+
+SELECT TRANSLATE('ab2cde1fg', '1234', 'xyzf') FROM DUAL;
+
+SELECT TRANSLATE('44prnf32', '234', 'xyzf') FROM DUAL;

@@ -6,3 +6,13 @@
 
 Есть возможность задать сортировку явно указав столбец, или по номеру столбца в запросе. Пример в тесте [use_positional_order_by_notation.sql](use_positional_order_by_notation.sql)
 
+### NULLS FIRST / LAST
+
+В ORACLE по умолчанию
+* если стоит порядок сордировки ASC - по умолчанию NULLS LAST
+* если стоит порядок сортировки DESC - по умолчанию NULLS FIRST
+
+В РБД
+* если стоит порядок сортировки ASC - по умолчанию NULLS FIRST
+* если стоит порядок сортировки DESC - по умолчанию NULLS LAST
+

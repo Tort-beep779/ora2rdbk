@@ -1,0 +1,3 @@
+/*
+SELECT [-unconvertible NLS_COLLATION_NAME(208897,'S')] FROM DUAL;
+*/

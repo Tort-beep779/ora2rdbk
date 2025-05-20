@@ -20,7 +20,9 @@ AS
     FETCH c1 INTO v1;
     OPEN c2 FOR SELECT * FROM test_table;
     FETCH c2 INTO v2;
-    IF c1%FOUND AND c2%FOUND THEN res := 10;
+    IF c1%NOTFOUND THEN res := res + 1;
+    END IF;
+    IF c2%NOTFOUND THEN res := res + 10;
     END IF;
     CLOSE c1;
     CLOSE c2;

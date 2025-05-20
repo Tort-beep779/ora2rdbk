@@ -1,0 +1,1 @@
+DELETE FROM SALES [-unconvertible SUBPARTITION FOR (2023, 'North')];

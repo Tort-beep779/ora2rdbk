@@ -6,7 +6,6 @@ import ru.redsoft.ora2rdb.PlSqlParser.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class RewritingListener extends PlSqlParserBaseListener {
 
@@ -259,14 +258,15 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitRelational_table(Relational_tableContext ctx) {
         deleteSPACESAbut(ctx.physical_properties());
-        delete(ctx.column_properties());
+        if(!ctx.table_properties().isEmpty())
+            delete(ctx.table_properties().column_properties());
         delete(ctx.physical_properties());
     }
 
-    @Override
-    public void exitCreate_table(Create_tableContext ctx) {
+
+    private void convertRelationTable(Create_tableContext ctx){
         String table_name;
-        table_name = Ora2rdb.getRealName(getRuleText(ctx.tableview_name().schema_and_name().name));
+        table_name = Ora2rdb.getRealName(getRuleText(ctx.schema_and_name().name));
 
         if (StorageInfo.table_not_null_cols.containsKey(table_name)) {
             TreeSet<String> columns_set = StorageInfo.table_not_null_cols.get(table_name);
@@ -320,6 +320,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 }
             }
         }
+    }
+
+    @Override
+    public void exitCreate_table(Create_tableContext ctx) {
+        if(ctx.relational_table() != null)
+            convertRelationTable(ctx);
     }
 
     @Override
@@ -457,20 +463,20 @@ public class RewritingListener extends PlSqlParserBaseListener {
         delete(ctx.PERIOD());
     }
 
-    private StoredBlock findFunctionCall(Function_callContext ctx) {
+    private StoredBlock findFunctionCall(Call_statementContext ctx) {
         FinderBlockCall finder = new FinderBlockCall();
-        if (ctx.routine_name().id_expression(0) != null) {
-            finder.setName(Ora2rdb.getRealName(ctx.routine_name().id_expression(0).getText()));
-            finder.setPackage_name(Ora2rdb.getRealName(ctx.routine_name().identifier().getText()));
+        if (ctx.routine_name(0).id_expression(0) != null) {
+            finder.setName(Ora2rdb.getRealName(ctx.routine_name(0).id_expression(0).getText()));
+            finder.setPackage_name(Ora2rdb.getRealName(ctx.routine_name(0).identifier().getText()));
         } else {
-            finder.setName(Ora2rdb.getRealName(ctx.routine_name().identifier().getText()));
+            finder.setName(Ora2rdb.getRealName(ctx.routine_name(0).identifier().getText()));
             finder.setPackage_name(null);
         }
         finder.setArea_package_name(current_package_name);
-        if (ctx.function_argument() != null && !storedBlocksStack.isEmpty()) {
+        if (ctx.function_argument(0) != null && !storedBlocksStack.isEmpty()) {
             String arg_name;
-            for (int i = 0; i < ctx.function_argument().argument().size(); i++) {
-                arg_name = Ora2rdb.getRealParameterName(ctx.function_argument().argument(i).getText());
+            for (int i = 0; i < ctx.function_argument( 0).argument().size(); i++) {
+                arg_name = Ora2rdb.getRealParameterName(ctx.function_argument(0).argument(i).getText());
                 finder.setParameters(
                         i,
                         arg_name,
@@ -480,10 +486,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
         // for anonymous block
         if (currentAnonymousBlock != null)
-            if (!currentAnonymousBlock.getIsNested() && ctx.function_argument() != null) {
+            if (!currentAnonymousBlock.getIsNested() && ctx.function_argument(0) != null) {
                 String arg_name;
-                for (int i = 0; i < ctx.function_argument().argument().size(); i++) {
-                    arg_name = Ora2rdb.getRealParameterName(ctx.function_argument().argument(i).getText());
+                for (int i = 0; i < ctx.function_argument(0).argument().size(); i++) {
+                    arg_name = Ora2rdb.getRealParameterName(ctx.function_argument(0).argument(i).getText());
                     finder.setParameters(
                             i,
                             arg_name,
@@ -624,7 +630,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         String type;
 
-        if (ctx.type_spec().datatype() != null)
+        if (ctx.type_spec().datatype() != null && ctx.type_spec().datatype().native_datatype_element()!= null)
             type = Ora2rdb.getRealName(
                     ctx.type_spec().datatype().native_datatype_element().getText());
         else
@@ -731,33 +737,35 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
         if (ctx.id_expression().size() == 1) {
             Id_expressionContext id_expr_ctx = ctx.id_expression(0);
+            if (id_expr_ctx.regular_id() != null) {
+                Regular_idContext reg_id = id_expr_ctx.regular_id();
+                if (reg_id.non_reserved_keywords_pre12c() != null) {
 
-            if (id_expr_ctx.regular_id().non_reserved_keywords_pre12c() != null) {
+                    if (reg_id.non_reserved_keywords_pre12c().TO_NUMBER() != null) {
+                        replace(reg_id.non_reserved_keywords_pre12c().TO_NUMBER(), "CAST");
+                        delete(ctx.function_argument().RIGHT_PAREN());
+                        insertAfter(ctx.function_argument(), " AS NUMERIC)");
+                    }
 
-                if (id_expr_ctx.regular_id().non_reserved_keywords_pre12c().TO_NUMBER() != null) {
-                    replace(id_expr_ctx.regular_id().non_reserved_keywords_pre12c().TO_NUMBER(), "CAST");
-                    delete(ctx.function_argument().RIGHT_PAREN());
-                    insertAfter(ctx.function_argument(), " AS NUMERIC)");
-                }
+                    if (reg_id.non_reserved_keywords_pre12c().TO_DATE() != null) {
+                        replace(reg_id.non_reserved_keywords_pre12c().TO_DATE(), "CAST");
+                        delete(ctx.function_argument().RIGHT_PAREN());
+                        insertAfter(ctx.function_argument(), " AS TIMESTAMP)");
 
-                if (id_expr_ctx.regular_id().non_reserved_keywords_pre12c().TO_DATE() != null) {
-                    replace(id_expr_ctx.regular_id().non_reserved_keywords_pre12c().TO_DATE(), "CAST");
-                    delete(ctx.function_argument().RIGHT_PAREN());
-                    insertAfter(ctx.function_argument(), " AS TIMESTAMP)");
-
-                    if (ctx.function_argument().argument().size() > 1) {
-                        for (int i = 1; i < ctx.function_argument().argument().size(); i++) {
-                            delete(ctx.function_argument().COMMA(i - 1));
-                            delete(ctx.function_argument().argument(i));
+                        if (ctx.function_argument().argument().size() > 1) {
+                            for (int i = 1; i < ctx.function_argument().argument().size(); i++) {
+                                delete(ctx.function_argument().COMMA(i - 1));
+                                delete(ctx.function_argument().argument(i));
+                            }
                         }
                     }
-                }
 
-                if (id_expr_ctx.regular_id().non_reserved_keywords_pre12c().INSTR() != null) {
-                    replace(id_expr_ctx.regular_id().non_reserved_keywords_pre12c().INSTR(), "POSITION");
-                    String tempArgument = ctx.function_argument().argument(0).getText();
-                    replace(ctx.function_argument().argument(0), ctx.function_argument().argument(1).getText());
-                    replace(ctx.function_argument().argument(1), tempArgument);
+                    if (reg_id.non_reserved_keywords_pre12c().INSTR() != null) {
+                        replace(reg_id.non_reserved_keywords_pre12c().INSTR(), "POSITION");
+                        String tempArgument = ctx.function_argument().argument(0).getText();
+                        replace(ctx.function_argument().argument(0), ctx.function_argument().argument(1).getText());
+                        replace(ctx.function_argument().argument(1), tempArgument);
+                    }
                 }
             }
         }
@@ -902,18 +910,18 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitFunction_call(Function_callContext ctx) {
-        if (Ora2rdb.getRealName(getRuleText(ctx.routine_name())).equals("RAISE_APPLICATION_ERROR")) {
+    public void exitCall_statement(Call_statementContext ctx) {
+        if (Ora2rdb.getRealName(getRuleText(ctx.routine_name(0))).equals("RAISE_APPLICATION_ERROR")) {
             exceptions.put("CUSTOM_EXCEPTION", "error");
 //            containsException = true;
-            replace(ctx.routine_name(), "EXCEPTION CUSTOM_EXCEPTION");
-            delete(ctx.function_argument().argument(0));
-            delete(ctx.function_argument().COMMA(0));
+            replace(ctx.routine_name(0), "EXCEPTION CUSTOM_EXCEPTION");
+            delete(ctx.function_argument(0).argument(0));
+            delete(ctx.function_argument(0).COMMA(0));
         }
         convertFunctionCall(ctx);
     }
 
-    private void convertFunctionCall(Function_callContext ctx) {
+    private void convertFunctionCall(Call_statementContext ctx) {
         StoredBlock storedBlock = findFunctionCall(ctx);
         if (storedBlock != null) {
             if (storedBlock instanceof StoredFunction) {
@@ -925,7 +933,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 else
                     replace(ctx, "EXECUTE PROCEDURE " + getRewriterText(ctx));
         } else {
-            String name = Ora2rdb.getRealName(ctx.routine_name().getText());
+            String name = Ora2rdb.getRealName(ctx.routine_name(0).getText());
             storedBlock = StorageInfo.stored_blocks_list.stream().filter(e -> e.getName().equals(name)).findFirst().orElse(null);
             if (storedBlock instanceof StoredProcedure)
                 replace(ctx, "EXECUTE PROCEDURE " + getRewriterText(ctx));
@@ -933,7 +941,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     }
 
-    private void convertFunctionWithOutParameters(Function_callContext ctx, StoredFunction storedFunction) {
+    private void convertFunctionWithOutParameters(Call_statementContext ctx, StoredFunction storedFunction) {
         StringBuilder selectQuery = new StringBuilder();
         if (storedFunction != null) {
 
@@ -953,9 +961,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
             for (int i : storedFunction.getParameters().keySet()) {
                 if (storedFunction.getParameters().get(i).isOut()) {
                     if (!Objects.equals(i, storedFunction.getParameters().lastKey()))
-                        selectQuery.append(ctx.function_argument().argument(i).getText()).append(", ");
+                        selectQuery.append(ctx.function_argument(0).argument(i).getText()).append(", ");
                     else
-                        selectQuery.append(ctx.function_argument().argument(i).getText());
+                        selectQuery.append(ctx.function_argument(0).argument(i).getText());
                 }
             }
 
@@ -970,7 +978,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         }
     }
 
-    private void convertProcedureWithOutParameters(Function_callContext ctx, StoredProcedure storedProcedure) {
+    private void convertProcedureWithOutParameters(Call_statementContext ctx, StoredProcedure storedProcedure) {
         if (storedProcedure != null) {
             StringBuilder selectQuery = new StringBuilder();
             selectQuery.append("SELECT ");
@@ -988,9 +996,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
             for (int i : storedProcedure.getParameters().keySet()) {
                 if (storedProcedure.getParameters().get(i).isOut()) {
                     if (!Objects.equals(i, storedProcedure.getParameters().lastKey()))
-                        selectQuery.append(ctx.function_argument().argument(i).getText()).append(", ");
+                        selectQuery.append(ctx.function_argument(0).argument(i).getText()).append(", ");
                     else
-                        selectQuery.append(ctx.function_argument().argument(i).getText());
+                        selectQuery.append(ctx.function_argument(0).argument(i).getText());
                 }
             }
             replace(ctx, selectQuery.toString());
@@ -1706,8 +1714,33 @@ public class RewritingListener extends PlSqlParserBaseListener {
         String var = getRuleText(ctx);
         String upper = var.toUpperCase();
 
-        if (upper.startsWith(":OLD.") || upper.startsWith(":NEW."))
-            replace(ctx, var.substring(1));
+//        if (upper.startsWith(":OLD.") || upper.startsWith(":NEW."))
+//            replace(ctx, var.substring(1));
+
+        if (current_plsql_block != null) {
+            if (current_plsql_block.trigger_referencing_attributes.oldValue != null) {
+                for (int i = 0; i < ctx.BINDVAR().size(); i++) {
+                    String alias = Ora2rdb.getRealName(ctx.BINDVAR(i).getText());
+                    if (alias.startsWith(":"))
+                        alias = alias.substring(1);
+
+                    if (Objects.equals(alias, current_plsql_block.trigger_referencing_attributes.oldValue)) {
+                        replace(ctx.BINDVAR(i), "OLD");
+                    }
+                }
+            }
+            if (current_plsql_block.trigger_referencing_attributes.newValue != null) {
+                for (int i = 0; i < ctx.BINDVAR().size(); i++) {
+                    String alias = Ora2rdb.getRealName(ctx.BINDVAR(i).getText());
+                    if (alias.startsWith(":"))
+                        alias = alias.substring(1);
+
+                    if (Objects.equals(alias, current_plsql_block.trigger_referencing_attributes.newValue)) {
+                        replace(ctx.BINDVAR(i), "NEW");
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -1724,7 +1757,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void exitSql_plus_command_wrapper(Sql_plus_command_wrapperContext ctx) {
+    public void exitSql_plus_command(Sql_plus_commandContext ctx) {
         if (ctx.PROMPT_MESSAGE() != null)
             commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
         else
@@ -1949,7 +1982,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.IS(), "AS");
         delete(ctx.SEMICOLON());
         StoredProcedure currentProcedure = (StoredProcedure) storedBlocksStack.peek();
-        String procedure_name = currentProcedure.getName();//todo
+//        String procedure_name = currentProcedure.getName();//todo
         String getWhiteSpace = getIndentation(ctx) + "  ";
 
         if (currentProcedure.containOutParameters()) {
@@ -2096,8 +2129,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 break;
             }
         }
-
-
     }
 
     @Override
@@ -2151,7 +2182,6 @@ public class RewritingListener extends PlSqlParserBaseListener {
         popScope();
     }
 
-
     @Override
     public void exitTrigger_name(Trigger_nameContext ctx) {
     }
@@ -2164,22 +2194,137 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitCreate_trigger(Create_triggerContext ctx) {
+        StoredTrigger current_trigger = (StoredTrigger) storedBlocksStack.peek();
+
+        if (current_trigger == null)
+            return;
+
         String indentation = getIndentation(ctx);
         replace(ctx.REPLACE(), "ALTER");
-        deleteSPACESLeft(ctx.trigger_body());
-
-        insertBefore(ctx.trigger_body(), indentation + "\nAS\n");
-//        replace(ctx.SEMICOLON(), "^");
+        /*deleteSPACESLeft(ctx.trigger_body());*/
+        //        replace(ctx.SEMICOLON(), "^");
 
         StringBuilder temp_tables_ddl = new StringBuilder();
 
         for (String table_ddl : current_plsql_block.temporary_tables_ddl)
             temp_tables_ddl.append(table_ddl).append("\n\n");
 
+
+        // delete default collation clause
+        if (ctx.default_collation_clause() != null) {
+            delete(ctx.default_collation_clause());
+            deleteSPACESLeft(ctx.default_collation_clause());
+        }
+
+        // delete SHARING clause
+        if (ctx.trigger_sharing_clause() != null) {
+            delete(ctx.trigger_sharing_clause());
+            deleteSPACESLeft(ctx.trigger_sharing_clause());
+        }
+
+        if (ctx.instead_of_dml_trigger() != null) {
+            replace(ctx.instead_of_dml_trigger().INSTEAD(), "BEFORE");
+            delete(ctx.instead_of_dml_trigger().OF());
+            deleteSPACESLeft(ctx.instead_of_dml_trigger().OF());
+
+            if (ctx.instead_of_dml_trigger().DISABLE() != null)
+                insertAfter(ctx, "\nALTER TRIGGER " + Ora2rdb.getRealName(ctx.trigger_name().getText()) + " INACTIVE;");
+
+            delete(ctx.instead_of_dml_trigger().DISABLE());
+            delete(ctx.instead_of_dml_trigger().ENABLE());
+        }
+
+        // set the position of trigger
+        String position = "";
+        if (current_trigger.getPosition() != -1) {
+            position = "\nPOSITION " + current_trigger.getPosition();
+        }
+
+        insertBefore(ctx.trigger_body(), indentation + position + "\nSQL SECURITY DEFINER\nAS\n");
+
+        if (ctx.simple_dml_trigger() != null) {
+            if (ctx.simple_dml_trigger().for_each_row() == null) {
+                replace(ctx, " -unconvertible  RS-228329 \n" + getRewriterText(ctx));
+                current_plsql_block.commentBlock = true;
+            }
+            if (ctx.simple_dml_trigger().DISABLE() != null)
+                insertAfter(ctx, "\nALTER TRIGGER " + Ora2rdb.getRealName(ctx.trigger_name().getText()) + " INACTIVE;");
+
+            delete(ctx.simple_dml_trigger().DISABLE());
+            delete(ctx.simple_dml_trigger().ENABLE());
+        }
+
+        if (ctx.compound_dml_trigger() != null) {
+            replace(ctx.compound_dml_trigger(), "[-unconvertible RS-228297 " + getRewriterText(ctx.compound_dml_trigger()));
+            insertAfter(ctx.trigger_body().compound_trigger_block(), "]");
+            current_plsql_block.commentBlock = true;
+
+            if (ctx.compound_dml_trigger().DISABLE() != null)
+                insertAfter(ctx, "\nALTER TRIGGER " + Ora2rdb.getRealName(ctx.trigger_name().getText()) + " INACTIVE;");
+
+            delete(ctx.compound_dml_trigger().DISABLE());
+            delete(ctx.compound_dml_trigger().ENABLE());
+        }
+
+        if (ctx.non_dml_trigger() != null) {
+            if (ctx.non_dml_trigger().DISABLE() != null)
+                insertAfter(ctx, "\nALTER TRIGGER " + Ora2rdb.getRealName(ctx.trigger_name().getText()) + " INACTIVE;");
+
+            delete(ctx.non_dml_trigger().DISABLE());
+            delete(ctx.non_dml_trigger().ENABLE());
+
+            if (ctx.non_dml_trigger().INSTEAD() != null) {
+                insertBefore(ctx.non_dml_trigger(), "[-unconvertible RS-228348 ");
+                insertAfter(ctx.non_dml_trigger(), "]");
+                current_plsql_block.commentBlock = true;
+            } else {
+                boolean checkDDL = false;
+                for (Non_dml_eventContext stmt : ctx.non_dml_trigger().non_dml_event()) {
+                    if (stmt.database_event() != null) {
+                        if (stmt.database_event().LOGON() != null) {
+                            replace(stmt.database_event().LOGON(), "ON CONNECT");
+                        } else if (stmt.database_event().LOGOFF() != null) {
+                            replace(stmt.database_event().LOGOFF(), "ON DISCONNECT");
+                        } else {
+                            insertBefore(stmt.database_event(), "[-unconvertible RS-228336 ");
+                            insertAfter(stmt.database_event(), "]");
+                            current_plsql_block.commentBlock = true;
+                        }
+                        delete(ctx.non_dml_trigger().AFTER());
+                        delete(ctx.non_dml_trigger().BEFORE());
+                    }
+                    if (stmt.ddl_event() != null) {
+                        if (stmt.ddl_event().CREATE() != null || stmt.ddl_event().ALTER() != null
+                                || stmt.ddl_event().DROP() != null || stmt.ddl_event().DDL() != null && !checkDDL) {
+                            replace(stmt.ddl_event(), " ANY DDL STATEMENT");
+                            checkDDL = true;
+                        } else {
+                            insertBefore(stmt.ddl_event(), "[-unconvertible RS-228339 ");
+                            insertAfter(stmt.ddl_event(), "]");
+                            current_plsql_block.commentBlock = true;
+                        }
+                    }
+                }
+            }
+            delete(ctx.non_dml_trigger().ON());
+            delete(ctx.non_dml_trigger().SCHEMA());
+            delete(ctx.non_dml_trigger().schema_name());
+            delete(ctx.non_dml_trigger().PLUGGABLE());
+            delete(ctx.non_dml_trigger().DATABASE());
+        }
+
         if (!Ora2rdb.reorder)
-            replace(ctx, temp_tables_ddl + "\n" + getRewriterText(ctx));
+            replace(ctx, temp_tables_ddl + getRewriterText(ctx));
         else
             create_temporary_tables.add(temp_tables_ddl.toString());
+
+        if (current_plsql_block.commentBlock) {
+            commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+        }
+
+        if (current_trigger.edition_clause) {
+            insertBefore(ctx, "/*IT WAS A CROSSEDITION TRIGGER*/\n");
+        }
 
         popScope();
         create_triggers.add(ctx);
@@ -2188,7 +2333,47 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitReferencing_clause(Referencing_clauseContext ctx) {
-        commentBlock(ctx.start.getTokenIndex(), ctx.stop.getTokenIndex());
+        if (current_plsql_block != null) {
+            for (int i = 0; i < ctx.referencing_element().size(); i++) {
+                Referencing_elementContext stmt = ctx.referencing_element().get(i);
+                if (stmt.NEW() != null) {
+                    current_plsql_block.trigger_referencing_attributes.newValue = Ora2rdb.getRealName(stmt.column_alias().identifier().getText());
+                }
+                if (stmt.OLD() != null) {
+                    current_plsql_block.trigger_referencing_attributes.oldValue = Ora2rdb.getRealName(stmt.column_alias().identifier().getText());
+                }
+                if (stmt.PARENT() != null) {
+                    replace(stmt.PARENT(), "[-unconvertible RS-228325 " + stmt.PARENT());
+                    replace(stmt.column_alias(), getRewriterText(stmt.column_alias()) + "]");
+                    current_plsql_block.commentBlock = true;
+                    return;
+                }
+            }
+        }
+        delete(ctx);
+        deleteSPACESLeft(ctx);
+    }
+
+    @Override
+    public void exitNon_dml_trigger(Non_dml_triggerContext ctx) {
+        if (current_plsql_block != null) {
+             for (Non_dml_eventContext stmt : ctx.non_dml_event()){
+                if (stmt.ddl_event() != null) {
+                    if (stmt.ddl_event().CREATE() != null && ctx.INSTEAD() == null)
+                        current_plsql_block.trigger_ddl_event.add("CREATE");
+                    if (stmt.ddl_event().ALTER() != null)
+                        current_plsql_block.trigger_ddl_event.add("ALTER");
+                    if (stmt.ddl_event().DROP() != null)
+                        current_plsql_block.trigger_ddl_event.add("DROP");
+                }
+            }
+        }
+    }
+
+    @Override
+    public void exitTrigger_edition_clause(Trigger_edition_clauseContext ctx) {
+        delete(ctx);
+        deleteSPACESLeft(ctx);
     }
 
     @Override
@@ -2219,6 +2404,19 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (ctx.column_list() != null) {
             delete(ctx.column_list().column_name());
         }
+    }
+
+    @Override
+    public void exitDml_event_nested_clause(Dml_event_nested_clauseContext ctx) {
+        replace(ctx, "[-unconvertible RS-228312 " + getRewriterText(ctx) + "]");
+        if (current_plsql_block != null)
+            current_plsql_block.commentBlock = true;
+    }
+
+    @Override
+    public void exitTrigger_ordering_clause(Trigger_ordering_clauseContext ctx) {
+        delete(ctx);
+        deleteSPACESLeft(ctx);
     }
 
     @Override
@@ -2263,6 +2461,20 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
             if (ctx.seq_of_statements().statement().size() > 1)
                 insertBefore(ctx.END(), "END\n");
+        }
+        if (current_plsql_block != null && !current_plsql_block.trigger_ddl_event.isEmpty()) {
+            StringBuilder execute_condition = new StringBuilder();
+            execute_condition.append("\nIF (");
+            StringBuilder update_condition = new StringBuilder();
+            for (int i = 0; i < current_plsql_block.trigger_ddl_event.size(); i++) {
+                if (i != 0)
+                    update_condition.append(" OR ");
+                update_condition.append("RDB$GET_CONTEXT ('DDL_TRIGGER','EVENT_TYPE') = ").append("'")
+                        .append(current_plsql_block.trigger_ddl_event.get(i)).append("'");
+            }
+            execute_condition.append(update_condition).append(") THEN").append("\nBEGIN");
+            insertAfter(ctx.BEGIN(), execute_condition);
+            insertBefore(ctx.END(), "\nEND\n");
         }
     }
 
@@ -2662,11 +2874,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitReturn_statement(Return_statementContext ctx) {
-        String returnVal = getRewriterText(ctx.expression());
 
-        if (returnVal.startsWith(":"))
-            replace(ctx.expression(), returnVal.substring(1));
+        if(ctx.expression() != null) {
+            String returnVal = getRewriterText(ctx.expression());
 
+            if (returnVal.startsWith(":"))
+                replace(ctx.expression(), returnVal.substring(1));
+        }
         StoredFunction storedFunction;
         if (!storedBlocksStack.isEmpty()) {
             if (storedBlocksStack.peek() instanceof StoredFunction) {
@@ -2705,6 +2919,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
                     stmt_ctx.loop_statement() != null ||
                     stmt_ctx.body() != null)
                 delete(ctx.SEMICOLON(i));
+            if (stmt_ctx.null_statement() != null) {
+                delete(stmt_ctx.null_statement());
+                delete(ctx.SEMICOLON(i));
+//                deleteSPACESLeft(stmt_ctx.null_statement());
+            }
         }
         popScope();
     }

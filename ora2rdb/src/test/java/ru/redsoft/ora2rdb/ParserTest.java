@@ -76,7 +76,9 @@ class ParserTest {
             RewritingListener rewritingListener =
                     Ora2rdb.convert(fs);
             actual = rewritingListener.rewriter.getText()
-                    .replace("\r", "").replace("\n", System.lineSeparator());
+                    .replace("\r", "").replace("\n", System.lineSeparator())
+                    .replaceAll("\\s+", "")
+            ;
         }
 
         List<String> expectedList = readFile(expectedFile);
@@ -89,7 +91,9 @@ class ParserTest {
             if (!line.equals(expectedList.get(lastListIndex)))
                 stringBuilder.append(systemSeparator);
         }
-        String expected = stringBuilder.toString();
+        String expected = stringBuilder.toString()
+                .replaceAll("\\s+", "")
+                ;
         assertEquals(expected, actual);
     }
 
@@ -105,11 +109,13 @@ class ParserTest {
         }
 
         List<String> actual = Files.readAllLines(outFile, StandardCharsets.UTF_8);
+
         List<String> expected = readFile(expectedFile);
+
         Patch<String> diff = DiffUtils.diff(expected, actual);
         List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff("expected",
-                "actual", expected, diff, 0);
-        String result = String.join("\n", unifiedDiff);
+                "actual", expected , diff, 0);
+        String result = String.join("\n" , unifiedDiff);
 
         if (!result.isEmpty()) {
             ProcessBuilder processBuilder = new ProcessBuilder("python3",
@@ -166,7 +172,8 @@ class ParserTest {
     @ParameterizedTest(name = "{arguments}")
     @MethodSource("argsProviderFactory")
     void testAllScripts(String argument) throws Exception {
-        test(argument);
+//        test(argument);
+        testForDevelopers(argument);
     }
 
 

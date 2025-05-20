@@ -9,6 +9,7 @@ public class ScanListener extends PlSqlParserBaseListener {
     Stack<StoredBlock> storedBlocksStack = new Stack<>();
     String currentProcedureName;
     String current_package_name = null;
+    StoredTrigger current_trigger = null;
 
     @Override
     public void enterCreate_package_body(Create_package_bodyContext ctx) {
@@ -46,21 +47,23 @@ public class ScanListener extends PlSqlParserBaseListener {
 
     @Override
     public void enterCreate_table(Create_tableContext ctx) {
+        if(ctx.relational_table() == null)
+            return;
         Table table = new Table();
         String name;
-        name = Ora2rdb.getRealName(ctx.tableview_name().schema_and_name().name.getText());
+        name = Ora2rdb.getRealName(ctx.schema_and_name().name.getText());
         table.setName(name);
-        for (Relational_propertyContext rela_prop : ctx.relational_table().relational_property()) {
-            if (rela_prop.column_definition() == null)
-                continue;
-            if (rela_prop.column_definition().datatype() != null)
-                table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
-                        Ora2rdb.getRealName(rela_prop.column_definition().datatype().getText())
-                );
-            else
-                table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
-                        Ora2rdb.getRealName(rela_prop.column_definition().type_name().getText())
-                );
+            for (Relational_propertyContext rela_prop : ctx.relational_table().relational_property()) {
+                if (rela_prop.column_definition() == null)
+                    continue;
+                if (rela_prop.column_definition().datatype() != null)
+                    table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
+                            Ora2rdb.getRealName(rela_prop.column_definition().datatype().getText())
+                    );
+                else
+                    table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
+                            Ora2rdb.getRealName(rela_prop.column_definition().regular_id().getText())
+                    );
 
         }
         StorageInfo.tables.add(table);
@@ -166,12 +169,59 @@ public class ScanListener extends PlSqlParserBaseListener {
             }
         }
         storedBlocksStack.push(storedTrigger);
-
     }
 
     @Override
     public void exitCreate_trigger(Create_triggerContext ctx) {
         StorageInfo.stored_blocks_list.add(storedBlocksStack.pop());
+    }
+
+    @Override
+    public void exitTrigger_ordering_clause(Trigger_ordering_clauseContext ctx) {
+        StoredTrigger currentTrigger = (StoredTrigger) storedBlocksStack.peek();
+        if (ctx.FOLLOWS() != null){
+            for (Trigger_nameContext stmt : ctx.trigger_name()){
+                StoredTrigger storedTrigger = findStorageTrigger(Ora2rdb.getRealName(stmt.getText()));
+                storedTrigger.setPositionToZeroIfNecessary();
+                currentTrigger.increasePosition(storedTrigger.getPosition());
+            }
+        }
+        if (ctx.PRECEDES() != null){
+            for (Trigger_nameContext stmt : ctx.trigger_name()){
+                StoredTrigger storedTrigger = findStorageTrigger(Ora2rdb.getRealName(stmt.getText()));
+
+                currentTrigger.setFollowingTrigger(storedTrigger.getName());
+                currentTrigger.setPositionToZeroIfNecessary();
+
+                storedTrigger.increasePosition(currentTrigger.getPosition());
+
+                findFollowingTrigger(storedTrigger);
+            }
+        }
+    }
+
+    @Override
+    public void exitTrigger_edition_clause(Trigger_edition_clauseContext ctx) {
+        StoredTrigger currentTrigger = (StoredTrigger) storedBlocksStack.peek();
+        currentTrigger.edition_clause = true;
+    }
+
+    private StoredTrigger findStorageTrigger(String trigger_name){
+        StoredTrigger storedTrigger = new StoredTrigger();
+        storedTrigger.setName(trigger_name);
+        return (StoredTrigger) StorageInfo.stored_blocks_list.stream()
+                .filter(e -> e.equal(storedTrigger))
+                .findFirst().orElse(null);
+    }
+
+
+    private void findFollowingTrigger (StoredTrigger trigger){
+        if (trigger.getFollowingTrigger() != null){
+            StoredTrigger followingTr = findStorageTrigger(trigger.getFollowingTrigger());
+            followingTr.increasePosition(trigger.getPosition());
+            findFollowingTrigger(findStorageTrigger(trigger.getFollowingTrigger()));
+        }
+        return;
     }
 
     @Override
@@ -268,7 +318,7 @@ public class ScanListener extends PlSqlParserBaseListener {
 
         storedFunction.setName(functionName);
         storedFunction.setPackage_name(current_package_name);
-        if (ctx.type_spec().datatype() != null)
+        if (ctx.type_spec().datatype() != null && ctx.type_spec().datatype().native_datatype_element()!= null)
             storedFunction.setFunction_returns_type(Ora2rdb.getRealName(ctx.type_spec().datatype().native_datatype_element().getText()));
         else
             storedFunction.setFunction_returns_type(Ora2rdb.getRealName(ctx.type_spec().getText()));
@@ -319,25 +369,25 @@ public class ScanListener extends PlSqlParserBaseListener {
     }
 
     @Override
-    public void enterFunction_call(Function_callContext ctx) {
+    public void enterCall_statement(Call_statementContext ctx) {
         FinderBlockCall finder = new FinderBlockCall();
         String name;
         String package_name;
-        if (ctx.routine_name().id_expression(0) != null) {
-            name = Ora2rdb.getRealName(ctx.routine_name().id_expression(0).getText());
-            package_name = Ora2rdb.getRealName(ctx.routine_name().identifier().getText());
+        if (ctx.routine_name(0).id_expression(0) != null) {
+            name = Ora2rdb.getRealName(ctx.routine_name(0).id_expression(0).getText());
+            package_name = Ora2rdb.getRealName(ctx.routine_name(0).identifier().getText());
         } else {
-            name = Ora2rdb.getRealName(ctx.routine_name().identifier().getText());
+            name = Ora2rdb.getRealName(ctx.routine_name(0).identifier().getText());
             package_name = null;
         }
         finder.setName(name);
         finder.setPackage_name(package_name);
         finder.setArea_package_name(current_package_name);
 
-        if (ctx.function_argument() != null && !storedBlocksStack.isEmpty()) {
+        if (ctx.function_argument(0) != null && !storedBlocksStack.isEmpty()) {
             String arg_name;
-            for (int i = 0; i < ctx.function_argument().argument().size(); i++) {
-                arg_name = Ora2rdb.getRealParameterName(ctx.function_argument().argument(i).getText());
+            for (int i = 0; i < ctx.function_argument(0).argument().size(); i++) {
+                arg_name = Ora2rdb.getRealParameterName(ctx.function_argument(0).argument(i).getText());
                 finder.setParameters(
                         i,
                         arg_name,

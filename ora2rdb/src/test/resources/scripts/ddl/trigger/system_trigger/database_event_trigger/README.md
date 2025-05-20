@@ -31,9 +31,6 @@ Database 12c) с указанием условия запуска:
   например, превышением квоты выделенного процессу табличного пространства. Триггер
   AFTER SUSPEND должен решить проблему, чтобы выполнение команды было возобновлено.
 
-[презентация по триггерам в Oracle](http://www.rema44.ru/resurs/study/dbmat/db21_trigger.pdf)
-
-
 **В Ред База Данных** триггер на события базы данных может срабатывать в следующих
 случаях 
 
@@ -58,10 +55,3 @@ Database 12c) с указанием условия запуска:
 Триггер выполняется в контексте текущей транзакции.
 
 -----------------------------------------------
-
-### [trigger_on_grant_statement.sql](trigger_on_grant_statement.sql)
-
-Пример statement, который нельзя сконвертировать
-
--- аналогично для TRUNCATE/REVOKE/RENAME/NOAUDIT/DISASSOCIATE STATISTICS/COMMENT/AUDIT/ASSOCIATE STATISTICS/ANALYZE
-

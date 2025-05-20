@@ -15,6 +15,10 @@ public class StoredTrigger implements StoredBlock{
     private ArrayList<StoredFunction> calledFunctions = new ArrayList<>();
     private ArrayList<StoredProcedure> calledProcedure = new ArrayList<>();
     private ArrayList<StoredBlock> calledStorageBlocks = new ArrayList<>();
+
+    private int position = -1;  // stores the value of the trigger firing order (used to convert to RDB)
+    private String followingTrigger; // stores the value of the following trigger (if the "PRECEDES" attribute is used)
+    boolean edition_clause = false;
 //    private String package_name;
 //    private String maybe_package_name;
 
@@ -81,7 +85,7 @@ public class StoredTrigger implements StoredBlock{
 
     @Override
     public String getParamType(String name) {
-        return   declaredVariables.stream()
+        return  declaredVariables.stream()
                 .filter(e -> e.getName().equals(name))
                 .findFirst().orElse(new Parameter()).getType();
     }
@@ -184,5 +188,26 @@ public class StoredTrigger implements StoredBlock{
         return calledProcedure;
     }
 
+    public void increasePosition(int positionOfAnotherTrigger) {
+        setPositionToZeroIfNecessary();
+        if (this.position <= positionOfAnotherTrigger)
+            this.position = positionOfAnotherTrigger + 1;
+    }
 
+    public void setPositionToZeroIfNecessary(){
+        if (position == -1)
+            position = 0;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setFollowingTrigger(String name){
+        followingTrigger = name;
+    }
+
+    public String getFollowingTrigger(){
+        return followingTrigger;
+    }
 }

@@ -68,5 +68,10 @@
 
 --------------------------------------------------------
 
+### [trigger_on_grant_statement.sql](trigger_on_grant_statement.sql)
+
+Пример statement, который нельзя сконвертировать
+
+-- аналогично для TRUNCATE/REVOKE/RENAME/NOAUDIT/DISASSOCIATE STATISTICS/COMMENT/AUDIT/ASSOCIATE STATISTICS/ANALYZE
 
 

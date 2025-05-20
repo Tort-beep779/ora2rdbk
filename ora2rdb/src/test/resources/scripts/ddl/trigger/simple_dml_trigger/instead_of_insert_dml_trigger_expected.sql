@@ -1,5 +1,8 @@
-/*CREATE TRIGGER ORDER_INFO_INSERT
-   [-unconvertible INSTEAD OF INSERT ON ORDER_INFO]
-BEGIN
-NULL;
-END;*/
+create or ALTER trigger instead_of_tr
+BEFORE  insert on emp_v
+SQL SECURITY DEFINER
+AS
+
+ BEGIN
+
+ END;

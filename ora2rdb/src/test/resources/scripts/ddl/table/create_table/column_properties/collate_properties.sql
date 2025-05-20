@@ -1,0 +1,3 @@
+CREATE TABLE employees (
+  emp_name VARCHAR2(100) COLLATE BINARY_CI
+);

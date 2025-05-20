@@ -1,0 +1,1 @@
+CREATE INDEX emp_name_dpt_ix ON employees(last_name DESC, department_id DESC);

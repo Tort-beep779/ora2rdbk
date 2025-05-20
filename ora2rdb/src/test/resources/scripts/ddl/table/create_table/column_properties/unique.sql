@@ -1,0 +1,3 @@
+CREATE TABLE users (
+  email VARCHAR2(100) UNIQUE
+);

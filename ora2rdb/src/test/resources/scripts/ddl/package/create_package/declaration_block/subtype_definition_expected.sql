@@ -1,0 +1,10 @@
+CREATE OR ALTER PACKAGE PACKAGE_NAME
+SQL SECURITY DEFINER
+AS BEGIN
+/*
+    [-unconvertible SUBTYPE subtype_age IS PLS_INTEGER RANGE 18 .. 65 NOT NULL];
+
+    [-unconvertible SUBTYPE subtype_emp_name IS VARCHAR2(100)];
+
+*/
+END /*PACKAGE_NAME*/;

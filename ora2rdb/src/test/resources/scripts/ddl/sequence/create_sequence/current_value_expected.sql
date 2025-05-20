@@ -1,0 +1,4 @@
+/*SELECT
+    ID_SEQ.CURRVAL
+FROM
+    DUAL;*/

@@ -1,7 +1,0 @@
-CREATE TRIGGER dept_emplist_tr
-  BEFORE DELETE ON emp
-  REFERENCING PARENT AS Department
-  FOR EACH ROW
-BEGIN
-    NULL;
-END;

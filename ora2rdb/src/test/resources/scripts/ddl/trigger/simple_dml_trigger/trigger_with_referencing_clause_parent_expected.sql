@@ -1,8 +1,0 @@
-/*CREATE TRIGGER dept_emplist_tr
-  BEFORE DELETE ON emp
-  REFERENCING [-unconvertible RS-228325 PARENT AS Department]
-SQL SECURITY DEFINER
-AS
-BEGIN
-
-END;*/

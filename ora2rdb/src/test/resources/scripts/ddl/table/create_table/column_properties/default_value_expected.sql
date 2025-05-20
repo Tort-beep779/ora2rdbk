@@ -1,3 +1,0 @@
-CREATE TABLE employees (
-  status VARCHAR(20) DEFAULT 'ACTIVE'
-);

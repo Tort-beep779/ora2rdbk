@@ -1,3 +1,0 @@
-CREATE TABLE PK (
-    id NUMBER PRIMARY KEY
-);

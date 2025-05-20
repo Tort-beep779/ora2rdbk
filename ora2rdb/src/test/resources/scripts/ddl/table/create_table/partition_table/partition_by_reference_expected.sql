@@ -1,1 +1,0 @@
-https://docs.oracle.com/en/database/oracle/oracle-database/12.2/vldbg/partition-create-tables-indexes.html#GUID-9D7149B6-A2FF-47CA-8F00-47CBFD33F82B

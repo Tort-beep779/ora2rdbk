@@ -1,4 +1,0 @@
-CREATE TABLE CHECK_TABLE (
-    age  NUMERIC(34, 8),
-    CONSTRAINT chk_age CHECK (age >= 18)
-);

@@ -1,3 +1,0 @@
-CREATE TABLE employees (
-  salary NUMBER(10,2) ENCRYPT IDENTIFIED BY AES256
-);

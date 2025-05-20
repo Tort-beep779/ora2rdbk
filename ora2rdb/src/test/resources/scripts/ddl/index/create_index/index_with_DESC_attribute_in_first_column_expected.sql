@@ -1,1 +1,0 @@
-CREATE  DESCENDING INDEX emp_name_dpt_ix ON employees(last_name , department_id ) IN TABLESPACE PRIMARY ;

@@ -1,3 +1,0 @@
-CREATE TABLE PK (
-    id NUMERIC(34, 8) PRIMARY KEY
-);

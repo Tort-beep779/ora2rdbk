@@ -1,2 +1,0 @@
-CREATE MATERIALIZED VIEW oe.orders REFRESH WITH ROWID AS
-SELECT * FROM oe.orders@orc1.example.com;

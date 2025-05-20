@@ -1,5 +1,0 @@
-CREATE DUPLICATED TABLE product_categories (
-    category_id NUMBER NOT NULL PRIMARY KEY,
-    name VARCHAR2(50)
-)
-TABLESPACE ts4;

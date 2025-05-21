@@ -547,32 +547,4 @@ public class ScanListener extends PlSqlParserBaseListener {
         }
         return type;
     }
-
-    @Override
-    public void enterCursor_declaration(Cursor_declarationContext ctx) {
-        List<Select_list_elementsContext> cursor_select_list = ctx.select_statement().select_only_statement().subquery()
-                .subquery_basic_elements().query_block().selected_list().select_list_elements();
-        if (cursor_select_list.size() == 1){
-            String column_name = Ora2rdb.getRealName(cursor_select_list.get(0).getText());
-            StorageInfo.cursor_select_statement.put(Ora2rdb.getRealName(ctx.identifier().getText()),
-                        new StorageInfo.Cursor("", column_name));
-
-            current_cursor_declaration = Ora2rdb.getRealName(ctx.identifier().getText());
-        }
-    }
-
-    @Override
-    public void exitCursor_declaration(Cursor_declarationContext ctx) {
-        current_cursor_declaration = null;
-    }
-
-    @Override
-    public void exitDml_table_expression_clause(Dml_table_expression_clauseContext ctx) {
-        if (current_cursor_declaration != null)
-            if (ctx.tableview_name() != null) {
-                String table_name = Ora2rdb.getRealName(Ora2rdb.getRealName(ctx.tableview_name().schema_and_name().name.getText()));
-                StorageInfo.cursor_select_statement.get(current_cursor_declaration).table_name = table_name;
-            }
-    }
-
 }

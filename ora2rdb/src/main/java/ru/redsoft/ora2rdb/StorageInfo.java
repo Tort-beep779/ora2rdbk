@@ -13,7 +13,7 @@ public class StorageInfo {
     public static HashSet<Index> index_names = new HashSet<>();
     public static TreeMap<String, View> views = new TreeMap<String, View>();
     public static TreeMap<String, TreeMap<String, String>> types_of_column = new TreeMap<>();
-
+    public static TreeMap<String, Cursor> cursor_select_statement = new TreeMap<>();
 
 
 
@@ -25,5 +25,15 @@ public class StorageInfo {
         index_names.clear();
         views.clear();
         types_of_column.clear();
+    }
+
+    static class Cursor {
+        String table_name;
+        String column_name;
+
+        Cursor(String table_name, String column_name) {
+            this.table_name = table_name;
+            this.column_name = column_name;
+        }
     }
 }

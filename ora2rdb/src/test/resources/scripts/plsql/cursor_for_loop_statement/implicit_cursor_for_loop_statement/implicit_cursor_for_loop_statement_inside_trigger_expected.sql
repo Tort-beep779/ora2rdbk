@@ -1,0 +1,16 @@
+CREATE OR ALTER TRIGGER T_Grade_meaning1
+  AFTER INSERT
+  ON EMPLOYEE
+SQL SECURITY DEFINER
+AS
+
+BEGIN
+    FOR (
+            SELECT LAST_NAME, EMP_NO
+            FROM EMPLOYEE
+          ) INTO ITEM DO
+    BEGIN
+
+
+    END
+END /*T_Grade_meaning1*/;

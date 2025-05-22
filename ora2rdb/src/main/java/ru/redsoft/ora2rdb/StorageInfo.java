@@ -15,8 +15,6 @@ public class StorageInfo {
     public static TreeMap<String, TreeMap<String, String>> types_of_column = new TreeMap<>();
 
 
-
-
     public static void clearInfo() {
         package_constant_names.clear();
         stored_blocks_list.clear();

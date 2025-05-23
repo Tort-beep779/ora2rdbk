@@ -274,9 +274,9 @@ set define off;
    )
 IS
 BEGIN
-INSERT INTO job_history (employee_id, start_date, end_date,
-                         job_id, department_id)
-VALUES(p_emp_id, p_start_date, p_end_date, p_job_id, p_department_id);
+    INSERT INTO job_history (employee_id, start_date, end_date,
+                             job_id, department_id)
+    VALUES(p_emp_id, p_start_date, p_end_date, p_job_id, p_department_id);
 END add_job_history;
 
 /
@@ -285,48 +285,88 @@ END add_job_history;
 --------------------------------------------------------
 set define off;
 
-  CREATE OR REPLACE EDITIONABLE PROCEDURE "HR"."EMP_INFO_TO_ARRAY"
+CREATE OR REPLACE PROCEDURE emp_info_to_array
 (p_id_dep employees.department_id%type)
 AS
     CURSOR Cur_Emp_Dep IS
-SELECT employee_id, job_id
-FROM employees
-where department_id = p_id_dep;
+        SELECT employee_id, job_id
+        FROM employees
+        where department_id = p_id_dep;
 
-TYPE t_empId_jobId IS TABLE OF VARCHAR2(10) INDEX BY PLS_INTEGER;
-    v_empId_jobId t_empId_jobId;
+    TYPE t_empId_jobId IS TABLE OF VARCHAR2(10) INDEX BY PLS_INTEGER;
+        v_empId_jobId t_empId_jobId;
 
 
     TYPE t_empId_jobTitle IS TABLE OF VARCHAR2(35) INDEX BY PLS_INTEGER;
-    v_empId_jobTitle t_empId_jobTitle;
+        v_empId_jobTitle t_empId_jobTitle;
 
     i Integer;
     jb_title varchar(35);
+    e_full_name VARCHAR(50);
+
 BEGIN
-FOR ITEM IN Cur_Emp_Dep LOOP
+    FOR ITEM IN Cur_Emp_Dep LOOP
        v_empId_jobId(ITEM.employee_id) := ITEM.job_id;
-END LOOP;
+    END LOOP;
 
     IF v_empId_jobId.count > 0 then
         for i in v_empId_jobId.first..v_empId_jobId.last loop
-select JOB_TITLE into jb_title from jobs where jobs.job_id = v_empId_jobId(i);
-if (jb_title is not null) then
-                v_empId_jobTitle(i) := jb_title;
-end if;
-end loop;
-end if;
+            select JOB_TITLE into jb_title from jobs where jobs.job_id = v_empId_jobId(i);
+                if (jb_title is not null) then
+                    v_empId_jobTitle(i) := jb_title;
+                end if;
+        end loop;
+    end if;
 
     i := v_empId_jobTitle.FIRST;
 
-    WHILE i IS NOT NULL LOOP
-    DBMS_Output.PUT_LINE
-      ('id сотрудника ' || i || ' и его job_title ' || v_empId_jobTitle(i)||'');
-    i := v_empId_jobTitle.NEXT(i);
-END LOOP;
 
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN NULL;
+    WHILE i IS NOT NULL LOOP
+    GET_FULL_NAME(i, e_full_name);
+    DBMS_Output.PUT_LINE
+        ('id сотрудника ' || i || ', имя ' || e_full_name ||  ' , job_title ' || v_empId_jobTitle(i)||'');
+    i := v_empId_jobTitle.NEXT(i);
+    END LOOP;
+
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN NULL;
 END;
+
+
+CREATE OR REPLACE PROCEDURE "GET_FULL_NAME" (
+    p_employee_id IN NUMBER,
+    full_name OUT VARCHAR2
+)
+AS
+    f_name employees.first_name%type;
+    l_name employees.last_name%type;
+BEGIN
+    SELECT first_name, last_name
+    INTO f_name, l_name
+    FROM employees
+    WHERE employee_id = p_employee_id;
+
+    combine_and_format_names(f_name, l_name, full_name);
+END;
+
+/
+
+CREATE OR REPLACE PROCEDURE combine_and_format_names
+(
+    first_name_inout IN OUT VARCHAR2,
+    last_name_inout IN OUT VARCHAR2,
+    full_name_out OUT VARCHAR2
+)
+IS
+BEGIN
+    /* Преобразование имени и фамилии к верхнему регистру. */
+    first_name_inout := UPPER (first_name_inout);
+    last_name_inout := UPPER (last_name_inout);
+
+    full_name_out := first_name_inout || ' ' || last_name_inout;
+
+END;
+
 
 /
 --------------------------------------------------------
@@ -347,50 +387,50 @@ end;
   CREATE OR REPLACE EDITIONABLE PACKAGE BODY "HR"."UPDATE_SALARY_PKG"
 as
 
-    PROCEDURE      "GET_EMPLOYEE_DETAILS" (
-    p_employee_id IN NUMBER,
-    p_hire_date OUT DATE
+    PROCEDURE "GET_EMPLOYEE_DETAILS" (
+        p_employee_id IN NUMBER,
+        p_hire_date OUT DATE
     ) AS
-BEGIN
-SELECT hire_date
-INTO p_hire_date
-FROM employees
-WHERE employee_id = p_employee_id;
-END get_employee_details;
+    BEGIN
+        SELECT hire_date
+        INTO p_hire_date
+        FROM employees
+        WHERE employee_id = p_employee_id;
+    END get_employee_details;
 
     FUNCTION  "GET_RATE" (dep_id number)
     return number
     IS
         rate number(8,2);
         empl_hire_date DATE;
-begin
+    begin
         GET_EMPLOYEE_DETAILS(dep_id, empl_hire_date);
 
-case
+        case
             when MONTHS_BETWEEN(SYSDATE, empl_hire_date) / 12 > 8 then rate := 1.4;
-when MONTHS_BETWEEN(SYSDATE, empl_hire_date) / 12 > 6 then rate := 1.2;
-else rate := 1.0;
-end case;
-RETURN rate;
-end;
+            when MONTHS_BETWEEN(SYSDATE, empl_hire_date) / 12 > 6 then rate := 1.2;
+            else rate := 1.0;
+        end case;
+    RETURN rate;
+    end;
 
     PROCEDURE UPDATE_SALARY
     (emp_id number, new_salary number)
-AS
+    AS
         employee_rowid ROWID;
         employee_salary NUMBER;
         rate number(8,2);
-BEGIN
+    BEGIN
 
-SELECT rowid INTO employee_rowid
-FROM employees
-WHERE employee_id = emp_id;
+        SELECT rowid INTO employee_rowid
+        FROM employees
+        WHERE employee_id = emp_id;
 
-rate := GET_RATE(emp_id);
-UPDATE employees
-SET salary = new_salary * rate
-WHERE rowid = employee_rowid;
-end;
+        rate := GET_RATE(emp_id);
+        UPDATE employees
+        SET salary = new_salary * rate
+        WHERE rowid = employee_rowid;
+    end;
 
 end;
 

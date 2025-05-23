@@ -359,11 +359,8 @@ CREATE OR REPLACE PROCEDURE combine_and_format_names
 )
 IS
 BEGIN
-    /* Преобразование имени и фамилии к верхнему регистру. */
-    first_name_inout := UPPER (first_name_inout);
-    last_name_inout := UPPER (last_name_inout);
 
-    full_name_out := first_name_inout || ' ' || last_name_inout;
+    full_name_out := UPPER (last_name_inout) || ' ' || UPPER (first_name_inout);
 
 END;
 

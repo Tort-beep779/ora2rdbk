@@ -435,6 +435,25 @@ as
 end;
 
 /
+
+CREATE OR REPLACE FUNCTION COUNT_AVERAGE_SALARY
+(
+    dept_id number
+)
+    RETURN NUMBER
+IS
+    CURSOR sal_cur (id_department in number)
+    IS
+    SELECT AVG(SALARY)
+        FROM employees
+        WHERE department_id = id_department;
+    sal_rec NUMBER;
+BEGIN
+    OPEN sal_cur(dept_id);
+    FETCH sal_cur INTO sal_rec;
+
+RETURN sal_rec;
+END;
 --------------------------------------------------------
 --  Constraints for Table JOB_HISTORY
 --------------------------------------------------------

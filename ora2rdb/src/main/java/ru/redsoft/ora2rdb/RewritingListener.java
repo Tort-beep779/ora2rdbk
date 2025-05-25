@@ -785,11 +785,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitGeneral_element(PlSqlParser.General_elementContext ctx) {
-        if (!current_plsql_block.record_name_cursor_loop.isEmpty()){
-            if (!current_plsql_block.peekReplaceRecordName().isRowType){
-                replace(ctx, current_plsql_block.peekReplaceRecordName().new_record_name);
+        if (current_plsql_block != null)
+            if (!current_plsql_block.record_name_cursor_loop.isEmpty()){
+                if (!current_plsql_block.peekReplaceRecordName().isRowType){
+                    replace(ctx, current_plsql_block.peekReplaceRecordName().new_record_name);
+                }
             }
-        }
 
     }
 
@@ -826,6 +827,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
                         String tempArgument = ctx.function_argument().argument(0).getText();
                         replace(ctx.function_argument().argument(0), ctx.function_argument().argument(1).getText());
                         replace(ctx.function_argument().argument(1), tempArgument);
+                    }
+
+                    if (reg_id.non_reserved_keywords_pre12c().MONTHS_BETWEEN() != null) {
+                        replace(reg_id.non_reserved_keywords_pre12c().MONTHS_BETWEEN(), "-DATEDIFF");
+                        replace(ctx.function_argument().LEFT_PAREN(), "(MONTH, ");
                     }
                 }
             }
@@ -1369,7 +1375,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         StringBuilder trg = new StringBuilder();
         String infMessage = "\n/*This is a trigger that makes view read only*/";
         trg.append(infMessage);
-        trg.append("\nCREATE TRIGGER ").append(view_name).append("_READ_ONLY_TRIGGER").append(" FOR ")
+        trg.append("\nCREATE TRIGGER ").append(view_name).append("_TR").append(" FOR ")
                 .append(view_name).append(" ").append("\nBEFORE INSERT OR UPDATE OR DELETE\n")
                 .append("AS BEGIN \n ").append("EXCEPTION READ_ONLY_VIEW;\n").append("END;\n");
         return trg.toString();
@@ -1390,11 +1396,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 current_view.dependencies.add(StorageInfo.views.get(dependency_name));
         }
 
-        if (current_plsql_block.current_cursor_name != null)
-            if (ctx.tableview_name() != null) {
-                String table_name = Ora2rdb.getRealName(Ora2rdb.getRealName(ctx.tableview_name().schema_and_name().name.getText()));
-                current_plsql_block.cursor_select_statement.get(current_plsql_block.current_cursor_name).table_name = table_name;
-            }
+        if (current_plsql_block != null)
+            if (current_plsql_block.current_cursor_name != null)
+                if (ctx.tableview_name() != null) {
+                    String table_name = Ora2rdb.getRealName(Ora2rdb.getRealName(ctx.tableview_name().schema_and_name().name.getText()));
+                    current_plsql_block.cursor_select_statement.get(current_plsql_block.current_cursor_name).table_name = table_name;
+                }
     }
 
 

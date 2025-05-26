@@ -978,14 +978,23 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitCall_statement(Call_statementContext ctx) {
+        if(Ora2rdb.getRealName(getRuleText(ctx.routine_name(0).identifier())).equals("DBMS_OUTPUT")) {
+            if(Ora2rdb.getRealName(getRuleText(ctx.routine_name(0).id_expression(0))).equals("PUT_LINE"))
+                replace(ctx.routine_name(0), "RDB$TRACE_MSG");
+            insertBefore(ctx.function_argument(0).RIGHT_PAREN(), ", TRUE");
+            if(Ora2rdb.getRealName(getRuleText(ctx.routine_name(0).id_expression(0))).equals("PUT")) {
+                replace(ctx.routine_name(0), "RDB$TRACE_MSG");
+                insertBefore(ctx.function_argument(0).RIGHT_PAREN(), ", FALSE");
+            }
+        } else
         if (Ora2rdb.getRealName(getRuleText(ctx.routine_name(0))).equals("RAISE_APPLICATION_ERROR")) {
             exceptions.put("CUSTOM_EXCEPTION", "error");
 //            containsException = true;
             replace(ctx.routine_name(0), "EXCEPTION CUSTOM_EXCEPTION");
             delete(ctx.function_argument(0).argument(0));
             delete(ctx.function_argument(0).COMMA(0));
-        }
-        convertFunctionCall(ctx);
+        } else
+            convertFunctionCall(ctx);
     }
 
     private void convertFunctionCall(Call_statementContext ctx) {

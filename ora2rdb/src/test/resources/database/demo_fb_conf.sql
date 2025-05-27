@@ -300,7 +300,7 @@ AS
     TYPE t_empId_jobTitle IS TABLE OF VARCHAR2(35) INDEX BY PLS_INTEGER;
         v_empId_jobTitle t_empId_jobTitle;
 
-    i Integer;
+    j Integer;
     jb_title varchar(35);
     e_full_name VARCHAR(50);
 
@@ -318,14 +318,14 @@ BEGIN
         end loop;
     end if;
 
-    i := v_empId_jobTitle.FIRST;
+    j := v_empId_jobTitle.FIRST;
 
 
-    WHILE i IS NOT NULL LOOP
-    GET_FULL_NAME(i, e_full_name);
+    WHILE j IS NOT NULL LOOP
+    GET_FULL_NAME(j, e_full_name);
     DBMS_Output.PUT_LINE
-        ('id сотрудника ' || i || ', имя ' || e_full_name ||  ' , job_title ' || v_empId_jobTitle(i)||'');
-    i := v_empId_jobTitle.NEXT(i);
+        ('id сотрудника ' || j || ', имя ' || e_full_name ||  ' , job_title ' || v_empId_jobTitle(j)||'');
+    j := v_empId_jobTitle.NEXT(j);
     END LOOP;
 
     EXCEPTION

@@ -34,6 +34,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     ArrayList<String> loop_index_names = new ArrayList<String>();
     TreeMap<String, String> loop_rec_name_and_cursor_name = new TreeMap<>();
     TreeMap<String, String> rowtype_rec_name_and_select_statement = new TreeMap<>();
+    TreeMap<String, String> loop_for_in_collection = new TreeMap<>();
     TreeMap<String, String> exceptions = new TreeMap<>();
     StoredAnonymousBlock currentAnonymousBlock = null;
 
@@ -205,7 +206,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     void deleteSemicolonRight(Token token) {
-        if(token == null) return;
+        if (token == null) return;
         if (token.getType() == PlSqlLexer.SEMICOLON) {
             rewriter.delete(token);
         } else {
@@ -233,7 +234,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             rewriter.delete(token);
         } else {
             Token previousToken = getPreviousToken(token);
-            if(previousToken != null && previousToken.getType() == PlSqlLexer.SEMICOLON)
+            if (previousToken != null && previousToken.getType() == PlSqlLexer.SEMICOLON)
                 rewriter.delete(previousToken);
         }
     }
@@ -785,13 +786,19 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitGeneral_element(PlSqlParser.General_elementContext ctx) {
-        if (current_plsql_block != null)
-            if (!current_plsql_block.record_name_cursor_loop.isEmpty()){
-                if (!current_plsql_block.peekReplaceRecordName().isRowType){
-                    replace(ctx, current_plsql_block.peekReplaceRecordName().new_record_name);
+        if (current_plsql_block == null)
+            return;
+        String ctxToString = Ora2rdb.getRealName(getRuleText(ctx));
+        if (ctxToString.contains("."))
+            ctxToString = ctxToString.substring(0, ctxToString.indexOf("."));
+        if (!current_plsql_block.record_name_cursor_loop.isEmpty()) {
+            if (!current_plsql_block.peekReplaceRecordName().isRowType) {
+                PLSQLBlock.ReplaceRecordName replaceRecordName = current_plsql_block.peekReplaceRecordName();
+                if (ctxToString.equals(replaceRecordName.old_record_name)) {
+                    replace(ctx, replaceRecordName.new_record_name);
                 }
             }
-
+        }
     }
 
     @Override
@@ -843,6 +850,39 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
                 if (id.startsWith(":"))
                     replace(id_expr_ctx, id.substring(1));
+                String name = Ora2rdb.getRealName(getRuleText(ctx.id_expression(0)));
+
+                // convert COUNT method for associative array
+                if (current_plsql_block != null && current_plsql_block.array_to_table.containsKey(name)) {
+                    for (Id_expressionContext stmt : ctx.id_expression())
+                        if (stmt.regular_id() != null && stmt.regular_id().non_reserved_keywords_pre12c() != null
+                                && stmt.regular_id().non_reserved_keywords_pre12c().COUNT() != null) {
+                            replace(ctx, "(SELECT COUNT(*) FROM " + current_plsql_block.array_to_table.get(name)
+                                    + ")");
+                        }
+                }
+
+                // convert FIRST method for associative array
+                if (current_plsql_block != null && current_plsql_block.array_to_table.containsKey(name)) {
+                    for (Id_expressionContext stmt : ctx.id_expression())
+                        if (stmt.regular_id() != null && stmt.regular_id().non_reserved_keywords_pre12c() != null
+                                && stmt.regular_id().non_reserved_keywords_pre12c().FIRST() != null) {
+                            replace(ctx, "(SELECT FIRST 1 I1 FROM " + current_plsql_block.array_to_table.get(name)
+                                    + " ORDER BY I1 ASC)");
+                        }
+                }
+
+                // convert NEXT method for associative array
+                if (current_plsql_block != null && current_plsql_block.array_to_table.containsKey(name)) {
+                    for (Id_expressionContext stmt : ctx.id_expression())
+                        if (stmt.regular_id() != null && stmt.regular_id().non_reserved_keywords_pre12c() != null
+                                && stmt.regular_id().non_reserved_keywords_pre12c().NEXT() != null) {
+                            String argument = ":" + getRuleText(ctx.function_argument().argument(0));
+                            replace(ctx, "(SELECT FIRST 1 I1 FROM " + current_plsql_block.array_to_table.get(name)
+                                    + " WHERE I1 > " + argument + " ORDER BY I1 ASC)");
+                        }
+                }
+
             }
         } else {
             String name = Ora2rdb.getRealName(getRuleText(ctx.id_expression(0)));
@@ -1419,11 +1459,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
         List<Select_list_elementsContext> cursor_select_list;
         if (ctx.select_statement() != null)
             cursor_select_list = ctx.select_statement().select_only_statement().subquery()
-                .subquery_basic_elements().query_block().selected_list().select_list_elements();
+                    .subquery_basic_elements().query_block().selected_list().select_list_elements();
         else
             return;
 
-        if (cursor_select_list.size() == 1){
+        if (cursor_select_list.size() == 1) {
             current_plsql_block.current_cursor_name = Ora2rdb.getRealName(getRuleText(ctx.identifier()));
             String column_name = Ora2rdb.getRealName(getRuleText(cursor_select_list.get(0)));
             if (column_name.contains("."))                                             // если в запросе использователся алиас таблицы: <алиас>.<столбец>
@@ -1892,6 +1932,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (ctx.REPLACE() != null) {
             replace(ctx.REPLACE(), "ALTER");
         }
+        if (ctx.EDITIONABLE() != null) {
+            delete(ctx.EDITIONABLE());
+        }
         if (ctx.schema_object_name() != null) {
             delete(ctx.schema_object_name());
             delete(ctx.PERIOD());
@@ -1929,6 +1972,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 delete(ctx.REPLACE());
                 replace(ctx.CREATE(), "RECREATE");
             }
+        }
+        if (ctx.EDITIONABLE() != null) {
+            delete(ctx.EDITIONABLE());
         }
         if (ctx.schema_object_name() != null) {
             delete(ctx.schema_object_name());
@@ -2294,7 +2340,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                                 append(" TYPE OF COLUMN ").append(table_name).append(".").append(column_name).append(";\n");
                     } else
                         declare_loop_rowtype_names.append("\n  DECLARE VARIABLE ").append(rec).
-                            append(" TYPE OF TABLE ").append(loop_rec_name_and_cursor_name.get(rec)).append(";\n");
+                                append(" TYPE OF TABLE ").append(loop_rec_name_and_cursor_name.get(rec)).append(";\n");
                 }
                 insertBefore(ctx.seq_of_statements(), declare_loop_rowtype_names.toString());
             }
@@ -2749,7 +2795,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
             insertAfter(caseWhenPartStatement.seq_of_statements(), '\n' + indentation + "\tEND");
             replace(caseWhenPartStatement.THEN(), "THEN");
         }
-        if(ctx.case_else_part_statement() != null) {
+        if (ctx.case_else_part_statement() != null) {
             replace(ctx.case_else_part_statement().ELSE(), "ELSE");
             insertBefore(ctx.case_else_part_statement().seq_of_statements(), "BEGIN \n\t" + indentation + '\t');
             insertAfter(ctx.case_else_part_statement().seq_of_statements(), '\n' + indentation + "\tEND");
@@ -2762,7 +2808,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
         insertBefore(ctx.condition(), "(");
         insertAfter(ctx.condition(), ")");
 
-        if (ctx.seq_of_statements().statement().size() > 1) {
+        if (ctx.seq_of_statements().statement().size() >= 1) {
             String indentation = getIndentation(ctx);
             insertAfter(ctx.THEN(), "\n" + indentation + "BEGIN");
             insertAfter(ctx.seq_of_statements(), "\n" + indentation + "END");
@@ -2804,6 +2850,20 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 if (current_plsql_block != null)
                     if (!current_plsql_block.containsInScope(Ora2rdb.getRealName(getRuleText(ctx))))
                         current_plsql_block.declareVar(index_name);
+
+                // check if it for in collection
+                boolean isCollection = Ora2rdb.getRealName(getRuleText(ctx.cursor_loop_param().lower_bound())).contains(".");
+                if (isCollection) {
+                    String nameOfCollection = Ora2rdb.getRealName(getRuleText(ctx.cursor_loop_param().lower_bound()));
+                    nameOfCollection = nameOfCollection.substring(0, nameOfCollection.indexOf("."));
+
+                    if (current_plsql_block != null && current_plsql_block.array_to_table.containsKey(nameOfCollection)) {
+                        String recName = nameOfCollection + "_ITEM" + "." + "I1";
+//                        String cursorName = nameOfCollection + "_TEMP_CURSOR";
+                        current_plsql_block.pushReplaceRecordName(index_name, recName, true);
+                        current_plsql_block.declareVar(recName);
+                    }
+                }
 
             }
             if (ctx.cursor_loop_param().cursor_name() != null && !cursorNameIsFunction(ctx)) {
@@ -2934,6 +2994,45 @@ public class RewritingListener extends PlSqlParserBaseListener {
         deleteSPACESLeft(ctx.LOOP(1));
     }
 
+    private void convertForInCollection(Loop_statementContext ctx) {
+        String nameOfCollection = Ora2rdb.getRealName(getRuleText(ctx.cursor_loop_param().lower_bound()));
+        nameOfCollection = nameOfCollection.substring(0, nameOfCollection.indexOf("."));
+
+        if (current_plsql_block != null && current_plsql_block.array_to_table.containsKey(nameOfCollection)) {
+            String recName = nameOfCollection + "_ITEM";
+            String cursorName = nameOfCollection + "_TEMP_CURSOR";
+
+            loop_for_in_collection.put(nameOfCollection,
+                    "SELECT I1, VAL FROM " + current_plsql_block.array_to_table.get(nameOfCollection));
+
+            String indentation = getIndentation(ctx);
+            String openCursor = '\n' + indentation + "OPEN " + cursorName + ";";
+            String fetchCursor = '\n' + indentation + "FETCH " + cursorName + " INTO " + recName + ";\n";
+
+            insertBefore(ctx, openCursor + fetchCursor);
+            deleteSPACESLeft(ctx.FOR());
+            replace(ctx.FOR(), indentation + "WHILE ( ROW_COUNT != 0 ) DO");
+            delete(ctx.cursor_loop_param());
+            deleteSPACESAbut(ctx.cursor_loop_param());
+            insertAfter(ctx.seq_of_statements(), "\n" + indentation + "\tFETCH " + cursorName + " INTO " + recName + ";\n"
+                    + indentation + "END");
+            insertAfter(ctx, "\n" + indentation + "CLOSE " + cursorName + ";\n");
+
+
+            insertAfter(ctx.LOOP(0), "\n" + indentation + "BEGIN");
+
+
+            delete(ctx.END());
+            deleteSPACESLeft(ctx.END());
+
+            delete(ctx.LOOP(0));
+            deleteSPACESLeft(ctx.LOOP(0));
+
+            delete(ctx.LOOP(1));
+            deleteSPACESAbut(ctx.LOOP(1));
+        }
+    }
+
     private void createTempCursorAndRowtypeVariable(BodyContext ctx) {
         StringBuilder declare_cursor_and_rowtype = new StringBuilder();
         if (!rowtype_rec_name_and_select_statement.isEmpty()) {
@@ -2947,9 +3046,28 @@ public class RewritingListener extends PlSqlParserBaseListener {
             }
             insertBefore(ctx, declare_cursor_and_rowtype);
         }
+        if (!loop_for_in_collection.isEmpty()) {
+            for (String nameOfCollection : loop_for_in_collection.keySet()) {
+                String rec = nameOfCollection + "_ITEM";
+                String cursor_name = nameOfCollection + "_TEMP_CURSOR";
+
+                declare_cursor_and_rowtype.append("\n  DECLARE VARIABLE ").append(cursor_name).
+                        append(" CURSOR FOR (").append(loop_for_in_collection.get(nameOfCollection)).append(");\n");
+
+                declare_cursor_and_rowtype.append("\n  DECLARE VARIABLE ").append(rec).
+                        append(" TYPE OF TABLE ").append(cursor_name).append(";\n");
+            }
+            insertBefore(ctx, declare_cursor_and_rowtype);
+        }
     }
 
     private void convertLoopForInRange(Loop_statementContext ctx) {
+        boolean isCollection = Ora2rdb.getRealName(getRuleText(ctx.cursor_loop_param().lower_bound())).contains(".");
+        if (isCollection) {
+            convertForInCollection(ctx);
+            return;
+        }
+
         String index_name = ctx.cursor_loop_param().index_name().getText();
 
         if (!loop_index_names.contains(index_name))
@@ -3013,7 +3131,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     private void convertLoopFor(Loop_statementContext ctx) {
-        if(ctx.cursor_loop_param() == null) return;
+        if (ctx.cursor_loop_param() == null) return;
         if (ctx.cursor_loop_param().REVERSE() != null && ctx.cursor_loop_param().DOUBLE_PERIOD() != null) {
             convertLoopForInRangeReverse(ctx);
         } else if (ctx.cursor_loop_param().DOUBLE_PERIOD() != null) {

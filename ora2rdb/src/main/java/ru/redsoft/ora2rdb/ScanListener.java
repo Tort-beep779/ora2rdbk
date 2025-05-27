@@ -59,7 +59,7 @@ public class ScanListener extends PlSqlParserBaseListener {
                     continue;
                 if (rela_prop.column_definition().datatype() != null)
                     table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),
-                            Ora2rdb.getRealName(rela_prop.column_definition().datatype().getText())
+                            Ora2rdb.getRealName(rela_prop.column_definition().datatype().native_datatype_element().getText())
                     );
                 else
                     table.setColumn(Ora2rdb.getRealName(rela_prop.column_definition().column_name().getText()),

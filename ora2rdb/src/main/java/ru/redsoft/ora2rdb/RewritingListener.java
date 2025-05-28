@@ -3259,6 +3259,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (Ora2rdb.getRealName(ctx.getText()).equals("ROWID"))
             replace(ctx, "RDB$DB_KEY");
     }
+    @Override
+    public void exitRelational_expression(Relational_expressionContext ctx) {
+        if (Ora2rdb.getRealName(ctx.getText()).equals("ROWID"))
+            replace(ctx, "RDB$DB_KEY");
+    }
+
 
     @Override
     public void exitException_handler(Exception_handlerContext ctx) {

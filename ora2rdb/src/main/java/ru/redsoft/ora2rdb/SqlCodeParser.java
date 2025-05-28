@@ -39,7 +39,7 @@ public class SqlCodeParser {
     private final static String whiteSpaceRegex = "[\\s\\n]+";
     private final static String endCaseRegex = "(?i)(?s).*?END\\s*CASE.*?";
     private final static String endIfLoopRegex = "(?i)(?s).*?END\\s*(LOOP|IF).*?";
-    private final static String createFunctionRegex = "(?i)(?s)create\\s*(or\\s*replace\\s*)?function.*?";
+    private final static String createFunctionRegex = "(?i)(?s)create\\s*(or\\s*replace\\s*)?\\s*(EDITIONABLE|NONEDITIONABLE)?\\s*function.*?";
     private final static String createProcedureTriggerRegex = "(?i)(?s)create\\s*(or\\s*replace\\s*)?\\s*(EDITIONING|EDITIONABLE|NONEDITIONABLE)?\\s*(procedure|trigger).*?";
     private final static String createPackageRegex = "(?i)(?s)create\\s*(or\\s*replace\\s*)?\\s*(EDITIONABLE|NONEDITIONABLE)?\\s*package.*?";
     private final static String createTypeBodyRegex = "(?i)(?s)create\\s*(or\\s*replace\\s*)?type\\s*body.*?";

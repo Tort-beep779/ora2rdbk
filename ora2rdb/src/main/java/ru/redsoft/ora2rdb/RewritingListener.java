@@ -302,9 +302,16 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitSql_script(Sql_scriptContext ctx) {
+        for(TerminalNode solid : ctx.SOLIDUS())
+            delete(solid);
         if (!Ora2rdb.reorder)
             for (Map.Entry<String, String> entry : exceptions.entrySet())
                 insertBefore(ctx, "CREATE EXCEPTION " + entry.getKey() + "\n\t" + "'" + entry.getValue() + "';" + "\n");
+    }
+
+    @Override
+    public void exitSet_command(Set_commandContext ctx) {
+        delete(ctx);
     }
 
     @Override
@@ -3252,6 +3259,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (Ora2rdb.getRealName(ctx.getText()).equals("ROWID"))
             replace(ctx, "RDB$DB_KEY");
     }
+    @Override
+    public void exitRelational_expression(Relational_expressionContext ctx) {
+        if (Ora2rdb.getRealName(ctx.getText()).equals("ROWID"))
+            replace(ctx, "RDB$DB_KEY");
+    }
+
 
     @Override
     public void exitException_handler(Exception_handlerContext ctx) {

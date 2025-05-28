@@ -1604,6 +1604,12 @@ public class RewritingListener extends PlSqlParserBaseListener {
         autonomousTransactionBlockConvert(ctx);
 
         StringBuilder temp_tables_ddl = new StringBuilder();
+
+        if (current_plsql_block.commentBlock){
+            commentBlock(ctx.seq_of_declare_specs().start.getTokenIndex(), ctx.seq_of_declare_specs().stop.getTokenIndex());
+            commentBlock(ctx.body().seq_of_statements().start.getTokenIndex(), ctx.body().seq_of_statements().stop.getTokenIndex());
+        }
+
         for (String table_ddl : current_plsql_block.temporary_tables_ddl)
             temp_tables_ddl.append(table_ddl).append("\n\n");
 
@@ -1837,6 +1843,10 @@ public class RewritingListener extends PlSqlParserBaseListener {
         replace(ctx.IS(), "CURSOR FOR");
         insertBefore(ctx.select_statement(), "(");
         insertAfter(ctx.select_statement(), ")");
+        if (!ctx.parameter_spec().isEmpty()){
+            current_plsql_block.commentBlock = true;
+            replace(ctx, "[-unconvertible RS-233573 " + getRewriterText(ctx) + "]");
+        }
         current_plsql_block.current_cursor_name = null;
     }
 
@@ -3057,6 +3067,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
                 declare_cursor_and_rowtype.append("\n  DECLARE VARIABLE ").append(rec).
                         append(" TYPE OF TABLE ").append(cursor_name).append(";\n");
             }
+            loop_for_in_collection.clear();
             insertBefore(ctx, declare_cursor_and_rowtype);
         }
     }

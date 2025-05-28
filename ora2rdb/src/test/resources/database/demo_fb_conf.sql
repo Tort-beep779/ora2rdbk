@@ -280,12 +280,13 @@ BEGIN
 END add_job_history;
 
 /
+
 --------------------------------------------------------
 --  DDL for Procedure EMP_INFO_TO_ARRAY
 --------------------------------------------------------
 set define off;
 
-CREATE OR REPLACE PROCEDURE emp_info_to_array
+  CREATE OR REPLACE EDITIONABLE PROCEDURE "EMP_INFO_TO_ARRAY"
 (p_id_dep employees.department_id%type)
 AS
     CURSOR Cur_Emp_Dep IS
@@ -294,42 +295,47 @@ AS
         where department_id = p_id_dep;
 
     TYPE t_empId_jobId IS TABLE OF VARCHAR2(10) INDEX BY PLS_INTEGER;
-        v_empId_jobId t_empId_jobId;
+    v_empId_jobId t_empId_jobId;
 
 
     TYPE t_empId_jobTitle IS TABLE OF VARCHAR2(35) INDEX BY PLS_INTEGER;
-        v_empId_jobTitle t_empId_jobTitle;
+    v_empId_jobTitle t_empId_jobTitle;
 
     j Integer;
+    i Integer;
     jb_title varchar(35);
     e_full_name VARCHAR(50);
 
 BEGIN
+
     FOR ITEM IN Cur_Emp_Dep LOOP
-       v_empId_jobId(ITEM.employee_id) := ITEM.job_id;
+               v_empId_jobId(ITEM.employee_id) := ITEM.job_id;
     END LOOP;
 
     IF v_empId_jobId.count > 0 then
-        for i in v_empId_jobId.first..v_empId_jobId.last loop
-            select JOB_TITLE into jb_title from jobs where jobs.job_id = v_empId_jobId(i);
-                if (jb_title is not null) then
-                    v_empId_jobTitle(i) := jb_title;
-                end if;
+        i := v_empId_jobId.FIRST;
+        while i is not null loop
+        select JOB_TITLE into jb_title from jobs where jobs.job_id = v_empId_jobId(i);
+        if (jb_title is not null) then
+                v_empId_jobTitle(i) := jb_title;
+        end if;
+            i := v_empId_jobId.NEXT(i);
         end loop;
     end if;
+
 
     j := v_empId_jobTitle.FIRST;
 
 
-    WHILE j IS NOT NULL LOOP
-    GET_FULL_NAME(j, e_full_name);
+    WHILE  j IS NOT NULL LOOP
+    GET_FULL_NAME( j, e_full_name);
     DBMS_Output.PUT_LINE
-        ('id сотрудника ' || j || ', имя ' || e_full_name ||  ' , job_title ' || v_empId_jobTitle(j)||'');
-    j := v_empId_jobTitle.NEXT(j);
+    ('id сотрудника ' ||  j || ', имя ' || e_full_name ||  ' , job_title ' || v_empId_jobTitle(j));
+     j := v_empId_jobTitle.NEXT( j);
     END LOOP;
 
     EXCEPTION
-        WHEN NO_DATA_FOUND THEN NULL;
+        WHEN NO_DATA_FOUND THEN null;
 END;
 
 

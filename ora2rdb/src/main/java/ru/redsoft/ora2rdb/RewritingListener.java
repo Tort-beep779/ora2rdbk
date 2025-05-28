@@ -308,6 +308,11 @@ public class RewritingListener extends PlSqlParserBaseListener {
     }
 
     @Override
+    public void exitSet_command(Set_commandContext ctx) {
+        delete(ctx);
+    }
+
+    @Override
     public void exitRelational_table(Relational_tableContext ctx) {
         deleteSPACESAbut(ctx.physical_properties());
         if (!ctx.table_properties().isEmpty())

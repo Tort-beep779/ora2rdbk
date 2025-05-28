@@ -1538,6 +1538,7 @@ public class RewritingListener extends PlSqlParserBaseListener {
     @Override
     public void exitCreate_function_body(Create_function_bodyContext ctx) {
         replace(ctx.REPLACE(), "ALTER");
+        delete(ctx.EDITIONABLE());
         replace(ctx.IS(), "AS");
 //        replace(ctx.SEMICOLON(), "^");
         StoredFunction currentFunction = (StoredFunction) storedBlocksStack.peek();

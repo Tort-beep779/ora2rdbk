@@ -475,6 +475,15 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitAlter_table(Alter_tableContext ctx) {
+        if(ctx.constraint_clauses() != null) {
+            Constraint_clausesContext constraintClausesContext = ctx.constraint_clauses();
+            if (constraintClausesContext.out_of_line_constraint().size() != 0){
+                Out_of_line_constraintContext out_of_line_constraintContext = constraintClausesContext.out_of_line_constraint(0);
+                if(out_of_line_constraintContext.constraint_state() != null && out_of_line_constraintContext.constraint_state().ENABLE(0) != null){
+                    delete(out_of_line_constraintContext.constraint_state());
+                }
+            }
+        }
         Constraint_clausesContext constraint_clauses_ctx = ctx.constraint_clauses();
         Column_clausesContext column_clauses_ctx = ctx.column_clauses();
 

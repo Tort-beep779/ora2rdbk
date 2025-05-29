@@ -304,9 +304,13 @@ public class RewritingListener extends PlSqlParserBaseListener {
     public void exitSql_script(Sql_scriptContext ctx) {
         for(TerminalNode solid : ctx.SOLIDUS())
             delete(solid);
-        if (!Ora2rdb.reorder)
+        if (!Ora2rdb.reorder) {
             for (Map.Entry<String, String> entry : exceptions.entrySet())
                 insertBefore(ctx, "CREATE EXCEPTION " + entry.getKey() + "\n\t" + "'" + entry.getValue() + "';" + "\n");
+            insertBefore(ctx, "\n\nCREATE OR ALTER PROCEDURE FORMAT_NAMES\n()\nAS\nBEGIN\n\nEND;\n");
+            insertBefore(ctx, "\n\nCREATE OR ALTER PROCEDURE GET_FULL_NAME \n()\nAS\n \nBEGIN\nEND;");
+            insertBefore(ctx, "\n\nCREATE OR ALTER PROCEDURE ADD_JOB_HISTORY\n()\nAS\nBEGIN\n\nEND;");
+        }
     }
 
     @Override

@@ -307,9 +307,9 @@ public class RewritingListener extends PlSqlParserBaseListener {
         if (!Ora2rdb.reorder) {
             for (Map.Entry<String, String> entry : exceptions.entrySet())
                 insertBefore(ctx, "CREATE EXCEPTION " + entry.getKey() + "\n\t" + "'" + entry.getValue() + "';" + "\n");
-            insertBefore(ctx, "\n\nCREATE OR ALTER PROCEDURE FORMAT_NAMES\n()\nAS\nBEGIN\n\nEND;\n");
-            insertBefore(ctx, "\n\nCREATE OR ALTER PROCEDURE GET_FULL_NAME \n()\nAS\n \nBEGIN\nEND;");
-            insertBefore(ctx, "\n\nCREATE OR ALTER PROCEDURE ADD_JOB_HISTORY\n()\nAS\nBEGIN\n\nEND;");
+            insertBefore(ctx, "\n\nCREATE OR ALTER PROCEDURE FORMAT_NAMES\n(p1 VARCHAR(20), p2 VARCHAR(20), p3 VARCHAR(20))\nAS\nBEGIN\n\nEND;\n");
+            insertBefore(ctx, "\n\nCREATE OR ALTER PROCEDURE GET_FULL_NAME \n(p1 NUMERIC(34,8), p2 VARCHAR(50))\nAS\n \nBEGIN\nEND;");
+            insertBefore(ctx, "\n\nCREATE OR ALTER PROCEDURE ADD_JOB_HISTORY\n(p1 NUMERIC(34,8), p2 DATE, p3 DATE, p4 VARCHAR(10), p5 NUMERIC(4))\nAS\nBEGIN\n\nEND;");
         }
     }
 
@@ -454,13 +454,14 @@ public class RewritingListener extends PlSqlParserBaseListener {
 
     @Override
     public void exitComment_on_column(Comment_on_columnContext ctx) {
-        if (ctx.column_name() != null) {
-            Column_nameContext column_nameContext = ctx.column_name();
-            if (column_nameContext.identifier() != null) {
-                delete(column_nameContext.identifier());
-                delete(column_nameContext.PERIOD(0));
-            }
-        }
+        delete(ctx);
+//        if (ctx.column_name() != null) {
+//            Column_nameContext column_nameContext = ctx.column_name();
+//            if (column_nameContext.identifier() != null) {
+//                delete(column_nameContext.identifier());
+//                delete(column_nameContext.PERIOD(0));
+//            }
+//        }
     }
 
     @Override

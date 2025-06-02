@@ -15,9 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.github.difflib.DiffUtils;
-import com.github.difflib.UnifiedDiffUtils;
-import com.github.difflib.patch.Patch;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -62,44 +59,53 @@ class ParserTest {
         return ignoreSuite.stream()
                 .filter(e -> !e.isEmpty())
                 .filter(e -> Files.isDirectory(Paths.get(startDirPath + e)))
-                .anyMatch(e -> inputFile.contains(e));
+                .anyMatch(inputFile::contains);
     }
 
     private List<String> readFile(String path) throws IOException {
         return Files.readAllLines(Path.of(startDirPath + path), StandardCharsets.UTF_8);
     }
 
-    void testForDevelopers(String inputFile) throws IOException {
+    private String joinStringListWithSystemLineSeparator(List<String> stringList){
+        StringBuilder stringBuilder = new StringBuilder();
+        int lastListIndex = stringList.size() - 1;
+        String systemSeparator = System.lineSeparator();
+        for (String line : stringList) {
+            stringBuilder.append(line.replace("\r", "").replace("\n", ""));
+            if (!line.equals(stringList.get(lastListIndex)))
+                stringBuilder.append(systemSeparator);
+        }
+        return stringBuilder.toString();
+    }
+
+    private String removeWhitespaceInStringList(List<String> stringList) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String line : stringList) {
+            stringBuilder.append(line
+                    .replaceAll("\\s+", ""));
+        }
+        return stringBuilder.toString();
+    }
+
+    void testConvertMethod(String inputFile) throws IOException {
         String expectedFile = inputFile.replace(".sql", "_expected.sql");
         String actual;
         try (FileInputStream fs = new FileInputStream(startDirPath + inputFile)) {
             RewritingListener rewritingListener =
                     Ora2rdb.convert(fs);
             actual = rewritingListener.rewriter.getText()
-                    .replace("\r", "").replace("\n", System.lineSeparator())
-                    .replaceAll("\\s+", "")
-            ;
+                    .replaceAll("\\s+", "");
         }
 
         List<String> expectedList = readFile(expectedFile);
-        StringBuilder stringBuilder = new StringBuilder();
-        int lastListIndex = expectedList.size() - 1;
-        String systemSeparator = System.lineSeparator();
-
-        for (String line : expectedList) {
-            stringBuilder.append(line.replace("\r", "").replace("\n", ""));
-            if (!line.equals(expectedList.get(lastListIndex)))
-                stringBuilder.append(systemSeparator);
-        }
-        String expected = stringBuilder.toString()
-                .replaceAll("\\s+", "")
-                ;
+        String expected = removeWhitespaceInStringList(expectedList);
         assertEquals(expected, actual);
     }
 
 
-    void test(String inputFile) throws Exception {
+    void testForDevelopers(String inputFile) throws IOException {
         final Path outFile = Paths.get(System.getProperty("java.io.tmpdir"), "out.sql");
+        Files.writeString(outFile, "Output will not be generated");
         String expectedFile = inputFile.replace(".sql", "_expected.sql");
         Path inputFilePath = Paths.get(startDirPath + inputFile);
         try {
@@ -108,16 +114,36 @@ class ParserTest {
             throw new RuntimeException(e);
         }
 
-        List<String> actual = Files.readAllLines(outFile, StandardCharsets.UTF_8);
+        List<String> expectedList = readFile(expectedFile);
+        List<String> actualList = Files.readAllLines(outFile, StandardCharsets.UTF_8);
+
+        String ignoreFormatExpected = removeWhitespaceInStringList(expectedList);
+        String ignoreFormatActual = removeWhitespaceInStringList(actualList);
+        if(!ignoreFormatExpected.equals(ignoreFormatActual)) {
+            String expected = joinStringListWithSystemLineSeparator(expectedList);
+            String actual = joinStringListWithSystemLineSeparator(actualList);
+            assertEquals(expected, actual);
+        }
+    }
+
+    void test(String inputFile) throws Exception {
+        final Path outFile = Paths.get(System.getProperty("java.io.tmpdir"), "out.sql");
+        Files.writeString(outFile, "Output will not be generated");
+        String expectedFile = inputFile.replace(".sql", "_expected.sql");
+        Path inputFilePath = Paths.get(startDirPath + inputFile);
+        try {
+            Ora2rdb.main(new String[]{inputFilePath.toAbsolutePath().toString(), "-o", outFile.toAbsolutePath().toString()});
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         List<String> expected = readFile(expectedFile);
+        List<String> actual = Files.readAllLines(outFile, StandardCharsets.UTF_8);
 
-        Patch<String> diff = DiffUtils.diff(expected, actual);
-        List<String> unifiedDiff = UnifiedDiffUtils.generateUnifiedDiff("expected",
-                "actual", expected , diff, 0);
-        String result = String.join("\n" , unifiedDiff);
+        String ignoreFormatExpected = removeWhitespaceInStringList(expected);
+        String ignoreFormatActual = removeWhitespaceInStringList(actual);
 
-        if (!result.isEmpty()) {
+        if(!ignoreFormatExpected.equals(ignoreFormatActual)) {
             ProcessBuilder processBuilder = new ProcessBuilder("python3",
                     "src/test/resources/main.py",
                     "-n",
@@ -172,10 +198,8 @@ class ParserTest {
     @ParameterizedTest(name = "{arguments}")
     @MethodSource("argsProviderFactory")
     void testAllScripts(String argument) throws Exception {
-//        test(argument);
-        testForDevelopers(argument);
+        test(argument);
     }
 
 
 }
-

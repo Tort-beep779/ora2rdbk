@@ -1,0 +1,1 @@
+DROP ROLE role_name;

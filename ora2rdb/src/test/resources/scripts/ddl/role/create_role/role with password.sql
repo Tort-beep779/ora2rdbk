@@ -1,0 +1,1 @@
+CREATE ROLE role3 IDENTIFIED BY password123;

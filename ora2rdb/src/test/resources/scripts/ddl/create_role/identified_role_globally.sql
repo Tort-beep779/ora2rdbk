@@ -1,0 +1,1 @@
+CREATE ROLE lero5 IDENTIFIED GLOBALLY AS 'domain_name_of_directory_group';

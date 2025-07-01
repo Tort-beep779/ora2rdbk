@@ -1,0 +1,1 @@
+ CREATE ROLE lero10 IDENTIFIED USING package;

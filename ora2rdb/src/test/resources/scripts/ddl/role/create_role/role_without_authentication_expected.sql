@@ -1,1 +1,1 @@
- CREATE ROLE lero1;
+CREATE ROLE lero1;

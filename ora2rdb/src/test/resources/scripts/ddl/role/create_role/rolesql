@@ -1,1 +1,0 @@
-CREATE ROLE role_name IDENTIFIED USING package_name;

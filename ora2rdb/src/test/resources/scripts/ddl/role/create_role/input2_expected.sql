@@ -1,0 +1,1 @@
+GRANT lero2 TO USER username;

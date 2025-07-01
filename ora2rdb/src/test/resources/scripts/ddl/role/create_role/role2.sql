@@ -1,1 +1,0 @@
-ALTER ROLE role_name IDENTIFIED BY new_password;

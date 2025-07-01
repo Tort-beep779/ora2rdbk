@@ -1,1 +1,1 @@
- CREATE ROLE lero3 IDENTIFIED USING schema_name.package_name;
+CREATE ROLE lero3 IDENTIFIED USING schema_name.package_name;

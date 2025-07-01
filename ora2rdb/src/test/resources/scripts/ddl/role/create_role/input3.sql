@@ -1,1 +1,0 @@
-CREATE ROLE lero3 IDENTIFIED USING schema_pkg;

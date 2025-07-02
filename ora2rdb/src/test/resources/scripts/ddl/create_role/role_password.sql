@@ -1,1 +1,0 @@
-CREATE ROLE lero2 IDENTIFIED BY password123;
